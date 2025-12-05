@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Carregando Loja...</title>
+    <!-- Carrega Tailwind CSS para estilização moderna e responsiva -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carrega a fonte Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Ícones Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Variáveis CSS para o tema dinâmico (Default: Rosa e Indigo) */
+        :root {
+            --color-primary: #EC4899; /* pink-500 */
+            --color-secondary: #4F46E5; /* indigo-600 */
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f7f9; 
+            padding-top: 80px; 
+        } 
+        
+        .fixed-header {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            z-index: 40;
+        }
+
+        .product-card { 
+            transition: all 0.3s ease; 
+            overflow: hidden; 
+            height: 100%; 
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); 
+        }
+        .product-card:hover { 
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
+            transform: translateY(-4px); 
+        }
+        .product-image { 
+            aspect-ratio: 1 / 1; 
+            object-fit: cover; 
+            width: 100%;
+        }
+        .sale-price {
+            animation: pulse-price 1.5s infinite;
+        }
+        @keyframes pulse-price {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.03); opacity: 0.95; }
+        }
+        .modal-overlay {
+             background-color: rgba(0, 0, 0, 0.6);
+        }
+        /* Aplica a cor primária dinâmica aos elementos chave */
+        .btn-primary {
+            background-color: var(--color-primary);
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: color-mix(in srgb, var(--color-primary) 90%, black);
+        }
+        .text-primary {
+            color: var(--color-primary);
+        }
+        .border-primary {
+            border-color: var(--color-primary);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="loading" class="fixed inset-0 flex items-center justify-center bg-white z-50">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
+        <p class="ml-4 text-pink-600 font-semibold">Carregando vitrine...</p>
+    </div>
+    
+    <!-- CABEÇALHO FIXO E LIMPO -->
+    <header class="fixed-header fixed top-0 left-0 right-0 bg-white py-4">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center max-w-7xl">
+            <!-- Logo/Título da Loja (Nome Dinâmico) -->
+            <h1 class="text-2xl font-extrabold text-primary" id="storeNameHeader">
+                Shop<span class="text-secondary" id="storeNameSecondary">Wave</span>
+            </h1>
+
+            <!-- Barra de Pesquisa Centralizada -->
+            <div class="hidden md:block w-full max-w-lg mx-8 relative">
+                <input type="text" id="searchInput" oninput="renderProductList()" placeholder="Pesquisar produtos, marcas ou categorias..."
+                       class="w-full p-2.5 pl-12 border border-gray-200 rounded-lg shadow-sm focus:ring-primary focus:border-primary transition duration-150 bg-gray-50">
+                <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+            </div>
+            
+            <!-- Ícones de Navegação (MOCK) -->
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-secondary transition p-2 rounded-full hidden sm:block">
+                     <i data-lucide="user" class="w-6 h-6"></i>
+                </button>
+                <button class="text-gray-600 hover:text-primary transition p-2 rounded-full relative">
+                     <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                     <span class="absolute top-0 right-0 block h-3 w-3 rounded-full ring-2 ring-white bg-red-500"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+
+    <div id="app" class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl hidden">
+        
+        <!-- BARRA DE PESQUISA APENAS PARA MÓVEL -->
+        <div class="md:hidden mt-4 mb-8 relative">
+            <input type="text" id="searchInputMobile" oninput="document.getElementById('searchInput').value = this.value; renderProductList();" placeholder="Pesquisar produtos..."
+                   class="w-full p-3 pl-12 border border-gray-300 rounded-xl shadow-md focus:ring-primary focus:border-primary transition duration-150">
+            <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
+        </div>
+        <input type="hidden" id="searchInput">
+
+        <!-- SEÇÃO DE PRODUTOS EM DESTAQUE (HERO SECTION) -->
+        <section id="featuredSection" class="mb-12 hidden">
+            <h2 class="text-xl sm:text-2xl font-extrabold text-gray-800 mb-6 border-b-2 border-primary inline-block pb-1">🔥 Ofertas Exclusivas</h2>
+            <div id="featuredProductList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                <!-- Produtos em destaque serão injetados aqui -->
+            </div>
+        </section>
+
+        <!-- SEÇÃO PRINCIPAL DE PRODUTOS -->
+        <section>
+            <h2 class="text-xl sm:text-2xl font-extrabold text-gray-800 mb-6">Todos os Produtos</h2>
+            <div id="allProductList" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
+                <!-- Todos os produtos serão injetados aqui -->
+            </div>
+            <p id="noResults" class="text-gray-400 mt-12 text-center hidden p-8 bg-white rounded-xl shadow-lg">Nenhum produto encontrado com o termo de pesquisa.</p>
+        </section>
+        
+        <!-- MODAL DE DETALHES DO PRODUTO -->
+        <div id="detailsModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl h-auto max-h-[95vh] overflow-y-auto relative">
+                
+                <button onclick="closeDetailsModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition duration-150 z-10 bg-white rounded-full p-1 shadow-md">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+                
+                <div id="modalContent" class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 sm:p-10">
+                    <!-- Conteúdo injetado pelo JS -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de Aviso -->
+        <div id="alertModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6">
+                <h3 class="text-xl font-bold mb-4 text-secondary" id="alertModalTitle">Aviso</h3>
+                <p id="alertMessage" class="mb-6 text-gray-700"></p>
+                <div class="flex justify-end">
+                    <button onclick="closeAlertModal()" class="btn-primary text-white text-sm font-semibold py-2 px-4 rounded-lg">
+                        Ok
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Importações do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, addDoc, setDoc, updateDoc, deleteDoc, onSnapshot, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        setLogLevel('Debug');
+
+        let app, db, auth;
+        let isAuthReady = false;
+        let allProducts = [];
+        const STORE_CONFIG_DOC_PATH = 'config/store'; // Caminho para a configuração global
+
+        // --- 1. Funções de Utilitário (Modal de Alerta) ---
+        
+        function showAlertModal(message, title = 'Aviso') {
+            document.getElementById('alertModalTitle').textContent = title;
+            document.getElementById('alertMessage').textContent = message;
+            document.getElementById('alertModal').classList.remove('hidden');
+        }
+
+        window.closeAlertModal = () => {
+            document.getElementById('alertModal').classList.add('hidden');
+        };
+        
+        window.handleSearchInput = () => {
+            const mobileInput = document.getElementById('searchInputMobile');
+            const desktopInput = document.getElementById('searchInput');
+            if (mobileInput) desktopInput.value = mobileInput.value;
+            renderProductList();
+        }
+
+        // --- 2. Inicialização do Firebase e Autenticação ---
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            lucide.createIcons();
+            
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                
+                // Configuração do Firebase fornecida pelo usuário
+                const firebaseConfig = {
+                  apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q",
+                  authDomain: "meuestoque-1badc.firebaseapp.com",
+                  projectId: "meuestoque-1badc",
+                  storageBucket: "meuestoque-1badc.firebasestorage.app",
+                  messagingSenderId: "730003067834",
+                  appId: "1:730003067834:web:b205f1ea59053345960383",
+                  measurementId: "G-2FFED8S7R3"
+                };
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        isAuthReady = true;
+                        setupConfigListener();      // Novo: Ouvinte de Configuração
+                        setupProductListener();     // Ouvinte de Produtos
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('app').classList.remove('hidden');
+                        lucide.createIcons(); 
+                    } else {
+                        console.error("Autenticação falhou.");
+                    }
+                });
+
+            } catch (error) {
+                console.error("Erro na inicialização da Vitrine:", error);
+                document.getElementById('loading').innerHTML = `<p class="text-red-600">Erro ao carregar a vitrine: ${error.message}.</p>`;
+            }
+        });
+
+        // --- 3. Configuração do Listener de Tema e Nome da Loja ---
+        
+        function setupConfigListener() {
+            if (!isAuthReady) return;
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const configRef = doc(db, `artifacts/${appId}/public/data/${STORE_CONFIG_DOC_PATH}`);
+            
+            onSnapshot(configRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const config = docSnap.data();
+                    
+                    // 1. Atualiza o Nome da Loja
+                    const fullStoreName = config.storeName || "ShopWave";
+                    const [primaryName, secondaryName] = fullStoreName.split(' ', 2);
+
+                    document.getElementById('storeNameHeader').textContent = primaryName || fullStoreName;
+                    document.getElementById('storeNameSecondary').textContent = secondaryName || '';
+                    document.getElementById('pageTitle').textContent = fullStoreName;
+
+                    // 2. Atualiza as Cores Dinâmicas
+                    const root = document.documentElement;
+                    if (config.primaryColor) {
+                        root.style.setProperty('--color-primary', config.primaryColor);
+                    }
+                    if (config.secondaryColor) {
+                         root.style.setProperty('--color-secondary', config.secondaryColor);
+                    }
+                } else {
+                    // Se o documento não existir (primeira execução), usa os defaults CSS.
+                    console.log("Documento de configuração não encontrado. Usando defaults.");
+                }
+            }, (error) => {
+                console.error("Erro ao ler a configuração da loja:", error);
+            });
+        }
+
+
+        // --- 4. Configuração do Listener de Dados de Produto ---
+
+        function setupProductListener() {
+            if (!isAuthReady) return;
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const productsRef = collection(db, `artifacts/${appId}/public/data/products`);
+            
+            onSnapshot(productsRef, (snapshot) => {
+                const rawProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                allProducts = rawProducts.filter(p => p.status === 'active' && p.stock > 0);
+                
+                // Ordena: Destaques primeiro, depois por mais recente
+                allProducts.sort((a, b) => {
+                    if (a.isFeatured && !b.isFeatured) return -1;
+                    if (!a.isFeatured && b.isFeatured) return 1;
+                    return b.updatedAt ? b.updatedAt.localeCompare(a.updatedAt || b.updatedAt) : -1;
+                });
+                
+                renderProductList();
+            }, (error) => {
+                console.error("Erro ao ler produtos da vitrine:", error);
+            });
+        }
+
+        // --- 5. Funções de Renderização da Vitrine (Ajustadas para Tema) ---
+
+        window.renderProductList = () => {
+            const featuredContainer = document.getElementById('featuredProductList');
+            const allContainer = document.getElementById('allProductList');
+            const searchInputDesktop = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            
+            const searchInput = (searchInputDesktop?.value || searchInputMobile?.value || "").toLowerCase();
+            
+            featuredContainer.innerHTML = '';
+            allContainer.innerHTML = '';
+
+            const featuredProducts = [];
+            
+            const filteredProducts = allProducts.filter(product => {
+                const searchMatch = product.name.toLowerCase().includes(searchInput) ||
+                                    product.description.toLowerCase().includes(searchInput) ||
+                                    product.category.toLowerCase().includes(searchInput);
+                return searchMatch;
+            });
+            
+            // Lógica de exibição de noResults e separação de destaques
+            if (filteredProducts.length === 0 && searchInput.length > 0) {
+                document.getElementById('noResults').textContent = `Nenhum produto encontrado com a pesquisa "${searchInput}".`;
+                document.getElementById('noResults').classList.remove('hidden');
+                document.getElementById('featuredSection').classList.add('hidden');
+                return;
+            } else if (filteredProducts.length === 0 && allProducts.length === 0) {
+                 document.getElementById('noResults').textContent = 'Nenhum produto ativo em estoque no momento. Adicione produtos no painel de administração.';
+                 document.getElementById('noResults').classList.remove('hidden');
+                 document.getElementById('featuredSection').classList.add('hidden');
+                 return;
+            } else if (filteredProducts.length === 0 && allProducts.length > 0) {
+                 document.getElementById('noResults').textContent = `Nenhum produto encontrado com a pesquisa "${searchInput}".`;
+                 document.getElementById('noResults').classList.remove('hidden');
+                 document.getElementById('featuredSection').classList.add('hidden');
+                 return;
+            } else {
+                document.getElementById('noResults').classList.add('hidden');
+            }
+            
+            filteredProducts.forEach(product => {
+                if (product.isFeatured) {
+                    featuredProducts.push(product);
+                }
+            });
+
+            if (featuredProducts.length > 0 && searchInput.length === 0) {
+                 document.getElementById('featuredSection').classList.remove('hidden');
+                 featuredProducts.forEach(product => {
+                    featuredContainer.appendChild(createProductCard(product, true));
+                });
+            } else {
+                document.getElementById('featuredSection').classList.add('hidden');
+            }
+
+            const mainList = searchInput.length > 0 ? filteredProducts : allProducts.filter(p => !p.isFeatured && p.status === 'active' && p.stock > 0);
+            
+            mainList.forEach(product => {
+                if (searchInput.length > 0 || !product.isFeatured) {
+                    allContainer.appendChild(createProductCard(product, product.isFeatured));
+                }
+            });
+
+            lucide.createIcons();
+        };
+
+        function createProductCard(product, isFeatured) {
+            const firstImage = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/400x400/ECEFF1/607D8B?text=Sem+Foto';
+            const onSale = product.promoValue && product.promoValue < product.value;
+            
+            let priceDisplay;
+            if (onSale) {
+                priceDisplay = `
+                    <p class="text-xs text-gray-400 line-through">R$ ${product.value.toFixed(2).replace('.', ',')}</p>
+                    <p class="text-xl font-extrabold text-red-600 sale-price">R$ ${product.promoValue.toFixed(2).replace('.', ',')}</p>
+                `;
+            } else {
+                priceDisplay = `
+                    <p class="text-xs text-gray-400 opacity-0">placeholder</p>
+                    <p class="text-xl font-extrabold text-gray-900">R$ ${product.value.toFixed(2).replace('.', ',')}</p>
+                `;
+            }
+            
+            const categoryDisplay = `<span class="text-[10px] font-medium text-gray-500 block mb-1 uppercase tracking-wider">${product.category}</span>`;
+
+
+            const card = document.createElement('div');
+            card.className = 'product-card bg-white rounded-xl shadow-md cursor-pointer flex flex-col';
+            card.setAttribute('onclick', `openDetailsModal('${product.id}')`);
+
+            card.innerHTML = `
+                <div class="relative">
+                    <img src="${firstImage}" alt="${product.name}" class="product-image rounded-t-xl" 
+                        onerror="this.onerror=null; this.src='https://placehold.co/400x400/ECEFF1/607D8B?text=Sem+Foto';">
+                    ${isFeatured ? '<span class="absolute top-2 left-2 text-xs font-bold px-3 py-1 rounded-full bg-secondary text-white shadow-lg flex items-center"><i data-lucide="award" class="w-3 h-3 mr-1"></i> DESTAQUE</span>' : ''}
+                    ${onSale ? '<span class="absolute top-2 right-2 text-xs font-bold px-3 py-1 rounded-full bg-red-600 text-white shadow-lg">OFERTA</span>' : ''}
+                </div>
+                
+                <div class="p-4 flex flex-col flex-grow justify-between">
+                    <div>
+                        ${categoryDisplay}
+                        <h4 class="text-base font-semibold text-gray-900 mb-2 truncate">${product.name}</h4>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        ${priceDisplay}
+                        <button class="w-full mt-3 btn-primary text-white font-semibold py-2 rounded-lg text-sm transition duration-150 flex items-center justify-center">
+                             <i data-lucide="eye" class="w-4 h-4 mr-2"></i> Ver Detalhes
+                        </button>
+                    </div>
+                </div>
+            `;
+            return card;
+        }
+        
+        // --- 6. Modal de Detalhes do Produto (Ajustado para Tema) ---
+        
+        window.openDetailsModal = (productId) => {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) return;
+
+            const modalContent = document.getElementById('modalContent');
+            const onSale = product.promoValue && product.promoValue < product.value;
+            
+            let priceSection;
+            if (onSale) {
+                 priceSection = `
+                    <p class="text-lg text-gray-400 line-through">De: R$ ${product.value.toFixed(2).replace('.', ',')}</p>
+                    <p class="text-4xl font-extrabold text-red-600 mb-4 sale-price">Por: R$ ${product.promoValue.toFixed(2).replace('.', ',')}</p>
+                 `;
+            } else {
+                 priceSection = `
+                    <p class="text-4xl font-extrabold text-gray-900 mb-4">R$ ${product.value.toFixed(2).replace('.', ',')}</p>
+                 `;
+            }
+
+            const firstImage = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/600x600/ECEFF1/607D8B?text=Sem+Foto';
+            
+            modalContent.innerHTML = `
+                <!-- Imagem -->
+                <div class="relative">
+                    <img src="${firstImage}" alt="${product.name}" class="w-full rounded-xl product-image shadow-lg" 
+                        onerror="this.onerror=null; this.src='https://placehold.co/600x600/ECEFF1/607D8B?text=Sem+Foto';">
+                    ${onSale ? '<span class="absolute top-4 left-4 text-sm font-bold px-4 py-2 rounded-full bg-red-600 text-white shadow-xl transform rotate-[-5deg]">SUPER OFERTA</span>' : ''}
+                </div>
+                
+                <!-- Detalhes -->
+                <div class="flex flex-col justify-between">
+                    <div>
+                        <span class="text-sm font-medium text-primary block mb-2 uppercase tracking-wider">${product.category}</span>
+                        <h2 class="text-3xl font-extrabold text-gray-900 mb-2">${product.name}</h2>
+                        
+                        ${priceSection}
+                        
+                        <p class="text-gray-600 mb-6 text-sm leading-relaxed">${product.description || 'Nenhuma descrição detalhada fornecida.'}</p>
+                        
+                        <!-- Variações (Simplificado) -->
+                        ${product.colors && product.colors.length > 0 ? 
+                            `<div class="mb-4 border-t pt-4">
+                                <span class="block text-sm font-semibold text-gray-700 mb-2">Cores:</span>
+                                <div class="flex flex-wrap gap-2">
+                                    ${product.colors.map(c => `<span class="text-xs px-3 py-1 border border-gray-300 rounded-full bg-gray-50">${c}</span>`).join('')}
+                                </div>
+                            </div>` : ''
+                        }
+                        
+                        ${product.sizes && product.sizes.length > 0 ? 
+                            `<div class="mb-6">
+                                <span class="block text-sm font-semibold text-gray-700 mb-2">Tamanhos:</span>
+                                <div class="flex flex-wrap gap-2">
+                                    ${product.sizes.map(s => `<span class="text-xs px-3 py-1 border border-gray-300 rounded-full bg-gray-50">${s}</span>`).join('')}
+                                </div>
+                            </div>` : ''
+                        }
+                    </div>
+                    
+                    <div class="pt-4 border-t">
+                        <p class="text-sm text-gray-500 mb-3">Estoque: <span class="font-bold text-gray-900">${product.stock} unidades</span></p>
+                        <button class="w-full btn-primary text-white font-extrabold py-3 rounded-xl text-lg transition duration-150 flex items-center justify-center shadow-lg transform hover:scale-[1.01]">
+                             <i data-lucide="shopping-bag" class="w-6 h-6 mr-3"></i> ADICIONAR AO CARRINHO
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            lucide.createIcons();
+            document.getElementById('detailsModal').classList.remove('hidden');
+        };
+
+        window.closeDetailsModal = () => {
+            document.getElementById('detailsModal').classList.add('hidden');
+        };
+        
+        window.addEventListener('resize', () => {
+             lucide.createIcons();
+        });
+        
+    </script>
+</body>
+</html>
+
