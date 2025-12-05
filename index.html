@@ -200,14 +200,212 @@
             
             try {
                 const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+                // CONFIGURAÇÃO DO FIREBASE (APLICADA DIRETAMENTE)
+                // Usando a configuração fornecida pelo usuário para rodar fora do Canvas.
+                const userFirebaseConfig = {
+                    apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q",
+                    authDomain: "meuestoque-1badc.firebaseapp.com",
+                    projectId: "meuestoque-1badc",
+                    storageBucket: "meuestoque-1badc.firebasestorage.app",
+                    messagingSenderId: "730003067834",
+                    appId: "1:730003067834:web:b205f1ea59053345960383",
+                    measurementId: "G-2FFED8S7R3"
+                };
+
+                // Prioriza a configuração injetada pelo Canvas, mas usa a config fixa se não estiver disponível.
+                let firebaseConfig = userFirebaseConfig;
                 
-                // Configuração do Firebase fornecida pelo usuário
-                const firebaseConfig = {
-                  apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q",
-                  authDomain: "meuestoque-1badc.firebaseapp.com",
-                  projectId: "meuestoque-1badc",
-                  storageBucket: "meuestoque-1badc.firebasestorage.app",
-                  messagingSenderId: "730003067834",
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    try {
+                        // Tenta usar a config do Canvas se existir
+                        firebaseConfig = JSON.parse(__firebase_config);
+                    } catch (e) {
+                        console.warn("Erro ao parsear __firebase_config, usando a configuração fixa.");
+                    }
+                }
+                
+                if (!firebaseConfig || !firebaseConfig.apiKey) {
+                    document.getElementById('loading').innerHTML = `<p class="text-red-600 font-semibold">Erro: A configuração do Firebase está faltando.</p>`;
+                    return;
+                }
+                // FIM DA CONFIGURAÇÃO
+
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        isAuthReady = true;
+                        setupConfigListener();      // Novo: Ouvinte de Configuração
+                        setupProductListener();     // Ouvinte de Produtos
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('app').classList.remove('hidden');
+                        lucide.createIcons(); 
+                    } else {
+                        console.error("Autenticação falhou ou user nulo.");
+                        // Continua carregando para usuários anônimos, mas pode limitar acesso ao Firestore via regras.
+                        isAuthReady = true; 
+                        setupConfigListener();
+                        setupProductListener();
+                        document.getElementById('loading').classList.add('hidden');
+                        document.getElementById('app').classList.remove('hidden');
+                        lucide.createIcons();
+                    }
+                });
+
+            } catch (error) {
+                console.error("Erro na inicialização da Vitrine:", error);
+                document.getElementById('loading').innerHTML = `<p class="text-red-600">Erro ao carregar a vitrine: ${error.message}.</p>`;
+            }
+        });
+
+        // --- 3. Configuração do Listener de Tema e Nome da Loja ---
+        
+        function setupConfigListener() {
+            if (!isAuthReady) return;
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const configRef = doc(db, `artifacts/${appId}/public/data/${STORE_CONFIG_DOC_PATH}`);
+            
+            onSnapshot(configRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const config = docSnap.data();
+                    
+                    // 1. Atualiza o Nome da Loja
+                    const fullStoreName = config.storeName || "ShopWave";
+                    const [primaryName, secondaryName] = fullStoreName.split(' ', 2);
+
+                    document.getElementById('storeNameHeader').textContent = primaryName || fullStoreName;
+                    document.getElementById('storeNameSecondary').textContent = secondaryName || '';
+                    document.getElementById('pageTitle').textContent = fullStoreName;
+
+                    // 2. Atualiza as Cores Dinâmicas
+                    const root = document.documentElement;
+                    if (config.primaryColor) {
+                        root.style.setProperty('--color-primary', config.primaryColor);
+                    }
+                    if (config.secondaryColor) {
+                         root.style.setProperty('--color-secondary', config.secondaryColor);
+                    }
+                } else {
+                    // Se o documento não existir (primeira execução), usa os defaults CSS.
+                    console.log("Documento de configuração não encontrado. Usando defaults.");
+                }
+            }, (error) => {
+                console.error("Erro ao ler a configuração da loja:", error);
+            });
+        }
+
+
+        // --- 4. Configuração do Listener de Dados de Produto ---
+
+        function setupProductListener() {
+            if (!isAuthReady) return;
+
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const productsRef = collection(db, `artifacts/${appId}/public/data/products`);
+            
+            onSnapshot(productsRef, (snapshot) => {
+                const rawProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                allProducts = rawProducts.filter(p => p.status === 'active' && p.stock > 0);
+                
+                // Ordena: Destaques primeiro, depois por mais recente
+                allProducts.sort((a, b) => {
+                    if (a.isFeatured && !b.isFeatured) return -1;
+                    if (!a.isFeatured && b.isFeatured) return 1;
+                    return b.updatedAt ? b.updatedAt.localeCompare(a.updatedAt || b.updatedAt) : -1;
+                });
+                
+                renderProductList();
+            }, (error) => {
+                console.error("Erro ao ler produtos da vitrine:", error);
+            });
+        }
+
+        // --- 5. Funções de Renderização da Vitrine (Ajustadas para Tema) ---
+
+        window.renderProductList = () => {
+            const featuredContainer = document.getElementById('featuredProductList');
+            const allContainer = document.getElementById('allProductList');
+            const searchInputDesktop = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            
+            const searchInput = (searchInputDesktop?.value || searchInputMobile?.value || "").toLowerCase();
+            
+            featuredContainer.innerHTML = '';
+            allContainer.innerHTML = '';
+
+            const featuredProducts = [];
+            
+            const filteredProducts = allProducts.filter(product => {
+                const searchMatch = product.name.toLowerCase().includes(searchInput) ||
+                                    product.description.toLowerCase().includes(searchInput) ||
+                                    product.category.toLowerCase().includes(searchInput);
+                return searchMatch;
+            });
+            
+            // Lógica de exibição de noResults e separação de destaques
+            if (filteredProducts.length === 0 && searchInput.length > 0) {
+                document.getElementById('noResults').textContent = `Nenhum produto encontrado com a pesquisa "${searchInput}".`;
+                document.getElementById('noResults').classList.remove('hidden');
+                document.getElementById('featuredSection').classList.add('hidden');
+                return;
+            } else if (filteredProducts.length === 0 && allProducts.length === 0) {
+                 document.getElementById('noResults').textContent = 'Nenhum produto ativo em estoque no momento. Adicione produtos no painel de administração.';
+                 document.getElementById('noResults').classList.remove('hidden');
+                 document.getElementById('featuredSection').classList.add('hidden');
+                 return;
+            } else if (filteredProducts.length === 0 && allProducts.length > 0) {
+                 document.getElementById('noResults').textContent = `Nenhum produto encontrado com a pesquisa "${searchInput}".`;
+                 document.getElementById('noResults').classList.remove('hidden');
+                 document.getElementById('featuredSection').classList.add('hidden');
+                 return;
+            } else {
+                document.getElementById('noResults').classList.add('hidden');
+            }
+            
+            filteredProducts.forEach(product => {
+                if (product.isFeatured) {
+                    featuredProducts.push(product);
+                }
+            });
+
+            if (featuredProducts.length > 0 && searchInput.length === 0) {
+                 document.getElementById('featuredSection').classList.remove('hidden');
+                 featuredProducts.forEach(product => {
+                    featuredContainer.appendChild(createProductCard(product, true));
+                });
+            } else {
+                document.getElementById('featuredSection').classList.add('hidden');
+            }
+
+            const mainList = searchInput.length > 0 ? filteredProducts : allProducts.filter(p => !p.isFeatured && p.status === 'active' && p.stock > 0);
+            
+            mainList.forEach(product => {
+                if (searchInput.length > 0 || !product.isFeatured) {
+                    allContainer.appendChild(createProductCard(product, product.isFeatured));
+                }
+            });
+
+            lucide.createIcons();
+        };
+
+        function createProductCard(product, isFeatured) {
+            const firstImage = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/400x400/ECEFF1/607D8B?text=Sem+Foto';
+            const onSale = product.promoValue && product.promoValue < product.value;
+            
+            let priceDisplay;
+            if (onSale) {
+                          messagingSenderId: "730003067834",
                   appId: "1:730003067834:web:b205f1ea59053345960383",
                   measurementId: "G-2FFED8S7R3"
                 };
