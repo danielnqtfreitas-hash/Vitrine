@@ -16,31 +16,32 @@
             --color-primary: #EC4899; /* pink-500 */
             --color-secondary: #4F46E5; /* indigo-600 */
         }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f4f7f9; 
-            padding-top: 80px; 
-        } 
-        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f9;
+            padding-top: 80px; /* Espaço para o header */
+        }
+        /* Ajuste o padding-top para acomodar o header fixo + banner de status fixo */
+        #app {
+            padding-top: 48px; /* Altura do Banner de Status */
+        }
         .fixed-header {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             z-index: 40;
         }
-
-        .product-card { 
-            transition: all 0.3s ease; 
-            overflow: hidden; 
-            height: 100%; 
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); 
+        .product-card {
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
         }
-        .product-card:hover { 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); 
-            transform: translateY(-4px); 
+        .product-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
         }
-        .product-image { 
-            aspect-ratio: 1 / 1; 
-            object-fit: cover; 
+        .product-image {
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
             width: 100%;
         }
         .sale-price {
@@ -51,9 +52,8 @@
             50% { transform: scale(1.03); opacity: 0.95; }
         }
         .modal-overlay {
-             background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.6);
         }
-        
         /* Aplica a cor primária dinâmica aos elementos chave */
         .btn-primary {
             background-color: var(--color-primary);
@@ -62,12 +62,10 @@
         .btn-primary:hover {
             background-color: color-mix(in srgb, var(--color-primary) 90%, black);
         }
-        
         /* CLASSE CRUCIAL: Aplica a cor primária dinâmica ao fundo dos cards de categoria selecionados */
         .bg-primary {
             background-color: var(--color-primary);
         }
-
         .text-primary {
             color: var(--color-primary);
         }
@@ -77,60 +75,70 @@
         .text-secondary {
             color: var(--color-secondary);
         }
-        
         /* Estilo para a navegação de categoria que precisa de scroll horizontal */
         .category-scroll-container::-webkit-scrollbar {
             display: none; /* Oculta a barra de rolagem no Chrome/Safari */
         }
         .category-scroll-container {
-            -ms-overflow-style: none;  /* Oculta a barra de rolagem no IE e Edge */
-            scrollbar-width: none;  /* Oculta a barra de rolagem no Firefox */
+            -ms-overflow-style: none; /* Oculta a barra de rolagem no IE e Edge */
+            scrollbar-width: none; /* Oculta a barra de rolagem no Firefox */
         }
     </style>
 </head>
 <body class="min-h-screen">
 
     <div id="loading" class="fixed inset-0 flex items-center justify-center bg-white z-50">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-500"></div>
-        <p class="ml-4 text-pink-600 font-semibold">Carregando vitrine...</p>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <p class="ml-4 text-primary font-semibold">Carregando vitrine...</p>
     </div>
-    
+
     <!-- CABEÇALHO FIXO E LIMPO -->
     <header class="fixed-header fixed top-0 left-0 right-0 bg-white py-4">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center max-w-7xl">
             <!-- Logo/Título da Loja (Nome Dinâmico) -->
-            <h1 class="text-2xl font-extrabold text-primary" id="storeNameHeader">
-                Shop<span class="text-secondary" id="storeNameSecondary">Wave</span>
+            <h1 class="text-2xl font-extrabold text-primary flex items-center" id="storeNameHeaderContainer">
+                <span id="storeNameHeader"> Shop</span><span class="text-secondary" id="storeNameSecondary">Wave</span>
+                <!-- NOVO: Badge de Status da Loja -->
+                <div id="storeStatusBadge" class="p-1 px-3 ml-3 rounded-full text-xs font-bold transition-all text-white bg-gray-400">
+                    Verificando...
+                </div>
             </h1>
 
             <!-- Barra de Pesquisa Centralizada -->
             <div class="hidden md:block w-full max-w-lg mx-8 relative">
-                <input type="text" id="searchInput" oninput="renderProductList()" placeholder="Pesquisar produtos, marcas ou categorias..."
-                       class="w-full p-2.5 pl-12 border border-gray-200 rounded-lg shadow-sm focus:ring-primary focus:border-primary transition duration-150 bg-gray-50">
+                <input type="text" id="searchInput" oninput="renderProductList()" placeholder="Pesquisar produtos, marcas ou categorias..." class="w-full p-2.5 pl-12 border border-gray-200 rounded-lg shadow-sm focus:ring-primary focus:border-primary transition duration-150 bg-gray-50">
                 <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
             </div>
-            
-            <!-- Ícones de Navegação (MOCK) -->
+
+            <!-- Ícones de Navegação -->
             <div class="flex items-center space-x-4">
-                <button class="text-gray-600 hover:text-secondary transition p-2 rounded-full hidden sm:block">
-                     <i data-lucide="user" class="w-6 h-6"></i>
-                </button>
                 <!-- Botão do Carrinho ATUALIZADO com contador -->
                 <button id="cartButton" onclick="openCartModal()" class="text-gray-600 hover:text-primary transition p-2 rounded-full relative">
-                     <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-                     <span id="cartCount" class="absolute top-0 right-0 block h-5 w-5 rounded-full ring-2 ring-white bg-red-500 text-white text-xs font-bold flex items-center justify-center opacity-0 transition-opacity">0</span>
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    <span id="cartCount" class="absolute top-0 right-0 block h-5 w-5 rounded-full ring-2 ring-white bg-red-500 text-white text-xs font-bold flex items-center justify-center opacity-0 transition-opacity">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-
+    <!-- NOVO: Banner de Status Fixo (Aparece abaixo do header) -->
+    <div id="statusBanner" class="fixed top-20 left-0 right-0 z-30 py-3 bg-white shadow-md border-t-2 border-primary hidden">
+        <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center text-sm">
+            <div class="flex items-center space-x-2">
+                <i data-lucide="clock" class="w-4 h-4 text-primary"></i>
+                <span id="storeStatusText" class="font-semibold text-gray-700"></span>
+            </div>
+            <!-- Botão para abrir o Modal de Entrega -->
+            <button onclick="openDeliveryModal()" class="text-secondary font-bold hover:underline">
+                <i data-lucide="map-pin" class="w-4 h-4 inline mr-1"></i> Consultar Taxa de Entrega
+            </button>
+        </div>
+    </div>
+    
     <div id="app" class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl hidden">
-        
         <!-- BARRA DE PESQUISA APENAS PARA MÓVEL -->
         <div class="md:hidden mt-4 mb-8 relative">
-            <input type="text" id="searchInputMobile" oninput="document.getElementById('searchInput').value = this.value; renderProductList();" placeholder="Pesquisar produtos..."
-                   class="w-full p-3 pl-12 border border-gray-300 rounded-xl shadow-md focus:ring-primary focus:border-primary transition duration-150">
+            <input type="text" id="searchInputMobile" oninput="document.getElementById('searchInput').value = this.value; renderProductList();" placeholder="Pesquisar produtos..." class="w-full p-3 pl-12 border border-gray-300 rounded-xl shadow-md focus:ring-primary focus:border-primary transition duration-150">
             <i data-lucide="search" class="w-5 h-5 text-gray-400 absolute left-4 top-1/2 transform -translate-y-1/2"></i>
         </div>
         <input type="hidden" id="searchInput">
@@ -151,61 +159,78 @@
             </div>
             <p id="noResults" class="text-gray-400 mt-12 text-center hidden p-8 bg-white rounded-xl shadow-lg">Nenhum produto encontrado com o termo de pesquisa.</p>
         </section>
-        
-        <!-- MODAL DE DETALHES DO PRODUTO -->
+
+        <!-- MODAL DE DETALHES DO PRODUTO (Sem Alteração na Estrutura) -->
         <div id="detailsModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl h-auto max-h-[95vh] overflow-y-auto relative">
-                
                 <button onclick="closeDetailsModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition duration-150 z-10 bg-white rounded-full p-1 shadow-md">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
-                
                 <div id="modalContent" class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 sm:p-10">
                     <!-- Conteúdo injetado pelo JS -->
                 </div>
             </div>
         </div>
 
-        <!-- NOVO MODAL DO CARRINHO DE COMPRAS -->
+        <!-- NOVO MODAL DO CARRINHO DE COMPRAS (Estrutura mantida) -->
         <div id="cartModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl h-auto max-h-[95vh] overflow-y-auto relative p-6 sm:p-8">
                 <button onclick="closeCartModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition duration-150 z-10 bg-white rounded-full p-1 shadow-md">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
-                
                 <h3 class="text-2xl font-extrabold text-primary mb-6 flex items-center">
-                    <i data-lucide="shopping-cart" class="w-6 h-6 mr-3"></i> Meu Pedido (Vitrine)
+                    <i data-lucide="shopping-cart" class="w-6 h-6 mr-3"></i> Meu Pedido
                 </h3>
-
                 <div id="cartItemsList" class="space-y-4 border-b pb-4">
                     <!-- Itens do carrinho serão injetados aqui -->
                 </div>
-
                 <div id="cartSummary" class="mt-4 flex justify-between items-center font-bold text-lg">
                     <span>Total do Pedido:</span>
                     <span id="cartTotal" class="text-2xl text-secondary">R$ 0,00</span>
                 </div>
-                
                 <p id="emptyCartMessage" class="text-center text-gray-500 py-10 hidden">Seu carrinho está vazio. Adicione produtos para fazer um pedido!</p>
-
                 <div class="mt-8">
                     <button onclick="checkoutToWhatsApp()" class="w-full btn-primary text-white font-extrabold py-3 rounded-xl text-lg transition duration-150 flex items-center justify-center shadow-lg transform hover:scale-[1.01]">
-                         <i data-lucide="whatsapp" class="w-6 h-6 mr-3"></i> FINALIZAR PEDIDO VIA WHATSAPP
+                        <i data-lucide="whatsapp" class="w-6 h-6 mr-3"></i> FINALIZAR PEDIDO VIA WHATSAPP
                     </button>
-                    <p class="text-center text-xs text-gray-500 mt-2">Você será redirecionado para o WhatsApp para confirmar seu pedido e pagamento.</p>
+                    <p class="text-center text-xs text-gray-500 mt-2">Você será redirecionado para o WhatsApp para combinar a entrega e o pagamento.</p>
                 </div>
             </div>
         </div>
-        
-        <!-- Modal de Aviso -->
+
+        <!-- NOVO: Modal de Consulta de Taxa de Entrega -->
+        <div id="deliveryModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg h-auto max-h-[95vh] overflow-y-auto relative p-6 sm:p-8">
+                <button onclick="closeDeliveryModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 transition duration-150 z-10 bg-white rounded-full p-1 shadow-md">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+                <h3 class="text-2xl font-extrabold text-primary mb-6 flex items-center">
+                    <i data-lucide="truck" class="w-6 h-6 mr-3"></i> Consultar Taxa de Entrega
+                </h3>
+
+                <div id="deliveryAreaList" class="space-y-4">
+                    <p class="text-gray-600 mb-4">Verifique abaixo as áreas que atendemos e as respectivas taxas. Se sua área não estiver listada, inclua seu endereço no pedido via WhatsApp.</p>
+                    
+                    <div id="deliveryAreasContent" class="space-y-3">
+                        <p class="text-center text-gray-500">Nenhuma área de entrega configurada ou carregando...</p>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t">
+                         <a id="deliveryWhatsappLink" href="https://wa.me/5511999999999" target="_blank" class="w-full btn-primary text-white font-extrabold py-3 rounded-xl text-lg transition duration-150 flex items-center justify-center shadow-lg transform hover:scale-[1.01]">
+                            <i data-lucide="whatsapp" class="w-6 h-6 mr-3"></i> Falar sobre Entrega
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Aviso (Mantido) -->
         <div id="alertModal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
             <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6">
                 <h3 class="text-xl font-bold mb-4 text-secondary" id="alertModalTitle">Aviso</h3>
                 <p id="alertMessage" class="mb-6 text-gray-700"></p>
                 <div class="flex justify-end">
-                    <button onclick="closeAlertModal()" class="btn-primary text-white text-sm font-semibold py-2 px-4 rounded-lg">
-                        Ok
-                    </button>
+                    <button onclick="closeAlertModal()" class="btn-primary text-white text-sm font-semibold py-2 px-4 rounded-lg"> Ok </button>
                 </div>
             </div>
         </div>
@@ -217,22 +242,25 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
         setLogLevel('Debug');
 
         // --- CONSTANTES ---
-        const WHATSAPP_NUMBER = "5511999999999"; // !!! SUBSTITUA PELO SEU NÚMERO DE WHATSAPP REAL !!! (Ex: 5511999999999)
-        const STORE_CONFIG_DOC_PATH = 'config/store'; 
-        
+        const STORE_CONFIG_DOC_PATH = 'config/store';
+
         // --- ESTADOS GLOBAIS ---
         let app, db, auth;
         let isAuthReady = false;
         let allProducts = [];
-        let uniqueCategories = []; 
+        let uniqueCategories = [];
         let currentCategoryFilter = null; // null = 'Todos'
         let cartItems = []; // Carrinho de compras (em memória)
 
-        
+        // NOVOS ESTADOS DINÂMICOS
+        let storeConfig = {}; // Armazena configurações como deliveryAreas, cores, etc.
+        let isStoreOpen = true; 
+        let storeStatusMessage = "Verificando horário...";
+        let whatsappNumber = "5511999999999"; // Valor padrão de fallback
+
         // ===================================================================================================
         // !!! CONFIGURAÇÃO FIREBASE EXTERNA (FIXA) !!!
         // ===================================================================================================
@@ -245,25 +273,20 @@
             appId: "1:730003067834:web:b205f1ea59053345960383",
             measurementId: "G-2FFED8S7R3"
         };
-        // ===================================================================================================
-
-        // Função auxiliar para obter o ID do aplicativo (baseado na config fixa)
+        
         function getAppId() {
             return EXTERNAL_FIREBASE_CONFIG.appId;
         }
 
         // --- 1. Funções de Utilitário (Modal de Alerta) ---
-        
         function showAlertModal(message, title = 'Aviso') {
             document.getElementById('alertModalTitle').textContent = title;
             document.getElementById('alertMessage').textContent = message;
             document.getElementById('alertModal').classList.remove('hidden');
         }
-
         window.closeAlertModal = () => {
             document.getElementById('alertModal').classList.add('hidden');
         };
-        
         window.handleSearchInput = () => {
             const mobileInput = document.getElementById('searchInputMobile');
             const desktopInput = document.getElementById('searchInput');
@@ -272,18 +295,14 @@
         }
 
         // --- 2. Inicialização do Firebase e Autenticação ---
-        
         document.addEventListener('DOMContentLoaded', async () => {
             lucide.createIcons();
-            
             try {
                 const firebaseConfig = EXTERNAL_FIREBASE_CONFIG;
-                
                 if (!firebaseConfig || !firebaseConfig.apiKey) {
                     document.getElementById('loading').innerHTML = `<p class="text-red-600 font-semibold">Erro: A configuração do Firebase está faltando.</p>`;
                     return;
                 }
-
                 app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
@@ -293,18 +312,17 @@
 
                 onAuthStateChanged(auth, (user) => {
                     isAuthReady = true;
-                    
                     document.getElementById('loading').classList.add('hidden');
                     document.getElementById('app').classList.remove('hidden');
-                    lucide.createIcons(); 
-                    
+                    lucide.createIcons();
+
                     if (!user) {
                         console.warn("Autenticação anônima falhou, mas as regras públicas podem permitir a leitura.");
                     }
                     
                     // Carrega dados após a tentativa de autenticação
-                    setupConfigListener();      
-                    setupProductListener();     
+                    setupConfigListener();
+                    setupProductListener();
                     renderCart(); // Renderiza o carrinho vazio inicialmente
                 });
 
@@ -314,105 +332,178 @@
             }
         });
 
-        // --- 3. Configuração do Listener de Tema e Nome da Loja ---
-        
+        // --- 3. Configuração do Listener de Tema, Nome da Loja e Horários (ATUALIZADO) ---
         function setupConfigListener() {
             if (!isAuthReady) return;
-
             const appId = getAppId();
             const configRef = doc(db, `artifacts/${appId}/public/data/${STORE_CONFIG_DOC_PATH}`);
-            
+
             onSnapshot(configRef, (docSnap) => {
                 if (docSnap.exists()) {
                     const config = docSnap.data();
+                    storeConfig = config; // Salva toda a configuração
                     
-                    // 1. Atualiza o Nome da Loja
+                    // 1. Atualiza o WhatsApp Number
+                    if (config.whatsappNumber) {
+                        whatsappNumber = config.whatsappNumber.replace(/\D/g, ''); 
+                    }
+
+                    // 2. Atualiza o Nome da Loja
                     const fullStoreName = config.storeName || "ShopWave";
-                    
                     const parts = fullStoreName.split(' ', 2);
                     const primaryName = parts[0] || fullStoreName;
                     const secondaryName = parts.length > 1 ? parts.slice(1).join(' ') : '';
-                    
                     document.getElementById('storeNameHeader').textContent = primaryName;
                     document.getElementById('storeNameSecondary').textContent = secondaryName;
                     document.getElementById('pageTitle').textContent = fullStoreName;
 
-                    // 2. Atualiza as Cores Dinâmicas
+                    // 3. Atualiza as Cores Dinâmicas
                     const root = document.documentElement;
                     if (config.primaryColor) {
                         root.style.setProperty('--color-primary', config.primaryColor);
                     }
                     if (config.secondaryColor) {
-                         root.style.setProperty('--color-secondary', config.secondaryColor);
+                        root.style.setProperty('--color-secondary', config.secondaryColor);
                     }
+
+                    // 4. Atualiza Status da Loja
+                    updateStoreStatus(config.operatingHours, config.isStoreOpen);
+
+                    // 5. Renderiza Áreas de Entrega
+                    renderDeliveryAreas(config.deliveryAreas || []);
+
+                    // Garante que o banner de status apareça e ajusta o padding do body
+                    document.getElementById('statusBanner').classList.remove('hidden');
+                    document.body.style.paddingTop = '128px'; // 80px (Header) + 48px (Banner)
+
                 } else {
                     console.log("Documento de configuração não encontrado. Usando defaults.");
+                    updateStoreStatus(null, false); // Se não encontrar, assume fechado
+                    document.getElementById('statusBanner').classList.remove('hidden');
                 }
             }, (error) => {
                 console.error("Erro ao ler a configuração da loja:", error);
+                updateStoreStatus(null, false);
             });
         }
 
+        // --- NOVO: Lógica de Status de Abertura da Loja ---
+        function updateStoreStatus(operatingHours, isStoreConfigOpen) {
+            const now = new Date();
+            const today = now.getDay(); // 0 (Domingo) a 6 (Sábado)
+            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            const todayKey = days[today];
+            
+            const statusBadge = document.getElementById('storeStatusBadge');
+            const statusText = document.getElementById('storeStatusText');
+            
+            isStoreOpen = true; // Assume aberto para começar
 
-        // --- 4. Configuração do Listener de Dados de Produto ---
+            if (!isStoreConfigOpen) {
+                isStoreOpen = false;
+                storeStatusMessage = "A loja está temporariamente fechada (Status Administrativo).";
+            } else if (!operatingHours || !operatingHours[todayKey] || !operatingHours[todayKey].isActive) {
+                isStoreOpen = false;
+                storeStatusMessage = "Estamos fechados hoje.";
+            } else {
+                const schedule = operatingHours[todayKey];
+                const currentTime = now.getHours() * 60 + now.getMinutes(); // Tempo em minutos
+                
+                let isNowOpen = false;
+                
+                // Converte hora "HH:MM" para minutos
+                const timeToMinutes = (time) => {
+                    const [h, m] = time.split(':').map(Number);
+                    return h * 60 + m;
+                };
 
+                if (schedule.startTime && schedule.endTime) {
+                    const start = timeToMinutes(schedule.startTime);
+                    const end = timeToMinutes(schedule.endTime);
+
+                    if (start < end) {
+                        // Horário normal (ex: 10:00 - 18:00)
+                        if (currentTime >= start && currentTime < end) {
+                            isNowOpen = true;
+                            storeStatusMessage = `Estamos Abertos! Hoje: ${schedule.startTime} às ${schedule.endTime}.`;
+                        }
+                    } else {
+                        // Horário que atravessa a meia-noite (ex: 22:00 - 04:00)
+                        if (currentTime >= start || currentTime < end) {
+                            isNowOpen = true;
+                            storeStatusMessage = `Estamos Abertos! Hoje: ${schedule.startTime} às ${schedule.endTime} (madrugada).`;
+                        }
+                    }
+                }
+
+                if (isNowOpen) {
+                    isStoreOpen = true;
+                } else {
+                    isStoreOpen = false;
+                    let nextOpenTime = schedule.startTime;
+                    storeStatusMessage = nextOpenTime 
+                        ? `Fechado. Abrimos às ${nextOpenTime}.` 
+                        : "Fechado no momento.";
+                }
+            }
+
+            // Aplica o estilo ao Badge
+            if (isStoreOpen) {
+                statusBadge.textContent = "ABERTO";
+                statusBadge.className = 'p-1 px-3 ml-3 rounded-full text-xs font-bold transition-all text-white bg-green-500';
+            } else {
+                statusBadge.textContent = "FECHADO";
+                statusBadge.className = 'p-1 px-3 ml-3 rounded-full text-xs font-bold transition-all text-white bg-red-600';
+            }
+            
+            // Aplica o texto no Banner
+            statusText.textContent = storeStatusMessage;
+        }
+
+        // --- 4. Configuração do Listener de Dados de Produto (Mantido) ---
         function setupProductListener() {
             if (!isAuthReady) return;
-
             const appId = getAppId();
             const productsRef = collection(db, `artifacts/${appId}/public/data/products`);
-            
+
             onSnapshot(productsRef, (snapshot) => {
                 const rawProducts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
                 allProducts = rawProducts.filter(p => p.status === 'active' && p.stock > 0);
-                
                 allProducts.sort((a, b) => {
                     if (a.isFeatured && !b.isFeatured) return -1;
                     if (!a.isFeatured && b.isFeatured) return 1;
                     return b.updatedAt ? b.updatedAt.localeCompare(a.updatedAt || b.updatedAt) : -1;
                 });
-                
-                // Extrai e ordena categorias únicas (usado para o filtro/agrupamento)
+
+                // Extrai e ordena categorias únicas
                 const categoriesSet = new Set(allProducts.map(p => p.category).filter(Boolean));
                 uniqueCategories = Array.from(categoriesSet).sort((a, b) => a.localeCompare(b));
-                
-                renderCategoryCards(); 
+
+                renderCategoryCards();
                 renderProductList();
             }, (error) => {
                 console.error("Erro ao ler produtos da vitrine:", error);
             });
         }
-        
-        // --- 5. Funções de Navegação de Categoria ---
 
+        // --- 5. Funções de Navegação de Categoria (Mantido) ---
         window.renderCategoryCards = () => {
             const container = document.getElementById('categoryCardContainer');
             if (!container) return;
-
-            container.innerHTML = ''; 
+            container.innerHTML = '';
 
             // --- 1. Card "Ofertas" (Novo) ---
             const isOffersActive = currentCategoryFilter === 'offers';
-            // Usa bg-primary quando ativo
-            const offersClass = isOffersActive 
-                ? 'bg-primary text-white shadow-xl' 
-                : 'bg-white text-gray-700 shadow-md border border-gray-100 hover:shadow-lg';
-            
+            const offersClass = isOffersActive ? 'bg-primary text-white shadow-xl' : 'bg-white text-gray-700 shadow-md border border-gray-100 hover:shadow-lg';
             const offersCard = document.createElement('button');
             offersCard.className = `p-3 px-6 rounded-3xl font-bold text-sm transition-all flex-shrink-0 whitespace-nowrap ${offersClass} flex items-center justify-center`;
             offersCard.innerHTML = `<i data-lucide="flame" class="w-4 h-4 mr-2"></i> Ofertas 🔥`;
             offersCard.setAttribute('onclick', `filterByCategory('offers')`);
             container.appendChild(offersCard);
 
-
             // --- 2. Card "Todos" (Para resetar o filtro) ---
             const isAllActive = currentCategoryFilter === null;
-             // Usa bg-primary quando ativo
-            const allClass = isAllActive 
-                ? 'bg-primary text-white shadow-xl' 
-                : 'bg-white text-gray-700 shadow-md border border-gray-100 hover:shadow-lg';
-            
+            const allClass = isAllActive ? 'bg-primary text-white shadow-xl' : 'bg-white text-gray-700 shadow-md border border-gray-100 hover:shadow-lg';
             const allCard = document.createElement('button');
             allCard.className = `p-3 px-6 rounded-3xl font-semibold text-sm transition-all flex-shrink-0 whitespace-nowrap ${allClass}`;
             allCard.textContent = 'Todos';
@@ -422,69 +513,53 @@
             // --- 3. Cards de categorias ---
             uniqueCategories.forEach(category => {
                 const isActive = currentCategoryFilter === category;
-                 // Usa bg-primary quando ativo
-                const cardClass = isActive 
-                    ? 'bg-primary text-white shadow-xl' 
-                    : 'bg-white text-gray-700 shadow-md border border-gray-100 hover:shadow-lg';
-                
+                const cardClass = isActive ? 'bg-primary text-white shadow-xl' : 'bg-white text-gray-700 shadow-md border border-gray-100 hover:shadow-lg';
                 const card = document.createElement('button');
                 card.className = `p-3 px-6 rounded-3xl font-semibold text-sm transition-all flex-shrink-0 capitalize whitespace-nowrap ${cardClass}`;
                 card.textContent = category;
-                // Escapa aspas simples no nome da categoria para o HTML onclick
-                card.setAttribute('onclick', `filterByCategory('${category.replace(/'/g, "\\'")}')`); 
-                
+                card.setAttribute('onclick', `filterByCategory('${category.replace(/'/g, "\\'")}')`);
                 container.appendChild(card);
             });
-            
             lucide.createIcons();
         };
-        
         window.filterByCategory = (categoryName) => {
             currentCategoryFilter = categoryName;
-            renderCategoryCards(); 
-            renderProductList();   
-            
+            renderCategoryCards();
+            renderProductList();
             const target = document.getElementById('productCatalog');
             if (target) {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         };
 
-
-        // --- 6. Funções de Renderização da Vitrine (CORRIGIDO AGRUPAMENTO E TÍTULOS) ---
-
+        // --- 6. Funções de Renderização da Vitrine (Mantido) ---
         window.renderProductList = () => {
             const mainContainer = document.getElementById('categorizedProductContainer');
             const searchInputDesktop = document.getElementById('searchInput');
             const searchInputMobile = document.getElementById('searchInputMobile');
-            
             const searchInput = (searchInputDesktop?.value || searchInputMobile?.value || "").toLowerCase();
-            
             mainContainer.innerHTML = '';
 
             let filteredProducts = allProducts.filter(product => {
                 const category = product.category || '';
-                const searchMatch = product.name.toLowerCase().includes(searchInput) ||
-                                    (product.description || '').toLowerCase().includes(searchInput) ||
-                                    category.toLowerCase().includes(searchInput);
-                
+                const searchMatch = product.name.toLowerCase().includes(searchInput) || (product.description || '').toLowerCase().includes(searchInput) || category.toLowerCase().includes(searchInput);
                 let categoryMatch = true;
+
                 if (currentCategoryFilter === 'offers') {
                     categoryMatch = product.promoValue && product.promoValue < product.value;
                 } else if (currentCategoryFilter !== null) {
                     categoryMatch = category === currentCategoryFilter;
                 }
-                                    
                 return searchMatch && categoryMatch;
             });
-            
+
             // Lógica de Mensagem de "Nenhum Resultado"
             if (filteredProducts.length === 0 && (searchInput.length > 0 || currentCategoryFilter !== null)) {
                 document.getElementById('noResults').textContent = `Nenhum produto encontrado com os filtros aplicados.`;
                 document.getElementById('noResults').classList.remove('hidden');
             } else if (filteredProducts.length === 0 && allProducts.length === 0) {
-                 document.getElementById('noResults').textContent = 'Nenhum produto ativo em estoque no momento. Adicione produtos no painel de administração.';
-                 document.getElementById('noResults').classList.remove('hidden');
+                document.getElementById('noResults').textContent = 'Nenhum produto ativo em estoque no momento. Adicione produtos no painel de administração.';
+                document.getElementById('noResults').classList.remove('hidden');
             } else {
                 document.getElementById('noResults').classList.add('hidden');
             }
@@ -496,19 +571,16 @@
             } else if (currentCategoryFilter !== null) {
                 catalogTitle = currentCategoryFilter;
             } else if (searchInput.length > 0) {
-                 catalogTitle = `Resultados da Pesquisa para "${searchInput}"`;
+                catalogTitle = `Resultados da Pesquisa para "${searchInput}"`;
             }
             document.getElementById('mainCatalogTitle').textContent = catalogTitle;
 
-            const productsToGroup = filteredProducts; 
-            
+            const productsToGroup = filteredProducts;
+
             // Agrupa os produtos
             const categorizedProducts = productsToGroup.reduce((acc, product) => {
                 const category = product.category || 'Outras Categorias';
-                
-                // Se estivermos em "Ofertas", agrupamos tudo junto. Caso contrário, agrupamos pela categoria real.
                 const groupName = currentCategoryFilter === 'offers' ? 'Ofertas' : category;
-                
                 if (!acc[groupName]) {
                     acc[groupName] = [];
                 }
@@ -516,62 +588,55 @@
                 return acc;
             }, {});
 
-            
             // Determina a ordem de exibição das categorias
             let categoriesToDisplay = [];
             if (currentCategoryFilter === 'offers') {
-                categoriesToDisplay = ['Ofertas']; 
+                categoriesToDisplay = ['Ofertas'];
             } else if (currentCategoryFilter !== null) {
-                // Se um filtro de categoria específico estiver ativo, exibe apenas essa categoria
-                categoriesToDisplay = [currentCategoryFilter]; 
+                categoriesToDisplay = [currentCategoryFilter];
             } else if (searchInput.length > 0) {
-                // Se houver pesquisa, exibe todas as categorias dos resultados, ordenadas
                 categoriesToDisplay = Object.keys(categorizedProducts).sort();
             } else {
-                 // Sem filtro/pesquisa, exibe todas as categorias únicas e "Outras Categorias" (se houver)
-                 categoriesToDisplay = uniqueCategories;
-                 if (categorizedProducts['Outras Categorias'] && categorizedProducts['Outras Categorias'].length > 0) {
-                     categoriesToDisplay.push('Outras Categorias');
-                 }
+                categoriesToDisplay = uniqueCategories;
+                if (categorizedProducts['Outras Categorias'] && categorizedProducts['Outras Categorias'].length > 0) {
+                    categoriesToDisplay.push('Outras Categorias');
+                }
             }
 
             // Renderiza as Seções de Categoria
             categoriesToDisplay.forEach(category => {
                 const productsInSection = categorizedProducts[category] || [];
-                
                 if (productsInSection.length > 0) {
                     const categorySection = document.createElement('div');
                     categorySection.id = `category-${category.replace(/\s/g, '-')}`;
                     categorySection.className = 'category-group';
-                    
+
                     // Adiciona o título da categoria (CORRIGIDO: text-gray-800)
                     const categoryHeader = document.createElement('h3');
                     categoryHeader.className = 'text-xl font-extrabold text-gray-800 mb-6 capitalize border-b pb-2 border-gray-200';
                     categoryHeader.textContent = category;
                     categorySection.appendChild(categoryHeader);
-                    
+
                     const productGrid = document.createElement('div');
                     productGrid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6';
-
+                    
                     productsInSection.forEach(product => {
-                        productGrid.appendChild(createProductCard(product, product.isFeatured)); 
+                        productGrid.appendChild(createProductCard(product, product.isFeatured));
                     });
                     
                     categorySection.appendChild(productGrid);
                     mainContainer.appendChild(categorySection);
                 }
             });
-
             lucide.createIcons();
         };
 
         function createProductCard(product, isFeatured) {
             const firstImage = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/400x400/ECEFF1/607D8B?text=Sem+Foto';
             const onSale = product.promoValue && product.promoValue < product.value;
-            
             const actualPrice = onSale ? product.promoValue : product.value;
-
             let priceDisplay;
+
             if (onSale) {
                 priceDisplay = `
                     <p class="text-xs text-gray-400 line-through">R$ ${product.value.toFixed(2).replace('.', ',')}</p>
@@ -583,122 +648,102 @@
                     <p class="text-xl font-extrabold text-gray-900">R$ ${actualPrice.toFixed(2).replace('.', ',')}</p>
                 `;
             }
-            
+
             const card = document.createElement('div');
             card.className = 'product-card bg-white rounded-xl shadow-md cursor-pointer flex flex-col';
-            // Passa o ID para abrir o modal de detalhes
             card.setAttribute('onclick', `openDetailsModal('${product.id}')`);
-
+            
             card.innerHTML = `
                 <div class="relative">
-                    <img src="${firstImage}" alt="${product.name}" class="product-image rounded-t-xl" 
-                        onerror="this.onerror=null; this.src='https://placehold.co/400x400/ECEFF1/607D8B?text=Sem+Foto';">
+                    <img src="${firstImage}" alt="${product.name}" class="product-image rounded-t-xl" onerror="this.onerror=null; this.src='https://placehold.co/400x400/ECEFF1/607D8B?text=Sem+Foto';">
                     ${isFeatured ? '<span class="absolute top-2 left-2 text-xs font-bold px-3 py-1 rounded-full bg-secondary text-white shadow-lg flex items-center"><i data-lucide="award" class="w-3 h-3 mr-1"></i> DESTAQUE</span>' : ''}
                     ${onSale ? '<span class="absolute top-2 right-2 text-xs font-bold px-3 py-1 rounded-full bg-red-600 text-white shadow-lg">OFERTA</span>' : ''}
                 </div>
-                
                 <div class="p-4 flex flex-col flex-grow justify-between">
                     <div>
                         <span class="text-xs text-gray-500 block mb-1 uppercase tracking-wider">${product.category || 'Geral'}</span>
                         <h4 class="text-base font-semibold text-gray-900 mb-2 truncate">${product.name}</h4>
                     </div>
-                    
                     <div class="mt-auto">
                         ${priceDisplay}
                         <!-- Botão de Ação: Abrir Modal de Detalhes (chamada corrigida) -->
                         <button class="w-full mt-3 btn-primary text-white font-semibold py-2 rounded-lg text-sm transition duration-150 flex items-center justify-center" onclick="openDetailsModal('${product.id}'); event.stopPropagation();">
-                             <i data-lucide="eye" class="w-4 h-4 mr-2"></i> Ver Detalhes
+                            <i data-lucide="eye" class="w-4 h-4 mr-2"></i> Ver Detalhes
                         </button>
                     </div>
                 </div>
             `;
             return card;
         }
-        
-        // --- 7. Modal de Detalhes do Produto (Função ADICIONAR AO CARRINHO ATUALIZADA) ---
-        
+
+        // --- 7. Modal de Detalhes do Produto (Mantido) ---
         window.openDetailsModal = (productId) => {
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
 
             const modalContent = document.getElementById('modalContent');
             const onSale = product.promoValue && product.promoValue < product.value;
-            
             const price = onSale ? product.promoValue : product.value;
 
             let priceSection;
             if (onSale) {
-                 priceSection = `
+                priceSection = `
                     <p class="text-lg text-gray-400 line-through">De: R$ ${product.value.toFixed(2).replace('.', ',')}</p>
                     <p class="text-4xl font-extrabold text-red-600 mb-4 sale-price">Por: R$ ${product.promoValue.toFixed(2).replace('.', ',')}</p>
-                 `;
+                `;
             } else {
-                 priceSection = `
+                priceSection = `
                     <p class="text-4xl font-extrabold text-gray-900 mb-4">R$ ${product.value.toFixed(2).replace('.', ',')}</p>
-                 `;
+                `;
             }
 
             const firstImage = product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/600x600/ECEFF1/607D8B?text=Sem+Foto';
-            
+
             modalContent.innerHTML = `
                 <!-- Imagem -->
                 <div class="relative">
-                    <img src="${firstImage}" alt="${product.name}" class="w-full rounded-xl product-image shadow-lg" 
-                        onerror="this.onerror=null; this.src='https://placehold.co/600x600/ECEFF1/607D8B?text=Sem+Foto';">
+                    <img src="${firstImage}" alt="${product.name}" class="w-full rounded-xl product-image shadow-lg" onerror="this.onerror=null; this.src='https://placehold.co/600x600/ECEFF1/607D8B?text=Sem+Foto';">
                     ${onSale ? '<span class="absolute top-4 left-4 text-sm font-bold px-4 py-2 rounded-full bg-red-600 text-white shadow-xl transform rotate-[-5deg]">SUPER OFERTA</span>' : ''}
                 </div>
-                
                 <!-- Detalhes -->
                 <div class="flex flex-col justify-between">
                     <div>
                         <span class="text-sm font-medium text-primary block mb-2 uppercase tracking-wider">${product.category}</span>
                         <h2 class="text-3xl font-extrabold text-gray-900 mb-2">${product.name}</h2>
-                        
                         ${priceSection}
-                        
                         <p class="text-gray-600 mb-6 text-sm leading-relaxed">${product.description || 'Nenhuma descrição detalhada fornecida.'}</p>
                         
-                        <!-- Variações (Simplificado) - Manteremos como tags, sem seleção de fato por enquanto -->
-                        ${product.colors && product.colors.length > 0 ? 
-                            `<div class="mb-4 border-t pt-4">
-                                <span class="block text-sm font-semibold text-gray-700 mb-2">Cores:</span>
-                                <div class="flex flex-wrap gap-2">
-                                    ${product.colors.map(c => `<span class="text-xs px-3 py-1 border border-gray-300 rounded-full bg-gray-50">${c}</span>`).join('')}
-                                </div>
-                            </div>` : ''
-                        }
-                        
-                        ${product.sizes && product.sizes.length > 0 ? 
-                            `<div class="mb-6">
-                                <span class="block text-sm font-semibold text-gray-700 mb-2">Tamanhos:</span>
-                                <div class="flex flex-wrap gap-2">
-                                    ${product.sizes.map(s => `<span class="text-xs px-3 py-1 border border-gray-300 rounded-full bg-gray-50">${s}</span>`).join('')}
-                                </div>
-                            </div>` : ''
-                        }
+                        <!-- Variações (Simplificado) -->
+                        ${product.colors && product.colors.length > 0 ? `<div class="mb-4 border-t pt-4">
+                            <span class="block text-sm font-semibold text-gray-700 mb-2">Cores:</span>
+                            <div class="flex flex-wrap gap-2">
+                                ${product.colors.map(c => `<span class="text-xs px-3 py-1 border border-gray-300 rounded-full bg-gray-50">${c}</span>`).join('')}
+                            </div>
+                        </div>` : '' }
+                        ${product.sizes && product.sizes.length > 0 ? `<div class="mb-6">
+                            <span class="block text-sm font-semibold text-gray-700 mb-2">Tamanhos:</span>
+                            <div class="flex flex-wrap gap-2">
+                                ${product.sizes.map(s => `<span class="text-xs px-3 py-1 border border-gray-300 rounded-full bg-gray-50">${s}</span>`).join('')}
+                            </div>
+                        </div>` : '' }
                     </div>
-                    
                     <div class="pt-4 border-t">
                         <p class="text-sm text-gray-500 mb-3">Estoque: <span class="font-bold text-gray-900">${product.stock} unidades</span></p>
-                        <!-- Ação de ADICIONAR AO CARRINHO (AGORA USANDO addToCartById) -->
+                        <!-- Ação de ADICIONAR AO CARRINHO -->
                         <button onclick="addToCartById('${product.id}', 1); closeDetailsModal(); openCartModal();" class="w-full btn-primary text-white font-extrabold py-3 rounded-xl text-lg transition duration-150 flex items-center justify-center shadow-lg transform hover:scale-[1.01]">
-                             <i data-lucide="shopping-bag" class="w-6 h-6 mr-3"></i> ADICIONAR AO CARRINHO
+                            <i data-lucide="shopping-bag" class="w-6 h-6 mr-3"></i> ADICIONAR AO CARRINHO
                         </button>
                     </div>
                 </div>
             `;
-
             lucide.createIcons();
             document.getElementById('detailsModal').classList.remove('hidden');
         };
-
         window.closeDetailsModal = () => {
             document.getElementById('detailsModal').classList.add('hidden');
         };
-        
-        // --- 8. LÓGICA DO CARRINHO ---
 
-        // NOVO: Função auxiliar para encontrar o produto e chamar addToCart
+        // --- 8. LÓGICA DO CARRINHO (Mantido) ---
         window.addToCartById = (productId, quantity) => {
             const product = allProducts.find(p => p.id === productId);
             if (!product) {
@@ -708,30 +753,23 @@
             }
             window.addToCart(product, quantity);
         };
-
-
         window.addToCart = (product, quantity) => {
             if (quantity <= 0) return;
-            
             const cartItem = cartItems.find(item => item.id === product.id);
-            
-            // Calcula o preço atual (promoção ou preço normal)
+
             const price = product.promoValue && product.promoValue < product.value ? product.promoValue : product.value;
 
             if (cartItem) {
-                // Se o produto já está no carrinho, aumenta a quantidade
                 cartItem.quantity += quantity;
             } else {
-                // Adiciona novo item
-                cartItems.push({
-                    id: product.id,
-                    name: product.name,
-                    price: price,
-                    quantity: quantity,
+                cartItems.push({ 
+                    id: product.id, 
+                    name: product.name, 
+                    price: price, 
+                    quantity: quantity, 
                     imageUrl: product.images && product.images.length > 0 ? product.images[0] : 'https://placehold.co/80x80/ECEFF1/607D8B?text=Sem+Foto'
                 });
             }
-            
             renderCart();
             showAlertModal(`${product.name} adicionado ao pedido!`, "Produto Adicionado");
         };
@@ -743,7 +781,6 @@
             cartItem.quantity += change;
 
             if (cartItem.quantity <= 0) {
-                // Remove o item se a quantidade for zero ou menor
                 cartItems = cartItems.filter(item => item.id !== productId);
             }
             renderCart();
@@ -759,8 +796,8 @@
             const cartTotalElement = document.getElementById('cartTotal');
             const cartCountElement = document.getElementById('cartCount');
             const emptyMessage = document.getElementById('emptyCartMessage');
-            
             listContainer.innerHTML = '';
+            
             let total = 0;
             let totalItems = 0;
 
@@ -773,7 +810,6 @@
             }
 
             emptyMessage.classList.add('hidden');
-
             cartItems.forEach(item => {
                 const subtotal = item.price * item.quantity;
                 total += subtotal;
@@ -783,13 +819,11 @@
                 itemHtml.className = 'flex items-center space-x-4 p-3 bg-white border border-gray-100 rounded-lg shadow-sm';
                 itemHtml.innerHTML = `
                     <img src="${item.imageUrl}" alt="${item.name}" class="w-12 h-12 object-cover rounded-md flex-shrink-0" onerror="this.onerror=null; this.src='https://placehold.co/80x80/ECEFF1/607D8B?text=Foto';">
-                    
                     <div class="flex-grow min-w-0">
                         <h4 class="text-sm font-semibold text-gray-900 truncate">${item.name}</h4>
                         <p class="text-xs text-gray-500">R$ ${item.price.toFixed(2).replace('.', ',')} cada</p>
                         <p class="text-sm font-bold text-secondary">Subtotal: R$ ${subtotal.toFixed(2).replace('.', ',')}</p>
                     </div>
-
                     <div class="flex items-center space-x-2 flex-shrink-0">
                         <!-- Botão de diminuir quantidade -->
                         <button onclick="updateQuantity('${item.id}', -1)" class="p-1 bg-gray-200 rounded-full hover:bg-gray-300 transition text-gray-700">
@@ -802,36 +836,73 @@
                         </button>
                         <!-- Botão de remover item -->
                         <button onclick="removeItem('${item.id}')" class="p-1 bg-red-100 rounded-full hover:bg-red-200 transition text-red-600 ml-2">
-                             <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                     </div>
                 `;
                 listContainer.appendChild(itemHtml);
             });
-            
+
             cartTotalElement.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
             cartCountElement.textContent = totalItems;
             cartCountElement.classList.remove('opacity-0');
             lucide.createIcons();
         };
-
         window.openCartModal = () => {
             renderCart();
             document.getElementById('cartModal').classList.remove('hidden');
         };
-
         window.closeCartModal = () => {
             document.getElementById('cartModal').classList.add('hidden');
         };
 
-        // --- 9. FINALIZAR PEDIDO VIA WHATSAPP ---
-        
+        // --- NOVO: Funções de Modal de Entrega ---
+        window.openDeliveryModal = () => {
+            // Atualiza o link do WhatsApp no modal antes de abrir
+            const whatsappLinkElement = document.getElementById('deliveryWhatsappLink');
+            if (whatsappLinkElement) {
+                whatsappLinkElement.href = `https://wa.me/${whatsappNumber}`;
+            }
+            document.getElementById('deliveryModal').classList.remove('hidden');
+            lucide.createIcons();
+        };
+
+        window.closeDeliveryModal = () => {
+            document.getElementById('deliveryModal').classList.add('hidden');
+        };
+
+        function renderDeliveryAreas(areas) {
+            const container = document.getElementById('deliveryAreasContent');
+            container.innerHTML = '';
+            
+            if (!areas || areas.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 p-4 border border-dashed rounded-lg">A loja não configurou áreas de entrega automática. Por favor, entre em contato via WhatsApp para consultar o custo.</p>';
+                return;
+            }
+
+            const areaListHtml = areas.map(area => `
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg shadow-sm border border-gray-200">
+                    <span class="font-semibold text-gray-800">${area.name}</span>
+                    <span class="text-lg font-bold text-secondary">R$ ${area.rate ? area.rate.toFixed(2).replace('.', ',') : 'Grátis'}</span>
+                </div>
+            `).join('');
+
+            container.innerHTML = areaListHtml;
+        }
+
+
+        // --- 9. FINALIZAR PEDIDO VIA WHATSAPP (ATUALIZADO PARA WHATSAPP DINÂMICO E STATUS) ---
         window.checkoutToWhatsApp = () => {
             if (cartItems.length === 0) {
                 showAlertModal('Seu carrinho está vazio. Adicione produtos antes de finalizar o pedido.', 'Carrinho Vazio');
                 return;
             }
-
+            
+            if (!isStoreOpen) {
+                showAlertModal(`A loja está fechada no momento: ${storeStatusMessage}. Você pode finalizar o pedido, mas o processamento e a entrega ocorrerão durante o próximo horário de funcionamento.`, 'Loja Fechada');
+                // Continua para o WhatsApp, mas com aviso
+            }
+            
             let total = 0;
             let message = "Olá! Gostaria de fazer o seguinte pedido (via vitrine online):\n\n";
 
@@ -846,28 +917,26 @@
             message += `\n------------------------\n`;
             message += `*TOTAL DO PEDIDO: R$ ${total.toFixed(2).replace('.', ',')}*\n`;
             message += `------------------------\n\n`;
-            message += "Por favor, me ajude a finalizar a compra e combinar o pagamento e a entrega/retirada. Obrigado!";
-            
+            message += "Por favor, inclua seu ENDEREÇO COMPLETO e me ajude a calcular a taxa de entrega e finalizar a compra. Obrigado!";
+
             // Codifica a mensagem para URL
             const encodedMessage = encodeURIComponent(message);
-            
-            // Cria o link do WhatsApp
-            const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+            // Cria o link do WhatsApp usando o número dinâmico
+            const whatsappLink = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 
             // Abre o link
             window.open(whatsappLink, '_blank');
-            
+
             // Opcional: Limpa o carrinho após o envio
             cartItems = [];
-            renderCart(); 
+            renderCart();
             closeCartModal();
         };
 
-
         window.addEventListener('resize', () => {
-             lucide.createIcons();
+            lucide.createIcons();
         });
-        
     </script>
 </body>
 </html>
