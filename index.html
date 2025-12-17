@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Carregando Loja...</title>
-    <!-- Carrega Tailwind CSS -->
+    <title>Carregando Loja...</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Carrega Google Fonts (Inter e Plus Jakarta Sans para títulos) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-    <!-- Ícones Lucide -->
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <script>
@@ -17,11 +20,22 @@
                 extend: {
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
-                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
                     },
                     colors: {
                         primary: 'var(--color-primary)',
+                        primaryDark: 'var(--color-primary-dark)',
                         secondary: 'var(--color-secondary)',
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.4s ease-out forwards',
+                        'zoom-in': 'zoomIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
+                        slideUp: { from: { opacity: 0, transform: 'translateY(20px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
+                        zoomIn: { from: { opacity: 0, transform: 'scale(0.95)' }, to: { opacity: 1, transform: 'scale(1)' } }
                     }
                 }
             }
@@ -29,297 +43,318 @@
     </script>
 
     <style>
-        /* Variáveis CSS Dinâmicas */
         :root {
-            --color-primary: #2563eb; /* Azul Royal Moderno (Default) */
-            --color-secondary: #0f172a; /* Slate 900 */
+            --color-primary: #2563eb; 
+            --color-primary-dark: #1d4ed8;
+            --color-secondary: #0f172a;
         }
 
         body {
-            background-color: #f8fafc; /* Slate 50 ultra light */
+            background-color: #F8FAFC;
+            color: #334155;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Efeito Glassmorphism no Header */
+        /* Glassmorphism Header */
         .glass-header {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* Scrollbar oculta para categorias */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Animações de Produto */
-        .product-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.15);
-        }
-        
-        .btn-add-cart {
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.3s ease;
-        }
-        .product-card:hover .btn-add-cart {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        /* No mobile, o botão sempre aparece */
-        @media (max-width: 768px) {
-            .btn-add-cart {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Mesh Gradient Hero */
+        .hero-mesh {
+            background-color: var(--color-primary);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255,255,255,0.25) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0,0,0,0.15) 0px, transparent 50%);
         }
 
-        /* Loading Spinner */
-        .loader {
-            border-top-color: var(--color-primary);
-            -webkit-animation: spinner 1.5s linear infinite;
-            animation: spinner 1.5s linear infinite;
-        }
-        @keyframes spinner {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        /* Hide Scrollbar */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Personalização do Banner Hero */
-        .hero-gradient {
-            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-        }
+        /* Custom Scrollbar for Modal Content */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
     </style>
 </head>
-<body class="text-slate-800">
+<body class="flex flex-col min-h-screen">
 
-    <!-- TELA DE LOADING -->
-    <div id="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white z-[9999]">
-        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
-        <p class="text-sm font-semibold text-gray-500 animate-pulse">Preparando a vitrine...</p>
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toastContainer" class="fixed top-24 right-4 z-[100] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- INITIAL LOADER -->
+    <div id="initialLoader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="w-12 h-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
+        <p class="mt-4 text-slate-400 text-sm font-bold uppercase tracking-widest animate-pulse">Carregando Vitrine</p>
     </div>
 
-    <!-- 1. TOP BAR (Barra escura superior para status e avisos) -->
-    <div class="bg-slate-900 text-white text-xs py-2 px-4 relative z-50">
-        <div class="container mx-auto max-w-7xl flex justify-between items-center">
-            <div class="flex items-center space-x-4">
-                <!-- Status da Loja -->
-                <div class="flex items-center space-x-2">
-                    <span id="statusIndicator" class="w-2 h-2 rounded-full bg-gray-500"></span>
-                    <span id="storeStatusTextTop" class="font-medium text-slate-300">Verificando horário...</span>
-                </div>
+    <!-- TOP BAR -->
+    <div class="bg-slate-900 text-slate-300 text-xs py-2">
+        <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <span class="flex h-2 w-2 relative">
+                    <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500" id="statusDot"></span>
+                </span>
+                <span id="storeStatusText" class="font-medium">Carregando status...</span>
             </div>
-            <div class="flex items-center space-x-4">
-                <button onclick="openDeliveryModal()" class="hover:text-white text-slate-300 transition flex items-center">
-                    <i data-lucide="map-pin" class="w-3 h-3 mr-1"></i> Entregas
-                </button>
-                <a id="topBarWhatsapp" href="#" target="_blank" class="hover:text-green-400 text-slate-300 transition flex items-center">
-                    <i data-lucide="phone" class="w-3 h-3 mr-1"></i> Contato
-                </a>
-            </div>
+            <a href="#" id="topWaLink" target="_blank" class="hover:text-white transition flex items-center gap-1">
+                <i data-lucide="help-circle" class="w-3 h-3"></i> Ajuda
+            </a>
         </div>
     </div>
 
-    <!-- 2. CABEÇALHO PRINCIPAL (Sticky & Glassmorphism) -->
-    <header class="sticky top-0 z-40 glass-header shadow-sm transition-all duration-300">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
-            <div class="flex justify-between items-center h-20">
-                
-                <!-- Logo e Nome -->
-                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white shadow-lg mr-3">
-                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-display font-bold text-2xl tracking-tight leading-none text-slate-900">
-                            <span id="storeNameHeader">Shop</span><span class="text-primary" id="storeNameSecondary">Wave</span>
-                        </h1>
-                    </div>
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 glass-header transition-all duration-300">
+        <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-20 flex items-center justify-between gap-6">
+            
+            <!-- Logo -->
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-blue-400 text-white rounded-xl shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <i data-lucide="store" class="w-5 h-5"></i>
                 </div>
+                <h1 class="font-display font-bold text-2xl text-slate-900 leading-none">
+                    <span id="storeNameMain">Shop</span><span class="text-primary" id="storeNameSub">Wave</span>
+                </h1>
+            </div>
 
-                <!-- Barra de Pesquisa (Desktop) -->
-                <div class="hidden md:flex flex-1 max-w-xl mx-8">
-                    <div class="relative w-full group">
-                        <input type="text" id="searchInput" oninput="renderProductList()" 
-                            placeholder="O que você procura hoje?" 
-                            class="w-full pl-12 pr-4 py-3 bg-slate-100 border-none rounded-full text-sm focus:ring-2 focus:ring-primary/20 focus:bg-white transition-all duration-300 placeholder-slate-400 text-slate-700">
-                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
-                            <i data-lucide="search" class="w-5 h-5"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ações (Carrinho) -->
-                <div class="flex items-center space-x-2">
-                    <button id="cartButton" onclick="openCartModal()" class="group relative p-3 rounded-full hover:bg-slate-100 transition duration-200">
-                        <i data-lucide="shopping-cart" class="w-6 h-6 text-slate-700 group-hover:text-primary transition-colors"></i>
-                        <span id="cartCount" class="absolute top-1 right-1 h-5 w-5 bg-primary text-white text-[10px] font-bold flex items-center justify-center rounded-full border-2 border-white shadow-sm transform scale-0 transition-transform duration-200">0</span>
-                    </button>
+            <!-- Search (Desktop) -->
+            <div class="hidden md:block flex-1 max-w-lg">
+                <div class="relative group">
+                    <input type="text" id="searchInput" oninput="renderCatalog()" 
+                        placeholder="Buscar produtos..." 
+                        class="w-full bg-slate-100 border-none rounded-full py-2.5 pl-12 pr-4 text-sm text-slate-800 focus:bg-white focus:ring-2 focus:ring-primary/20 transition-all shadow-sm">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-primary"></i>
                 </div>
             </div>
 
-            <!-- Barra de Pesquisa (Mobile - Aparece abaixo) -->
-            <div class="md:hidden pb-4">
-                <div class="relative">
-                    <input type="text" id="searchInputMobile" oninput="document.getElementById('searchInput').value = this.value; renderProductList();" 
-                        placeholder="Buscar produtos..." 
-                        class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 transition-all">
-                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400">
-                        <i data-lucide="search" class="w-4 h-4"></i>
-                    </div>
-                </div>
+            <!-- Cart Trigger -->
+            <button onclick="openCartModal()" class="relative p-2.5 rounded-full hover:bg-slate-100 transition group">
+                <i data-lucide="shopping-bag" class="w-6 h-6 text-slate-700 group-hover:text-primary transition-colors"></i>
+                <span id="cartBadge" class="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+            </button>
+        </div>
+        
+        <!-- Mobile Search -->
+        <div class="md:hidden px-4 pb-4">
+            <div class="relative">
+                <input type="text" id="searchInputMobile" oninput="document.getElementById('searchInput').value = this.value; renderCatalog();"
+                    placeholder="O que você procura?" 
+                    class="w-full bg-slate-100 border-none rounded-xl py-3 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
             </div>
         </div>
     </header>
 
-    <div id="app" class="hidden">
+    <!-- MAIN APP -->
+    <main id="app" class="flex-grow container mx-auto px-4 lg:px-8 max-w-7xl pt-6 hidden opacity-0 transition-opacity duration-700">
         
-        <!-- 3. HERO SECTION (Banner de Boas-vindas) -->
-        <section class="relative mb-8 pt-6 sm:pt-10">
-            <div class="container mx-auto px-4 max-w-7xl">
-                <div class="rounded-3xl hero-gradient p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
-                    <!-- Elementos decorativos de fundo -->
-                    <div class="absolute top-0 right-0 -mr-20 -mt-20 w-64 h-64 rounded-full bg-white opacity-10 blur-3xl"></div>
-                    <div class="absolute bottom-0 left-0 -ml-10 -mb-10 w-40 h-40 rounded-full bg-black opacity-10 blur-2xl"></div>
+        <!-- HERO BANNER (TEXTO DINÂMICO) -->
+        <section class="relative rounded-3xl overflow-hidden shadow-2xl mb-10 min-h-[260px] md:min-h-[320px] flex items-center hero-mesh">
+            <div class="relative z-10 p-8 md:p-16 text-white max-w-2xl">
+                <span id="heroTag" class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-xs font-bold uppercase tracking-wider mb-4">
+                    Bem-vindo
+                </span>
+                <h2 id="heroTitle" class="font-display font-extrabold text-3xl md:text-5xl mb-6 leading-tight">
+                    Encontre o que você ama.
+                </h2>
+                <button onclick="scrollToCatalog()" class="bg-white text-primary hover:bg-slate-50 font-bold py-3.5 px-8 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all inline-flex items-center gap-2">
+                    Ver Catálogo <i data-lucide="arrow-down" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <!-- Decorative Pattern -->
+            <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+        </section>
 
-                    <div class="relative z-10 max-w-2xl">
-                        <span id="heroStatusBadge" class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-sm text-xs font-bold mb-4 border border-white/10">
-                            Loja Online
-                        </span>
-                        <h2 class="font-display text-3xl sm:text-5xl font-bold mb-4 leading-tight">
-                            Encontre os melhores produtos aqui.
-                        </h2>
-                        <p class="text-white/90 text-lg mb-8 font-light max-w-lg">
-                            Explore nossa seleção exclusiva e receba no conforto da sua casa.
-                        </p>
-                        <button onclick="scrollToCatalog()" class="bg-white text-slate-900 hover:bg-slate-50 font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 inline-flex items-center">
-                            Ver Catálogo <i data-lucide="arrow-down" class="w-4 h-4 ml-2"></i>
-                        </button>
+        <!-- CATEGORY TABS -->
+        <nav class="sticky top-[80px] md:top-[88px] z-30 mb-8 -mx-4 px-4 md:mx-0 md:px-0">
+            <div class="absolute inset-0 bg-white/80 backdrop-blur-lg border-y border-slate-100/50 -z-10 md:rounded-xl md:border md:shadow-sm"></div>
+            <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-3 px-1">
+                <!-- Buttons injected via JS -->
+            </div>
+        </nav>
+
+        <!-- CATALOG CONTAINER -->
+        <div id="catalogContainer" class="pb-20 min-h-[50vh] space-y-12">
+            <!-- Content injected via JS -->
+            
+            <!-- Skeleton State -->
+            <div id="catalogSkeleton" class="space-y-8">
+                <div>
+                    <div class="h-8 w-48 bg-slate-200 rounded mb-4 animate-pulse"></div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="h-64 bg-slate-100 rounded-xl animate-pulse"></div>
+                        <div class="h-64 bg-slate-100 rounded-xl animate-pulse"></div>
+                        <div class="h-64 bg-slate-100 rounded-xl animate-pulse hidden md:block"></div>
+                        <div class="h-64 bg-slate-100 rounded-xl animate-pulse hidden md:block"></div>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- 4. NAVEGAÇÃO DE CATEGORIAS -->
-        <section class="mb-8 sticky top-20 z-30 bg-white/0 backdrop-blur-none pointer-events-none"> 
-            <!-- Wrapper para centralizar e dar pointer-events auto nos botões -->
-            <div class="container mx-auto px-4 max-w-7xl pointer-events-auto">
-                <div id="categoryCardContainer" class="flex space-x-2 overflow-x-auto whitespace-nowrap py-4 no-scrollbar">
-                    <!-- Injetado via JS -->
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center">
+                <div class="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-300">
+                    <i data-lucide="search-x" class="w-10 h-10"></i>
                 </div>
+                <h3 class="font-display text-xl font-bold text-slate-900">Nenhum produto encontrado</h3>
+                <p class="text-slate-500 mt-2">Tente buscar por outro termo.</p>
+                <button onclick="resetFilters()" class="mt-6 text-primary font-bold hover:underline">Limpar Filtros</button>
             </div>
-        </section>
+        </div>
 
-        <!-- 5. CATÁLOGO DE PRODUTOS -->
-        <main id="productCatalog" class="container mx-auto px-4 max-w-7xl pb-20 min-h-screen">
-            <div class="flex items-end justify-between mb-8">
-                <h2 id="mainCatalogTitle" class="font-display text-2xl font-bold text-slate-900">Destaques</h2>
-                <span class="text-sm text-slate-500 hidden sm:block">Mostrando seleção de produtos</span>
+    </main>
+
+    <!-- FOOTER (LIMPO & DINÂMICO) -->
+    <footer class="bg-white border-t border-slate-200 py-12 mt-auto">
+        <div class="container mx-auto px-4 max-w-7xl text-center md:text-left flex flex-col md:flex-row justify-between gap-8">
+            <div class="max-w-md mx-auto md:mx-0">
+                <h5 class="font-display font-bold text-xl text-slate-900 mb-4" id="footerStoreName">ShopWave</h5>
+                <p id="footerDescription" class="text-slate-500 text-sm leading-relaxed">
+                    Sua loja online favorita. Qualidade e confiança em cada entrega.
+                </p>
             </div>
-
-            <div id="categorizedProductContainer" class="space-y-16">
-                <!-- Conteúdo injetado via JS -->
-            </div>
-
-            <!-- Estado Vazio -->
-            <div id="noResults" class="hidden flex flex-col items-center justify-center py-20 text-center">
-                <div class="bg-slate-100 p-6 rounded-full mb-4">
-                    <i data-lucide="search-x" class="w-10 h-10 text-slate-400"></i>
-                </div>
-                <h3 class="text-lg font-bold text-slate-700">Nenhum produto encontrado</h3>
-                <p class="text-slate-500 mt-2 max-w-xs mx-auto">Tente buscar por outros termos ou verifique a categoria selecionada.</p>
-                <button onclick="filterByCategory(null)" class="mt-6 text-primary font-semibold hover:underline">Limpar filtros</button>
-            </div>
-        </main>
-
-    </div> <!-- Fim #app -->
-
-    <!-- --- MODAIS (Design Refinado) --- -->
-
-    <!-- Modal Detalhes -->
-    <div id="detailsModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeDetailsModal()"></div>
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl h-auto max-h-[90vh] overflow-y-auto relative z-10 flex flex-col md:flex-row overflow-hidden animate-fade-in-up">
             
-            <button onclick="closeDetailsModal()" class="absolute top-4 right-4 z-20 bg-white/80 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm transition">
-                <i data-lucide="x" class="w-5 h-5 text-slate-600"></i>
-            </button>
+            <div class="flex flex-col md:flex-row gap-8 justify-center md:justify-end">
+                <div>
+                    <h5 class="font-bold text-slate-900 mb-4">Atendimento</h5>
+                    <ul class="space-y-2 text-sm text-slate-500">
+                        <li><a href="#" onclick="openDeliveryModal()" class="hover:text-primary transition">Taxas de Entrega</a></li>
+                        <li><a href="#" id="footerWaLink" target="_blank" class="hover:text-primary transition">Falar no WhatsApp</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-            <div id="modalContent" class="w-full h-full flex flex-col md:flex-row">
-                <!-- Conteúdo JS -->
+    <!-- MODAL: PRODUCT DETAILS (NO-SCROLL LAYOUT) -->
+    <div id="modalDetails" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" onclick="closeModalDetails()"></div>
+        
+        <div class="absolute inset-0 flex items-center justify-center p-2 md:p-4 pointer-events-none">
+            <div class="bg-white rounded-2xl md:rounded-3xl w-full max-w-4xl h-auto max-h-[90vh] md:h-[600px] overflow-hidden shadow-2xl flex flex-col md:flex-row pointer-events-auto relative animate-slide-up">
+                
+                <!-- Close Button -->
+                <button onclick="closeModalDetails()" class="absolute top-3 right-3 z-20 bg-white/90 p-1.5 rounded-full hover:bg-slate-100 transition shadow-sm text-slate-500 border border-slate-100">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Left Column: Gallery (Com Zoom) -->
+                <div class="w-full h-48 md:h-full md:w-5/12 bg-slate-50 p-4 flex items-center justify-center relative flex-shrink-0 group overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none z-10">
+                         <span class="bg-black/50 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm"><i data-lucide="zoom-in" class="w-4 h-4 inline mr-1"></i> Ampliar</span>
+                    </div>
+                    <!-- Imagem Clicável -->
+                    <img id="detailImg" src="" 
+                         class="max-w-full max-h-full object-contain mix-blend-multiply drop-shadow-lg transition-transform duration-300 cursor-zoom-in hover:scale-105"
+                         onclick="openLightbox(this.src)">
+                </div>
+
+                <!-- Right Column: Info -->
+                <div class="w-full md:w-7/12 flex flex-col h-full bg-white relative">
+                    
+                    <!-- Fixed Header -->
+                    <div class="p-5 md:p-6 pb-2 md:pb-4 flex-shrink-0">
+                        <div class="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+                            <span>Loja</span>
+                            <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                            <span id="detailCat" class="text-primary truncate">Categoria</span>
+                        </div>
+                        <h2 id="detailName" class="font-display text-xl md:text-2xl font-bold text-slate-900 mb-2 leading-tight line-clamp-2">Nome do Produto</h2>
+                        
+                        <div class="flex items-baseline gap-3">
+                            <span id="detailPrice" class="text-2xl md:text-3xl font-display font-bold text-slate-900 tracking-tight">R$ 0,00</span>
+                            <span id="detailOldPrice" class="text-sm text-slate-400 line-through decoration-slate-400 decoration-2"></span>
+                            <span id="detailBadge" class="hidden bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Oferta</span>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Body -->
+                    <div class="flex-1 overflow-y-auto px-5 md:px-6 py-2 custom-scrollbar">
+                        <div id="colorsWrapper" class="hidden mb-4">
+                            <span class="block text-xs font-bold text-slate-900 uppercase mb-2">Variações</span>
+                            <div id="detailColorsContainer" class="flex flex-wrap gap-2"></div>
+                        </div>
+
+                        <div class="prose prose-sm text-slate-600">
+                            <h4 class="text-xs font-bold text-slate-900 mb-1 uppercase text-slate-400">Sobre</h4>
+                            <p id="detailDesc" class="leading-relaxed text-sm">Descrição...</p>
+                        </div>
+                    </div>
+
+                    <!-- Fixed Footer -->
+                    <div class="p-5 md:p-6 pt-3 md:pt-4 bg-white border-t border-slate-50 shadow-[0_-4px_10px_rgba(0,0,0,0.02)] flex-shrink-0 z-10">
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center bg-slate-100 rounded-xl h-12 px-1 shadow-inner flex-shrink-0">
+                                <button onclick="adjustDetailQty(-1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                                <span id="detailQtyDisplay" class="w-6 text-center font-bold text-base text-slate-900">1</span>
+                                <button onclick="adjustDetailQty(1)" class="w-9 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 transition"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                            </div>
+                            <button id="detailAddBtn" class="flex-1 bg-slate-900 hover:bg-primary text-white font-bold h-12 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 text-base group">
+                                <span class="group-hover:hidden">Adicionar</span>
+                                <span class="hidden group-hover:inline">Comprar Agora</span>
+                                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Carrinho -->
-    <div id="cartModal" class="fixed inset-0 z-[60] flex justify-end hidden">
+    <!-- LIGHTBOX (FULL SCREEN IMAGE) -->
+    <div id="imageLightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex items-center justify-center cursor-zoom-out opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
+        <img id="lightboxImg" src="" class="max-w-[95vw] max-h-[95vh] object-contain p-4 transition-transform duration-300 scale-95 shadow-2xl">
+        <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-full transition backdrop-blur-md">
+            <i data-lucide="x" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <!-- MODAL: CART -->
+    <div id="modalCart" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="closeCartModal()"></div>
-        <div class="bg-white w-full max-w-md h-full relative z-10 shadow-2xl flex flex-col animate-slide-in-right">
+        <div id="cartDrawer" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-full">
             
-            <!-- Header do Carrinho -->
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
-                <h3 class="font-display text-xl font-bold text-slate-900 flex items-center">
-                    <i data-lucide="shopping-bag" class="w-5 h-5 mr-2 text-primary"></i> Seu Pedido
+            <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-white z-10">
+                <h3 class="font-display text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 text-primary"></i> Sua Sacola
                 </h3>
-                <button onclick="closeCartModal()" class="text-slate-400 hover:text-slate-600">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <button onclick="closeCartModal()" class="text-slate-400 hover:text-slate-600 p-2"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
 
-            <!-- Lista de Itens -->
-            <div id="cartItemsList" class="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50">
-                <!-- Itens -->
+            <div id="cartList" class="flex-1 overflow-y-auto p-5 space-y-4 bg-slate-50/50">
+                <!-- Cart Items -->
             </div>
 
-            <!-- Footer do Carrinho -->
-            <div class="p-6 bg-white border-t border-slate-100 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
-                <div id="cartSummary" class="flex justify-between items-end mb-6">
-                    <span class="text-slate-500 text-sm font-medium">Total estimado</span>
+            <div class="p-6 bg-white border-t border-slate-100 shadow-[0_-5px_20px_rgba(0,0,0,0.05)] z-10">
+                <div class="flex justify-between items-end mb-4">
+                    <span class="text-slate-500 font-medium">Subtotal</span>
                     <span id="cartTotal" class="font-display text-2xl font-bold text-slate-900">R$ 0,00</span>
                 </div>
-                
-                <p id="emptyCartMessage" class="hidden text-center text-slate-500 text-sm mb-4">Carrinho vazio.</p>
-
-                <button onclick="checkoutToWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-xl text-lg transition duration-200 flex items-center justify-center shadow-lg shadow-green-200 transform active:scale-95">
-                    <i data-lucide="message-circle" class="w-6 h-6 mr-2"></i> Finalizar no WhatsApp
+                <div id="cartEmptyMsg" class="hidden text-center text-slate-400 text-sm mb-4">Sacola vazia.</div>
+                <button onclick="checkoutWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-4 rounded-xl shadow-lg shadow-green-200 hover:shadow-green-300 hover:-translate-y-1 transition flex items-center justify-center gap-2 text-lg">
+                    <i data-lucide="message-circle" class="w-6 h-6"></i> Finalizar Pedido
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Entrega -->
-    <div id="deliveryModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="closeDeliveryModal()"></div>
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 relative z-10">
+    <!-- MODAL: DELIVERY INFO -->
+    <div id="modalDelivery" class="fixed inset-0 z-[60] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="document.getElementById('modalDelivery').classList.add('hidden')"></div>
+        <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm relative z-10 p-6 animate-slide-up">
             <div class="flex justify-between items-center mb-6">
-                <h3 class="font-display text-xl font-bold text-slate-900">Taxas de Entrega</h3>
-                <button onclick="closeDeliveryModal()"><i data-lucide="x" class="text-slate-400 w-6 h-6"></i></button>
+                <h3 class="font-display text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-5 h-5 text-primary"></i> Áreas de Entrega
+                </h3>
+                <button onclick="document.getElementById('modalDelivery').classList.add('hidden')"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
             </div>
-            <div id="deliveryAreasContent" class="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar"></div>
-            <div class="mt-6 pt-4 border-t border-slate-100 text-center">
-                <p class="text-xs text-slate-400">Taxas sujeitas a alteração. Confirme no WhatsApp.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Alerta -->
-    <div id="alertModal" class="fixed inset-0 z-[70] flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center transform transition-all scale-100">
-            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i data-lucide="info" class="w-6 h-6 text-primary"></i>
-            </div>
-            <h3 class="text-lg font-bold mb-2 text-slate-900" id="alertModalTitle">Aviso</h3>
-            <p id="alertMessage" class="mb-6 text-slate-600 text-sm"></p>
-            <button onclick="closeAlertModal()" class="w-full bg-slate-900 text-white font-medium py-2.5 rounded-lg hover:bg-slate-800 transition">Entendi</button>
+            <div id="deliveryList" class="space-y-2 max-h-[50vh] overflow-y-auto custom-scrollbar"></div>
+            <p class="text-xs text-center text-slate-400 mt-4 border-t pt-4">Consulte taxas exatas no WhatsApp.</p>
         </div>
     </div>
 
@@ -328,474 +363,277 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONSTANTES & ESTADO ---
-        const STORE_CONFIG_DOC_PATH = 'config/store';
-        const EXTERNAL_FIREBASE_CONFIG = {
+        const APP_ID = "1:730003067834:web:b205f1ea59053345960383";
+        const FIREBASE_CONFIG = {
             apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q",
             authDomain: "meuestoque-1badc.firebaseapp.com",
             projectId: "meuestoque-1badc",
             storageBucket: "meuestoque-1badc.firebasestorage.app",
             messagingSenderId: "730003067834",
-            appId: "1:730003067834:web:b205f1ea59053345960383"
+            appId: APP_ID
         };
-        const appId = EXTERNAL_FIREBASE_CONFIG.appId;
 
-        let app, db, auth;
-        let allProducts = [];
-        let uniqueCategories = [];
-        let currentCategoryFilter = null;
-        let cartItems = [];
-        let storeConfig = {};
-        let isStoreOpen = true;
-        let whatsappNumber = "5511999999999";
+        let db, allProducts=[], categories=[], cart=[], currentFilter=null, whatsappNumber="5511999999999", storeOpen=true;
+        let currentDetailId=null, currentDetailQty=1;
 
-        // --- INICIALIZAÇÃO ---
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
-            try {
-                app = initializeApp(EXTERNAL_FIREBASE_CONFIG);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                await signInAnonymously(auth);
-
-                onAuthStateChanged(auth, (user) => {
-                    document.getElementById('loading').classList.add('hidden');
-                    document.getElementById('app').classList.remove('hidden');
-                    
-                    setupConfigListener();
-                    setupProductListener();
-                    renderCart();
-                });
-            } catch (error) {
-                console.error("Erro init:", error);
-                document.getElementById('loading').innerHTML = `<p class="text-red-500">Erro ao carregar.</p>`;
-            }
+            const app = initializeApp(FIREBASE_CONFIG);
+            db = getFirestore(app);
+            const auth = getAuth(app);
+            signInAnonymously(auth).catch(console.error);
+            onAuthStateChanged(auth, () => {
+                const l = document.getElementById('initialLoader');
+                l.style.opacity = '0';
+                setTimeout(() => { l.classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); document.getElementById('app').classList.remove('opacity-0'); }, 500);
+                setupDataListeners();
+            });
         });
 
-        // --- LISTENERS ---
-        function setupConfigListener() {
-            const configRef = doc(db, `artifacts/${appId}/public/data/${STORE_CONFIG_DOC_PATH}`);
-            onSnapshot(configRef, (docSnap) => {
-                if (docSnap.exists()) {
-                    storeConfig = docSnap.data();
-                    updateStoreUI(storeConfig);
-                }
+        function setupDataListeners() {
+            onSnapshot(doc(db, `artifacts/${APP_ID}/public/data/config/store`), s => { if(s.exists()) applyStoreConfig(s.data()); });
+            onSnapshot(collection(db, `artifacts/${APP_ID}/public/data/products`), s => {
+                const r = s.docs.map(d => ({id: d.id, ...d.data()}));
+                allProducts = r.filter(p => p.status === 'active' && p.stock > 0);
+                allProducts.sort((a,b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0) || a.name.localeCompare(b.name));
+                const cs = new Set(allProducts.map(p => p.category).filter(Boolean));
+                categories = Array.from(cs).sort();
+                renderCategoryTabs();
+                renderCatalog();
             });
         }
 
-        function setupProductListener() {
-            const productsRef = collection(db, `artifacts/${appId}/public/data/products`);
-            onSnapshot(productsRef, (snapshot) => {
-                const raw = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-                allProducts = raw.filter(p => p.status === 'active' && p.stock > 0);
-                
-                // Sort: Destaques primeiro, depois recentes
-                allProducts.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0) || (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+        function applyStoreConfig(data) {
+            whatsappNumber = (data.whatsappNumber || "").replace(/\D/g, "") || "5511999999999";
+            
+            // Textos Dinâmicos (Header & Footer)
+            document.getElementById('heroTitle').textContent = data.heroHeadline || "Qualidade premium ao seu alcance.";
+            document.getElementById('heroTag').textContent = data.heroTag || "Bem-vindo";
+            document.getElementById('footerDescription').textContent = data.footerText || "Sua loja online favorita. Qualidade e confiança em cada entrega.";
 
-                const categoriesSet = new Set(allProducts.map(p => p.category).filter(Boolean));
-                uniqueCategories = Array.from(categoriesSet).sort();
-
-                renderCategoryCards();
-                renderProductList();
-            });
-        }
-
-        // --- UI UPDATES (DESIGN) ---
-        function updateStoreUI(config) {
-            // 1. Cores
-            const root = document.documentElement;
-            if (config.primaryColor) root.style.setProperty('--color-primary', config.primaryColor);
-            if (config.secondaryColor) root.style.setProperty('--color-secondary', config.secondaryColor);
-
-            // 2. Textos
-            const name = config.storeName || "ShopWave";
+            if (data.primaryColor) {
+                document.documentElement.style.setProperty('--color-primary', data.primaryColor);
+                document.documentElement.style.setProperty('--color-primary-dark', data.primaryColor);
+            }
+            const name = data.storeName || "ShopWave";
             const parts = name.split(' ');
-            document.getElementById('storeNameHeader').textContent = parts[0];
-            document.getElementById('storeNameSecondary').textContent = parts.slice(1).join(' ');
-            document.title = name;
-
-            // 3. WhatsApp
-            if (config.whatsappNumber) whatsappNumber = config.whatsappNumber.replace(/\D/g, '');
-            document.getElementById('topBarWhatsapp').href = `https://wa.me/${whatsappNumber}`;
-
-            // 4. Status (Lógica de Horário)
-            checkStoreStatus(config.operatingHours, config.isStoreOpen);
-
-            // 5. Entregas
-            renderDeliveryAreas(config.deliveryAreas || []);
-        }
-
-        function checkStoreStatus(hours, manualOpen) {
-            // Lógica simplificada de horário
-            const now = new Date();
-            const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-            const todayKey = days[now.getDay()];
-            let isOpen = true;
-            let statusText = "Aberto agora";
-
-            if (manualOpen === false) {
-                isOpen = false;
-                statusText = "Fechado temporariamente";
-            } else if (hours && hours[todayKey]) {
-                const sched = hours[todayKey];
-                if (!sched.isActive) {
-                    isOpen = false;
-                    statusText = "Fechado hoje";
-                } else {
-                    const currentMins = now.getHours() * 60 + now.getMinutes();
-                    const startMins = timeToMins(sched.startTime);
-                    const endMins = timeToMins(sched.endTime);
-                    
-                    // Lógica para horário noturno (ex: 18:00 as 02:00)
-                    const isOvernight = startMins > endMins;
-                    
-                    if (isOvernight) {
-                         if (currentMins < startMins && currentMins >= endMins) isOpen = false;
-                    } else {
-                         if (currentMins < startMins || currentMins >= endMins) isOpen = false;
-                    }
-                    
-                    if (!isOpen) statusText = `Fechado. Abre às ${sched.startTime}`;
-                }
-            }
-
-            isStoreOpen = isOpen;
-            const indicator = document.getElementById('statusIndicator');
-            const textTop = document.getElementById('storeStatusTextTop');
-            const heroBadge = document.getElementById('heroStatusBadge');
-
-            if (isOpen) {
-                indicator.className = "w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)] animate-pulse";
-                textTop.textContent = "Loja Aberta";
-                textTop.classList.add("text-green-400");
-                textTop.classList.remove("text-red-400");
-                if(heroBadge) {
-                     heroBadge.textContent = "Loja Aberta Agora";
-                     heroBadge.className = "inline-block py-1 px-3 rounded-full bg-green-500/20 text-green-100 border border-green-400/30 backdrop-blur-md text-xs font-bold mb-4";
-                }
+            document.getElementById('storeNameMain').textContent = parts[0];
+            document.getElementById('storeNameSub').textContent = parts.slice(1).join(' ') || '';
+            document.getElementById('footerStoreName').textContent = name;
+            
+            document.getElementById('topWaLink').href = `https://wa.me/${whatsappNumber}`;
+            document.getElementById('footerWaLink').href = `https://wa.me/${whatsappNumber}`;
+            
+            storeOpen = checkStoreStatus(data.operatingHours, data.isStoreOpen);
+            
+            const stTxt = document.getElementById('storeStatusText');
+            const stDot = document.getElementById('statusDot');
+            const stPing = document.getElementById('statusPing');
+            if (storeOpen) {
+                stTxt.textContent = "Loja Aberta Agora"; stTxt.className = "font-medium text-green-400";
+                stDot.className = "relative inline-flex rounded-full h-2 w-2 bg-green-500";
+                stPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75";
             } else {
-                indicator.className = "w-2 h-2 rounded-full bg-red-500";
-                textTop.textContent = statusText;
-                textTop.classList.add("text-red-400");
-                textTop.classList.remove("text-green-400");
-                 if(heroBadge) {
-                     heroBadge.textContent = "Loja Fechada";
-                     heroBadge.className = "inline-block py-1 px-3 rounded-full bg-red-500/20 text-red-100 border border-red-400/30 backdrop-blur-md text-xs font-bold mb-4";
-                }
+                stTxt.textContent = "Loja Fechada"; stTxt.className = "font-medium text-red-400";
+                stDot.className = "relative inline-flex rounded-full h-2 w-2 bg-red-500";
+                stPing.className = "hidden";
             }
+            renderDeliveryList(data.deliveryAreas || []);
         }
 
-        function timeToMins(t) {
-            if(!t) return 0;
-            const [h, m] = t.split(':').map(Number);
-            return h * 60 + m;
+        function checkStoreStatus(h, m) {
+            if (m === false) return false;
+            if (!h) return true;
+            const now = new Date();
+            const d = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+            const t = h[d[now.getDay()]];
+            if (!t || !t.isActive) return false;
+            const cur = now.getHours()*60 + now.getMinutes();
+            const [sh,sm] = t.startTime.split(':').map(Number);
+            const [eh,em] = t.endTime.split(':').map(Number);
+            const s = sh*60 + sm;
+            const e = eh*60 + em;
+            return s > e ? (cur >= s || cur < e) : (cur >= s && cur < e);
         }
 
-        // --- RENDERIZAÇÃO ---
-        window.renderCategoryCards = () => {
-            const container = document.getElementById('categoryCardContainer');
-            container.innerHTML = '';
-
-            // Helper para criar botões
-            const createBtn = (label, value, icon = null) => {
-                const isActive = currentCategoryFilter === value;
-                const btn = document.createElement('button');
-                // Estilo "Pill" moderno
-                btn.className = `
-                    px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 flex items-center whitespace-nowrap border
-                    ${isActive 
-                        ? 'bg-primary text-white border-primary shadow-lg shadow-primary/30 transform scale-105' 
-                        : 'bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary hover:bg-slate-50 shadow-sm'}
-                `;
-                btn.innerHTML = icon ? `${icon} <span class="ml-2">${label}</span>` : label;
-                btn.onclick = () => filterByCategory(value);
-                return btn;
+        function renderCategoryTabs() {
+            const c = document.getElementById('categoryContainer');
+            c.innerHTML = '';
+            const mkBtn = (id, l, i) => {
+                const act = currentFilter === id;
+                const b = document.createElement('button');
+                b.className = `px-5 py-2.5 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-300 flex items-center gap-2 border ${act ? 'bg-slate-900 text-white border-slate-900 shadow-md transform scale-105' : 'bg-white text-slate-600 border-slate-200 hover:border-primary hover:text-primary hover:bg-slate-50'}`;
+                b.innerHTML = i ? `${i} ${l}` : l;
+                b.onclick = () => { currentFilter = id; renderCategoryTabs(); renderCatalog(); };
+                return b;
             };
-
-            container.appendChild(createBtn('Ofertas', 'offers', '<i data-lucide="flame" class="w-4 h-4"></i>'));
-            container.appendChild(createBtn('Todos', null));
-            uniqueCategories.forEach(cat => container.appendChild(createBtn(cat, cat)));
+            c.appendChild(mkBtn('offers', 'Ofertas', '<i data-lucide="flame" class="w-4 h-4 text-orange-500"></i>'));
+            c.appendChild(mkBtn(null, 'Ver Todos'));
+            categories.forEach(cat => c.appendChild(mkBtn(cat, cat)));
             lucide.createIcons();
-        };
-
-        window.renderProductList = () => {
-            const container = document.getElementById('categorizedProductContainer');
-            const searchVal = document.getElementById('searchInput').value.toLowerCase();
-            container.innerHTML = '';
-
-            // Filtragem
-            let filtered = allProducts.filter(p => {
-                const matchSearch = p.name.toLowerCase().includes(searchVal) || (p.category||'').toLowerCase().includes(searchVal);
-                let matchCat = true;
-                if (currentCategoryFilter === 'offers') matchCat = (p.promoValue && p.promoValue < p.value);
-                else if (currentCategoryFilter) matchCat = p.category === currentCategoryFilter;
-                return matchSearch && matchCat;
-            });
-
-            if (filtered.length === 0) {
-                document.getElementById('noResults').classList.remove('hidden');
-                return;
-            }
-            document.getElementById('noResults').classList.add('hidden');
-
-            // Atualiza título
-            const titleEl = document.getElementById('mainCatalogTitle');
-            if (currentCategoryFilter === 'offers') titleEl.textContent = '🔥 Ofertas Imperdíveis';
-            else if (currentCategoryFilter) titleEl.textContent = currentCategoryFilter;
-            else if (searchVal) titleEl.textContent = `Resultados para "${searchVal}"`;
-            else titleEl.textContent = 'Catálogo Completo';
-
-            // Agrupamento
-            const grouped = filtered.reduce((acc, p) => {
-                const cat = currentCategoryFilter ? 'Resultados' : (p.category || 'Outros');
-                if(!acc[cat]) acc[cat] = [];
-                acc[cat].push(p);
-                return acc;
-            }, {});
-
-            Object.keys(grouped).sort().forEach(catName => {
-                const section = document.createElement('div');
-                section.className = "animate-fade-in"; // Animação simples
-                
-                if (!currentCategoryFilter && !searchVal) {
-                    const header = document.createElement('div');
-                    header.className = "flex items-center mb-6";
-                    header.innerHTML = `
-                        <h3 class="text-xl font-display font-bold text-slate-800 capitalize">${catName}</h3>
-                        <div class="h-px bg-slate-200 flex-grow ml-4"></div>
-                    `;
-                    section.appendChild(header);
-                }
-
-                const grid = document.createElement('div');
-                grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6";
-                
-                grouped[catName].forEach(product => {
-                    grid.appendChild(createProductCard(product));
-                });
-
-                section.appendChild(grid);
-                container.appendChild(section);
-            });
-            lucide.createIcons();
-        };
-
-        function createProductCard(product) {
-            const isPromo = product.promoValue && product.promoValue < product.value;
-            const price = isPromo ? product.promoValue : product.value;
-            const img = (product.images && product.images[0]) || 'https://placehold.co/400x400/f1f5f9/94a3b8?text=Sem+Foto';
-
-            const div = document.createElement('div');
-            // Design do Card: Rounded maior, Overflow Hidden, Fundo Branco
-            div.className = "product-card bg-white rounded-2xl border border-slate-100 shadow-sm relative group overflow-hidden flex flex-col h-full cursor-pointer";
-            div.onclick = () => openDetailsModal(product.id);
-
-            div.innerHTML = `
-                <div class="aspect-square relative overflow-hidden bg-slate-50">
-                    <img src="${img}" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" loading="lazy">
-                    ${product.isFeatured ? '<span class="absolute top-2 left-2 bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md flex items-center gap-1"><i data-lucide="star" class="w-3 h-3"></i> TOP</span>' : ''}
-                    ${isPromo ? `<span class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-md">-${Math.round((1 - product.promoValue/product.value)*100)}%</span>` : ''}
-                </div>
-                
-                <div class="p-4 flex flex-col flex-grow">
-                    <div class="mb-1">
-                        <span class="text-[10px] uppercase tracking-wider font-semibold text-slate-400">${product.category || 'Geral'}</span>
-                    </div>
-                    <h4 class="text-sm font-semibold text-slate-800 leading-snug mb-2 line-clamp-2 min-h-[2.5em]">${product.name}</h4>
-                    
-                    <div class="mt-auto pt-2 flex items-end justify-between">
-                        <div>
-                            ${isPromo ? `<p class="text-[10px] text-slate-400 line-through">R$ ${product.value.toFixed(2).replace('.',',')}</p>` : '<p class="h-4"></p>'}
-                            <p class="text-lg font-bold text-slate-900">R$ ${price.toFixed(2).replace('.',',')}</p>
-                        </div>
-                        <button onclick="addToCartById('${product.id}', 1); event.stopPropagation();" 
-                            class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:bg-slate-900 transition btn-add-cart">
-                            <i data-lucide="plus" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            return div;
         }
 
-        // --- MODAL DETALHES ---
-        window.openDetailsModal = (pid) => {
-            const p = allProducts.find(x => x.id === pid);
-            if(!p) return;
+        window.renderCatalog = () => {
+            const c = document.getElementById('catalogContainer');
+            document.getElementById('catalogSkeleton').classList.add('hidden');
+            const s = (document.getElementById('searchInput').value || document.getElementById('searchInputMobile').value).toLowerCase();
+            let f = allProducts.filter(p => {
+                const mS = p.name.toLowerCase().includes(s) || (p.category||"").toLowerCase().includes(s);
+                let mF = true;
+                if (currentFilter === 'offers') mF = p.promoValue && p.promoValue < p.value;
+                else if (currentFilter) mF = p.category === currentFilter;
+                return mS && mF;
+            });
 
-            const isPromo = p.promoValue && p.promoValue < p.value;
-            const img = (p.images && p.images[0]) || 'https://placehold.co/600x600/f1f5f9/94a3b8?text=Imagem';
-            
-            const html = `
-                <div class="w-full md:w-1/2 bg-slate-50 flex items-center justify-center p-6 relative">
-                    <img src="${img}" class="max-h-[70vh] w-auto object-contain rounded-lg shadow-sm mix-blend-multiply">
-                </div>
-                <div class="w-full md:w-1/2 p-8 md:p-10 flex flex-col h-full overflow-y-auto bg-white">
-                    <span class="text-primary font-semibold text-sm tracking-wide uppercase mb-2">${p.category}</span>
-                    <h2 class="text-3xl font-display font-bold text-slate-900 mb-4 leading-tight">${p.name}</h2>
-                    
-                    <div class="mb-6">
-                        ${isPromo 
-                            ? `<div class="flex items-center gap-3">
-                                 <span class="text-3xl font-bold text-red-600">R$ ${p.promoValue.toFixed(2).replace('.',',')}</span>
-                                 <span class="text-lg text-slate-400 line-through">R$ ${p.value.toFixed(2).replace('.',',')}</span>
-                                 <span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded-full">Oferta</span>
-                               </div>`
-                            : `<span class="text-3xl font-bold text-slate-900">R$ ${p.value.toFixed(2).replace('.',',')}</span>`
-                        }
-                    </div>
-
-                    <div class="prose prose-sm text-slate-600 mb-8">
-                        <p>${p.description || 'Sem descrição.'}</p>
-                    </div>
-
-                    ${(p.colors||[]).length ? `
-                        <div class="mb-4">
-                            <span class="block text-xs font-bold text-slate-900 uppercase mb-2">Cores</span>
-                            <div class="flex gap-2">
-                                ${p.colors.map(c => `<span class="px-3 py-1 bg-slate-100 border border-slate-200 rounded text-xs text-slate-700">${c}</span>`).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    <div class="mt-auto border-t border-slate-100 pt-6">
-                        <button onclick="addToCartById('${p.id}', 1); closeDetailsModal(); openCartModal();" 
-                            class="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/30 hover:shadow-xl hover:-translate-y-1 transition transform flex items-center justify-center">
-                            <i data-lucide="shopping-bag" class="w-5 h-5 mr-2"></i> Adicionar ao Carrinho
-                        </button>
-                    </div>
-                </div>
-            `;
-            document.getElementById('modalContent').innerHTML = html;
-            document.getElementById('detailsModal').classList.remove('hidden');
+            if (f.length === 0) { c.innerHTML = ''; document.getElementById('emptyState').classList.remove('hidden'); return; }
+            document.getElementById('emptyState').classList.add('hidden');
+            c.innerHTML = '';
+            let g = {};
+            if (currentFilter && currentFilter !== 'offers' && !s) { g[currentFilter] = f; } else {
+                f.forEach(p => { const cn = p.category || 'Outros'; if (!g[cn]) g[cn] = []; g[cn].push(p); });
+            }
+            Object.keys(g).sort().forEach(cn => {
+                const sec = document.createElement('section'); sec.className = "animate-fade-in";
+                sec.innerHTML = `<div class="flex items-center mb-6"><div class="bg-primary/10 p-2 rounded-lg mr-3"><i data-lucide="grid" class="w-5 h-5 text-primary"></i></div><h3 class="font-display text-2xl font-bold text-slate-900 capitalize">${cn}</h3><div class="h-px bg-slate-200 flex-grow ml-6 mt-1"></div><span class="text-xs font-bold text-slate-400 uppercase tracking-widest ml-4">${g[cn].length} itens</span></div>`;
+                const gr = document.createElement('div'); gr.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8";
+                g[cn].forEach(p => gr.innerHTML += mkCard(p));
+                sec.appendChild(gr); c.appendChild(sec);
+            });
             lucide.createIcons();
         };
 
-        // --- CARRINHO & OUTROS ---
-        // Funções de carrinho mantidas, apenas UI refinada nos modais HTML acima
-        window.addToCartById = (id, qtd) => {
-            const p = allProducts.find(x => x.id === id);
-            if(p) {
-                const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-                const exists = cartItems.find(x => x.id === id);
-                if(exists) exists.quantity += qtd;
-                else cartItems.push({ 
-                    id: p.id, name: p.name, price: price, quantity: qtd, 
-                    img: (p.images && p.images[0]) 
-                });
-                renderCart();
-                // Feedback visual rápido no botão do carrinho
-                const cartBtn = document.getElementById('cartButton');
-                cartBtn.classList.add('scale-110');
-                setTimeout(()=>cartBtn.classList.remove('scale-110'), 200);
+        function mkCard(p) {
+            const iP = p.promoValue && p.promoValue < p.value;
+            const pr = iP ? p.promoValue : p.value;
+            const im = p.images?.[0] || 'https://placehold.co/400x400/f1f5f9/94a3b8?text=Foto';
+            return `<div class="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 cursor-pointer overflow-hidden flex flex-col h-full relative" onclick="openProductModal('${p.id}')"><div class="aspect-[1/1] relative bg-slate-50 overflow-hidden"><img src="${im}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 mix-blend-multiply" loading="lazy">${iP ? `<span class="absolute top-2 right-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">Oferta</span>` : ''}<button onclick="event.stopPropagation(); addToCart('${p.id}', 1)" class="absolute bottom-3 right-3 w-10 h-10 bg-white text-slate-900 rounded-full shadow-lg flex items-center justify-center translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 md:flex"><i data-lucide="plus" class="w-5 h-5"></i></button></div><div class="p-4 flex flex-col flex-grow"><div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">${p.category}</div><h4 class="text-sm font-semibold text-slate-800 leading-snug mb-2 line-clamp-2 min-h-[2.5em] group-hover:text-primary transition-colors">${p.name}</h4><div class="mt-auto pt-2 border-t border-slate-50">${iP ? `<span class="text-xs text-slate-400 line-through block">R$ ${p.value.toFixed(2).replace('.',',')}</span>` : '<span class="block h-4"></span>'}<div class="text-lg font-extrabold text-slate-900">R$ ${pr.toFixed(2).replace('.',',')}</div></div></div></div>`;
+        }
+
+        window.openProductModal = (id) => {
+            const p = allProducts.find(x => x.id === id); if(!p) return;
+            currentDetailId = id; currentDetailQty = 1;
+            const iP = p.promoValue && p.promoValue < p.value;
+            const pr = iP ? p.promoValue : p.value;
+            const im = p.images?.[0] || 'https://placehold.co/600x600/f1f5f9/94a3b8?text=Sem+Foto';
+            
+            document.getElementById('detailImg').src = im;
+            document.getElementById('detailCat').textContent = p.category;
+            document.getElementById('detailName').textContent = p.name;
+            document.getElementById('detailDesc').textContent = p.description || 'Sem descrição.';
+            document.getElementById('detailPrice').textContent = `R$ ${pr.toFixed(2).replace('.',',')}`;
+            document.getElementById('detailQtyDisplay').textContent = "1";
+            
+            const old = document.getElementById('detailOldPrice');
+            const bdg = document.getElementById('detailBadge');
+            const cur = document.getElementById('detailPrice');
+
+            if (iP) {
+                old.textContent = `R$ ${p.value.toFixed(2).replace('.',',')}`;
+                bdg.classList.remove('hidden'); cur.classList.add('text-red-600');
+            } else {
+                old.textContent = ''; bdg.classList.add('hidden'); cur.classList.remove('text-red-600');
             }
+
+            const cW = document.getElementById('colorsWrapper');
+            const cC = document.getElementById('detailColorsContainer');
+            if (p.colors && p.colors.length) {
+                cW.classList.remove('hidden');
+                cC.innerHTML = p.colors.map(c => `<span class="px-3 py-1 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 bg-slate-50">${c}</span>`).join('');
+            } else { cW.classList.add('hidden'); }
+
+            document.getElementById('detailAddBtn').onclick = () => { addToCart(currentDetailId, currentDetailQty); closeModalDetails(); };
+            document.getElementById('modalDetails').classList.remove('hidden');
         };
 
-        window.renderCart = () => {
-            const list = document.getElementById('cartItemsList');
-            const totalEl = document.getElementById('cartTotal');
-            const countEl = document.getElementById('cartCount');
-            
-            list.innerHTML = '';
-            let total = 0, qtd = 0;
+        window.adjustDetailQty = (d) => {
+            currentDetailQty += d; if (currentDetailQty < 1) currentDetailQty = 1;
+            document.getElementById('detailQtyDisplay').textContent = currentDetailQty;
+        };
 
-            if(cartItems.length === 0) {
-                document.getElementById('emptyCartMessage').classList.remove('hidden');
-                totalEl.textContent = 'R$ 0,00';
-                countEl.classList.add('scale-0');
-                return;
-            }
+        window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
 
-            document.getElementById('emptyCartMessage').classList.add('hidden');
-            cartItems.forEach(item => {
-                const sub = item.price * item.quantity;
-                total += sub; qtd += item.quantity;
-                
-                const div = document.createElement('div');
-                div.className = "flex gap-4 p-3 bg-white rounded-xl border border-slate-200";
-                div.innerHTML = `
-                    <div class="w-16 h-16 bg-slate-50 rounded-lg flex-shrink-0 overflow-hidden">
-                        <img src="${item.img||''}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/80?text=Foto'">
-                    </div>
-                    <div class="flex-grow min-w-0 flex flex-col justify-between">
-                        <h4 class="text-sm font-semibold text-slate-800 truncate">${item.name}</h4>
-                        <div class="flex justify-between items-center mt-1">
-                            <span class="text-xs font-bold text-slate-600">R$ ${item.price.toFixed(2).replace('.',',')}</span>
-                            <div class="flex items-center bg-slate-100 rounded-lg p-1">
-                                <button onclick="updateQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center hover:bg-white rounded text-xs">-</button>
-                                <span class="w-6 text-center text-xs font-bold">${item.quantity}</span>
-                                <button onclick="updateQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center hover:bg-white rounded text-xs">+</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(div);
+        // Lightbox Functions
+        window.openLightbox = (src) => {
+            const lb = document.getElementById('imageLightbox');
+            const img = document.getElementById('lightboxImg');
+            img.src = src;
+            lb.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                lb.classList.remove('opacity-0');
+                img.classList.remove('scale-95');
+                img.classList.add('scale-100');
             });
-            
-            totalEl.textContent = `R$ ${total.toFixed(2).replace('.',',')}`;
-            countEl.textContent = qtd;
-            countEl.classList.remove('scale-0');
         };
 
-        window.updateQty = (id, delta) => {
-            const item = cartItems.find(x => x.id === id);
-            if(item) {
-                item.quantity += delta;
-                if(item.quantity <= 0) cartItems = cartItems.filter(x => x.id !== id);
-                renderCart();
-            }
+        window.closeLightbox = () => {
+            const lb = document.getElementById('imageLightbox');
+            const img = document.getElementById('lightboxImg');
+            lb.classList.add('opacity-0');
+            img.classList.remove('scale-100');
+            img.classList.add('scale-95');
+            setTimeout(() => lb.classList.add('hidden'), 300);
         };
 
-        window.checkoutToWhatsApp = () => {
-            if(cartItems.length === 0) return;
-            
-            let msg = `*Novo Pedido - ${document.title}*\n\n`;
-            let total = 0;
-            cartItems.forEach(i => {
-                msg += `▪ ${i.quantity}x ${i.name}\n`;
-                total += i.price * i.quantity;
+        window.addToCart = (id, q) => {
+            const p = allProducts.find(x => x.id === id); if (!p) return;
+            const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+            const ex = cart.find(x => x.id === id);
+            if (ex) ex.quantity += q; else cart.push({id:p.id, name:p.name, price:pr, quantity:q, image:p.images?.[0]});
+            updateCartUI(); showToast(`${q}x "${p.name}" adicionado!`, 'success');
+            if(document.getElementById('modalDetails').classList.contains('hidden') === false) setTimeout(openCartModal, 300);
+        };
+
+        function updateCartUI() {
+            const l = document.getElementById('cartList');
+            const t = document.getElementById('cartTotal');
+            const b = document.getElementById('cartBadge');
+            l.innerHTML = ''; let tot = 0; let cnt = 0;
+            cart.forEach(i => {
+                tot += i.price * i.quantity; cnt += i.quantity;
+                l.innerHTML += `<div class="flex gap-4 p-3 bg-white rounded-xl border border-slate-100 shadow-sm"><div class="w-16 h-16 bg-slate-50 rounded-lg flex-shrink-0 overflow-hidden"><img src="${i.image||''}" class="w-full h-full object-cover"></div><div class="flex-grow min-w-0 flex flex-col justify-between"><h4 class="text-sm font-bold text-slate-800 truncate">${i.name}</h4><div class="flex justify-between items-center mt-1"><span class="text-xs text-slate-500">R$ ${i.price.toFixed(2)}</span><div class="flex items-center bg-slate-100 rounded-lg h-7"><button onclick="modQty('${i.id}', -1)" class="w-7 h-full flex items-center justify-center hover:bg-white rounded-l-lg transition">-</button><span class="w-6 text-center text-xs font-bold text-slate-900">${i.quantity}</span><button onclick="modQty('${i.id}', 1)" class="w-7 h-full flex items-center justify-center hover:bg-white rounded-r-lg transition">+</button></div></div></div></div>`;
             });
-            msg += `\n*Total: R$ ${total.toFixed(2).replace('.',',')}*\n\n`;
-            if(!isStoreOpen) msg += `_(Aviso: Vi que a loja está fechada, aguardo retorno no horário de atendimento)_\n\n`;
-            msg += `Aguardo confirmação e taxa de entrega.`;
-            
+            t.textContent = `R$ ${tot.toFixed(2).replace('.', ',')}`;
+            b.textContent = cnt;
+            if (cnt > 0) { b.classList.remove('scale-0'); document.getElementById('cartEmptyMsg').classList.add('hidden'); }
+            else { b.classList.add('scale-0'); document.getElementById('cartEmptyMsg').classList.remove('hidden'); }
+        }
+
+        window.modQty = (id, d) => {
+            const i = cart.find(x => x.id === id);
+            if (i) { i.quantity += d; if (i.quantity <= 0) cart = cart.filter(x => x.id !== id); updateCartUI(); }
+        };
+
+        window.checkoutWhatsApp = () => {
+            if (cart.length === 0) return;
+            let msg = `*PEDIDO - ${document.getElementById('storeNameMain').textContent}*\n\n`;
+            let tot = 0;
+            cart.forEach(i => { const s = i.price*i.quantity; tot+=s; msg+=`▪ ${i.quantity}x *${i.name}* (R$ ${s.toFixed(2)})\n`; });
+            msg += `\n*TOTAL: R$ ${tot.toFixed(2).replace('.', ',')}*\n\nEndereço de entrega:`;
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank');
         };
 
-        // --- UTILITÁRIOS GLOBAIS ---
-        window.filterByCategory = (cat) => { currentCategoryFilter = cat; renderCategoryCards(); renderProductList(); };
-        window.openCartModal = () => { renderCart(); document.getElementById('cartModal').classList.remove('hidden'); lucide.createIcons(); };
-        window.closeCartModal = () => document.getElementById('cartModal').classList.add('hidden');
-        window.openDeliveryModal = () => document.getElementById('deliveryModal').classList.remove('hidden');
-        window.closeDeliveryModal = () => document.getElementById('deliveryModal').classList.add('hidden');
-        window.closeDetailsModal = () => document.getElementById('detailsModal').classList.add('hidden');
-        window.closeAlertModal = () => document.getElementById('alertModal').classList.add('hidden');
-        window.scrollToCatalog = () => document.getElementById('productCatalog').scrollIntoView({behavior:'smooth'});
+        window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(() => document.getElementById('cartDrawer').classList.remove('translate-x-full'), 10); };
+        window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(() => document.getElementById('modalCart').classList.add('hidden'), 300); };
+        window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
+        window.resetFilters = () => { currentFilter = null; document.getElementById('searchInput').value = ''; renderCategoryTabs(); renderCatalog(); };
+        window.scrollToCatalog = () => window.scrollTo({top: document.getElementById('catalogContainer').offsetTop - 150, behavior: "smooth"});
+        
+        function renderDeliveryList(a) {
+            const l = document.getElementById('deliveryList');
+            if (!a.length) { l.innerHTML = '<p class="text-sm text-slate-500 text-center italic">Consulte WhatsApp.</p>'; return; }
+            l.innerHTML = a.map(i => `<div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg border border-slate-100"><span class="text-slate-700 font-medium text-sm">${i.name}</span><span class="font-bold text-slate-900 text-sm">R$ ${i.rate.toFixed(2).replace('.', ',')}</span></div>`).join('');
+        }
 
-        // Helpers de Renderização de Áreas de Entrega (Simples)
-        window.renderDeliveryAreas = (areas) => {
-            const div = document.getElementById('deliveryAreasContent');
-            if(!areas.length) { div.innerHTML = '<p class="text-sm text-slate-500 text-center italic">Consulte via WhatsApp.</p>'; return; }
-            div.innerHTML = areas.map(a => `
-                <div class="flex justify-between items-center text-sm p-3 bg-slate-50 rounded-lg">
-                    <span class="text-slate-700 font-medium">${a.name}</span>
-                    <span class="font-bold text-slate-900">R$ ${a.rate.toFixed(2).replace('.',',')}</span>
-                </div>
-            `).join('');
+        window.showToast = (m, t) => {
+            const c = document.getElementById('toastContainer');
+            const e = document.createElement('div');
+            e.className = `bg-white border-l-4 ${t==='success'?'border-green-500':'border-blue-500'} text-slate-800 px-4 py-3 rounded shadow-xl flex items-center gap-3 transform transition-all duration-300 translate-x-10 opacity-0 max-w-xs`;
+            e.innerHTML = `<i data-lucide="${t==='success'?'check-circle':'info'}" class="w-5 h-5 ${t==='success'?'text-green-500':'text-blue-500'}"></i><span class="text-sm font-semibold">${m}</span>`;
+            c.appendChild(e); lucide.createIcons();
+            requestAnimationFrame(() => e.classList.remove('translate-x-10', 'opacity-0'));
+            setTimeout(() => { e.classList.add('opacity-0', 'translate-x-10'); setTimeout(() => e.remove(), 300); }, 3000);
         };
     </script>
-    
-    <!-- Animações CSS Customizadas -->
-    <style>
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideInRight { from { transform: translateX(100%); } to { transform: translateX(0); } }
-        
-        .animate-fade-in { animation: fadeIn 0.5s ease-out; }
-        .animate-fade-in-up { animation: fadeInUp 0.4s ease-out; }
-        .animate-slide-in-right { animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-    </style>
 </body>
 </html>
 
