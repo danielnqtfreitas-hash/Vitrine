@@ -17,7 +17,9 @@
                     animation: { 
                         'fade-in': 'fadeIn 0.5s ease-out', 
                         'slide-up': 'slideUp 0.4s ease-out forwards',
-                        'bounce-short': 'bounceShort 0.5s ease-in-out 1'
+                        'bounce-short': 'bounceShort 0.5s ease-in-out 1',
+                        'zoom-in': 'zoomIn 0.3s ease-out forwards',
+                        'heart-beat': 'heartBeat 0.3s ease-in-out'
                     },
                     keyframes: {
                         fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
@@ -25,7 +27,13 @@
                         bounceShort: {
                             '0%, 100%': { transform: 'scale(1)' },
                             '50%': { transform: 'scale(1.2)' }
-                        }
+                        },
+                        heartBeat: {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.3)' },
+                            '100%': { transform: 'scale(1)' }
+                        },
+                        zoomIn: { from: { transform: 'scale(0.95)', opacity: 0 }, to: { transform: 'scale(1)', opacity: 1 } }
                     }
                 }
             }
@@ -63,6 +71,11 @@
         .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .toast-exit { transform: translateY(0); opacity: 1; }
         .toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        img { max-width: 100%; display: block; }
+        
+        /* Coração Favorito */
+        .heart-active { fill: var(--color-primary); color: var(--color-primary); animation: heartBeat 0.4s forwards; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -91,33 +104,57 @@
     <!-- HEADER -->
     <header class="sticky top-0 z-50 glass-header transition-all duration-300">
         <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2 cursor-pointer active-scale" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer active-scale" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
                 <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none">ShopWave</h1>
             </div>
 
-            <div class="flex-1 max-w-lg mx-4 hidden md:block">
-                <div class="relative group">
-                    <input type="text" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-slate-100 border-none rounded-full py-2.5 pl-10 pr-4 text-sm focus:bg-white focus:ring-1 focus:ring-primary/50 transition-all border border-transparent focus:border-primary/20">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 group-focus-within:text-primary"></i>
+            <!-- Desktop Search + Filter -->
+            <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
+                <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+                    <div class="relative flex-grow">
+                        <input type="text" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    </div>
+                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 relative active-scale bg-white shadow-sm border border-slate-200 text-slate-600 transition-colors" title="Filtrar">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                        <span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
+                    </button>
                 </div>
             </div>
 
+            <!-- Icons Right -->
             <div class="flex items-center gap-2 md:gap-4">
-                <button onclick="openFilterDrawer()" class="p-2.5 rounded-full hover:bg-slate-50 relative active-scale bg-white border border-slate-200">
-                    <i data-lucide="sliders-horizontal" class="w-5 h-5 text-slate-600"></i>
-                    <span id="activeFiltersBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
+                <!-- Favorites Header Button -->
+                <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale group bg-white border border-slate-200" title="Meus Favoritos">
+                    <i data-lucide="heart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors" id="headerHeartIcon"></i>
                 </button>
+
+                <!-- Cart Button -->
                 <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200" id="cartButtonHeader">
                     <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
                     <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
                 </button>
             </div>
         </div>
-        <!-- Mobile Search -->
+        
+        <!-- Mobile Search + Filter -->
         <div class="md:hidden px-4 pb-3">
-            <div class="relative">
-                <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-slate-100 border-none rounded-lg py-3 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary">
-                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+            <div class="flex items-center gap-2">
+                <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
+                    <div class="relative flex-1">
+                        <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    </div>
+                    <button onclick="openFilterDrawer()" class="p-2.5 my-1 rounded-md bg-white hover:bg-slate-50 relative active-scale border border-slate-200 text-slate-600 shadow-sm" title="Filtrar">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                        <span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
+                    </button>
+                </div>
+                <!-- Favorites Mobile -->
+                <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale">
+                    <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -131,22 +168,30 @@
         </div>
 
         <!-- Categories -->
-        <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 -mx-2 px-2 md:mx-0 md:px-0">
-            <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2"></div>
+        <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 -mx-2 px-2 md:mx-0 md:px-0 bg-transparent">
+            <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2 pl-1"></div>
         </nav>
 
         <!-- CATALOGO -->
-        <div id="catalogContainer" class="pb-20 space-y-10"></div>
+        <div id="catalogContainer" class="pb-20 space-y-10 min-h-[50vh]"></div>
         
-        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center">
+        <!-- Empty States -->
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-fade-in">
             <div class="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mb-4 text-slate-400"><i data-lucide="search-x" class="w-8 h-8"></i></div>
             <h3 class="font-bold text-slate-800">Nenhum produto encontrado</h3>
             <button onclick="resetAllFilters()" class="mt-4 text-primary text-sm font-bold">Limpar filtros</button>
         </div>
+
+        <div id="favoritesEmptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-fade-in">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4 text-primary"><i data-lucide="heart-off" class="w-8 h-8"></i></div>
+            <h3 class="font-bold text-slate-800">Sua lista de desejos está vazia</h3>
+            <p class="text-slate-500 text-sm mt-2 mb-6">Salve os itens que você mais gostou aqui ❤️</p>
+            <button onclick="resetAllFilters()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg active-scale">Ver Produtos</button>
+        </div>
     </main>
 
     <!-- RODAPÉ -->
-    <footer class="bg-white border-t border-slate-200 py-10">
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
         <div class="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
                 <h5 class="font-display font-bold text-xl text-slate-900 mb-1" id="footerStoreName">Loja</h5>
@@ -163,26 +208,72 @@
     <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
         <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl pointer-events-auto relative flex flex-col max-h-[92vh] overflow-hidden animate-slide-up">
-            <button onclick="closeModalDetails()" class="absolute top-4 right-4 z-10 bg-slate-100 hover:bg-slate-200 p-2 rounded-full"><i data-lucide="x" class="w-5 h-5 text-slate-600"></i></button>
-            <div class="h-64 md:h-80 bg-slate-50 flex-shrink-0 flex items-center justify-center p-4">
-                <img id="detailImg" class="max-w-full max-h-full object-contain mix-blend-multiply">
+            
+            <!-- Header Modal Buttons -->
+            <div class="absolute top-4 right-4 z-20 flex gap-2">
+                <button onclick="shareProduct()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 active:scale-95" title="Compartilhar">
+                    <i data-lucide="share-2" class="w-5 h-5 text-slate-700"></i>
+                </button>
+                <button onclick="closeModalDetails()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 active:scale-95">
+                    <i data-lucide="x" class="w-5 h-5 text-slate-700"></i>
+                </button>
             </div>
-            <div class="flex-1 overflow-y-auto p-6">
-                <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest mb-1 block"></span>
-                <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-2 leading-tight"></h2>
-                <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-6"></p>
-                <div class="space-y-6">
-                    <div id="sizesWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Tamanho</span><div id="detailSizesContainer" class="flex flex-wrap gap-2"></div></div>
-                    <div id="colorsWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Cor</span><div id="detailColorsContainer" class="flex flex-wrap gap-2"></div></div>
+            
+            <!-- Scroll Area -->
+            <div class="flex-1 overflow-y-auto custom-scrollbar">
+                <!-- Imagem -->
+                <div class="h-72 md:h-96 bg-white flex-shrink-0 flex items-center justify-center p-6 relative group cursor-zoom-in" onclick="openImageZoom()">
+                    <img id="detailImg" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.src='https://placehold.co/600?text=Sem+Imagem';">
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        <span class="bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-1 font-bold">
+                            <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i> Ampliar
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-6 pb-24">
+                    <div class="flex justify-between items-start mb-2">
+                         <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest block pt-1"></span>
+                         <!-- Heart in Modal -->
+                         <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
+                             <i data-lucide="heart" class="w-6 h-6 text-slate-300 transition-colors"></i>
+                         </button>
+                    </div>
+                    
+                    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-3 leading-tight"></h2>
+                    <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
+                    
+                    <div class="space-y-6 border-t border-slate-100 pt-6">
+                        <div id="sizesWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Tamanho</span><div id="detailSizesContainer" class="flex flex-wrap gap-2"></div></div>
+                        <div id="colorsWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Cor</span><div id="detailColorsContainer" class="flex flex-wrap gap-2"></div></div>
+                    </div>
+
+                    <!-- RELATED PRODUCTS SECTION -->
+                    <div id="relatedProductsSection" class="mt-10 pt-8 border-t border-slate-100 hidden">
+                        <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Veja Também</h4>
+                        <div id="relatedGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+                    </div>
                 </div>
             </div>
-            <div class="p-4 border-t flex items-center justify-between bg-white shadow-lg z-20">
+
+            <!-- Footer Action Bar -->
+            <div class="p-4 border-t flex items-center justify-between bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20 absolute bottom-0 w-full">
                 <div><span id="detailOldPrice" class="text-sm text-slate-400 line-through"></span><span id="detailPrice" class="text-3xl font-display font-black text-slate-900 block tracking-tight"></span></div>
                 <div class="flex gap-3">
                     <div class="flex items-center bg-slate-100 rounded-xl px-2 h-12"><button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button><span id="detailQtyDisplay" class="font-bold w-6 text-center text-lg">1</span><button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button></div>
-                    <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-6 h-12 rounded-xl active-scale shadow-lg transition-all duration-200 text-sm md:text-base">Adicionar ao carrinho</button>
+                    <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-6 h-12 rounded-xl active-scale shadow-lg transition-all duration-200 text-sm md:text-base">Adicionar</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ZOOM IMAGEM (TELA CHEIA) -->
+    <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
+        <button onclick="closeImageZoom()" class="absolute top-4 right-4 text-white/80 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50">
+            <i data-lucide="x" class="w-10 h-10"></i>
+        </button>
+        <div class="w-full h-full flex items-center justify-center p-4">
+             <img id="zoomedImg" class="max-w-full max-h-full object-contain shadow-2xl transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
         </div>
     </div>
 
@@ -198,6 +289,7 @@
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border text-sm"><span class="font-bold flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</span><select id="cartDeliverySelect" onchange="updateCartTotals()" class="bg-transparent font-bold outline-none text-right cursor-pointer"></select></div>
                     <div class="flex gap-2"><input id="cartCouponInput" placeholder="CUPOM" class="w-full border rounded-lg p-2.5 text-sm uppercase"><button onclick="applyCoupon()" class="bg-slate-800 text-white px-4 rounded-lg text-xs font-bold">OK</button></div>
                     <div id="cartCouponMsg" class="hidden text-xs font-bold text-center"></div>
+                    <div id="cartDiscountRow" class="hidden flex justify-between text-sm text-green-600 font-bold"><span>Desconto</span><span id="cartDiscountDisplay"></span></div>
                     <div class="flex justify-between text-lg font-bold text-slate-900 pt-3 border-t"><span>Total</span><span id="cartFinalTotal"></span></div>
                     <button onclick="checkoutWhatsApp()" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg mt-4 active-scale flex justify-center items-center gap-2">Finalizar Pedido <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                 </div>
@@ -266,12 +358,17 @@
         let currentDetailId=null, currentDetailQty=1;
         let currentDetailSelection = { size: null, color: null };
         let filters = { search: "", category: null, minPrice: null, maxPrice: null, sizes: [], colors: [] };
+        
+        // Favorites System
+        let favorites = JSON.parse(localStorage.getItem('favorites_v1') || "[]");
+        let isFavoritesView = false;
 
         const CHIP_DEFAULT = "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
         const CHIP_SELECTED = "border-primary bg-primary text-white font-bold ring-2 ring-primary/20 shadow-md";
 
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            updateFavoritesUI();
             const app = initializeApp(FIREBASE_CONFIG);
             db = getFirestore(app);
             const auth = getAuth(app);
@@ -324,11 +421,11 @@
         function renderCategoryTabs() {
             const c = document.getElementById('categoryContainer'); c.innerHTML = '';
             const mk = (id, l, icon) => {
-                const active = filters.category === id;
+                const active = filters.category === id && !isFavoritesView;
                 const b = document.createElement('button');
                 b.className = `px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-2 ${active ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-primary'}`;
                 b.innerHTML = icon ? `${icon} ${l}` : l;
-                b.onclick = () => { filters.category = id; renderCategoryTabs(); renderCatalog(); };
+                b.onclick = () => { isFavoritesView = false; updateFavoritesUI(); filters.category = id; renderCategoryTabs(); renderCatalog(); };
                 return b;
             };
             c.appendChild(mk('offers', 'Ofertas', '<i data-lucide="flame" class="w-3.5 h-3.5"></i>'));
@@ -338,8 +435,15 @@
         }
 
         window.renderCatalog = () => {
-            const c = document.getElementById('catalogContainer'); const empty = document.getElementById('emptyState');
+            const c = document.getElementById('catalogContainer'); 
+            const empty = document.getElementById('emptyState');
+            const favEmpty = document.getElementById('favoritesEmptyState');
+
+            // 1. Filtragem Base
             let f = allProducts.filter(p => {
+                // Se estiver vendo favoritos, ignora outros filtros
+                if(isFavoritesView) return favorites.includes(p.id);
+
                 if(filters.search && !p.name.toLowerCase().includes(filters.search)) return false;
                 if(filters.category === 'offers') { if(!(p.promoValue && p.promoValue < p.value)) return false; }
                 else if(filters.category && p.category !== filters.category) return false;
@@ -351,12 +455,29 @@
                 return true;
             });
 
-            if(!f.length) { c.innerHTML=''; empty.classList.remove('hidden'); return; }
-            empty.classList.add('hidden'); c.innerHTML='';
+            // 2. Estados Vazios
+            c.innerHTML=''; 
+            if(!f.length) { 
+                if(isFavoritesView) {
+                    favEmpty.classList.remove('hidden');
+                    empty.classList.add('hidden');
+                } else {
+                    empty.classList.remove('hidden'); 
+                    favEmpty.classList.add('hidden');
+                }
+                return; 
+            }
+            empty.classList.add('hidden'); 
+            favEmpty.classList.add('hidden');
 
+            // 3. Renderização
             let g = {};
-            if(filters.search || (filters.category && filters.category !== 'offers') || filters.minPrice || filters.maxPrice || filters.sizes.length || filters.colors.length) g['Resultados'] = f;
-            else f.forEach(p => { const k = p.category || 'Outros'; if(!g[k]) g[k]=[]; g[k].push(p); });
+            // Se for busca, favoritos ou filtro, mostra "Resultados"
+            if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.minPrice || filters.maxPrice || filters.sizes.length || filters.colors.length) {
+                g[isFavoritesView ? 'Meus Favoritos' : 'Resultados'] = f;
+            } else {
+                f.forEach(p => { const k = p.category || 'Outros'; if(!g[k]) g[k]=[]; g[k].push(p); });
+            }
 
             Object.keys(g).sort().forEach(key => {
                 const sec = document.createElement('section');
@@ -373,7 +494,8 @@
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value;
             const price = hasPromo ? p.promoValue : p.value;
-            const img = p.images?.[0] || 'https://placehold.co/300';
+            const img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem';
+            const isFav = favorites.includes(p.id);
             
             let discountBadge = '';
             if (hasPromo) {
@@ -384,8 +506,11 @@
             return `
             <div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full animate-fade-in relative">
                 <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
-                    <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 mix-blend-multiply">
+                    <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600?text=Sem+Imagem'">
                     ${discountBadge}
+                    <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm shadow-sm active-scale z-20 hover:bg-white transition-all">
+                        <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'heart-active' : 'text-slate-400'}"></i>
+                    </button>
                 </div>
                 <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
                     <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">${p.name}</h4>
@@ -400,6 +525,60 @@
                     </div>
                 </div>
             </div>`;
+        }
+
+        // --- FAVORITES LOGIC ---
+        window.toggleFavoritesView = () => {
+            isFavoritesView = !isFavoritesView;
+            updateFavoritesUI();
+            renderCategoryTabs(); // To remove selection from category pills
+            renderCatalog();
+            window.scrollTo({top:0, behavior:'smooth'});
+        };
+
+        window.toggleFavorite = (id) => {
+            const idx = favorites.indexOf(id);
+            if(idx > -1) favorites.splice(idx, 1);
+            else favorites.push(id);
+            
+            localStorage.setItem('favorites_v1', JSON.stringify(favorites));
+            
+            // Re-render
+            renderCatalog();
+            updateFavoritesUI();
+            
+            // If modal is open for this item, update heart there too
+            if(currentDetailId === id) updateModalHeartBtn();
+        };
+        
+        // Modal Specific Toggle
+        window.toggleFavoriteCurrentDetail = () => {
+            if(!currentDetailId) return;
+            toggleFavorite(currentDetailId);
+        };
+
+        function updateFavoritesUI() {
+            const hIcon = document.getElementById('headerHeartIcon');
+            const mIcon = document.getElementById('mobileHeartIcon');
+            
+            if(isFavoritesView) {
+                hIcon.classList.add('fill-primary', 'text-primary');
+                mIcon.classList.add('fill-primary', 'text-primary');
+            } else {
+                hIcon.classList.remove('fill-primary', 'text-primary');
+                mIcon.classList.remove('fill-primary', 'text-primary');
+            }
+        }
+        
+        function updateModalHeartBtn() {
+            const btnIcon = document.querySelector('#modalHeartBtn svg');
+            if(favorites.includes(currentDetailId)) {
+                btnIcon.classList.add('heart-active');
+                btnIcon.classList.remove('text-slate-300');
+            } else {
+                btnIcon.classList.remove('heart-active');
+                btnIcon.classList.add('text-slate-300');
+            }
         }
 
         // --- FILTROS AUTOMÁTICOS ---
@@ -429,9 +608,10 @@
             renderCatalog();
             updateFilterBadges();
             let count = filters.sizes.length + filters.colors.length + (filters.minPrice ? 1 : 0) + (filters.maxPrice ? 1 : 0);
-            const b = document.getElementById('activeFiltersBadge');
-            b.textContent = count;
-            if(count > 0) b.classList.remove('hidden'); else b.classList.add('hidden');
+            document.querySelectorAll('.filter-badge-indicator').forEach(b => {
+                b.textContent = count;
+                if(count > 0) b.classList.remove('hidden'); else b.classList.add('hidden');
+            });
         }
 
         function updateFilterBadges() {
@@ -442,9 +622,12 @@
 
         window.resetAllFilters = () => { 
             filters={search:"",category:null,minPrice:null,maxPrice:null,sizes:[],colors:[]}; 
+            isFavoritesView = false;
+            updateFavoritesUI();
             document.querySelectorAll('input').forEach(i=>i.value=''); 
             populateFilterOptions(); 
-            updateLiveFilters();
+            renderCategoryTabs();
+            renderCatalog();
         };
 
         // --- DETALHES ---
@@ -452,17 +635,21 @@
             const p=allProducts.find(x=>x.id===id); if(!p)return; 
             currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null};
             const promo=p.promoValue&&p.promoValue<p.value;
-            document.getElementById('detailImg').src=p.images?.[0]||''; 
+            
+            const imgUrl = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem';
+            const detailImg = document.getElementById('detailImg');
+            detailImg.src = imgUrl;
+            
             document.getElementById('detailCat').textContent=p.category; 
             document.getElementById('detailName').textContent=p.name; 
             document.getElementById('detailDesc').textContent=p.description||'Sem descrição disponível.';
             document.getElementById('detailPrice').textContent=`R$ ${(promo?p.promoValue:p.value).toFixed(2).replace('.',',')}`; 
             document.getElementById('detailOldPrice').textContent=promo?`R$ ${p.value.toFixed(2).replace('.',',')}`:'';
             document.getElementById('detailQtyDisplay').textContent="1";
+            document.getElementById('detailAddBtn').textContent = "Adicionar";
             
-            // Texto do botão
-            document.getElementById('detailAddBtn').textContent = "Adicionar ao carrinho";
-            
+            updateModalHeartBtn(); // Update heart state
+
             const renderChips = (list, type, container, wrapper) => { 
                 container.innerHTML=''; if(!list?.length){ wrapper.classList.add('hidden'); return; } wrapper.classList.remove('hidden'); 
                 list.forEach(item => { 
@@ -474,28 +661,106 @@
             renderChips(p.sizes, 'size', document.getElementById('detailSizesContainer'), document.getElementById('sizesWrapper'));
             renderChips(p.colors, 'color', document.getElementById('detailColorsContainer'), document.getElementById('colorsWrapper'));
             
-            // Configurar o clique do botão com validação e fechamento
             const btn = document.getElementById('detailAddBtn');
             btn.onclick = function() {
-                // Validação de variantes
                 if(p.sizes && p.sizes.length && !currentDetailSelection.size) { showToast('Selecione um tamanho!'); return; }
                 if(p.colors && p.colors.length && !currentDetailSelection.color) { showToast('Selecione uma cor!'); return; }
-                
-                // Adiciona e fecha
                 addToCart(p, currentDetailQty, currentDetailSelection); 
                 closeModalDetails();
             };
+
+            // RENDER RELATED
+            renderRelatedProducts(p);
             
             document.getElementById('modalDetails').classList.remove('hidden');
         };
+
+        function renderRelatedProducts(currentProduct) {
+            const section = document.getElementById('relatedProductsSection');
+            const grid = document.getElementById('relatedGrid');
+            grid.innerHTML = '';
+
+            // Find products same category, excluding current
+            const related = allProducts
+                .filter(p => p.category === currentProduct.category && p.id !== currentProduct.id)
+                .slice(0, 3); // Max 3
+
+            if(related.length === 0) {
+                section.classList.add('hidden');
+                return;
+            }
+
+            section.classList.remove('hidden');
+            related.forEach(p => {
+                 const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+                 const img = p.images?.[0] || 'https://placehold.co/200';
+                 // Mini card
+                 grid.innerHTML += `
+                    <div onclick="openProductModal('${p.id}')" class="bg-white border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors">
+                        <img src="${img}" class="w-full h-24 object-cover">
+                        <div class="p-2">
+                            <h5 class="text-xs font-semibold truncate text-slate-700">${p.name}</h5>
+                            <span class="text-xs font-black text-slate-900 block mt-1">R$ ${price.toFixed(2).replace('.',',')}</span>
+                        </div>
+                    </div>
+                 `;
+            });
+        }
+        
+        window.shareProduct = () => {
+            const p = allProducts.find(x => x.id === currentDetailId);
+            if(!p) return;
+            
+            const text = `Confira ${p.name} na ${document.getElementById('storeNameDisplay').textContent}! Apenas R$ ${(p.promoValue || p.value).toFixed(2).replace('.',',')}`;
+            const url = window.location.href; // In a real app, this might be a specific product link
+
+            if (navigator.share) {
+                navigator.share({ title: p.name, text: text, url: url }).catch(console.error);
+            } else {
+                // Fallback copy
+                const fullMsg = `${text} ${url}`;
+                navigator.clipboard.writeText(fullMsg).then(() => showToast("Link copiado para área de transferência!"));
+            }
+        };
+        
+        // --- ZOOM DE IMAGEM (LIGHTBOX) ---
+        window.openImageZoom = () => {
+            const detailImg = document.getElementById('detailImg');
+            if (!detailImg.src || detailImg.src.includes('placehold.co')) {}
+            
+            const m = document.getElementById('modalImageZoom');
+            const img = document.getElementById('zoomedImg');
+            
+            img.src = detailImg.src;
+            m.classList.remove('hidden');
+            
+            requestAnimationFrame(() => {
+                m.classList.remove('opacity-0');
+                img.classList.remove('scale-95');
+                img.classList.add('scale-100');
+            });
+        }
+
+        window.closeImageZoom = () => {
+            const m = document.getElementById('modalImageZoom');
+            const img = document.getElementById('zoomedImg');
+            
+            m.classList.add('opacity-0');
+            img.classList.remove('scale-100');
+            img.classList.add('scale-95');
+            
+            setTimeout(() => {
+                m.classList.add('hidden');
+                img.src = '';
+            }, 300);
+        }
 
         // --- CARRINHO & TOAST ---
         window.addToCart = (p,q,v) => { 
             const price=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; 
             const uid=`${p.id}-${v.size||''}-${v.color||''}`; 
             const ex=cart.find(x=>x.uid===uid); 
-            if(ex) ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0],v}); 
-            
+            if(ex) ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0] || 'https://placehold.co/100',v}); 
             updateCartUI(); 
             showToast(`<b>${p.name}</b> adicionado à sacola!`);
         };
@@ -514,10 +779,33 @@
             if(!cart.length){ l.innerHTML=''; document.getElementById('cartEmptyMsg').classList.remove('hidden'); document.getElementById('cartSummary').classList.add('hidden'); }
             else {
                 document.getElementById('cartEmptyMsg').classList.add('hidden'); document.getElementById('cartSummary').classList.remove('hidden');
-                l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1">${[i.v.size,i.v.color].filter(Boolean).join(' • ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6 text-slate-500">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6 text-primary">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');
+                l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50" onerror="this.src='https://placehold.co/100'"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1">${[i.v.size,i.v.color].filter(Boolean).join(' • ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6 text-slate-500">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6 text-primary">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');
             }
             updateCartTotals();
         }
+
+        // --- COUPOM SYSTEM ---
+        window.applyCoupon = () => {
+            const input = document.getElementById('cartCouponInput');
+            const code = input.value.trim().toUpperCase();
+            const msg = document.getElementById('cartCouponMsg');
+            
+            if(!code) return;
+            
+            const found = activeCoupons.find(c => c.code === code);
+            if(found) {
+                currentCoupon = found;
+                msg.textContent = `Cupom ${code} aplicado!`;
+                msg.className = "text-xs font-bold text-center text-green-600";
+                msg.classList.remove('hidden');
+            } else {
+                currentCoupon = null;
+                msg.textContent = "Cupom inválido";
+                msg.className = "text-xs font-bold text-center text-red-500";
+                msg.classList.remove('hidden');
+            }
+            updateCartTotals();
+        };
 
         // --- HELPERS GERAIS ---
         window.modQty=(u,d)=>{ const i=cart.find(x=>x.uid===u); if(i){ i.q+=d; if(i.q<=0)cart=cart.filter(x=>x.uid!==u); updateCartUI(); } };
@@ -578,15 +866,14 @@
             const t = document.createElement('div'); 
             t.className = "bg-slate-900/90 text-white text-sm px-6 py-3 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-3 toast-enter pointer-events-auto transform transition-all duration-300"; 
             t.innerHTML = `<i data-lucide="shopping-bag" class="w-4 h-4 text-green-400"></i> <span>${msg}</span>`; 
-            
             const container = document.getElementById('toastContainer');
             container.appendChild(t); 
             lucide.createIcons(); 
-            
             requestAnimationFrame(() => { t.classList.remove('toast-enter'); t.classList.add('toast-enter-active'); });
             setTimeout(() => { t.classList.remove('toast-enter-active'); t.classList.add('toast-exit-active'); setTimeout(() => t.remove(), 300); }, 3000); 
         }
     </script>
 </body>
 </html>
+
 
