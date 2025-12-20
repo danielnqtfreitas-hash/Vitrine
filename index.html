@@ -74,6 +74,11 @@
         
         img { max-width: 100%; display: block; }
         .heart-active { fill: var(--color-primary); color: var(--color-primary); animation: heartBeat 0.4s forwards; }
+        
+        /* Estilos do Carrossel */
+        .thumb-active { border-color: var(--color-primary); opacity: 1; }
+        .thumb-inactive { border-color: transparent; opacity: 0.6; }
+        .thumb-inactive:hover { opacity: 1; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative">
@@ -212,7 +217,7 @@
     <!-- MODAL: DETALHES -->
     <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
-        <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl pointer-events-auto relative flex flex-col max-h-[92vh] overflow-hidden animate-slide-up">
+        <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl pointer-events-auto relative flex flex-col max-h-[95vh] overflow-hidden animate-slide-up">
             
             <!-- Header Modal Buttons -->
             <div class="absolute top-4 right-4 z-20 flex gap-2">
@@ -226,17 +231,44 @@
             
             <!-- Scroll Area -->
             <div class="flex-1 overflow-y-auto custom-scrollbar">
-                <!-- Imagem -->
-                <div class="h-72 md:h-96 bg-white flex-shrink-0 flex items-center justify-center p-6 relative group cursor-zoom-in" onclick="openImageZoom()">
-                    <img id="detailImg" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" onerror="this.src='https://placehold.co/600?text=Sem+Imagem';">
-                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <span class="bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-1 font-bold">
-                            <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i> Ampliar
-                        </span>
+                
+                <!-- CARROSEL DE IMAGENS -->
+                <div class="relative bg-white pt-2 pb-4">
+                    <!-- Área Principal da Imagem (com suporte a swipe) -->
+                    <div id="mainImageContainer" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" 
+                         onclick="openImageZoom()">
+                        
+                        <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 group-hover:scale-105 select-none" 
+                             src="" onerror="this.src='https://placehold.co/600?text=Sem+Imagem';" draggable="false">
+
+                        <!-- Indicador 1/4 -->
+                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold backdrop-blur-sm">
+                            1 / 1
+                        </div>
+
+                        <!-- Zoom Hint -->
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none md:flex hidden">
+                            <span class="bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-1 font-bold">
+                                <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i> Ampliar
+                            </span>
+                        </div>
+
+                        <!-- Setas Navegação (Desktop/Hover) -->
+                        <button onclick="event.stopPropagation(); changeDetailImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-opacity opacity-0 group-hover:opacity-100 hidden md:block z-10">
+                            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); changeDetailImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-opacity opacity-0 group-hover:opacity-100 hidden md:block z-10">
+                            <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <!-- Miniaturas / Thumbnails -->
+                    <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center min-h-[50px] items-center hide-scroll">
+                        <!-- JS vai preencher -->
                     </div>
                 </div>
 
-                <div class="p-6 pb-24">
+                <div class="px-6 pb-24">
                     <div class="flex justify-between items-start mb-2">
                          <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest block pt-1"></span>
                          <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
@@ -332,7 +364,12 @@
         let db, STORE_ID = null;
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
         let activeCoupons=[], deliveryAreas=[], currentCoupon=null;
+        
+        // NOVAS VARIAVEIS PARA O CARROSSEL
         let currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
+        let currentDetailImages = [], currentDetailImageIndex = 0;
+        // -------------------------------
+
         let filters = { search: "", category: null, minPrice: null, maxPrice: null, sizes: [], colors: [] };
         let favorites = JSON.parse(localStorage.getItem('favorites_v1') || "[]");
         let isFavoritesView = false;
@@ -359,6 +396,29 @@
             onAuthStateChanged(auth, (user) => {
                 if(user) setupDataListeners();
             });
+
+            // SETUP SWIPE LISTENERS FOR IMAGE CAROUSEL
+            const imgContainer = document.getElementById('mainImageContainer');
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            imgContainer.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+
+            imgContainer.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipeGesture();
+            });
+
+            function handleSwipeGesture() {
+                if (touchEndX < touchStartX - 50) {
+                    changeDetailImage(1); // Swipe Left -> Next Image
+                }
+                if (touchEndX > touchStartX + 50) {
+                    changeDetailImage(-1); // Swipe Right -> Prev Image
+                }
+            }
         });
 
         function showFatalError(title, msg) {
@@ -409,7 +469,6 @@
             onSnapshot(collection(db, `stores/${STORE_ID}/hero_cards`), s => {
                 renderHeroCarousel(s.docs.map(d => ({id: d.id, ...d.data()})));
             });
-            // onSnapshot(collection(db, `stores/${STORE_ID}/coupons`)... // Se implementar cupons
         }
 
         function applyStoreConfig(d) {
@@ -446,7 +505,6 @@
 
         function checkStoreStatus(h, m) { 
             if (m === false) return false; 
-            // Lógica de horário simples (pode expandir depois)
             return true; 
         }
 
@@ -567,7 +625,7 @@
             </div>`;
         }
 
-        // --- FAVORITES, CART & UTILS (Mantidos com lógica idêntica, apenas adaptados ao escopo) ---
+        // --- FAVORITES, CART & UTILS ---
         window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; updateFavoritesUI(); renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
         window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1)favorites.splice(idx,1); else favorites.push(id); localStorage.setItem('favorites_v1', JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); if(currentDetailId===id) updateModalHeartBtn(); };
         window.toggleFavoriteCurrentDetail = () => { if(currentDetailId) toggleFavorite(currentDetailId); };
@@ -581,11 +639,117 @@
         function updateFilterBadges() { const s=document.getElementById('sizeBadge'), c=document.getElementById('colorBadge'); if(filters.sizes.length>0){s.textContent=filters.sizes.length;s.classList.remove('hidden');}else s.classList.add('hidden'); if(filters.colors.length>0){c.textContent=filters.colors.length;c.classList.remove('hidden');}else c.classList.add('hidden'); }
         window.resetAllFilters = () => { filters={search:"",category:null,minPrice:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; updateFavoritesUI(); document.querySelectorAll('input').forEach(i=>i.value=''); populateFilterOptions(); renderCategoryTabs(); renderCatalog(); };
 
-        window.openProductModal = (id) => { const p=allProducts.find(x=>x.id===id); if(!p)return; currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; const promo=p.promoValue&&p.promoValue<p.value; const img=p.images?.[0]||'https://placehold.co/600'; document.getElementById('detailImg').src=img; document.getElementById('detailCat').textContent=p.category; document.getElementById('detailName').textContent=p.name; document.getElementById('detailDesc').textContent=p.description||''; document.getElementById('detailPrice').textContent=`R$ ${(promo?p.promoValue:p.value).toFixed(2).replace('.',',')}`; document.getElementById('detailOldPrice').textContent=promo?`R$ ${p.value.toFixed(2).replace('.',',')}`:''; document.getElementById('detailQtyDisplay').textContent="1"; updateModalHeartBtn(); const r=(l,t,c,w)=>{c.innerHTML='';if(!l?.length){w.classList.add('hidden');return;}w.classList.remove('hidden');l.forEach(i=>{const d=document.createElement('div');d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`;d.textContent=i;d.onclick=()=>{Array.from(c.children).forEach(s=>s.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`);d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_SELECTED}`;currentDetailSelection[t]=i;};c.appendChild(d);});}; r(p.sizes,'size',document.getElementById('detailSizesContainer'),document.getElementById('sizesWrapper')); r(p.colors,'color',document.getElementById('detailColorsContainer'),document.getElementById('colorsWrapper')); document.getElementById('detailAddBtn').onclick=()=>{if(p.sizes?.length&&!currentDetailSelection.size){showToast('Selecione um tamanho!');return;}if(p.colors?.length&&!currentDetailSelection.color){showToast('Selecione uma cor!');return;}addToCart(p,currentDetailQty,currentDetailSelection);closeModalDetails();}; renderRelatedProducts(p); document.getElementById('modalDetails').classList.remove('hidden'); };
+        // --- CAROUSEL LOGIC ---
+        window.changeDetailImage = (dir) => {
+            if (currentDetailImages.length <= 1) return;
+            const len = currentDetailImages.length;
+            currentDetailImageIndex = (currentDetailImageIndex + dir + len) % len;
+            updateDetailImageDisplay();
+        };
+
+        window.setDetailImage = (index) => {
+            if (index < 0 || index >= currentDetailImages.length) return;
+            currentDetailImageIndex = index;
+            updateDetailImageDisplay();
+        };
+
+        function updateDetailImageDisplay() {
+            const img = document.getElementById('detailImg');
+            
+            // Fade effect
+            img.style.opacity = '0.7';
+            setTimeout(() => {
+                img.src = currentDetailImages[currentDetailImageIndex];
+                img.style.opacity = '1';
+            }, 100);
+
+            // Update Counter
+            document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
+
+            // Update thumbnails
+            const thumbsContainer = document.getElementById('detailThumbnails');
+            const thumbs = thumbsContainer.children;
+            
+            Array.from(thumbs).forEach((t, i) => {
+                if(i === currentDetailImageIndex) {
+                    t.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-active";
+                    // Scroll thumbnail into view
+                    t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    t.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+                }
+            });
+        }
+        // -----------------------
+
+        window.openProductModal = (id) => { 
+            const p=allProducts.find(x=>x.id===id); 
+            if(!p)return; 
+            
+            currentDetailId=id; 
+            currentDetailQty=1; 
+            currentDetailSelection={size:null,color:null}; 
+            
+            // CAROUSEL SETUP
+            currentDetailImages = (p.images && p.images.length > 0) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
+            currentDetailImageIndex = 0;
+            
+            // Build Thumbnails
+            const thumbContainer = document.getElementById('detailThumbnails');
+            thumbContainer.innerHTML = '';
+            
+            if (currentDetailImages.length > 1) {
+                currentDetailImages.forEach((url, idx) => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.onclick = () => setDetailImage(idx);
+                    thumbContainer.appendChild(img);
+                });
+                thumbContainer.style.display = 'flex';
+                document.querySelector('#mainImageContainer button').classList.remove('hidden'); // Show arrows if multiple
+            } else {
+                thumbContainer.style.display = 'none';
+            }
+            
+            updateDetailImageDisplay(); // Loads first image
+            
+            // Fill Text Data
+            document.getElementById('detailCat').textContent=p.category; 
+            document.getElementById('detailName').textContent=p.name; 
+            document.getElementById('detailDesc').textContent=p.description||''; 
+            
+            const promo=p.promoValue&&p.promoValue<p.value;
+            document.getElementById('detailPrice').textContent=`R$ ${(promo?p.promoValue:p.value).toFixed(2).replace('.',',')}`; 
+            document.getElementById('detailOldPrice').textContent=promo?`R$ ${p.value.toFixed(2).replace('.',',')}`:''; 
+            document.getElementById('detailQtyDisplay').textContent="1"; 
+            
+            updateModalHeartBtn(); 
+            
+            // Options Logic
+            const r=(l,t,c,w)=>{c.innerHTML='';if(!l?.length){w.classList.add('hidden');return;}w.classList.remove('hidden');l.forEach(i=>{const d=document.createElement('div');d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`;d.textContent=i;d.onclick=()=>{Array.from(c.children).forEach(s=>s.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`);d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_SELECTED}`;currentDetailSelection[t]=i;};c.appendChild(d);});}; 
+            r(p.sizes,'size',document.getElementById('detailSizesContainer'),document.getElementById('sizesWrapper')); 
+            r(p.colors,'color',document.getElementById('detailColorsContainer'),document.getElementById('colorsWrapper')); 
+            
+            document.getElementById('detailAddBtn').onclick=()=>{if(p.sizes?.length&&!currentDetailSelection.size){showToast('Selecione um tamanho!');return;}if(p.colors?.length&&!currentDetailSelection.color){showToast('Selecione uma cor!');return;}addToCart(p,currentDetailQty,currentDetailSelection);closeModalDetails();}; 
+            renderRelatedProducts(p); 
+            document.getElementById('modalDetails').classList.remove('hidden'); 
+            lucide.createIcons();
+        };
+
         function renderRelatedProducts(curr) { const s=document.getElementById('relatedProductsSection'),g=document.getElementById('relatedGrid'); g.innerHTML=''; const rel=allProducts.filter(p=>p.category===curr.category&&p.id!==curr.id).slice(0,3); if(rel.length===0){s.classList.add('hidden');return;} s.classList.remove('hidden'); rel.forEach(p=>{ const pr=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; g.innerHTML+=`<div onclick="openProductModal('${p.id}')" class="bg-white border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"><img src="${p.images?.[0]||'https://placehold.co/200'}" class="w-full h-24 object-cover"><div class="p-2"><h5 class="text-xs font-semibold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black text-slate-900 block mt-1">R$ ${pr.toFixed(2).replace('.',',')}</span></div></div>`; }); }
 
         window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const text=`Confira ${p.name} na ${document.title}!`; const url=window.location.href; if(navigator.share)navigator.share({title:p.name,text,url}).catch(console.error); else{navigator.clipboard.writeText(`${text} ${url}`);showToast("Link copiado!");} };
-        window.openImageZoom = () => { const s=document.getElementById('detailImg').src; if(!s.includes('placehold')){ document.getElementById('zoomedImg').src=s; const m=document.getElementById('modalImageZoom'); m.classList.remove('hidden'); requestAnimationFrame(()=>{m.classList.remove('opacity-0');document.getElementById('zoomedImg').classList.replace('scale-95','scale-100');}); } };
+        
+        window.openImageZoom = () => { 
+            const s=document.getElementById('detailImg').src; 
+            if(!s.includes('placehold')){ 
+                document.getElementById('zoomedImg').src=s; 
+                const m=document.getElementById('modalImageZoom'); 
+                m.classList.remove('hidden'); 
+                requestAnimationFrame(()=>{m.classList.remove('opacity-0');document.getElementById('zoomedImg').classList.replace('scale-95','scale-100');}); 
+            } 
+        };
+        
         window.closeImageZoom = () => { const m=document.getElementById('modalImageZoom'); const i=document.getElementById('zoomedImg'); m.classList.add('opacity-0'); i.classList.replace('scale-100','scale-95'); setTimeout(()=>{m.classList.add('hidden');i.src='';},300); };
         window.addToCart = (p,q,v) => { const price=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; const uid=`${p.id}-${v.size||''}-${v.color||''}`; const ex=cart.find(x=>x.uid===uid); if(ex)ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v}); updateCartUI(); showToast(`<b>${p.name}</b> adicionado!`); };
         function updateCartUI() { const cnt=cart.reduce((a,b)=>a+b.q,0); const b=document.getElementById('cartBadge'); b.textContent=cnt; b.classList.toggle('scale-0',cnt===0); const l=document.getElementById('cartList'); if(!cart.length){l.innerHTML='';document.getElementById('cartEmptyMsg').classList.remove('hidden');document.getElementById('cartSummary').classList.add('hidden');}else{document.getElementById('cartEmptyMsg').classList.add('hidden');document.getElementById('cartSummary').classList.remove('hidden'); l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1">${[i.v.size,i.v.color].filter(Boolean).join(' • ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6 text-slate-500">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6 text-primary">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');} updateCartTotals(); }
@@ -607,3 +771,4 @@
     </script>
 </body>
 </html>
+
