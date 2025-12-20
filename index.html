@@ -75,7 +75,6 @@
         img { max-width: 100%; display: block; }
         .heart-active { fill: var(--color-primary); color: var(--color-primary); animation: heartBeat 0.4s forwards; }
         
-        /* Estilos do Carrossel */
         .thumb-active { border-color: var(--color-primary); opacity: 1; }
         .thumb-inactive { border-color: transparent; opacity: 0.6; }
         .thumb-inactive:hover { opacity: 1; }
@@ -139,8 +138,9 @@
 
             <!-- Icons Right -->
             <div class="flex items-center gap-2 md:gap-4">
-                <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale group bg-white border border-slate-200" title="Meus Favoritos">
-                    <i data-lucide="heart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors" id="headerHeartIcon"></i>
+                <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale group bg-white border border-slate-200 relative" title="Meus Favoritos">
+                    <i data-lucide="heart" class="w-5 h-5 text-slate-700 transition-colors" id="headerHeartIcon"></i>
+                    <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
                 </button>
                 <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200" id="cartButtonHeader">
                     <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
@@ -162,8 +162,9 @@
                         <span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
                     </button>
                 </div>
-                <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale">
+                <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
                     <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
+                    <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300"></span>
                 </button>
             </div>
         </div>
@@ -302,12 +303,28 @@
         </div>
     </div>
 
-    <!-- MODAL: ZOOM IMAGEM -->
-    <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
+    <!-- MODAL: ZOOM IMAGEM (com gestos) -->
+    <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out touch-pan-y" onclick="closeImageZoom()">
         <button onclick="closeImageZoom()" class="absolute top-4 right-4 text-white/80 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50"><i data-lucide="x" class="w-10 h-10"></i></button>
-        <div class="w-full h-full flex items-center justify-center p-4">
-             <img id="zoomedImg" class="max-w-full max-h-full object-contain shadow-2xl transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()">
+        
+        <!-- Botão Anterior (Só desktop) -->
+        <button onclick="event.stopPropagation(); changeZoomImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
+            <i data-lucide="chevron-left" class="w-10 h-10"></i>
+        </button>
+
+        <div id="zoomContainer" class="w-full h-full flex items-center justify-center p-4 relative">
+             <img id="zoomedImg" class="max-w-full max-h-full object-contain shadow-2xl transform scale-95 transition-transform duration-300 select-none" onclick="event.stopPropagation()" draggable="false">
+             
+             <!-- Dica de swipe (só mobile) -->
+             <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-xs md:hidden pointer-events-none animate-pulse">
+                 Arraste para navegar
+             </div>
         </div>
+
+        <!-- Botão Próximo (Só desktop) -->
+        <button onclick="event.stopPropagation(); changeZoomImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
+            <i data-lucide="chevron-right" class="w-10 h-10"></i>
+        </button>
     </div>
 
     <!-- MODAL: CARRINHO -->
@@ -365,11 +382,10 @@
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
         let activeCoupons=[], deliveryAreas=[], currentCoupon=null;
         
-        // NOVAS VARIAVEIS PARA O CARROSSEL
+        // CARROSEL E ZOOM
         let currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
-        // -------------------------------
-
+        
         let filters = { search: "", category: null, minPrice: null, maxPrice: null, sizes: [], colors: [] };
         let favorites = JSON.parse(localStorage.getItem('favorites_v1') || "[]");
         let isFavoritesView = false;
@@ -379,7 +395,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             
-            // 1. GET STORE ID
             const urlParams = new URLSearchParams(window.location.search);
             STORE_ID = urlParams.get('id');
 
@@ -394,32 +409,30 @@
             signInAnonymously(auth).catch(e => console.error("Login anonimo falhou", e));
 
             onAuthStateChanged(auth, (user) => {
-                if(user) setupDataListeners();
-            });
-
-            // SETUP SWIPE LISTENERS FOR IMAGE CAROUSEL
-            const imgContainer = document.getElementById('mainImageContainer');
-            let touchStartX = 0;
-            let touchEndX = 0;
-
-            imgContainer.addEventListener('touchstart', e => {
-                touchStartX = e.changedTouches[0].screenX;
-            });
-
-            imgContainer.addEventListener('touchend', e => {
-                touchEndX = e.changedTouches[0].screenX;
-                handleSwipeGesture();
-            });
-
-            function handleSwipeGesture() {
-                if (touchEndX < touchStartX - 50) {
-                    changeDetailImage(1); // Swipe Left -> Next Image
+                if(user) {
+                    setupDataListeners();
+                    updateFavoritesUI(); // Inicia com estado correto dos favoritos
                 }
-                if (touchEndX > touchStartX + 50) {
-                    changeDetailImage(-1); // Swipe Right -> Prev Image
-                }
-            }
+            });
+
+            // --- SETUP GESTOS (SWIPE) ---
+            
+            // 1. Swipe no Detalhe do Produto (Imagem Principal)
+            setupSwipe(document.getElementById('mainImageContainer'), (dir) => changeDetailImage(dir));
+
+            // 2. Swipe no Zoom
+            setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
         });
+
+        function setupSwipe(element, callback) {
+            let ts = 0;
+            element.addEventListener('touchstart', (e) => { ts = e.changedTouches[0].screenX; }, {passive: true});
+            element.addEventListener('touchend', (e) => {
+                let te = e.changedTouches[0].screenX;
+                if (ts - te > 50) callback(1); // Swipe Left (Next)
+                if (te - ts > 50) callback(-1); // Swipe Right (Prev)
+            }, {passive: true});
+        }
 
         function showFatalError(title, msg) {
             document.getElementById('initialLoader').classList.add('hidden');
@@ -430,34 +443,25 @@
         }
 
         function setupDataListeners() {
-            // LOAD CONFIG & CHECK SUSPENSION
             onSnapshot(doc(db, `stores/${STORE_ID}/config/store`), s => { 
                 if(!s.exists()) {
                     showFatalError("Loja não existe", "Não encontramos nenhuma loja com este ID.");
                     return;
                 }
                 const data = s.data();
-                
-                // CHECK IF SUSPENDED
                 if(data.subscriptionStatus === 'suspended') {
                     showFatalError("Loja Temporariamente Indisponível", "Esta loja encontra-se em manutenção ou suspensa. Entre em contato com o estabelecimento.");
                     return;
                 }
-
-                // IF OK, LOAD UI
                 document.getElementById('initialLoader').style.opacity = '0';
                 setTimeout(() => { 
                     document.getElementById('initialLoader').classList.add('hidden'); 
                     document.getElementById('app').classList.remove('hidden'); 
                     document.getElementById('app').classList.remove('opacity-0'); 
                 }, 500);
-
                 applyStoreConfig(data);
-            }, (error) => {
-                 showFatalError("Erro de Conexão", "Não foi possível conectar ao servidor.");
             });
 
-            // LOAD DATA
             onSnapshot(collection(db, `stores/${STORE_ID}/products`), s => {
                 allProducts = s.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
                 const cs = new Set(allProducts.map(p => p.category).filter(Boolean));
@@ -503,12 +507,8 @@
             }
         }
 
-        function checkStoreStatus(h, m) { 
-            if (m === false) return false; 
-            return true; 
-        }
+        function checkStoreStatus(h, m) { if (m === false) return false; return true; }
 
-        // --- CATALOGO & RENDER ---
         function renderHeroCarousel(banners) {
             const container = document.getElementById('heroGridContainer');
             container.innerHTML = '';
@@ -625,11 +625,38 @@
             </div>`;
         }
 
-        // --- FAVORITES, CART & UTILS ---
-        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; updateFavoritesUI(); renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
+        // --- FAVORITES LOGIC ---
+        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
         window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1)favorites.splice(idx,1); else favorites.push(id); localStorage.setItem('favorites_v1', JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); if(currentDetailId===id) updateModalHeartBtn(); };
         window.toggleFavoriteCurrentDetail = () => { if(currentDetailId) toggleFavorite(currentDetailId); };
-        function updateFavoritesUI() { const h=document.getElementById('headerHeartIcon'); const m=document.getElementById('mobileHeartIcon'); if(isFavoritesView){h.classList.add('fill-primary','text-primary');m.classList.add('fill-primary','text-primary');}else{h.classList.remove('fill-primary','text-primary');m.classList.remove('fill-primary','text-primary');} }
+        
+        function updateFavoritesUI() { 
+            const h = document.getElementById('headerHeartIcon'); 
+            const m = document.getElementById('mobileHeartIcon');
+            const hasFavorites = favorites.length > 0;
+            const count = favorites.length;
+
+            // 1. Ícone preenchido se houver favoritos (independente da view)
+            if (hasFavorites) {
+                h.classList.add('fill-primary', 'text-primary');
+                m.classList.add('fill-primary', 'text-primary');
+            } else {
+                h.classList.remove('fill-primary', 'text-primary');
+                m.classList.remove('fill-primary', 'text-primary');
+            }
+
+            // 2. Badges de contador
+            const badges = [document.getElementById('favBadgeDesktop'), document.getElementById('favBadgeMobile')];
+            badges.forEach(b => {
+                b.textContent = count;
+                if(count > 0) {
+                    b.classList.remove('scale-0');
+                } else {
+                    b.classList.add('scale-0');
+                }
+            });
+        }
+        
         function updateModalHeartBtn() { const b=document.querySelector('#modalHeartBtn svg'); if(favorites.includes(currentDetailId)){b.classList.add('heart-active');b.classList.remove('text-slate-300');}else{b.classList.remove('heart-active');b.classList.add('text-slate-300');} }
         
         window.populateFilterOptions = () => { const ss=new Set(), cc=new Set(); allProducts.forEach(p=>{ p.sizes?.forEach(s=>ss.add(s.trim())); p.colors?.forEach(c=>cc.add(c.trim())); }); const sc=document.getElementById('filterSizesContainer'); sc.innerHTML=''; ss.forEach(s=>{ const d=document.createElement('div'); d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${filters.sizes.includes(s)?CHIP_SELECTED:CHIP_DEFAULT}`; d.textContent=s; d.onclick=()=>toggleFilter('sizes',s,d); sc.appendChild(d); }); const cco=document.getElementById('filterColorsContainer'); cco.innerHTML=''; cc.forEach(c=>{ const d=document.createElement('div'); d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${filters.colors.includes(c)?CHIP_SELECTED:CHIP_DEFAULT}`; d.textContent=c; d.onclick=()=>toggleFilter('colors',c,d); cco.appendChild(d); }); updateFilterBadges(); };
@@ -655,8 +682,6 @@
 
         function updateDetailImageDisplay() {
             const img = document.getElementById('detailImg');
-            
-            // Fade effect
             img.style.opacity = '0.7';
             setTimeout(() => {
                 img.src = currentDetailImages[currentDetailImageIndex];
@@ -669,18 +694,53 @@
             // Update thumbnails
             const thumbsContainer = document.getElementById('detailThumbnails');
             const thumbs = thumbsContainer.children;
-            
             Array.from(thumbs).forEach((t, i) => {
                 if(i === currentDetailImageIndex) {
                     t.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-active";
-                    // Scroll thumbnail into view
                     t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 } else {
                     t.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
                 }
             });
         }
-        // -----------------------
+        
+        // --- ZOOM LOGIC ---
+        window.openImageZoom = () => { 
+            const s = document.getElementById('detailImg').src; 
+            if(!s.includes('placehold')){ 
+                // Set Image
+                document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; 
+                
+                // Show Modal
+                const m = document.getElementById('modalImageZoom'); 
+                m.classList.remove('hidden'); 
+                requestAnimationFrame(()=>{
+                    m.classList.remove('opacity-0');
+                    document.getElementById('zoomedImg').classList.replace('scale-95','scale-100');
+                }); 
+            } 
+        };
+        
+        window.changeZoomImage = (dir) => {
+             if (currentDetailImages.length <= 1) return;
+             // Muda o índice global para manter sincronia
+             changeDetailImage(dir); 
+             // Atualiza a imagem do zoom instantaneamente
+             const zImg = document.getElementById('zoomedImg');
+             zImg.style.opacity = '0.5';
+             setTimeout(() => {
+                 zImg.src = currentDetailImages[currentDetailImageIndex];
+                 zImg.style.opacity = '1';
+             }, 100);
+        };
+        
+        window.closeImageZoom = () => { 
+            const m=document.getElementById('modalImageZoom'); 
+            const i=document.getElementById('zoomedImg'); 
+            m.classList.add('opacity-0'); 
+            i.classList.replace('scale-100','scale-95'); 
+            setTimeout(()=>{m.classList.add('hidden');i.src='';},300); 
+        };
 
         window.openProductModal = (id) => { 
             const p=allProducts.find(x=>x.id===id); 
@@ -697,7 +757,6 @@
             // Build Thumbnails
             const thumbContainer = document.getElementById('detailThumbnails');
             thumbContainer.innerHTML = '';
-            
             if (currentDetailImages.length > 1) {
                 currentDetailImages.forEach((url, idx) => {
                     const img = document.createElement('img');
@@ -706,14 +765,13 @@
                     thumbContainer.appendChild(img);
                 });
                 thumbContainer.style.display = 'flex';
-                document.querySelector('#mainImageContainer button').classList.remove('hidden'); // Show arrows if multiple
+                document.querySelector('#mainImageContainer button').classList.remove('hidden');
             } else {
                 thumbContainer.style.display = 'none';
             }
             
-            updateDetailImageDisplay(); // Loads first image
+            updateDetailImageDisplay();
             
-            // Fill Text Data
             document.getElementById('detailCat').textContent=p.category; 
             document.getElementById('detailName').textContent=p.name; 
             document.getElementById('detailDesc').textContent=p.description||''; 
@@ -725,7 +783,6 @@
             
             updateModalHeartBtn(); 
             
-            // Options Logic
             const r=(l,t,c,w)=>{c.innerHTML='';if(!l?.length){w.classList.add('hidden');return;}w.classList.remove('hidden');l.forEach(i=>{const d=document.createElement('div');d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`;d.textContent=i;d.onclick=()=>{Array.from(c.children).forEach(s=>s.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`);d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_SELECTED}`;currentDetailSelection[t]=i;};c.appendChild(d);});}; 
             r(p.sizes,'size',document.getElementById('detailSizesContainer'),document.getElementById('sizesWrapper')); 
             r(p.colors,'color',document.getElementById('detailColorsContainer'),document.getElementById('colorsWrapper')); 
@@ -740,17 +797,6 @@
 
         window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const text=`Confira ${p.name} na ${document.title}!`; const url=window.location.href; if(navigator.share)navigator.share({title:p.name,text,url}).catch(console.error); else{navigator.clipboard.writeText(`${text} ${url}`);showToast("Link copiado!");} };
         
-        window.openImageZoom = () => { 
-            const s=document.getElementById('detailImg').src; 
-            if(!s.includes('placehold')){ 
-                document.getElementById('zoomedImg').src=s; 
-                const m=document.getElementById('modalImageZoom'); 
-                m.classList.remove('hidden'); 
-                requestAnimationFrame(()=>{m.classList.remove('opacity-0');document.getElementById('zoomedImg').classList.replace('scale-95','scale-100');}); 
-            } 
-        };
-        
-        window.closeImageZoom = () => { const m=document.getElementById('modalImageZoom'); const i=document.getElementById('zoomedImg'); m.classList.add('opacity-0'); i.classList.replace('scale-100','scale-95'); setTimeout(()=>{m.classList.add('hidden');i.src='';},300); };
         window.addToCart = (p,q,v) => { const price=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; const uid=`${p.id}-${v.size||''}-${v.color||''}`; const ex=cart.find(x=>x.uid===uid); if(ex)ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v}); updateCartUI(); showToast(`<b>${p.name}</b> adicionado!`); };
         function updateCartUI() { const cnt=cart.reduce((a,b)=>a+b.q,0); const b=document.getElementById('cartBadge'); b.textContent=cnt; b.classList.toggle('scale-0',cnt===0); const l=document.getElementById('cartList'); if(!cart.length){l.innerHTML='';document.getElementById('cartEmptyMsg').classList.remove('hidden');document.getElementById('cartSummary').classList.add('hidden');}else{document.getElementById('cartEmptyMsg').classList.add('hidden');document.getElementById('cartSummary').classList.remove('hidden'); l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1">${[i.v.size,i.v.color].filter(Boolean).join(' • ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6 text-slate-500">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6 text-primary">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');} updateCartTotals(); }
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
