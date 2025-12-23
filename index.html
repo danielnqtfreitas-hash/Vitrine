@@ -40,6 +40,7 @@
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
         .chip-common { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; user-select: none; }
         .active-scale:active { transform: scale(0.95); }
+        .pattern-dots { background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 20px 20px; }
         .product-card { 
             background: white; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; 
             border: 1px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
@@ -53,9 +54,9 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen relative">
+<body class="flex flex-col min-h-screen relative pattern-dots">
 
-    <!-- TELAS DE ERRO / SUSPENSÃO -->
+    <!-- TELAS DE ERRO -->
     <div id="errorScreen" class="fixed inset-0 z-[10000] bg-slate-900 hidden flex flex-col items-center justify-center p-6 text-center">
         <div class="bg-slate-800 p-6 rounded-full mb-6 shadow-2xl"><i id="errorIcon" data-lucide="store" class="w-16 h-16 text-slate-400"></i></div>
         <h1 id="errorTitle" class="text-3xl font-bold text-white mb-3">Loja Indisponível</h1>
@@ -76,9 +77,9 @@
         <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
             <div class="flex items-center gap-2">
                 <span class="flex h-2 w-2 relative"><span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
-                <span id="storeStatusText" class="font-bold tracking-wide uppercase tracking-tighter">Verificando...</span>
+                <span id="storeStatusText" class="font-bold tracking-wide uppercase">Verificando...</span>
             </div>
-            <div class="hidden md:block opacity-70">Entrega rápida via WhatsApp</div>
+            <div class="hidden md:block opacity-70 italic">Sua vitrine profissional ShopWave</div>
         </div>
     </div>
 
@@ -95,7 +96,7 @@
                         <input type="text" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
                         <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
                     </div>
-                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full bg-white shadow-sm border text-slate-600 relative"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i><span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span></button>
+                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full bg-white shadow-sm border text-slate-600 relative active-scale transition-transform"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i><span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span></button>
                 </div>
             </div>
 
@@ -106,12 +107,12 @@
         </div>
 
         <div class="md:hidden px-4 pb-3 flex gap-2">
-            <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
+            <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1 shadow-sm">
                 <div class="relative flex-1">
                     <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 text-sm focus:ring-0">
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
                 </div>
-                <button onclick="openFilterDrawer()" class="p-2.5 bg-white border rounded-md text-slate-600 relative"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i><span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span></button>
+                <button onclick="openFilterDrawer()" class="p-2.5 bg-white border rounded-md text-slate-600 relative active-scale"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i><span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span></button>
             </div>
             <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border text-slate-600 active-scale relative"><i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i><span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white scale-0 transition-transform"></span></button>
         </div>
@@ -121,52 +122,51 @@
         <!-- BANNERS HERO -->
         <div id="heroGridContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-3 mb-6 pb-2 hide-scroll -mx-2 px-2 md:mx-0 md:px-0"></div>
 
-        <!-- CATEGORIAS (TABS) -->
+        <!-- CATEGORIAS -->
         <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 bg-transparent">
-            <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2"></div>
+            <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2 px-1"></div>
         </nav>
 
-        <!-- CATALOGO AGRUPADO POR CATEGORIA -->
+        <!-- CATALOGO -->
         <div id="catalogContainer" class="pb-20 space-y-12 min-h-[50vh]"></div>
         
         <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center"><i data-lucide="search-x" class="w-12 h-12 text-slate-300 mb-4"></i><h3 class="font-bold text-slate-800">Nada encontrado</h3><button onclick="resetAllFilters()" class="mt-4 text-primary text-sm font-bold underline">Limpar filtros</button></div>
-        <div id="favoritesEmptyState" class="hidden flex flex-col items-center justify-center py-20 text-center"><i data-lucide="heart-off" class="w-12 h-12 text-slate-200 mb-4"></i><h3 class="font-bold text-slate-800">Sua lista está vazia</h3><button onclick="resetAllFilters()" class="mt-4 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold">Ver Produtos</button></div>
+        <div id="favoritesEmptyState" class="hidden flex flex-col items-center justify-center py-20 text-center"><i data-lucide="heart-off" class="w-12 h-12 text-slate-200 mb-4"></i><h3 class="font-bold text-slate-800">Sua lista está vazia</h3><button onclick="resetAllFilters()" class="mt-4 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold active-scale">Ver Produtos</button></div>
     </main>
 
     <footer class="bg-white border-t py-12 mt-auto">
         <div class="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
             <div><h5 id="footerStoreName" class="font-display font-bold text-xl text-slate-900 mb-1">Loja</h5><p id="footerDescription" class="text-slate-500 text-sm">Qualidade e confiança.</p></div>
             <div class="flex gap-6 text-sm font-semibold text-slate-600">
-                <button onclick="openDeliveryModal()" class="hover:text-primary flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</button>
-                <a id="footerWaLink" href="#" target="_blank" class="hover:text-primary flex items-center gap-1"><i data-lucide="message-circle" class="w-4 h-4"></i> Ajuda</a>
+                <button onclick="openDeliveryModal()" class="hover:text-primary flex items-center gap-1 active-scale"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</button>
+                <a id="footerWaLink" href="#" target="_blank" class="hover:text-primary flex items-center gap-1 active-scale"><i data-lucide="message-circle" class="w-4 h-4"></i> Ajuda</a>
             </div>
         </div>
     </footer>
 
-    <!-- MODAL: DETALHES DO PRODUTO (COMPLETO COM CARROSSEL) -->
+    <!-- MODAL DETALHES -->
     <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModalDetails()"></div>
         <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl relative flex flex-col max-h-[95vh] overflow-hidden animate-slide-up">
             <div class="absolute top-4 right-4 z-20 flex gap-2">
-                <button onclick="shareProduct()" class="bg-white/90 p-2 rounded-full shadow-sm"><i data-lucide="share-2" class="w-5 h-5"></i></button>
-                <button onclick="closeModalDetails()" class="bg-white/90 p-2 rounded-full shadow-sm"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="shareProduct()" class="bg-white/90 p-2 rounded-full shadow-sm active-scale"><i data-lucide="share-2" class="w-5 h-5"></i></button>
+                <button onclick="closeModalDetails()" class="bg-white/90 p-2 rounded-full shadow-sm active-scale"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
             <div class="flex-1 overflow-y-auto custom-scrollbar">
-                <!-- CARROSEL NO DETALHE -->
                 <div class="relative bg-white pt-2 pb-4">
                     <div id="mainImageContainer" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in" onclick="openImageZoom()">
                         <img id="detailImg" class="max-w-full max-h-full object-contain transition-transform group-hover:scale-105" src="">
-                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold">1/1</div>
-                        <button onclick="event.stopPropagation(); changeDetailImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md md:flex hidden opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
-                        <button onclick="event.stopPropagation(); changeDetailImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md md:flex hidden opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold backdrop-blur-sm">1/1</div>
+                        <button onclick="event.stopPropagation(); changeDetailImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md md:flex hidden opacity-0 group-hover:opacity-100 transition-opacity active-scale"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+                        <button onclick="event.stopPropagation(); changeDetailImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md md:flex hidden opacity-0 group-hover:opacity-100 transition-opacity active-scale"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
                     </div>
-                    <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center hide-scroll items-center mt-2"></div>
+                    <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center hide-scroll items-center mt-2 pb-2"></div>
                 </div>
 
                 <div class="px-6 pb-24">
-                    <div class="flex justify-between items-start mb-2"><span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest block pt-1"></span><button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2"><i data-lucide="heart" class="w-6 h-6 text-slate-300"></i></button></div>
-                    <h2 id="detailName" class="font-display text-2xl font-bold text-slate-900 mb-3"></h2>
+                    <div class="flex justify-between items-start mb-2"><span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest block pt-1"></span><button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 active-scale"><i data-lucide="heart" class="w-6 h-6 text-slate-300 transition-colors"></i></button></div>
+                    <h2 id="detailName" class="font-display text-2xl font-bold text-slate-900 mb-3 leading-tight"></h2>
                     <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
                     
                     <div class="space-y-6 border-t pt-6">
@@ -174,7 +174,6 @@
                         <div id="colorsWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Cor</span><div id="detailColorsContainer" class="flex flex-wrap gap-2"></div></div>
                     </div>
 
-                    <!-- RELACIONADOS -->
                     <div id="relatedProductsSection" class="mt-10 pt-8 border-t hidden">
                         <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase">Poderá Gostar Também</h4>
                         <div id="relatedGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
@@ -186,18 +185,16 @@
                 <div><span id="detailOldPrice" class="text-sm text-slate-400 line-through"></span><span id="detailPrice" class="text-3xl font-display font-black text-slate-900 block tracking-tight"></span></div>
                 <div class="flex gap-3">
                     <div class="flex items-center bg-slate-100 rounded-xl px-2 h-12"><button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-slate-500">-</button><span id="detailQtyDisplay" class="font-bold w-6 text-center text-lg">1</span><button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-slate-500">+</button></div>
-                    <button id="detailAddBtn" class="bg-primary text-white font-bold px-8 h-12 rounded-xl active-scale shadow-lg">Adicionar</button>
+                    <button id="detailAddBtn" class="bg-primary text-white font-bold px-8 h-12 rounded-xl active-scale shadow-lg transition-transform">Adicionar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL ZOOM (COMPLETO) -->
+    <!-- MODAL ZOOM -->
     <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
         <button class="absolute top-4 right-4 text-white p-3"><i data-lucide="x" class="w-10 h-10"></i></button>
-        <button onclick="event.stopPropagation(); changeZoomImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block"><i data-lucide="chevron-left" class="w-10 h-10"></i></button>
         <div id="zoomContainer" class="w-full h-full flex items-center justify-center p-4 relative"><img id="zoomedImg" class="max-w-full max-h-full object-contain transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()"></div>
-        <button onclick="event.stopPropagation(); changeZoomImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block"><i data-lucide="chevron-right" class="w-10 h-10"></i></button>
     </div>
 
     <!-- CARRINHO -->
@@ -217,34 +214,10 @@
         </div>
     </div>
 
-    <!-- FILTROS -->
-    <div id="filterModal" class="fixed inset-0 z-[70] hidden">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
-        <div id="filterDrawer" class="absolute inset-y-0 right-0 max-w-xs w-full bg-white flex flex-col transform translate-x-full transition-transform duration-300">
-            <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold">Filtrar Produtos</h3><button onclick="closeFilterDrawer()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
-            <div class="p-5 space-y-8 flex-1 overflow-y-auto custom-scrollbar">
-                <div><label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Faixa de Preço</label><div class="flex gap-2"><input id="filterMinPrice" type="number" placeholder="Min" oninput="handlePriceInput()" class="w-full border rounded-lg p-2.5 text-sm"><input id="filterMaxPrice" type="number" placeholder="Max" oninput="handlePriceInput()" class="w-full border rounded-lg p-2.5 text-sm"></div></div>
-                <div><label class="text-xs font-bold text-slate-400 uppercase block mb-3">Tamanhos</label><div id="filterSizesContainer" class="flex flex-wrap gap-2"></div></div>
-                <div><label class="text-xs font-bold text-slate-400 uppercase block mb-3">Cores</label><div id="filterColorsContainer" class="flex flex-wrap gap-2"></div></div>
-            </div>
-            <div class="p-5 border-t flex flex-col gap-2 shadow-inner"><button onclick="closeFilterDrawer()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl shadow-lg active-scale">Ver Resultados</button><button onclick="resetAllFilters()" class="w-full text-slate-500 font-bold py-2 text-sm underline">Limpar Tudo</button></div>
-        </div>
-    </div>
-
-    <!-- TAXAS DE ENTREGA -->
-    <div id="modalDelivery" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="document.getElementById('modalDelivery').classList.add('hidden')"></div>
-        <div class="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 shadow-2xl animate-slide-up">
-            <h3 class="font-bold text-lg mb-4 text-slate-900">Taxas de Entrega</h3>
-            <div id="deliveryList" class="space-y-2 mb-6 max-h-[40vh] overflow-y-auto custom-scrollbar"></div>
-            <button onclick="document.getElementById('modalDelivery').classList.add('hidden')" class="w-full py-3 bg-slate-100 font-bold text-slate-600 rounded-xl active-scale">Fechar</button>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const FIREBASE_CONFIG = { 
             apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", 
@@ -263,110 +236,127 @@
 
         let allProducts=[], categories=[], cart=[], whatsappNumber="", deliveryAreas=[], storeConfig={};
         let favorites = JSON.parse(localStorage.getItem(`favs_${STORE_ID}`) || "[]");
-        let filters = { search: "", category: null, minPrice: null, maxPrice: null, sizes: [], colors: [] };
+        let filters = { search: "", category: null, minPrice: null, maxPrice: null };
         let isFavoritesView = false;
         let currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
 
         const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
-        const CACHE_TTL = 10 * 60 * 1000; // 10 Minutos
+        const CACHE_TTL = 10 * 60 * 1000;
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!STORE_ID) { showFatalError("Link Inválido", "ID da loja não encontrado."); return; }
-            signInAnonymously(auth).then(() => initVitrine());
+            signInAnonymously(auth).then(() => initVitrine()).catch(e => { console.error(e); hideLoader(); });
             setupGestures();
         });
 
-        // --- SISTEMA DE CACHE E SINCRONIZAÇÃO ---
         async function initVitrine() {
-            const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
-            const now = Date.now();
+            try {
+                const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
+                const now = Date.now();
 
-            if (cached && (now - cached.timestamp < CACHE_TTL)) {
-                console.log("⚡ Cache Ativo");
-                allProducts = cached.products;
-                storeConfig = cached.config;
-                applyStoreConfig(storeConfig);
-                renderHeroCarousel(cached.banners);
-                updateInternalStates();
-                renderAll();
-                hideLoader();
-                checkUpdateBackground(cached.config.lastUpdate);
-            } else {
-                console.log("📡 Sincronização Completa");
-                await syncFullData();
+                // Se tiver cache, aplica IMEDIATAMENTE antes de qualquer coisa do banco
+                if (cached && (now - cached.timestamp < CACHE_TTL)) {
+                    allProducts = cached.products;
+                    storeConfig = cached.config;
+                    applyStoreConfig(storeConfig);
+                    renderHeroCarousel(cached.banners);
+                    updateInternalStates();
+                    renderAll();
+                    hideLoader();
+                    checkUpdateBackground(cached.config.lastUpdate);
+                } else {
+                    // Se não tiver cache, busca tudo
+                    await syncFullData();
+                }
+            } catch (e) {
+                console.error("Erro na inicialização:", e);
+                await syncFullData(); // Tenta buscar do banco se o cache falhar
             }
         }
 
         async function syncFullData() {
             try {
+                // Config da Loja (Prioridade máxima)
                 const configSnap = await getDoc(doc(db, `stores/${STORE_ID}/config/store`));
-                if (!configSnap.exists()) { showFatalError("Não Encontrado", "A loja não existe no sistema."); return; }
+                if (!configSnap.exists()) { showFatalError("Não Encontrado", "A loja não existe."); return; }
                 const configData = configSnap.data();
                 
                 if(configData.subscriptionStatus === 'suspended') { 
-                    showFatalError("Indisponível", "Esta loja encontra-se suspensa ou em manutenção."); 
+                    showFatalError("Indisponível", "Esta loja encontra-se suspensa."); 
                     return; 
                 }
 
-                const prodSnap = await getDocs(query(collection(db, `stores/${STORE_ID}/products`), where("status", "==", "active")));
-                const prods = prodSnap.docs.map(d => ({id: d.id, ...d.data()}));
+                // Busca as coleções (Sem filtros para evitar problemas de índices ausentes)
+                const [prodSnap, bannerSnap, catSnap] = await Promise.all([
+                    getDocs(collection(db, `stores/${STORE_ID}/products`)),
+                    getDocs(collection(db, `stores/${STORE_ID}/hero_cards`)),
+                    getDocs(collection(db, `stores/${STORE_ID}/categories`))
+                ]);
 
-                const bannerSnap = await getDocs(collection(db, `stores/${STORE_ID}/hero_cards`));
+                // Filtra o que está pausado em memória
+                const prods = prodSnap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status !== 'paused');
                 const bans = bannerSnap.docs.map(d => ({id: d.id, ...d.data()}));
+                const cats = catSnap.docs.map(d => d.data().name).sort();
 
+                // Salva no Cache
                 localStorage.setItem(CACHE_KEY, JSON.stringify({
                     timestamp: Date.now(),
                     products: prods,
                     config: configData,
-                    banners: bans
+                    banners: bans,
+                    categories: cats
                 }));
 
                 allProducts = prods;
                 storeConfig = configData;
+                categories = cats;
                 applyStoreConfig(configData);
                 renderHeroCarousel(bans);
                 updateInternalStates();
                 renderAll();
                 hideLoader();
-            } catch (err) { console.error("Erro no sync:", err); }
-        }
-
-        async function checkUpdateBackground(cachedUpdate) {
-            const snap = await getDoc(doc(db, `stores/${STORE_ID}/config/store`));
-            if (snap.exists() && snap.data().lastUpdate !== cachedUpdate) {
-                syncFullData(); // Atualiza silenciosamente para a próxima visita
+            } catch (err) {
+                console.error("Erro no sincronismo:", err);
+                hideLoader();
             }
         }
 
-        // --- CONFIGURAÇÃO DA UI ---
+        async function checkUpdateBackground(cachedUpdate) {
+            try {
+                const snap = await getDoc(doc(db, `stores/${STORE_ID}/config/store`));
+                if (snap.exists() && snap.data().lastUpdate !== cachedUpdate) {
+                    syncFullData();
+                }
+            } catch (e) {}
+        }
+
         function applyStoreConfig(d) {
             whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"");
-            if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); }
+            if(d.primaryColor) document.documentElement.style.setProperty('--color-primary', d.primaryColor);
             document.getElementById('storeNameDisplay').textContent = d.storeName;
             document.getElementById('footerStoreName').textContent = d.storeName;
-            document.getElementById('footerDescription').textContent = d.footerText || "Seu estabelecimento favorito.";
+            document.getElementById('footerDescription').textContent = d.footerText || "";
             document.getElementById('footerWaLink').href = `https://wa.me/${whatsappNumber}`;
             deliveryAreas = d.deliveryAreas || [];
             
             document.getElementById('deliveryList').innerHTML = deliveryAreas.map(a => `
-                <div class="flex justify-between p-3 bg-slate-50 rounded-lg text-sm">
-                    <span class="font-medium">${a.name}</span>
-                    <span class="font-bold">R$ ${a.fee.toFixed(2)}</span>
+                <div class="flex justify-between p-3 bg-slate-50 rounded-lg text-sm border-b">
+                    <span class="font-medium text-slate-600">${a.name}</span>
+                    <span class="font-bold text-slate-800">R$ ${a.fee.toFixed(2)}</span>
                 </div>`).join('');
             
             document.getElementById('cartDeliverySelect').innerHTML='<option value="0">Retirar no Local (Grátis)</option>' + 
                 deliveryAreas.map(a=>`<option value="${a.fee}">${a.name} (R$ ${a.fee.toFixed(2)})</option>`).join('');
             
             const isOpen = d.isStoreOpen !== false;
-            document.getElementById('storeStatusText').textContent = isOpen ? "Loja Aberta" : "Fechada Agora";
+            document.getElementById('storeStatusText').textContent = isOpen ? "Loja Aberta" : "Loja Fechada";
             document.getElementById('topStatusBar').className = isOpen ? "bg-slate-900 text-white text-[10px] py-1.5" : "bg-red-900 text-white text-[10px] py-1.5";
         }
 
         function updateInternalStates() {
             const cs = new Set(allProducts.map(p => p.category).filter(Boolean));
             categories = Array.from(cs).sort();
-            populateFilterOptions();
         }
 
         function renderAll() {
@@ -376,15 +366,14 @@
             lucide.createIcons();
         }
 
-        // --- RENDERIZAÇÃO DE COMPONENTES ---
         function renderHeroCarousel(banners) {
             const container = document.getElementById('heroGridContainer');
             if(!banners || !banners.length) { container.classList.add('hidden'); return; }
             container.classList.remove('hidden');
             container.innerHTML = banners.map(b => `
-                <div class="min-w-[88%] md:min-w-[420px] h-36 md:h-48 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer flex-shrink-0 text-white shadow-md active-scale" style="background: linear-gradient(135deg, ${b.color1}, ${b.color2})" onclick="selectCategory('${b.target}')">
-                    <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-[9px] font-bold uppercase mb-2 tracking-widest">${b.tag}</span>
-                    <h3 class="font-display font-bold text-xl md:text-2xl leading-tight">${b.title}</h3>
+                <div class="hero-card min-w-[88%] md:min-w-[420px] h-36 md:h-48 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer flex-shrink-0 text-white shadow-md active-scale" style="background: linear-gradient(135deg, ${b.color1}, ${b.color2})" onclick="selectCategory('${b.target}')">
+                    <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-[9px] font-bold uppercase mb-2 tracking-widest backdrop-blur-sm border border-white/10">${b.tag}</span>
+                    <h3 class="font-display font-bold text-xl md:text-2xl leading-tight drop-shadow-sm">${b.title}</h3>
                 </div>`).join('');
         }
 
@@ -401,20 +390,15 @@
             const empty = document.getElementById('emptyState');
             const favEmpty = document.getElementById('favoritesEmptyState');
 
-            let f = allProducts.filter(p => {
+            let filtered = allProducts.filter(p => {
                 if(isFavoritesView) return favorites.includes(p.id);
                 if(filters.category && p.category !== filters.category) return false;
                 if(filters.search && !p.name.toLowerCase().includes(filters.search)) return false;
-                const price = p.promoValue || p.value;
-                if(filters.minPrice && price < filters.minPrice) return false;
-                if(filters.maxPrice && price > filters.maxPrice) return false;
-                if(filters.sizes.length && !p.sizes?.some(s => filters.sizes.includes(s))) return false;
-                if(filters.colors.length && !p.colors?.some(co => filters.colors.includes(co))) return false;
                 return true;
             });
 
             c.innerHTML=''; 
-            if(!f.length) { 
+            if(!filtered.length) { 
                 if(isFavoritesView) { favEmpty.classList.remove('hidden'); empty.classList.add('hidden'); } 
                 else { empty.classList.remove('hidden'); favEmpty.classList.add('hidden'); }
                 return; 
@@ -422,29 +406,29 @@
             empty.classList.add('hidden'); favEmpty.classList.add('hidden');
 
             const grouped = {};
-            if(isFavoritesView || filters.search || (filters.minPrice !== null || filters.maxPrice !== null)) { 
-                grouped[isFavoritesView ? 'Meus Favoritos' : 'Resultados da Pesquisa'] = f; 
+            if(isFavoritesView || filters.search || filters.category) { 
+                grouped[isFavoritesView ? 'Meus Favoritos' : 'Resultados'] = filtered; 
             } else { 
-                f.forEach(p => { const k = p.category || 'Geral'; if(!grouped[k]) grouped[k]=[]; grouped[k].push(p); }); 
+                filtered.forEach(p => { const k = p.category || 'Geral'; if(!grouped[k]) grouped[k]=[]; grouped[k].push(p); }); 
             }
 
-            Object.keys(grouped).sort().forEach(key => {
+            Object.keys(grouped).forEach(key => {
                 const sec = document.createElement('section');
                 sec.innerHTML = `<h3 class="font-bold text-slate-800 mb-5 px-1 text-lg flex items-center gap-2"><div class="w-1.5 h-6 bg-primary rounded-full"></div> ${key}</h3>`;
                 const grid = document.createElement('div');
                 grid.className = "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6";
                 grid.innerHTML = grouped[key].map(p => `
-                    <div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full animate-fade-in relative">
+                    <div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full animate-fade-in relative bg-white">
                         <div class="aspect-square bg-slate-50 relative overflow-hidden">
                             <img src="${p.images?.[0] || 'https://placehold.co/400'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">
                             <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 shadow-sm active-scale"><i data-lucide="heart" class="w-4 h-4 ${favorites.includes(p.id)?'heart-active':'text-slate-400'}"></i></button>
-                            ${p.promoValue ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[9px] font-black px-2 py-1 rounded-bl-lg">-${Math.round((1 - p.promoValue/p.value)*100)}%</span>` : ''}
+                            ${p.promoValue ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[9px] font-black px-2 py-1 rounded-bl-lg shadow-sm">OFERTA</span>` : ''}
                         </div>
                         <div class="p-4 flex flex-col flex-grow">
                             <h3 class="text-sm font-semibold text-slate-800 line-clamp-2 leading-tight mb-3">${p.name}</h3>
                             <div class="mt-auto flex items-center justify-between">
-                                <span class="text-lg font-black text-slate-900">R$ ${(p.promoValue || p.value).toFixed(2)}</span>
-                                <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary hover:text-white transition-colors"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                                <span class="text-lg font-black text-slate-900 tracking-tight">R$ ${(p.promoValue || p.value).toFixed(2)}</span>
+                                <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center transition-colors active-scale hover:bg-primary hover:text-white"><i data-lucide="plus" class="w-5 h-5"></i></button>
                             </div>
                         </div>
                     </div>`).join('');
@@ -454,7 +438,6 @@
             lucide.createIcons();
         }
 
-        // --- MODAIS E DETALHES ---
         window.openProductModal = (id) => {
             const p = allProducts.find(x => x.id === id);
             if(!p) return;
@@ -470,41 +453,20 @@
             updateDetailImageDisplay();
             document.getElementById('detailCat').textContent = p.category;
             document.getElementById('detailName').textContent = p.name;
-            document.getElementById('detailDesc').textContent = p.description || "Este produto não possui descrição detalhada.";
+            document.getElementById('detailDesc').textContent = p.description || "";
             document.getElementById('detailPrice').textContent = `R$ ${(p.promoValue || p.value).toFixed(2)}`;
             document.getElementById('detailOldPrice').textContent = p.promoValue ? `R$ ${p.value.toFixed(2)}` : "";
             document.getElementById('detailQtyDisplay').textContent = "1";
 
-            const r=(l,t,c,w)=>{c.innerHTML='';if(!l?.length){w.classList.add('hidden');return;}w.classList.remove('hidden');l.forEach(v=>{const d=document.createElement('div');d.className="px-4 py-2 border rounded-xl text-xs chip-common border-slate-200 bg-slate-50 font-medium";d.textContent=v;d.onclick=()=>{Array.from(c.children).forEach(b=>b.className="px-4 py-2 border rounded-xl text-xs chip-common border-slate-200 bg-slate-50 font-medium");d.className="px-4 py-2 border-2 rounded-xl text-xs chip-common border-primary bg-primary/5 text-primary font-bold";currentDetailSelection[t]=v;};c.appendChild(d);});};
-            
+            const r=(l,t,c,w)=>{c.innerHTML='';if(!l?.length){w.classList.add('hidden');return;}w.classList.remove('hidden');l.forEach(v=>{const d=document.createElement('div');d.className="px-4 py-2 border rounded-xl text-xs chip-common border-slate-200 bg-slate-50";d.textContent=v;d.onclick=()=>{Array.from(c.children).forEach(b=>b.className="px-4 py-2 border rounded-xl text-xs chip-common border-slate-200 bg-slate-50");d.className="px-4 py-2 border-2 rounded-xl text-xs chip-common border-primary bg-primary/5 text-primary font-bold";currentDetailSelection[t]=v;};c.appendChild(d);});};
             r(p.sizes, 'size', document.getElementById('detailSizesContainer'), document.getElementById('sizesWrapper'));
             r(p.colors, 'color', document.getElementById('detailColorsContainer'), document.getElementById('colorsWrapper'));
 
             renderRelatedProducts(p);
             updateModalHeartBtn();
-            
-            document.getElementById('detailAddBtn').onclick = () => {
-                if(p.sizes?.length && !currentDetailSelection.size) return showToast("Selecione um tamanho!");
-                if(p.colors?.length && !currentDetailSelection.color) return showToast("Selecione uma cor!");
-                addToCart(p, currentDetailQty, currentDetailSelection);
-                closeModalDetails();
-            };
             document.getElementById('modalDetails').classList.remove('hidden');
             lucide.createIcons();
         };
-
-        function renderRelatedProducts(curr) {
-            const grid = document.getElementById('relatedGrid');
-            const sec = document.getElementById('relatedProductsSection');
-            const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 3);
-            if(!rel.length) { sec.classList.add('hidden'); return; }
-            sec.classList.remove('hidden');
-            grid.innerHTML = rel.map(p => `
-                <div onclick="openProductModal('${p.id}')" class="bg-white border rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-all">
-                    <img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-24 object-cover">
-                    <div class="p-2"><h5 class="text-[10px] font-bold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black">R$ ${(p.promoValue||p.value).toFixed(2)}</span></div>
-                </div>`).join('');
-        }
 
         window.changeDetailImage = (dir) => { currentDetailImageIndex = (currentDetailImageIndex + dir + currentDetailImages.length) % currentDetailImages.length; updateDetailImageDisplay(); };
         window.setDetailImage = (idx) => { currentDetailImageIndex = idx; updateDetailImageDisplay(); };
@@ -515,12 +477,12 @@
             Array.from(thumbs).forEach((t, i) => t.className = i===currentDetailImageIndex ? "w-14 h-14 rounded-lg border-2 border-primary object-cover cursor-pointer" : "w-14 h-14 rounded-lg border-2 border-transparent opacity-60 object-cover cursor-pointer");
         }
 
-        // --- CARRINHO E FAVORITOS ---
         window.addToCart = (p, q, v) => {
+            const price = p.promoValue || p.value;
             const uid = `${p.id}-${v.size||''}-${v.color||''}`;
             const ex = cart.find(x => x.uid === uid);
             if(ex) ex.q += q;
-            else cart.push({uid, id:p.id, name:p.name, price: p.promoValue || p.value, q, img:p.images?.[0], v});
+            else cart.push({uid, id:p.id, name:p.name, price, q, img:p.images?.[0], v});
             updateCartUI();
             showToast("Item adicionado!");
         };
@@ -534,14 +496,14 @@
             else {
                 document.getElementById('cartEmptyMsg').classList.add('hidden'); document.getElementById('cartSummary').classList.remove('hidden');
                 l.innerHTML = cart.map((i, idx) => `
-                    <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-100 animate-fade-in">
+                    <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-100 mb-3">
                         <img src="${i.img || 'https://placehold.co/100'}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
                         <div class="flex-1">
-                            <div class="flex justify-between items-start"><p class="font-bold text-xs line-clamp-1">${i.name}</p><button onclick="modQty('${i.uid}',-${i.q})" class="text-red-400 p-1"><i data-lucide="x" class="w-3.5 h-3.5"></i></button></div>
-                            <p class="text-[10px] text-slate-400 mt-0.5">${i.v.size||''} ${i.v.color||''}</p>
+                            <p class="font-bold text-xs">${i.name}</p>
+                            <p class="text-[10px] text-slate-400">${i.v.size||''} ${i.v.color||''}</p>
                             <div class="flex justify-between items-center mt-2">
                                 <span class="font-black text-sm text-slate-900">R$ ${(i.price*i.q).toFixed(2)}</span>
-                                <div class="flex items-center bg-slate-100 rounded h-7"><button onclick="modQty('${i.uid}',-1)" class="w-7">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-7">+</button></div>
+                                <div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6">+</button></div>
                             </div>
                         </div>
                     </div>`).join('');
@@ -560,69 +522,74 @@
         window.checkoutWhatsApp = () => {
             if(!cart.length) return;
             const sub = cart.reduce((a,b)=>a+(b.price*b.q), 0);
-            const m = document.getElementById('cartDeliverySelect');
-            const deliver = m.options[m.selectedIndex].text;
-            let msg = `*PEDIDO - ${storeConfig.storeName}*\n\n`;
+            let msg = `*PEDIDO - ${document.getElementById('storeNameDisplay').textContent}*\n\n`;
             cart.forEach(i => msg += `• ${i.q}x ${i.name} ${i.v.size?'('+i.v.size+')':''} ${i.v.color?'['+i.v.color+']':''}\n`);
-            msg += `\n*Forma de Entrega:* ${deliver}\n*TOTAL:* R$ ${document.getElementById('cartFinalTotal').textContent}`;
+            msg += `\n*TOTAL:* R$ ${document.getElementById('cartFinalTotal').textContent}`;
             window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`);
         };
 
-        window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1) favorites.splice(idx,1); else favorites.push(id); localStorage.setItem(`favs_${STORE_ID}`, JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); if(currentDetailId===id) updateModalHeartBtn(); };
+        window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1) favorites.splice(idx,1); else favorites.push(id); localStorage.setItem(`favs_${STORE_ID}`, JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); };
         function updateFavoritesUI() { 
             const cnt = favorites.length;
-            document.querySelectorAll('#favBadgeDesktop, #favBadgeMobile').forEach(b => { b.textContent = cnt; b.classList.toggle('scale-0', cnt===0); b.classList.toggle('scale-100', cnt>0); });
+            document.querySelectorAll('#favBadgeDesktop, #favBadgeMobile').forEach(b => { b.textContent = cnt; b.classList.toggle('scale-0', cnt===0); });
             const has = cnt > 0;
             document.querySelectorAll('#headerHeartIcon, #mobileHeartIcon').forEach(i => i.className = has ? `w-5 h-5 heart-active` : `w-5 h-5 text-slate-700`);
         }
 
-        // --- UTILITÁRIOS ---
-        window.handleSearchInput = (v) => { filters.search = v.toLowerCase(); renderCatalog(); };
-        window.filterByCat = (c) => { filters.category = c; isFavoritesView = false; renderCategoryTabs(); renderCatalog(); };
-        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; filters.category = null; renderCategoryTabs(); renderCatalog(); };
-        window.resetAllFilters = () => { filters = {search:"", category:null, minPrice:null, maxPrice:null, sizes:[], colors:[]}; isFavoritesView = false; renderCategoryTabs(); renderCatalog(); };
-        window.showToast = (m) => { const t = document.createElement('div'); t.className="bg-slate-900/90 text-white px-6 py-3 rounded-full shadow-2xl animate-fade-in flex items-center gap-2 font-bold text-xs"; t.innerHTML=`<i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i> ${m}`; document.getElementById('toastContainer').appendChild(t); setTimeout(()=>t.remove(), 3000); lucide.createIcons(); };
-        window.hideLoader = () => { const l = document.getElementById('initialLoader'); l.style.opacity = '0'; setTimeout(()=> { l.classList.add('hidden'); document.getElementById('app').classList.remove('hidden', 'opacity-0'); }, 500); };
-        window.showFatalError = (t, m) => { document.getElementById('initialLoader').classList.add('hidden'); document.getElementById('errorScreen').classList.remove('hidden'); document.getElementById('errorTitle').textContent = t; document.getElementById('errorMsg').textContent = m; };
+        function hideLoader() {
+            const l = document.getElementById('initialLoader');
+            l.style.opacity = '0';
+            setTimeout(()=> { l.classList.add('hidden'); document.getElementById('app').classList.remove('hidden', 'opacity-0'); }, 500);
+        }
+
+        function showFatalError(t, m) {
+            document.getElementById('initialLoader').classList.add('hidden');
+            document.getElementById('errorScreen').classList.remove('hidden');
+            document.getElementById('errorTitle').textContent = t;
+            document.getElementById('errorMsg').textContent = m;
+        }
+
         window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
-        window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(()=>document.getElementById('cartDrawer').classList.remove('translate-x-full'), 10); };
-        window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('modalCart').classList.add('hidden'), 300); };
-        window.openFilterDrawer = () => { document.getElementById('filterModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('filterDrawer').classList.remove('translate-x-full'), 10); };
-        window.closeFilterDrawer = () => { document.getElementById('filterDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('filterModal').classList.add('hidden'), 300); };
-        window.adjustDetailQty = (d) => { currentDetailQty += d; if(currentDetailQty<1) currentDetailQty=1; document.getElementById('detailQtyDisplay').textContent = currentDetailQty; };
+        window.adjustDetailQty = (d) => { currentDetailQty += d; if(currentDetailQty < 1) currentDetailQty = 1; document.getElementById('detailQtyDisplay').textContent = currentDetailQty; };
+        window.openCartModal = () => document.getElementById('modalCart').classList.remove('hidden');
+        window.closeCartModal = () => document.getElementById('modalCart').classList.add('hidden');
+        window.handleSearchInput = (v) => { filters.search = v.toLowerCase(); renderCatalog(); };
+        window.filterByCat = (c) => { filters.category = c; renderCatalog(); renderCategoryTabs(); };
+        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCatalog(); };
+        window.resetAllFilters = () => { filters = {search:"", category:null}; isFavoritesView = false; renderCatalog(); };
+        window.showToast = (m) => { const t = document.createElement('div'); t.className="bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl animate-fade-in"; t.textContent=m; document.getElementById('toastContainer').appendChild(t); setTimeout(()=>t.remove(), 3000); };
+        window.openImageZoom = () => { document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; document.getElementById('modalImageZoom').classList.remove('hidden'); setTimeout(()=>document.getElementById('modalImageZoom').classList.remove('opacity-0'), 10); };
+        window.closeImageZoom = () => { document.getElementById('modalImageZoom').classList.add('opacity-0'); setTimeout(()=>document.getElementById('modalImageZoom').classList.add('hidden'), 300); };
+        window.updateModalHeartBtn = () => { const b=document.querySelector('#modalHeartBtn i'); if(favorites.includes(currentDetailId)) b.classList.add('heart-active'); else b.classList.remove('heart-active'); };
+        window.toggleFavoriteCurrentDetail = () => toggleFavorite(currentDetailId);
+        window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const url=window.location.href; if(navigator.share) navigator.share({title:p.name, text:`Olha esse produto na ${document.title}!`, url}); else { navigator.clipboard.writeText(`${p.name}: ${url}`); showToast("Copiado!"); } };
         window.quickAdd = (id) => openProductModal(id);
         window.selectCategory = (c) => filterByCat(c);
         window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
-        window.openImageZoom = () => { document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; document.getElementById('modalImageZoom').classList.remove('hidden'); setTimeout(()=>document.getElementById('modalImageZoom').classList.remove('opacity-0'), 10); };
-        window.closeImageZoom = () => { document.getElementById('modalImageZoom').classList.add('opacity-0'); setTimeout(()=>document.getElementById('modalImageZoom').classList.add('hidden'), 300); };
-        window.changeZoomImage = (dir) => { changeDetailImage(dir); document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; };
-        window.updateModalHeartBtn = () => { const b=document.querySelector('#modalHeartBtn i'); if(favorites.includes(currentDetailId)) { b.classList.add('heart-active'); b.classList.remove('text-slate-300'); } else { b.classList.remove('heart-active'); b.classList.add('text-slate-300'); } };
-        window.toggleFavoriteCurrentDetail = () => toggleFavorite(currentDetailId);
-        window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const url=window.location.href; if(navigator.share) navigator.share({title:p.name, text:`Olha esse item na ${document.title}!`, url}); else { navigator.clipboard.writeText(`${p.name}: ${url}`); showToast("Link copiado!"); } };
-        window.handlePriceInput = () => { filters.minPrice = parseFloat(document.getElementById('filterMinPrice').value) || null; filters.maxPrice = parseFloat(document.getElementById('filterMaxPrice').value) || null; renderCatalog(); };
-        window.populateFilterOptions = () => {
-            const ss=new Set(), cc=new Set(); allProducts.forEach(p=>{ p.sizes?.forEach(s=>ss.add(s)); p.colors?.forEach(c=>cc.add(c)); });
-            const sCont=document.getElementById('filterSizesContainer'), cCont=document.getElementById('filterColorsContainer');
-            sCont.innerHTML = Array.from(ss).map(s => `<button onclick="toggleF('sizes','${s}',this)" class="px-4 py-2 border rounded-lg text-xs hover:border-primary transition-all">${s}</button>`).join('');
-            cCont.innerHTML = Array.from(cc).map(c => `<button onclick="toggleF('colors','${c}',this)" class="px-4 py-2 border rounded-lg text-xs hover:border-primary transition-all">${c}</button>`).join('');
-        };
-        window.toggleF = (t,v,el) => { 
-            const idx=filters[t].indexOf(v); 
-            if(idx>-1) { filters[t].splice(idx,1); el.classList.remove('bg-primary','text-white','border-primary','font-bold'); } 
-            else { filters[t].push(v); el.classList.add('bg-primary','text-white','border-primary','font-bold'); } 
-            renderCatalog(); 
-            const b = document.querySelectorAll('.filter-badge-indicator');
-            const total = filters.sizes.length + filters.colors.length + (filters.minPrice?1:0) + (filters.maxPrice?1:0);
-            b.forEach(i => { i.textContent = total; i.classList.toggle('hidden', total===0); });
-        };
+        window.openFilterDrawer = () => { document.getElementById('filterModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('filterDrawer').classList.remove('translate-x-full'), 10); };
+        window.closeFilterDrawer = () => { document.getElementById('filterDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('filterModal').classList.add('hidden'), 300); };
+        
+        function renderRelatedProducts(curr) {
+            const grid = document.getElementById('relatedGrid');
+            const sec = document.getElementById('relatedProductsSection');
+            const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 3);
+            if(!rel.length) { sec.classList.add('hidden'); return; }
+            sec.classList.remove('hidden');
+            grid.innerHTML = rel.map(p => `
+                <div onclick="openProductModal('${p.id}')" class="bg-white border rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-all">
+                    <img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-24 object-cover">
+                    <div class="p-2"><h5 class="text-[10px] font-bold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black">R$ ${(p.promoValue||p.value).toFixed(2)}</span></div>
+                </div>`).join('');
+        }
+
         function setupGestures() {
             let startX = 0;
             const detail = document.getElementById('mainImageContainer');
-            detail.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+            detail.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
             detail.addEventListener('touchend', e => {
                 let diff = startX - e.changedTouches[0].clientX;
                 if(Math.abs(diff) > 50) changeDetailImage(diff > 0 ? 1 : -1);
-            });
+            }, {passive: true});
         }
 
         lucide.createIcons();
