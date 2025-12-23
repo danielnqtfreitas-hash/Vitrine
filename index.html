@@ -24,8 +24,15 @@
                     keyframes: {
                         fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
                         slideUp: { from: { opacity: 0, transform: 'translateY(20px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
-                        bounceShort: { '0%, 100%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.2)' } },
-                        heartBeat: { '0%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.3)' }, '100%': { transform: 'scale(1)' } },
+                        bounceShort: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.2)' }
+                        },
+                        heartBeat: {
+                            '0%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.3)' },
+                            '100%': { transform: 'scale(1)' }
+                        },
                         zoomIn: { from: { transform: 'scale(0.95)', opacity: 0 }, to: { transform: 'scale(1)', opacity: 1 } }
                     }
                 }
@@ -36,31 +43,52 @@
         :root { --color-primary: #EA1D2C; --color-primary-dark: #b91c29; }
         body { background-color: #F3F4F6; color: #334155; -webkit-font-smoothing: antialiased; }
         .glass-header { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
         .chip-common { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; user-select: none; }
         .active-scale:active { transform: scale(0.95); }
-        .pattern-dots { background-image: radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px); background-size: 20px 20px; }
+        .hero-card { transition: transform 0.3s ease; }
+        .hero-card:active { transform: scale(0.98); }
+        .pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.2) 2px, transparent 2px); background-size: 20px 20px; }
+        
         .product-card { 
-            background: white; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; 
-            border: 1px solid transparent; box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            background: white; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            transition: all 0.3s ease; 
+            border: 1px solid transparent;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); border-color: var(--color-primary); }
+        .product-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); 
+            border-color: var(--color-primary);
+        }
+
+        .toast-enter { transform: translateY(100%); opacity: 0; }
+        .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .toast-exit { transform: translateY(0); opacity: 1; }
+        .toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        img { max-width: 100%; display: block; }
         .heart-active { fill: var(--color-primary); color: var(--color-primary); animation: heartBeat 0.4s forwards; }
+        
         .thumb-active { border-color: var(--color-primary); opacity: 1; }
         .thumb-inactive { border-color: transparent; opacity: 0.6; }
-        img { content-visibility: auto; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .thumb-inactive:hover { opacity: 1; }
     </style>
 </head>
-<body class="flex flex-col min-h-screen relative pattern-dots">
+<body class="flex flex-col min-h-screen relative">
 
-    <!-- TELAS DE ERRO -->
+    <!-- ERROR / SUSPENDED SCREEN -->
     <div id="errorScreen" class="fixed inset-0 z-[10000] bg-slate-900 hidden flex flex-col items-center justify-center p-6 text-center">
-        <div class="bg-slate-800 p-6 rounded-full mb-6 shadow-2xl"><i id="errorIcon" data-lucide="store" class="w-16 h-16 text-slate-400"></i></div>
+        <div class="bg-slate-800 p-6 rounded-full mb-6 shadow-2xl">
+            <i id="errorIcon" data-lucide="store" class="w-16 h-16 text-slate-400"></i>
+        </div>
         <h1 id="errorTitle" class="text-3xl font-bold text-white mb-3">Loja Indisponível</h1>
-        <p id="errorMsg" class="text-slate-400 max-w-md">...</p>
+        <p id="errorMsg" class="text-slate-400 max-w-md">Não foi possível carregar as informações desta loja no momento.</p>
     </div>
 
     <!-- TOAST CONTAINER -->
@@ -69,144 +97,249 @@
     <!-- INITIAL LOADER -->
     <div id="initialLoader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
         <div class="w-12 h-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
-        <p class="mt-4 text-xs font-bold text-slate-400 animate-pulse uppercase tracking-widest">Sincronizando Vitrine...</p>
+        <p class="mt-4 text-xs font-bold text-slate-400 animate-pulse">CARREGANDO VITRINE...</p>
     </div>
 
     <!-- STATUS BAR -->
     <div id="topStatusBar" class="bg-slate-900 text-white text-[10px] py-1.5 transition-colors duration-300">
         <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <span class="flex h-2 w-2 relative"><span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span></span>
+                <span class="flex h-2 w-2 relative">
+                    <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
                 <span id="storeStatusText" class="font-bold tracking-wide uppercase">Verificando...</span>
             </div>
-            <div class="hidden md:block opacity-70 italic">Sua vitrine profissional ShopWave</div>
+            <div class="hidden md:block opacity-70">Horário de funcionamento na descrição</div>
         </div>
     </div>
 
     <!-- HEADER -->
-    <header class="sticky top-0 z-50 glass-header">
+    <header class="sticky top-0 z-50 glass-header transition-all duration-300">
         <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
+            <!-- Logo -->
             <div class="flex items-center gap-2 cursor-pointer active-scale" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
                 <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none">...</h1>
             </div>
 
+            <!-- Desktop Search + Filter -->
             <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
-                <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white transition-all shadow-sm">
+                <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
                     <div class="relative flex-grow">
                         <input type="text" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
                         <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
                     </div>
-                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full bg-white shadow-sm border text-slate-600 relative active-scale transition-transform"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i><span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span></button>
+                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 relative active-scale bg-white shadow-sm border border-slate-200 text-slate-600 transition-colors" title="Filtrar">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                        <span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
+                    </button>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
-                <button onclick="toggleFavoritesView()" class="hidden md:flex p-2.5 rounded-full border bg-white relative active-scale"><i data-lucide="heart" class="w-5 h-5 text-slate-700" id="headerHeartIcon"></i><span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white scale-0 transition-transform">0</span></button>
-                <button onclick="openCartModal()" class="p-2.5 rounded-full border bg-white relative active-scale"><i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700"></i><span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white scale-0 transition-transform">0</span></button>
+            <!-- Icons Right -->
+            <div class="flex items-center gap-2 md:gap-4">
+                <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale group bg-white border border-slate-200 relative" title="Meus Favoritos">
+                    <i data-lucide="heart" class="w-5 h-5 text-slate-700 transition-colors" id="headerHeartIcon"></i>
+                    <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+                </button>
+                <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200" id="cartButtonHeader">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+                </button>
             </div>
         </div>
-
-        <div class="md:hidden px-4 pb-3 flex gap-2">
-            <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1 shadow-sm">
-                <div class="relative flex-1">
-                    <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 text-sm focus:ring-0">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+        
+        <!-- Mobile Search + Filter -->
+        <div class="md:hidden px-4 pb-3">
+            <div class="flex items-center gap-2">
+                <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
+                    <div class="relative flex-1">
+                        <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    </div>
+                    <button onclick="openFilterDrawer()" class="p-2.5 my-1 rounded-md bg-white hover:bg-slate-50 relative active-scale border border-slate-200 text-slate-600 shadow-sm" title="Filtrar">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                        <span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
+                    </button>
                 </div>
-                <button onclick="openFilterDrawer()" class="p-2.5 bg-white border rounded-md text-slate-600 relative active-scale"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i><span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span></button>
+                <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
+                    <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
+                    <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300"></span>
+                </button>
             </div>
-            <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border text-slate-600 active-scale relative"><i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i><span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white scale-0 transition-transform"></span></button>
         </div>
     </header>
 
+    <!-- MAIN APP -->
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
-        <!-- BANNERS HERO -->
-        <div id="heroGridContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-3 mb-6 pb-2 hide-scroll -mx-2 px-2 md:mx-0 md:px-0"></div>
+        
+        <!-- BANNERS -->
+        <div id="heroGridContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-3 mb-6 pb-2 hide-scroll -mx-2 px-2 md:mx-0 md:px-0">
+            <div class="min-w-[85vw] md:min-w-[400px] h-36 md:h-48 rounded-2xl bg-slate-200 animate-pulse flex-shrink-0 snap-center"></div>
+        </div>
 
-        <!-- CATEGORIAS -->
-        <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 bg-transparent">
-            <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2 px-1"></div>
+        <!-- Categories -->
+        <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 -mx-2 px-2 md:mx-0 md:px-0 bg-transparent">
+            <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2 pl-1"></div>
         </nav>
 
         <!-- CATALOGO -->
-        <div id="catalogContainer" class="pb-20 space-y-12 min-h-[50vh]"></div>
+        <div id="catalogContainer" class="pb-20 space-y-10 min-h-[50vh]"></div>
         
-        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center"><i data-lucide="search-x" class="w-12 h-12 text-slate-300 mb-4"></i><h3 class="font-bold text-slate-800">Nada encontrado</h3><button onclick="resetAllFilters()" class="mt-4 text-primary text-sm font-bold underline">Limpar filtros</button></div>
-        <div id="favoritesEmptyState" class="hidden flex flex-col items-center justify-center py-20 text-center"><i data-lucide="heart-off" class="w-12 h-12 text-slate-200 mb-4"></i><h3 class="font-bold text-slate-800">Sua lista está vazia</h3><button onclick="resetAllFilters()" class="mt-4 bg-slate-900 text-white px-6 py-3 rounded-xl font-bold active-scale">Ver Produtos</button></div>
+        <!-- Empty States -->
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-fade-in">
+            <div class="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mb-4 text-slate-400"><i data-lucide="search-x" class="w-8 h-8"></i></div>
+            <h3 class="font-bold text-slate-800">Nenhum produto encontrado</h3>
+            <button onclick="resetAllFilters()" class="mt-4 text-primary text-sm font-bold">Limpar filtros</button>
+        </div>
+
+        <div id="favoritesEmptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-fade-in">
+            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4 text-primary"><i data-lucide="heart-off" class="w-8 h-8"></i></div>
+            <h3 class="font-bold text-slate-800">Sua lista de desejos está vazia</h3>
+            <p class="text-slate-500 text-sm mt-2 mb-6">Salve os itens que você mais gostou aqui ❤️</p>
+            <button onclick="resetAllFilters()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg active-scale">Ver Produtos</button>
+        </div>
     </main>
 
-    <footer class="bg-white border-t py-12 mt-auto">
-        <div class="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-            <div><h5 id="footerStoreName" class="font-display font-bold text-xl text-slate-900 mb-1">Loja</h5><p id="footerDescription" class="text-slate-500 text-sm">Qualidade e confiança.</p></div>
-            <div class="flex gap-6 text-sm font-semibold text-slate-600">
-                <button onclick="openDeliveryModal()" class="hover:text-primary flex items-center gap-1 active-scale"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</button>
-                <a id="footerWaLink" href="#" target="_blank" class="hover:text-primary flex items-center gap-1 active-scale"><i data-lucide="message-circle" class="w-4 h-4"></i> Ajuda</a>
+    <!-- RODAPÉ -->
+    <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
+        <div class="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-center md:text-left">
+                <h5 class="font-display font-bold text-xl text-slate-900 mb-1" id="footerStoreName">Loja</h5>
+                <p id="footerDescription" class="text-slate-500 text-sm">Qualidade e confiança.</p>
+            </div>
+            <div class="flex gap-4 text-sm font-semibold text-slate-600">
+                <button onclick="openDeliveryModal()" class="hover:text-primary flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</button>
+                <a id="footerWaLink" href="#" target="_blank" class="hover:text-primary flex items-center gap-1"><i data-lucide="message-circle" class="w-4 h-4"></i> Ajuda</a>
             </div>
         </div>
     </footer>
 
-    <!-- MODAL DETALHES -->
-    <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center">
-        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onclick="closeModalDetails()"></div>
-        <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl relative flex flex-col max-h-[95vh] overflow-hidden animate-slide-up">
+    <!-- MODAL: DETALHES -->
+    <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
+        <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl pointer-events-auto relative flex flex-col max-h-[95vh] overflow-hidden animate-slide-up">
+            
+            <!-- Header Modal Buttons -->
             <div class="absolute top-4 right-4 z-20 flex gap-2">
-                <button onclick="shareProduct()" class="bg-white/90 p-2 rounded-full shadow-sm active-scale"><i data-lucide="share-2" class="w-5 h-5"></i></button>
-                <button onclick="closeModalDetails()" class="bg-white/90 p-2 rounded-full shadow-sm active-scale"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button onclick="shareProduct()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 active:scale-95" title="Compartilhar">
+                    <i data-lucide="share-2" class="w-5 h-5 text-slate-700"></i>
+                </button>
+                <button onclick="closeModalDetails()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 active:scale-95">
+                    <i data-lucide="x" class="w-5 h-5 text-slate-700"></i>
+                </button>
             </div>
             
+            <!-- Scroll Area -->
             <div class="flex-1 overflow-y-auto custom-scrollbar">
+                
+                <!-- CARROSEL DE IMAGENS -->
                 <div class="relative bg-white pt-2 pb-4">
-                    <div id="mainImageContainer" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in" onclick="openImageZoom()">
-                        <img id="detailImg" class="max-w-full max-h-full object-contain transition-transform group-hover:scale-105" src="">
-                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold backdrop-blur-sm">1/1</div>
-                        <button onclick="event.stopPropagation(); changeDetailImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md md:flex hidden opacity-0 group-hover:opacity-100 transition-opacity active-scale"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
-                        <button onclick="event.stopPropagation(); changeDetailImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md md:flex hidden opacity-0 group-hover:opacity-100 transition-opacity active-scale"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+                    <!-- Área Principal da Imagem (com suporte a swipe) -->
+                    <div id="mainImageContainer" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" 
+                         onclick="openImageZoom()">
+                        
+                        <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 group-hover:scale-105 select-none" 
+                             src="" onerror="this.src='https://placehold.co/600?text=Sem+Imagem';" draggable="false">
+
+                        <!-- Indicador 1/4 -->
+                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold backdrop-blur-sm">
+                            1 / 1
+                        </div>
+
+                        <!-- Zoom Hint -->
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none md:flex hidden">
+                            <span class="bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-1 font-bold">
+                                <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i> Ampliar
+                            </span>
+                        </div>
+
+                        <!-- Setas Navegação (Desktop/Hover) -->
+                        <button onclick="event.stopPropagation(); changeDetailImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-opacity opacity-0 group-hover:opacity-100 hidden md:block z-10">
+                            <i data-lucide="chevron-left" class="w-6 h-6"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); changeDetailImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-opacity opacity-0 group-hover:opacity-100 hidden md:block z-10">
+                            <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                        </button>
                     </div>
-                    <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center hide-scroll items-center mt-2 pb-2"></div>
+
+                    <!-- Miniaturas / Thumbnails -->
+                    <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center min-h-[50px] items-center hide-scroll">
+                        <!-- JS vai preencher -->
+                    </div>
                 </div>
 
                 <div class="px-6 pb-24">
-                    <div class="flex justify-between items-start mb-2"><span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest block pt-1"></span><button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 active-scale"><i data-lucide="heart" class="w-6 h-6 text-slate-300 transition-colors"></i></button></div>
-                    <h2 id="detailName" class="font-display text-2xl font-bold text-slate-900 mb-3 leading-tight"></h2>
+                    <div class="flex justify-between items-start mb-2">
+                         <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest block pt-1"></span>
+                         <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
+                             <i data-lucide="heart" class="w-6 h-6 text-slate-300 transition-colors"></i>
+                         </button>
+                    </div>
+                    
+                    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-3 leading-tight"></h2>
                     <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
                     
-                    <div class="space-y-6 border-t pt-6">
+                    <div class="space-y-6 border-t border-slate-100 pt-6">
                         <div id="sizesWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Tamanho</span><div id="detailSizesContainer" class="flex flex-wrap gap-2"></div></div>
                         <div id="colorsWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Cor</span><div id="detailColorsContainer" class="flex flex-wrap gap-2"></div></div>
                     </div>
 
-                    <div id="relatedProductsSection" class="mt-10 pt-8 border-t hidden">
-                        <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase">Poderá Gostar Também</h4>
+                    <div id="relatedProductsSection" class="mt-10 pt-8 border-t border-slate-100 hidden">
+                        <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Veja Também</h4>
                         <div id="relatedGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="p-4 border-t flex items-center justify-between bg-white sticky bottom-0 z-20 shadow-[0_-4px_10px_rgba(0,0,0,0.03)]">
+            <!-- Footer Action Bar -->
+            <div class="p-4 border-t flex items-center justify-between bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20 absolute bottom-0 w-full">
                 <div><span id="detailOldPrice" class="text-sm text-slate-400 line-through"></span><span id="detailPrice" class="text-3xl font-display font-black text-slate-900 block tracking-tight"></span></div>
                 <div class="flex gap-3">
-                    <div class="flex items-center bg-slate-100 rounded-xl px-2 h-12"><button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-slate-500">-</button><span id="detailQtyDisplay" class="font-bold w-6 text-center text-lg">1</span><button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-slate-500">+</button></div>
-                    <button id="detailAddBtn" class="bg-primary text-white font-bold px-8 h-12 rounded-xl active-scale shadow-lg transition-transform">Adicionar</button>
+                    <div class="flex items-center bg-slate-100 rounded-xl px-2 h-12"><button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button><span id="detailQtyDisplay" class="font-bold w-6 text-center text-lg">1</span><button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button></div>
+                    <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-6 h-12 rounded-xl active-scale shadow-lg transition-all duration-200 text-sm md:text-base">Adicionar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL ZOOM -->
-    <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
-        <button class="absolute top-4 right-4 text-white p-3"><i data-lucide="x" class="w-10 h-10"></i></button>
-        <div id="zoomContainer" class="w-full h-full flex items-center justify-center p-4 relative"><img id="zoomedImg" class="max-w-full max-h-full object-contain transform scale-95 transition-transform duration-300" onclick="event.stopPropagation()"></div>
+    <!-- MODAL: ZOOM IMAGEM (com gestos) -->
+    <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out touch-pan-y" onclick="closeImageZoom()">
+        <button onclick="closeImageZoom()" class="absolute top-4 right-4 text-white/80 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50"><i data-lucide="x" class="w-10 h-10"></i></button>
+        
+        <!-- Botão Anterior (Só desktop) -->
+        <button onclick="event.stopPropagation(); changeZoomImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
+            <i data-lucide="chevron-left" class="w-10 h-10"></i>
+        </button>
+
+        <div id="zoomContainer" class="w-full h-full flex items-center justify-center p-4 relative">
+             <img id="zoomedImg" class="max-w-full max-h-full object-contain shadow-2xl transform scale-95 transition-transform duration-300 select-none" onclick="event.stopPropagation()" draggable="false">
+             
+             <!-- Dica de swipe (só mobile) -->
+             <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-xs md:hidden pointer-events-none animate-pulse">
+                 Arraste para navegar
+             </div>
+        </div>
+
+        <!-- Botão Próximo (Só desktop) -->
+        <button onclick="event.stopPropagation(); changeZoomImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
+            <i data-lucide="chevron-right" class="w-10 h-10"></i>
+        </button>
     </div>
 
-    <!-- CARRINHO -->
+    <!-- MODAL: CARRINHO -->
     <div id="modalCart" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeCartModal()"></div>
         <div id="cartDrawer" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
             <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold text-lg">Minha Sacola</h3><button onclick="closeCartModal()"><i data-lucide="x" class="w-6 h-6"></i></button></div>
-            <div id="cartList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 custom-scrollbar"></div>
+            <div id="cartList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"></div>
             <div class="p-5 border-t bg-white space-y-4">
-                <div id="cartEmptyMsg" class="hidden text-center text-slate-400 py-6 italic">Sua sacola está vazia...</div>
-                <div id="cartSummary" class="space-y-3">
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl border text-sm"><span class="font-bold">Entrega</span><select id="cartDeliverySelect" onchange="updateCartTotals()" class="bg-transparent font-bold outline-none text-right cursor-pointer"></select></div>
+                <div id="cartEmptyMsg" class="hidden text-center text-slate-400 py-6">Vazio por enquanto...</div>
+                <div id="cartSummary" class="space-y-2">
+                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border text-sm"><span class="font-bold flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</span><select id="cartDeliverySelect" onchange="updateCartTotals()" class="bg-transparent font-bold outline-none text-right cursor-pointer"></select></div>
+                    <div class="flex gap-2"><input id="cartCouponInput" placeholder="CUPOM" class="w-full border rounded-lg p-2.5 text-sm uppercase"><button onclick="applyCoupon()" class="bg-slate-800 text-white px-4 rounded-lg text-xs font-bold">OK</button></div>
+                    <div id="cartCouponMsg" class="hidden text-xs font-bold text-center"></div>
+                    <div id="cartDiscountRow" class="hidden flex justify-between text-sm text-green-600 font-bold"><span>Desconto</span><span id="cartDiscountDisplay"></span></div>
                     <div class="flex justify-between text-lg font-bold text-slate-900 pt-3 border-t"><span>Total</span><span id="cartFinalTotal"></span></div>
                     <button onclick="checkoutWhatsApp()" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg mt-4 active-scale flex justify-center items-center gap-2">Finalizar Pedido <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                 </div>
@@ -214,386 +347,473 @@
         </div>
     </div>
 
+    <!-- MODAL: FILTROS -->
+    <div id="filterModal" class="fixed inset-0 z-[70] hidden">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
+        <div id="filterDrawer" class="absolute inset-y-0 right-0 max-w-xs w-full bg-white flex flex-col transform translate-x-full transition-transform duration-300">
+            <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold">Filtrar Produtos</h3><button onclick="closeFilterDrawer()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+            <div class="p-5 space-y-8 flex-1 overflow-y-auto">
+                <div><label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Preço</label><div class="flex gap-2"><input id="filterMinPrice" type="number" placeholder="Min" oninput="handlePriceInput()" class="w-full border rounded-lg p-2.5 text-sm"><input id="filterMaxPrice" type="number" placeholder="Max" oninput="handlePriceInput()" class="w-full border rounded-lg p-2.5 text-sm"></div></div>
+                <div><div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-400 uppercase block">Tamanhos</label><span id="sizeBadge" class="hidden text-[10px] bg-primary text-white px-1.5 rounded-full">0</span></div><div id="filterSizesContainer" class="flex flex-wrap gap-2"></div></div>
+                <div><div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-400 uppercase block">Cores</label><span id="colorBadge" class="hidden text-[10px] bg-primary text-white px-1.5 rounded-full">0</span></div><div id="filterColorsContainer" class="flex flex-wrap gap-2"></div></div>
+            </div>
+            <div class="p-5 border-t bg-slate-50 flex flex-col gap-2"><button onclick="closeFilterDrawer()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl shadow-lg active-scale">Ver Resultados</button><button onclick="resetAllFilters()" class="w-full text-slate-500 font-bold py-2 text-sm">Limpar Filtros</button></div>
+        </div>
+    </div>
+
+    <!-- MODAL: ENTREGA -->
+    <div id="modalDelivery" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="document.getElementById('modalDelivery').classList.add('hidden')"></div>
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 shadow-2xl animate-slide-up">
+            <h3 class="font-bold text-lg mb-4 text-slate-900">Taxas de Entrega</h3>
+            <div id="deliveryList" class="space-y-2 max-h-[50vh] overflow-y-auto custom-scrollbar mb-6"></div>
+            <button onclick="document.getElementById('modalDelivery').classList.add('hidden')" class="w-full py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Fechar</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, getDocs, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const FIREBASE_CONFIG = { 
-            apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", 
-            authDomain: "meuestoque-1badc.firebaseapp.com", 
-            projectId: "meuestoque-1badc", 
-            storageBucket: "meuestoque-1badc.firebasestorage.app", 
-            messagingSenderId: "730003067834", 
-            appId: "1:730003067834:web:b205f1ea59053345960383" 
-        };
+        const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.appspot.com", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
 
-        const app = initializeApp(FIREBASE_CONFIG);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const urlParams = new URLSearchParams(window.location.search);
-        const STORE_ID = urlParams.get('id');
-
-        let allProducts=[], categories=[], cart=[], whatsappNumber="", deliveryAreas=[], storeConfig={};
-        let favorites = JSON.parse(localStorage.getItem(`favs_${STORE_ID}`) || "[]");
-        let filters = { search: "", category: null, minPrice: null, maxPrice: null };
-        let isFavoritesView = false;
+        let db, STORE_ID = null;
+        let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
+        let activeCoupons=[], deliveryAreas=[], currentCoupon=null;
+        
+        // CARROSEL E ZOOM
         let currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
-
-        const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
-        const CACHE_TTL = 10 * 60 * 1000;
+        
+        let filters = { search: "", category: null, minPrice: null, maxPrice: null, sizes: [], colors: [] };
+        let favorites = JSON.parse(localStorage.getItem('favorites_v1') || "[]");
+        let isFavoritesView = false;
+        const CHIP_DEFAULT = "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
+        const CHIP_SELECTED = "border-primary bg-primary text-white font-bold ring-2 ring-primary/20 shadow-md";
 
         document.addEventListener('DOMContentLoaded', () => {
-            if (!STORE_ID) { showFatalError("Link Inválido", "ID da loja não encontrado."); return; }
-            signInAnonymously(auth).then(() => initVitrine()).catch(e => { console.error(e); hideLoader(); });
-            setupGestures();
+            lucide.createIcons();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            STORE_ID = urlParams.get('id');
+
+            if (!STORE_ID) {
+                showFatalError("Loja não encontrada", "O link acessado é inválido. Verifique o ID da loja.");
+                return;
+            }
+
+            const app = initializeApp(FIREBASE_CONFIG);
+            db = getFirestore(app);
+            const auth = getAuth(app);
+            signInAnonymously(auth).catch(e => console.error("Login anonimo falhou", e));
+
+            onAuthStateChanged(auth, (user) => {
+                if(user) {
+                    setupDataListeners();
+                    updateFavoritesUI(); // Inicia com estado correto dos favoritos
+                }
+            });
+
+            // --- SETUP GESTOS (SWIPE) ---
+            
+            // 1. Swipe no Detalhe do Produto (Imagem Principal)
+            setupSwipe(document.getElementById('mainImageContainer'), (dir) => changeDetailImage(dir));
+
+            // 2. Swipe no Zoom
+            setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
         });
 
-        async function initVitrine() {
-            try {
-                const cached = JSON.parse(localStorage.getItem(CACHE_KEY));
-                const now = Date.now();
-
-                // Se tiver cache, aplica IMEDIATAMENTE antes de qualquer coisa do banco
-                if (cached && (now - cached.timestamp < CACHE_TTL)) {
-                    allProducts = cached.products;
-                    storeConfig = cached.config;
-                    applyStoreConfig(storeConfig);
-                    renderHeroCarousel(cached.banners);
-                    updateInternalStates();
-                    renderAll();
-                    hideLoader();
-                    checkUpdateBackground(cached.config.lastUpdate);
-                } else {
-                    // Se não tiver cache, busca tudo
-                    await syncFullData();
-                }
-            } catch (e) {
-                console.error("Erro na inicialização:", e);
-                await syncFullData(); // Tenta buscar do banco se o cache falhar
-            }
+        function setupSwipe(element, callback) {
+            let ts = 0;
+            element.addEventListener('touchstart', (e) => { ts = e.changedTouches[0].screenX; }, {passive: true});
+            element.addEventListener('touchend', (e) => {
+                let te = e.changedTouches[0].screenX;
+                if (ts - te > 50) callback(1); // Swipe Left (Next)
+                if (te - ts > 50) callback(-1); // Swipe Right (Prev)
+            }, {passive: true});
         }
 
-        async function syncFullData() {
-            try {
-                // Config da Loja (Prioridade máxima)
-                const configSnap = await getDoc(doc(db, `stores/${STORE_ID}/config/store`));
-                if (!configSnap.exists()) { showFatalError("Não Encontrado", "A loja não existe."); return; }
-                const configData = configSnap.data();
-                
-                if(configData.subscriptionStatus === 'suspended') { 
-                    showFatalError("Indisponível", "Esta loja encontra-se suspensa."); 
-                    return; 
-                }
-
-                // Busca as coleções (Sem filtros para evitar problemas de índices ausentes)
-                const [prodSnap, bannerSnap, catSnap] = await Promise.all([
-                    getDocs(collection(db, `stores/${STORE_ID}/products`)),
-                    getDocs(collection(db, `stores/${STORE_ID}/hero_cards`)),
-                    getDocs(collection(db, `stores/${STORE_ID}/categories`))
-                ]);
-
-                // Filtra o que está pausado em memória
-                const prods = prodSnap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status !== 'paused');
-                const bans = bannerSnap.docs.map(d => ({id: d.id, ...d.data()}));
-                const cats = catSnap.docs.map(d => d.data().name).sort();
-
-                // Salva no Cache
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    timestamp: Date.now(),
-                    products: prods,
-                    config: configData,
-                    banners: bans,
-                    categories: cats
-                }));
-
-                allProducts = prods;
-                storeConfig = configData;
-                categories = cats;
-                applyStoreConfig(configData);
-                renderHeroCarousel(bans);
-                updateInternalStates();
-                renderAll();
-                hideLoader();
-            } catch (err) {
-                console.error("Erro no sincronismo:", err);
-                hideLoader();
-            }
+        function showFatalError(title, msg) {
+            document.getElementById('initialLoader').classList.add('hidden');
+            document.getElementById('errorScreen').classList.remove('hidden');
+            document.getElementById('errorTitle').textContent = title;
+            document.getElementById('errorMsg').textContent = msg;
+            if(title.includes('Suspensa')) document.getElementById('errorIcon').classList.replace('text-slate-400', 'text-red-500');
         }
 
-        async function checkUpdateBackground(cachedUpdate) {
-            try {
-                const snap = await getDoc(doc(db, `stores/${STORE_ID}/config/store`));
-                if (snap.exists() && snap.data().lastUpdate !== cachedUpdate) {
-                    syncFullData();
+        function setupDataListeners() {
+            onSnapshot(doc(db, `stores/${STORE_ID}/config/store`), s => { 
+                if(!s.exists()) {
+                    showFatalError("Loja não existe", "Não encontramos nenhuma loja com este ID.");
+                    return;
                 }
-            } catch (e) {}
+                const data = s.data();
+                if(data.subscriptionStatus === 'suspended') {
+                    showFatalError("Loja Temporariamente Indisponível", "Esta loja encontra-se em manutenção ou suspensa. Entre em contato com o estabelecimento.");
+                    return;
+                }
+                document.getElementById('initialLoader').style.opacity = '0';
+                setTimeout(() => { 
+                    document.getElementById('initialLoader').classList.add('hidden'); 
+                    document.getElementById('app').classList.remove('hidden'); 
+                    document.getElementById('app').classList.remove('opacity-0'); 
+                }, 500);
+                applyStoreConfig(data);
+            });
+
+            onSnapshot(collection(db, `stores/${STORE_ID}/products`), s => {
+                allProducts = s.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
+                const cs = new Set(allProducts.map(p => p.category).filter(Boolean));
+                categories = Array.from(cs).sort();
+                populateFilterOptions();
+                renderCategoryTabs();
+                renderCatalog();
+            });
+            onSnapshot(collection(db, `stores/${STORE_ID}/hero_cards`), s => {
+                renderHeroCarousel(s.docs.map(d => ({id: d.id, ...d.data()})));
+            });
         }
 
         function applyStoreConfig(d) {
-            whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"");
-            if(d.primaryColor) document.documentElement.style.setProperty('--color-primary', d.primaryColor);
-            document.getElementById('storeNameDisplay').textContent = d.storeName;
-            document.getElementById('footerStoreName').textContent = d.storeName;
-            document.getElementById('footerDescription').textContent = d.footerText || "";
+            whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"") || "";
+            if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
+            const name = d.storeName || "Minha Loja";
+            document.title = name;
+            document.getElementById('storeNameDisplay').textContent = name;
+            document.getElementById('footerStoreName').textContent = name; 
+            document.getElementById('footerDescription').textContent = d.footerText || "Bem-vindo.";
             document.getElementById('footerWaLink').href = `https://wa.me/${whatsappNumber}`;
             deliveryAreas = d.deliveryAreas || [];
+            document.getElementById('deliveryList').innerHTML = deliveryAreas.map(a => `<div class="flex justify-between p-3 bg-slate-50 rounded-lg"><span class="text-sm font-medium">${a.name}</span><span class="text-sm font-bold">R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')}</span></div>`).join('');
+            document.getElementById('cartDeliverySelect').innerHTML='<option value="0">Retirar na Loja</option>' + deliveryAreas.map(a=>`<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
+
+            storeOpen = checkStoreStatus(d.operatingHours, d.isStoreOpen);
+            const stTxt = document.getElementById('storeStatusText');
+            const stDot = document.getElementById('statusDot');
+            const stPing = document.getElementById('statusPing');
+            const topBar = document.getElementById('topStatusBar');
             
-            document.getElementById('deliveryList').innerHTML = deliveryAreas.map(a => `
-                <div class="flex justify-between p-3 bg-slate-50 rounded-lg text-sm border-b">
-                    <span class="font-medium text-slate-600">${a.name}</span>
-                    <span class="font-bold text-slate-800">R$ ${a.fee.toFixed(2)}</span>
-                </div>`).join('');
-            
-            document.getElementById('cartDeliverySelect').innerHTML='<option value="0">Retirar no Local (Grátis)</option>' + 
-                deliveryAreas.map(a=>`<option value="${a.fee}">${a.name} (R$ ${a.fee.toFixed(2)})</option>`).join('');
-            
-            const isOpen = d.isStoreOpen !== false;
-            document.getElementById('storeStatusText').textContent = isOpen ? "Loja Aberta" : "Loja Fechada";
-            document.getElementById('topStatusBar').className = isOpen ? "bg-slate-900 text-white text-[10px] py-1.5" : "bg-red-900 text-white text-[10px] py-1.5";
+            if (storeOpen) { 
+                stTxt.textContent = "Loja Aberta Agora"; 
+                stDot.className = "relative inline-flex rounded-full h-2 w-2 bg-green-500"; 
+                stPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"; 
+                topBar.className = "bg-slate-900 text-white text-[10px] py-1.5 transition-colors duration-300"; 
+            } else { 
+                stTxt.textContent = "Loja Fechada"; 
+                stDot.className = "relative inline-flex rounded-full h-2 w-2 bg-red-500"; 
+                stPing.className = "hidden"; 
+                topBar.className = "bg-red-900 text-white text-[10px] py-1.5 transition-colors duration-300"; 
+            }
         }
 
-        function updateInternalStates() {
-            const cs = new Set(allProducts.map(p => p.category).filter(Boolean));
-            categories = Array.from(cs).sort();
-        }
-
-        function renderAll() {
-            renderCategoryTabs();
-            renderCatalog();
-            updateFavoritesUI();
-            lucide.createIcons();
-        }
+        function checkStoreStatus(h, m) { if (m === false) return false; return true; }
 
         function renderHeroCarousel(banners) {
             const container = document.getElementById('heroGridContainer');
-            if(!banners || !banners.length) { container.classList.add('hidden'); return; }
-            container.classList.remove('hidden');
-            container.innerHTML = banners.map(b => `
-                <div class="hero-card min-w-[88%] md:min-w-[420px] h-36 md:h-48 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer flex-shrink-0 text-white shadow-md active-scale" style="background: linear-gradient(135deg, ${b.color1}, ${b.color2})" onclick="selectCategory('${b.target}')">
-                    <span class="inline-block py-1 px-3 rounded-full bg-white/20 text-[9px] font-bold uppercase mb-2 tracking-widest backdrop-blur-sm border border-white/10">${b.tag}</span>
-                    <h3 class="font-display font-bold text-xl md:text-2xl leading-tight drop-shadow-sm">${b.title}</h3>
-                </div>`).join('');
+            container.innerHTML = '';
+            if (!banners.length) { container.innerHTML = ''; return; }
+            banners.forEach(b => {
+                const card = document.createElement('div');
+                card.className = "hero-card min-w-[85vw] md:min-w-[420px] h-36 md:h-44 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer flex-shrink-0 text-white shadow-sm";
+                card.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
+                card.onclick = () => selectCategory(b.target);
+                card.innerHTML = `
+                    <div class="absolute inset-0 pattern-dots opacity-20"></div>
+                    <div class="relative z-10"><span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider mb-2">${b.tag || 'Destaque'}</span><h3 class="font-display font-bold text-xl md:text-2xl leading-tight w-2/3">${b.title || 'Novidade'}</h3></div>
+                    <div class="absolute bottom-5 right-5 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i data-lucide="arrow-right" class="w-4 h-4 text-white"></i></div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
         }
 
         function renderCategoryTabs() {
-            const c = document.getElementById('categoryContainer');
-            const activeClass = "bg-primary text-white border-primary shadow-md";
-            const normalClass = "bg-white text-slate-600 border-slate-200";
-            c.innerHTML = `<button onclick="filterByCat(null)" class="px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border transition-all ${filters.category===null && !isFavoritesView?activeClass:normalClass}">Ver Tudo</button>` +
-                categories.map(cat => `<button onclick="filterByCat('${cat}')" class="px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap border transition-all ${filters.category===cat?activeClass:normalClass}">${cat}</button>`).join('');
+            const c = document.getElementById('categoryContainer'); c.innerHTML = '';
+            const mk = (id, l, icon) => {
+                const active = filters.category === id && !isFavoritesView;
+                const b = document.createElement('button');
+                b.className = `px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-2 ${active ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-primary'}`;
+                b.innerHTML = icon ? `${icon} ${l}` : l;
+                b.onclick = () => { isFavoritesView = false; updateFavoritesUI(); filters.category = id; renderCategoryTabs(); renderCatalog(); };
+                return b;
+            };
+            c.appendChild(mk('offers', 'Ofertas', '<i data-lucide="flame" class="w-3.5 h-3.5"></i>'));
+            c.appendChild(mk(null, 'Ver Tudo'));
+            categories.forEach(cat => c.appendChild(mk(cat, cat)));
+            lucide.createIcons();
         }
 
-        function renderCatalog() {
-            const c = document.getElementById('catalogContainer');
+        window.renderCatalog = () => {
+            const c = document.getElementById('catalogContainer'); 
             const empty = document.getElementById('emptyState');
             const favEmpty = document.getElementById('favoritesEmptyState');
 
-            let filtered = allProducts.filter(p => {
+            let f = allProducts.filter(p => {
                 if(isFavoritesView) return favorites.includes(p.id);
-                if(filters.category && p.category !== filters.category) return false;
                 if(filters.search && !p.name.toLowerCase().includes(filters.search)) return false;
+                if(filters.category === 'offers') { if(!(p.promoValue && p.promoValue < p.value)) return false; }
+                else if(filters.category && p.category !== filters.category) return false;
+                const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+                if(filters.minPrice && price < filters.minPrice) return false;
+                if(filters.maxPrice && price > filters.maxPrice) return false;
+                if(filters.sizes.length && !p.sizes?.some(s=>filters.sizes.includes(s))) return false;
+                if(filters.colors.length && !p.colors?.some(co=>filters.colors.includes(co))) return false;
                 return true;
             });
 
             c.innerHTML=''; 
-            if(!filtered.length) { 
+            if(!f.length) { 
                 if(isFavoritesView) { favEmpty.classList.remove('hidden'); empty.classList.add('hidden'); } 
                 else { empty.classList.remove('hidden'); favEmpty.classList.add('hidden'); }
                 return; 
             }
             empty.classList.add('hidden'); favEmpty.classList.add('hidden');
 
-            const grouped = {};
-            if(isFavoritesView || filters.search || filters.category) { 
-                grouped[isFavoritesView ? 'Meus Favoritos' : 'Resultados'] = filtered; 
-            } else { 
-                filtered.forEach(p => { const k = p.category || 'Geral'; if(!grouped[k]) grouped[k]=[]; grouped[k].push(p); }); 
+            let g = {};
+            if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.minPrice || filters.maxPrice || filters.sizes.length || filters.colors.length) {
+                g[isFavoritesView ? 'Meus Favoritos' : 'Resultados'] = f;
+            } else {
+                f.forEach(p => { const k = p.category || 'Outros'; if(!g[k]) g[k]=[]; g[k].push(p); });
             }
 
-            Object.keys(grouped).forEach(key => {
+            Object.keys(g).sort().forEach(key => {
                 const sec = document.createElement('section');
-                sec.innerHTML = `<h3 class="font-bold text-slate-800 mb-5 px-1 text-lg flex items-center gap-2"><div class="w-1.5 h-6 bg-primary rounded-full"></div> ${key}</h3>`;
+                sec.innerHTML = `<h3 class="font-bold text-slate-800 mb-4 px-1 text-lg flex items-center gap-2"><div class="w-1 h-5 bg-primary rounded-full"></div> ${key}</h3>`;
                 const grid = document.createElement('div');
-                grid.className = "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6";
-                grid.innerHTML = grouped[key].map(p => `
-                    <div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full animate-fade-in relative bg-white">
-                        <div class="aspect-square bg-slate-50 relative overflow-hidden">
-                            <img src="${p.images?.[0] || 'https://placehold.co/400'}" class="w-full h-full object-cover group-hover:scale-105 transition-transform" loading="lazy">
-                            <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 shadow-sm active-scale"><i data-lucide="heart" class="w-4 h-4 ${favorites.includes(p.id)?'heart-active':'text-slate-400'}"></i></button>
-                            ${p.promoValue ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[9px] font-black px-2 py-1 rounded-bl-lg shadow-sm">OFERTA</span>` : ''}
-                        </div>
-                        <div class="p-4 flex flex-col flex-grow">
-                            <h3 class="text-sm font-semibold text-slate-800 line-clamp-2 leading-tight mb-3">${p.name}</h3>
-                            <div class="mt-auto flex items-center justify-between">
-                                <span class="text-lg font-black text-slate-900 tracking-tight">R$ ${(p.promoValue || p.value).toFixed(2)}</span>
-                                <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-9 h-9 rounded-full bg-primary/10 text-primary flex items-center justify-center transition-colors active-scale hover:bg-primary hover:text-white"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                            </div>
-                        </div>
-                    </div>`).join('');
+                grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5";
+                g[key].forEach(p => grid.innerHTML += mkProductCard(p));
                 sec.appendChild(grid);
                 c.appendChild(sec);
             });
             lucide.createIcons();
         }
 
-        window.openProductModal = (id) => {
-            const p = allProducts.find(x => x.id === id);
-            if(!p) return;
-            currentDetailId = id; currentDetailQty = 1; currentDetailSelection = { size: null, color: null };
-            currentDetailImages = (p.images && p.images.length) ? p.images : ['https://placehold.co/600']; 
+        function mkProductCard(p) {
+            const hasPromo = p.promoValue && p.promoValue < p.value;
+            const price = hasPromo ? p.promoValue : p.value;
+            const img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem';
+            const isFav = favorites.includes(p.id);
+            
+            let discountBadge = '';
+            if (hasPromo) {
+                const discount = Math.round(((p.value - p.promoValue) / p.value) * 100);
+                discountBadge = `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10 shadow-sm">-${discount}%</span>`;
+            }
+            
+            return `
+            <div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full animate-fade-in relative">
+                <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
+                    <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600?text=Sem+Imagem'">
+                    ${discountBadge}
+                    <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm shadow-sm active-scale z-20 hover:bg-white transition-all">
+                        <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'heart-active' : 'text-slate-400'}"></i>
+                    </button>
+                </div>
+                <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
+                    <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">${p.name}</h4>
+                    <div class="mt-auto pt-1">
+                        ${hasPromo ? `<span class="text-[11px] text-slate-400 line-through block mb-0.5 font-medium">R$ ${p.value.toFixed(2).replace('.',',')}</span>` : '<span class="block h-4"></span>'}
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">R$ ${price.toFixed(2).replace('.',',')}</span>
+                            <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
+                                <i data-lucide="plus" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // --- FAVORITES LOGIC ---
+        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
+        window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1)favorites.splice(idx,1); else favorites.push(id); localStorage.setItem('favorites_v1', JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); if(currentDetailId===id) updateModalHeartBtn(); };
+        window.toggleFavoriteCurrentDetail = () => { if(currentDetailId) toggleFavorite(currentDetailId); };
+        
+        function updateFavoritesUI() { 
+            const h = document.getElementById('headerHeartIcon'); 
+            const m = document.getElementById('mobileHeartIcon');
+            const hasFavorites = favorites.length > 0;
+            const count = favorites.length;
+
+            // 1. Ícone preenchido se houver favoritos (independente da view)
+            if (hasFavorites) {
+                h.classList.add('fill-primary', 'text-primary');
+                m.classList.add('fill-primary', 'text-primary');
+            } else {
+                h.classList.remove('fill-primary', 'text-primary');
+                m.classList.remove('fill-primary', 'text-primary');
+            }
+
+            // 2. Badges de contador
+            const badges = [document.getElementById('favBadgeDesktop'), document.getElementById('favBadgeMobile')];
+            badges.forEach(b => {
+                b.textContent = count;
+                if(count > 0) {
+                    b.classList.remove('scale-0');
+                } else {
+                    b.classList.add('scale-0');
+                }
+            });
+        }
+        
+        function updateModalHeartBtn() { const b=document.querySelector('#modalHeartBtn svg'); if(favorites.includes(currentDetailId)){b.classList.add('heart-active');b.classList.remove('text-slate-300');}else{b.classList.remove('heart-active');b.classList.add('text-slate-300');} }
+        
+        window.populateFilterOptions = () => { const ss=new Set(), cc=new Set(); allProducts.forEach(p=>{ p.sizes?.forEach(s=>ss.add(s.trim())); p.colors?.forEach(c=>cc.add(c.trim())); }); const sc=document.getElementById('filterSizesContainer'); sc.innerHTML=''; ss.forEach(s=>{ const d=document.createElement('div'); d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${filters.sizes.includes(s)?CHIP_SELECTED:CHIP_DEFAULT}`; d.textContent=s; d.onclick=()=>toggleFilter('sizes',s,d); sc.appendChild(d); }); const cco=document.getElementById('filterColorsContainer'); cco.innerHTML=''; cc.forEach(c=>{ const d=document.createElement('div'); d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${filters.colors.includes(c)?CHIP_SELECTED:CHIP_DEFAULT}`; d.textContent=c; d.onclick=()=>toggleFilter('colors',c,d); cco.appendChild(d); }); updateFilterBadges(); };
+        const toggleFilter = (t,v,e) => { const idx=filters[t].indexOf(v); if(idx>-1){filters[t].splice(idx,1);e.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`;}else{filters[t].push(v);e.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_SELECTED}`;} updateLiveFilters(); };
+        window.handlePriceInput = () => { filters.minPrice=parseFloat(document.getElementById('filterMinPrice').value)||null; filters.maxPrice=parseFloat(document.getElementById('filterMaxPrice').value)||null; updateLiveFilters(); };
+        function updateLiveFilters() { renderCatalog(); updateFilterBadges(); let count=filters.sizes.length+filters.colors.length+(filters.minPrice?1:0)+(filters.maxPrice?1:0); document.querySelectorAll('.filter-badge-indicator').forEach(b=>{b.textContent=count; if(count>0)b.classList.remove('hidden');else b.classList.add('hidden');}); }
+        function updateFilterBadges() { const s=document.getElementById('sizeBadge'), c=document.getElementById('colorBadge'); if(filters.sizes.length>0){s.textContent=filters.sizes.length;s.classList.remove('hidden');}else s.classList.add('hidden'); if(filters.colors.length>0){c.textContent=filters.colors.length;c.classList.remove('hidden');}else c.classList.add('hidden'); }
+        window.resetAllFilters = () => { filters={search:"",category:null,minPrice:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; updateFavoritesUI(); document.querySelectorAll('input').forEach(i=>i.value=''); populateFilterOptions(); renderCategoryTabs(); renderCatalog(); };
+
+        // --- CAROUSEL LOGIC ---
+        window.changeDetailImage = (dir) => {
+            if (currentDetailImages.length <= 1) return;
+            const len = currentDetailImages.length;
+            currentDetailImageIndex = (currentDetailImageIndex + dir + len) % len;
+            updateDetailImageDisplay();
+        };
+
+        window.setDetailImage = (index) => {
+            if (index < 0 || index >= currentDetailImages.length) return;
+            currentDetailImageIndex = index;
+            updateDetailImageDisplay();
+        };
+
+        function updateDetailImageDisplay() {
+            const img = document.getElementById('detailImg');
+            img.style.opacity = '0.7';
+            setTimeout(() => {
+                img.src = currentDetailImages[currentDetailImageIndex];
+                img.style.opacity = '1';
+            }, 100);
+
+            // Update Counter
+            document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
+
+            // Update thumbnails
+            const thumbsContainer = document.getElementById('detailThumbnails');
+            const thumbs = thumbsContainer.children;
+            Array.from(thumbs).forEach((t, i) => {
+                if(i === currentDetailImageIndex) {
+                    t.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-active";
+                    t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    t.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+                }
+            });
+        }
+        
+        // --- ZOOM LOGIC ---
+        window.openImageZoom = () => { 
+            const s = document.getElementById('detailImg').src; 
+            if(!s.includes('placehold')){ 
+                // Set Image
+                document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; 
+                
+                // Show Modal
+                const m = document.getElementById('modalImageZoom'); 
+                m.classList.remove('hidden'); 
+                requestAnimationFrame(()=>{
+                    m.classList.remove('opacity-0');
+                    document.getElementById('zoomedImg').classList.replace('scale-95','scale-100');
+                }); 
+            } 
+        };
+        
+        window.changeZoomImage = (dir) => {
+             if (currentDetailImages.length <= 1) return;
+             // Muda o índice global para manter sincronia
+             changeDetailImage(dir); 
+             // Atualiza a imagem do zoom instantaneamente
+             const zImg = document.getElementById('zoomedImg');
+             zImg.style.opacity = '0.5';
+             setTimeout(() => {
+                 zImg.src = currentDetailImages[currentDetailImageIndex];
+                 zImg.style.opacity = '1';
+             }, 100);
+        };
+        
+        window.closeImageZoom = () => { 
+            const m=document.getElementById('modalImageZoom'); 
+            const i=document.getElementById('zoomedImg'); 
+            m.classList.add('opacity-0'); 
+            i.classList.replace('scale-100','scale-95'); 
+            setTimeout(()=>{m.classList.add('hidden');i.src='';},300); 
+        };
+
+        window.openProductModal = (id) => { 
+            const p=allProducts.find(x=>x.id===id); 
+            if(!p)return; 
+            
+            currentDetailId=id; 
+            currentDetailQty=1; 
+            currentDetailSelection={size:null,color:null}; 
+            
+            // CAROUSEL SETUP
+            currentDetailImages = (p.images && p.images.length > 0) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
             currentDetailImageIndex = 0;
             
-            const thumbCont = document.getElementById('detailThumbnails');
-            thumbCont.innerHTML = currentDetailImages.length > 1 ? currentDetailImages.map((url, idx) => `
-                <img src="${url}" onclick="setDetailImage(${idx})" class="w-14 h-14 rounded-lg border-2 object-cover cursor-pointer ${idx===0?'thumb-active':'thumb-inactive'}">
-            `).join('') : '';
+            // Build Thumbnails
+            const thumbContainer = document.getElementById('detailThumbnails');
+            thumbContainer.innerHTML = '';
+            if (currentDetailImages.length > 1) {
+                currentDetailImages.forEach((url, idx) => {
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.onclick = () => setDetailImage(idx);
+                    thumbContainer.appendChild(img);
+                });
+                thumbContainer.style.display = 'flex';
+                document.querySelector('#mainImageContainer button').classList.remove('hidden');
+            } else {
+                thumbContainer.style.display = 'none';
+            }
             
             updateDetailImageDisplay();
-            document.getElementById('detailCat').textContent = p.category;
-            document.getElementById('detailName').textContent = p.name;
-            document.getElementById('detailDesc').textContent = p.description || "";
-            document.getElementById('detailPrice').textContent = `R$ ${(p.promoValue || p.value).toFixed(2)}`;
-            document.getElementById('detailOldPrice').textContent = p.promoValue ? `R$ ${p.value.toFixed(2)}` : "";
-            document.getElementById('detailQtyDisplay').textContent = "1";
-
-            const r=(l,t,c,w)=>{c.innerHTML='';if(!l?.length){w.classList.add('hidden');return;}w.classList.remove('hidden');l.forEach(v=>{const d=document.createElement('div');d.className="px-4 py-2 border rounded-xl text-xs chip-common border-slate-200 bg-slate-50";d.textContent=v;d.onclick=()=>{Array.from(c.children).forEach(b=>b.className="px-4 py-2 border rounded-xl text-xs chip-common border-slate-200 bg-slate-50");d.className="px-4 py-2 border-2 rounded-xl text-xs chip-common border-primary bg-primary/5 text-primary font-bold";currentDetailSelection[t]=v;};c.appendChild(d);});};
-            r(p.sizes, 'size', document.getElementById('detailSizesContainer'), document.getElementById('sizesWrapper'));
-            r(p.colors, 'color', document.getElementById('detailColorsContainer'), document.getElementById('colorsWrapper'));
-
-            renderRelatedProducts(p);
-            updateModalHeartBtn();
-            document.getElementById('modalDetails').classList.remove('hidden');
+            
+            document.getElementById('detailCat').textContent=p.category; 
+            document.getElementById('detailName').textContent=p.name; 
+            document.getElementById('detailDesc').textContent=p.description||''; 
+            
+            const promo=p.promoValue&&p.promoValue<p.value;
+            document.getElementById('detailPrice').textContent=`R$ ${(promo?p.promoValue:p.value).toFixed(2).replace('.',',')}`; 
+            document.getElementById('detailOldPrice').textContent=promo?`R$ ${p.value.toFixed(2).replace('.',',')}`:''; 
+            document.getElementById('detailQtyDisplay').textContent="1"; 
+            
+            updateModalHeartBtn(); 
+            
+            const r=(l,t,c,w)=>{c.innerHTML='';if(!l?.length){w.classList.add('hidden');return;}w.classList.remove('hidden');l.forEach(i=>{const d=document.createElement('div');d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`;d.textContent=i;d.onclick=()=>{Array.from(c.children).forEach(s=>s.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`);d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_SELECTED}`;currentDetailSelection[t]=i;};c.appendChild(d);});}; 
+            r(p.sizes,'size',document.getElementById('detailSizesContainer'),document.getElementById('sizesWrapper')); 
+            r(p.colors,'color',document.getElementById('detailColorsContainer'),document.getElementById('colorsWrapper')); 
+            
+            document.getElementById('detailAddBtn').onclick=()=>{if(p.sizes?.length&&!currentDetailSelection.size){showToast('Selecione um tamanho!');return;}if(p.colors?.length&&!currentDetailSelection.color){showToast('Selecione uma cor!');return;}addToCart(p,currentDetailQty,currentDetailSelection);closeModalDetails();}; 
+            renderRelatedProducts(p); 
+            document.getElementById('modalDetails').classList.remove('hidden'); 
             lucide.createIcons();
         };
 
-        window.changeDetailImage = (dir) => { currentDetailImageIndex = (currentDetailImageIndex + dir + currentDetailImages.length) % currentDetailImages.length; updateDetailImageDisplay(); };
-        window.setDetailImage = (idx) => { currentDetailImageIndex = idx; updateDetailImageDisplay(); };
-        function updateDetailImageDisplay() {
-            document.getElementById('detailImg').src = currentDetailImages[currentDetailImageIndex];
-            document.getElementById('imageCounter').textContent = `${currentDetailImageIndex+1}/${currentDetailImages.length}`;
-            const thumbs = document.getElementById('detailThumbnails').children;
-            Array.from(thumbs).forEach((t, i) => t.className = i===currentDetailImageIndex ? "w-14 h-14 rounded-lg border-2 border-primary object-cover cursor-pointer" : "w-14 h-14 rounded-lg border-2 border-transparent opacity-60 object-cover cursor-pointer");
-        }
+        function renderRelatedProducts(curr) { const s=document.getElementById('relatedProductsSection'),g=document.getElementById('relatedGrid'); g.innerHTML=''; const rel=allProducts.filter(p=>p.category===curr.category&&p.id!==curr.id).slice(0,3); if(rel.length===0){s.classList.add('hidden');return;} s.classList.remove('hidden'); rel.forEach(p=>{ const pr=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; g.innerHTML+=`<div onclick="openProductModal('${p.id}')" class="bg-white border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"><img src="${p.images?.[0]||'https://placehold.co/200'}" class="w-full h-24 object-cover"><div class="p-2"><h5 class="text-xs font-semibold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black text-slate-900 block mt-1">R$ ${pr.toFixed(2).replace('.',',')}</span></div></div>`; }); }
 
-        window.addToCart = (p, q, v) => {
-            const price = p.promoValue || p.value;
-            const uid = `${p.id}-${v.size||''}-${v.color||''}`;
-            const ex = cart.find(x => x.uid === uid);
-            if(ex) ex.q += q;
-            else cart.push({uid, id:p.id, name:p.name, price, q, img:p.images?.[0], v});
-            updateCartUI();
-            showToast("Item adicionado!");
-        };
-
-        function updateCartUI() {
-            const badge = document.getElementById('cartBadge');
-            const cnt = cart.reduce((a,b)=>a+b.q, 0);
-            badge.textContent = cnt; badge.classList.toggle('scale-0', cnt===0); badge.classList.toggle('scale-100', cnt>0);
-            const l = document.getElementById('cartList');
-            if(!cart.length) { l.innerHTML=''; document.getElementById('cartEmptyMsg').classList.remove('hidden'); document.getElementById('cartSummary').classList.add('hidden'); }
-            else {
-                document.getElementById('cartEmptyMsg').classList.add('hidden'); document.getElementById('cartSummary').classList.remove('hidden');
-                l.innerHTML = cart.map((i, idx) => `
-                    <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-100 mb-3">
-                        <img src="${i.img || 'https://placehold.co/100'}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
-                        <div class="flex-1">
-                            <p class="font-bold text-xs">${i.name}</p>
-                            <p class="text-[10px] text-slate-400">${i.v.size||''} ${i.v.color||''}</p>
-                            <div class="flex justify-between items-center mt-2">
-                                <span class="font-black text-sm text-slate-900">R$ ${(i.price*i.q).toFixed(2)}</span>
-                                <div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6">+</button></div>
-                            </div>
-                        </div>
-                    </div>`).join('');
-            }
-            updateCartTotals();
-            lucide.createIcons();
-        }
-
-        window.modQty = (u, d) => { const i = cart.find(x => x.uid === u); if(i) { i.q += d; if(i.q<=0) cart=cart.filter(x=>x.uid!==u); updateCartUI(); } };
-        window.updateCartTotals = () => {
-            const sub = cart.reduce((a,b)=>a+(b.price*b.q), 0);
-            const fee = parseFloat(document.getElementById('cartDeliverySelect').value) || 0;
-            document.getElementById('cartFinalTotal').textContent = `R$ ${(sub+fee).toFixed(2)}`;
-        };
-
-        window.checkoutWhatsApp = () => {
-            if(!cart.length) return;
-            const sub = cart.reduce((a,b)=>a+(b.price*b.q), 0);
-            let msg = `*PEDIDO - ${document.getElementById('storeNameDisplay').textContent}*\n\n`;
-            cart.forEach(i => msg += `• ${i.q}x ${i.name} ${i.v.size?'('+i.v.size+')':''} ${i.v.color?'['+i.v.color+']':''}\n`);
-            msg += `\n*TOTAL:* R$ ${document.getElementById('cartFinalTotal').textContent}`;
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`);
-        };
-
-        window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1) favorites.splice(idx,1); else favorites.push(id); localStorage.setItem(`favs_${STORE_ID}`, JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); };
-        function updateFavoritesUI() { 
-            const cnt = favorites.length;
-            document.querySelectorAll('#favBadgeDesktop, #favBadgeMobile').forEach(b => { b.textContent = cnt; b.classList.toggle('scale-0', cnt===0); });
-            const has = cnt > 0;
-            document.querySelectorAll('#headerHeartIcon, #mobileHeartIcon').forEach(i => i.className = has ? `w-5 h-5 heart-active` : `w-5 h-5 text-slate-700`);
-        }
-
-        function hideLoader() {
-            const l = document.getElementById('initialLoader');
-            l.style.opacity = '0';
-            setTimeout(()=> { l.classList.add('hidden'); document.getElementById('app').classList.remove('hidden', 'opacity-0'); }, 500);
-        }
-
-        function showFatalError(t, m) {
-            document.getElementById('initialLoader').classList.add('hidden');
-            document.getElementById('errorScreen').classList.remove('hidden');
-            document.getElementById('errorTitle').textContent = t;
-            document.getElementById('errorMsg').textContent = m;
-        }
-
-        window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
-        window.adjustDetailQty = (d) => { currentDetailQty += d; if(currentDetailQty < 1) currentDetailQty = 1; document.getElementById('detailQtyDisplay').textContent = currentDetailQty; };
-        window.openCartModal = () => document.getElementById('modalCart').classList.remove('hidden');
-        window.closeCartModal = () => document.getElementById('modalCart').classList.add('hidden');
-        window.handleSearchInput = (v) => { filters.search = v.toLowerCase(); renderCatalog(); };
-        window.filterByCat = (c) => { filters.category = c; renderCatalog(); renderCategoryTabs(); };
-        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCatalog(); };
-        window.resetAllFilters = () => { filters = {search:"", category:null}; isFavoritesView = false; renderCatalog(); };
-        window.showToast = (m) => { const t = document.createElement('div'); t.className="bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl animate-fade-in"; t.textContent=m; document.getElementById('toastContainer').appendChild(t); setTimeout(()=>t.remove(), 3000); };
-        window.openImageZoom = () => { document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; document.getElementById('modalImageZoom').classList.remove('hidden'); setTimeout(()=>document.getElementById('modalImageZoom').classList.remove('opacity-0'), 10); };
-        window.closeImageZoom = () => { document.getElementById('modalImageZoom').classList.add('opacity-0'); setTimeout(()=>document.getElementById('modalImageZoom').classList.add('hidden'), 300); };
-        window.updateModalHeartBtn = () => { const b=document.querySelector('#modalHeartBtn i'); if(favorites.includes(currentDetailId)) b.classList.add('heart-active'); else b.classList.remove('heart-active'); };
-        window.toggleFavoriteCurrentDetail = () => toggleFavorite(currentDetailId);
-        window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const url=window.location.href; if(navigator.share) navigator.share({title:p.name, text:`Olha esse produto na ${document.title}!`, url}); else { navigator.clipboard.writeText(`${p.name}: ${url}`); showToast("Copiado!"); } };
-        window.quickAdd = (id) => openProductModal(id);
-        window.selectCategory = (c) => filterByCat(c);
-        window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
-        window.openFilterDrawer = () => { document.getElementById('filterModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('filterDrawer').classList.remove('translate-x-full'), 10); };
-        window.closeFilterDrawer = () => { document.getElementById('filterDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('filterModal').classList.add('hidden'), 300); };
+        window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const text=`Confira ${p.name} na ${document.title}!`; const url=window.location.href; if(navigator.share)navigator.share({title:p.name,text,url}).catch(console.error); else{navigator.clipboard.writeText(`${text} ${url}`);showToast("Link copiado!");} };
         
-        function renderRelatedProducts(curr) {
-            const grid = document.getElementById('relatedGrid');
-            const sec = document.getElementById('relatedProductsSection');
-            const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 3);
-            if(!rel.length) { sec.classList.add('hidden'); return; }
-            sec.classList.remove('hidden');
-            grid.innerHTML = rel.map(p => `
-                <div onclick="openProductModal('${p.id}')" class="bg-white border rounded-xl overflow-hidden cursor-pointer hover:border-primary transition-all">
-                    <img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-24 object-cover">
-                    <div class="p-2"><h5 class="text-[10px] font-bold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black">R$ ${(p.promoValue||p.value).toFixed(2)}</span></div>
-                </div>`).join('');
-        }
-
-        function setupGestures() {
-            let startX = 0;
-            const detail = document.getElementById('mainImageContainer');
-            detail.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
-            detail.addEventListener('touchend', e => {
-                let diff = startX - e.changedTouches[0].clientX;
-                if(Math.abs(diff) > 50) changeDetailImage(diff > 0 ? 1 : -1);
-            }, {passive: true});
-        }
-
-        lucide.createIcons();
+        window.addToCart = (p,q,v) => { const price=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; const uid=`${p.id}-${v.size||''}-${v.color||''}`; const ex=cart.find(x=>x.uid===uid); if(ex)ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v}); updateCartUI(); showToast(`<b>${p.name}</b> adicionado!`); };
+        function updateCartUI() { const cnt=cart.reduce((a,b)=>a+b.q,0); const b=document.getElementById('cartBadge'); b.textContent=cnt; b.classList.toggle('scale-0',cnt===0); const l=document.getElementById('cartList'); if(!cart.length){l.innerHTML='';document.getElementById('cartEmptyMsg').classList.remove('hidden');document.getElementById('cartSummary').classList.add('hidden');}else{document.getElementById('cartEmptyMsg').classList.add('hidden');document.getElementById('cartSummary').classList.remove('hidden'); l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1">${[i.v.size,i.v.color].filter(Boolean).join(' • ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6 text-slate-500">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6 text-primary">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');} updateCartTotals(); }
+        window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
+        window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); let disc=0; if(currentCoupon){if(currentCoupon.type==='percentage')disc=sub*(currentCoupon.value/100);else disc=currentCoupon.value;if(disc>sub)disc=sub;} const tot=sub+df-disc; document.getElementById('cartFinalTotal').textContent=`R$ ${tot.toFixed(2).replace('.',',')}`; if(disc>0){document.getElementById('cartDiscountRow').classList.remove('hidden');document.getElementById('cartDiscountDisplay').textContent=`- R$ ${disc.toFixed(2).replace('.',',')}`;}else document.getElementById('cartDiscountRow').classList.add('hidden'); };
+        window.checkoutWhatsApp = () => { if(!cart.length)return; const m=document.getElementById('cartDeliverySelect'); const method=m.options[m.selectedIndex].text; let msg=`*PEDIDO - ${document.getElementById('storeNameDisplay').textContent}*\n--------------------------------\n`; cart.forEach(i=>{msg+=`${i.q}x ${i.name} ${[i.v.size,i.v.color].filter(Boolean).join('/')?`(${[i.v.size,i.v.color].filter(Boolean).join('/')})`:''}\n`;}); msg+=`--------------------------------\n*Entrega:* ${method}\n*Total:* ${document.getElementById('cartFinalTotal').textContent}`; window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank'); };
+        
+        window.showToast = (msg) => { const t=document.createElement('div'); t.className="bg-slate-900/90 text-white text-sm px-6 py-3 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-3 toast-enter pointer-events-auto transform transition-all duration-300"; t.innerHTML=`<i data-lucide="shopping-bag" class="w-4 h-4 text-green-400"></i><span>${msg}</span>`; document.getElementById('toastContainer').appendChild(t); lucide.createIcons(); requestAnimationFrame(()=>{t.classList.remove('toast-enter');t.classList.add('toast-enter-active');}); setTimeout(()=>{t.classList.remove('toast-enter-active');t.classList.add('toast-exit-active');setTimeout(()=>t.remove(),300);},3000); };
+        window.handleSearchInput = (v) => { filters.search=v.toLowerCase(); updateLiveFilters(); };
+        window.openFilterDrawer = () => { document.getElementById('filterModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('filterDrawer').classList.remove('translate-x-full'),10); };
+        window.closeFilterDrawer = () => { document.getElementById('filterDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('filterModal').classList.add('hidden'),300); };
+        window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(()=>document.getElementById('cartDrawer').classList.remove('translate-x-full'),10); };
+        window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('modalCart').classList.add('hidden'),300); };
+        window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
+        window.adjustDetailQty = (d) => { currentDetailQty+=d; if(currentDetailQty<1)currentDetailQty=1; document.getElementById('detailQtyDisplay').textContent=currentDetailQty; };
+        window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
+        window.selectCategory = (c) => { filters.category=(c==='offers'||c==='Ofertas')?'offers':c; renderCategoryTabs(); renderCatalog(); const el=document.getElementById('catalogContainer'); if(el){const off=140;const t=el.getBoundingClientRect().top+window.scrollY-off;window.scrollTo({top:t,behavior:'smooth'});} };
+        window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
     </script>
 </body>
 </html>
-
