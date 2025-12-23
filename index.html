@@ -376,7 +376,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // STORAGE ATUALIZADO PARA .firebasestorage.app
         const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.firebasestorage.app", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
 
         let db, STORE_ID = null;
@@ -409,7 +408,7 @@
 
             onAuthStateChanged(auth, (user) => {
                 if(user) {
-                    loadStoreWithCache(); // SUBSTITUIÇÃO CIRÚRGICA: Lógica de Cache Inteligente
+                    loadStoreWithCache(); 
                     updateFavoritesUI();
                 }
             });
@@ -418,14 +417,14 @@
             setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
         });
 
-        // NOVA FUNÇÃO: GERENCIAMENTO DE CACHE E SINCRONIZAÇÃO (ECONOMIA NO PLANO BLAZE)
+        // ESTRATÉGIA BLAZE: Redução de leituras via lastUpdate e Cache local
         async function loadStoreWithCache() {
             const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
-            const CACHE_TIME = 10 * 60 * 1000; // 10 minutos
+            const CACHE_TIME = 10 * 60 * 1000; 
             const now = Date.now();
             
             try {
-                // 1. LEITURA ÚNICA: Pegar apenas o documento de configuração para verificar o lastUpdate
+                // Leituras mínimas: apenas 1 documento de config para validar versão
                 const configRef = doc(db, `stores/${STORE_ID}/config/store`);
                 const configSnap = await getDoc(configRef);
                 
@@ -437,7 +436,6 @@
                 const remoteConfig = configSnap.data();
                 const remoteUpdate = remoteConfig.lastUpdate || 0;
                 
-                // 2. VERIFICAR CACHE EXISTENTE
                 const cachedRaw = localStorage.getItem(CACHE_KEY);
                 let useCache = false;
                 let localData = null;
@@ -446,14 +444,10 @@
                     localData = JSON.parse(cachedRaw);
                     const isExpired = (now - localData.timestamp) > CACHE_TIME;
                     const isVersionMatch = localData.lastUpdate === remoteUpdate;
-                    
-                    if (!isExpired && isVersionMatch) {
-                        useCache = true;
-                    }
+                    if (!isExpired && isVersionMatch) useCache = true;
                 }
 
                 if (useCache) {
-                    // CARREGA TUDO DO CACHE
                     applyStoreConfig(localData.config);
                     allProducts = localData.products;
                     categories = localData.categories;
@@ -463,7 +457,7 @@
                     renderCategoryTabs();
                     hideLoader();
                 } else {
-                    // RENOVAÇÃO: FAZ O FETCH COMPLETO E ATUALIZA O CACHE
+                    // Operações pesadas apenas se necessário
                     const productsSnap = await getDocs(collection(db, `stores/${STORE_ID}/products`));
                     const bannersSnap = await getDocs(collection(db, `stores/${STORE_ID}/hero_cards`));
                     
@@ -472,18 +466,11 @@
                     const cs = new Set(products.map(p => p.category).filter(Boolean));
                     const cats = Array.from(cs).sort();
 
-                    // Salva no LocalStorage
-                    const stateToCache = {
-                        timestamp: now,
-                        lastUpdate: remoteUpdate,
-                        config: remoteConfig,
-                        products: products,
-                        banners: banners,
-                        categories: cats
-                    };
-                    localStorage.setItem(CACHE_KEY, JSON.stringify(stateToCache));
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        timestamp: now, lastUpdate: remoteUpdate, config: remoteConfig,
+                        products: products, banners: banners, categories: cats
+                    }));
 
-                    // Aplica ao DOM
                     applyStoreConfig(remoteConfig);
                     allProducts = products;
                     categories = cats;
@@ -503,8 +490,7 @@
             document.getElementById('initialLoader').style.opacity = '0';
             setTimeout(() => { 
                 document.getElementById('initialLoader').classList.add('hidden'); 
-                document.getElementById('app').classList.remove('hidden'); 
-                document.getElementById('app').classList.remove('opacity-0'); 
+                document.getElementById('app').classList.remove('hidden', 'opacity-0'); 
             }, 500);
         }
 
@@ -523,14 +509,10 @@
             document.getElementById('errorScreen').classList.remove('hidden');
             document.getElementById('errorTitle').textContent = title;
             document.getElementById('errorMsg').textContent = msg;
-            if(title.includes('Suspensa')) document.getElementById('errorIcon').classList.replace('text-slate-400', 'text-red-500');
         }
 
         function applyStoreConfig(d) {
-            if(d.subscriptionStatus === 'suspended') {
-                showFatalError("Loja Temporariamente Indisponível", "Esta loja encontra-se em manutenção ou suspensa.");
-                return;
-            }
+            if(d.subscriptionStatus === 'suspended') { showFatalError("Indisponível", "Esta loja está suspensa."); return; }
             whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"") || "";
             if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
             const name = d.storeName || "Minha Loja";
@@ -565,17 +547,13 @@
         function renderHeroCarousel(banners) {
             const container = document.getElementById('heroGridContainer');
             container.innerHTML = '';
-            if (!banners || !banners.length) { container.innerHTML = ''; return; }
+            if (!banners || !banners.length) return;
             banners.forEach(b => {
                 const card = document.createElement('div');
                 card.className = "hero-card min-w-[85vw] md:min-w-[420px] h-36 md:h-44 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer flex-shrink-0 text-white shadow-sm";
                 card.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
                 card.onclick = () => selectCategory(b.target);
-                card.innerHTML = `
-                    <div class="absolute inset-0 pattern-dots opacity-20"></div>
-                    <div class="relative z-10"><span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider mb-2">${b.tag || 'Destaque'}</span><h3 class="font-display font-bold text-xl md:text-2xl leading-tight w-2/3">${b.title || 'Novidade'}</h3></div>
-                    <div class="absolute bottom-5 right-5 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i data-lucide="arrow-right" class="w-4 h-4 text-white"></i></div>
-                `;
+                card.innerHTML = `<div class="absolute inset-0 pattern-dots opacity-20"></div><div class="relative z-10"><span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider mb-2">${b.tag || 'Destaque'}</span><h3 class="font-display font-bold text-xl md:text-2xl leading-tight w-2/3">${b.title || 'Novidade'}</h3></div><div class="absolute bottom-5 right-5 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i data-lucide="arrow-right" class="w-4 h-4 text-white"></i></div>`;
                 container.appendChild(card);
             });
             lucide.createIcons();
@@ -642,6 +620,7 @@
             lucide.createIcons();
         }
 
+        // ESTRATÉGIA BLAZE: Lazy loading nativo para economizar tráfego do Storage
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value;
             const price = hasPromo ? p.promoValue : p.value;
@@ -652,7 +631,7 @@
             return `
             <div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full animate-fade-in relative">
                 <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
-                    <img src="${img}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600?text=Sem+Imagem'">
+                    <img src="${img}" loading="lazy" decoding="async" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://placehold.co/600?text=Sem+Imagem'">
                     ${discountBadge}
                     <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm shadow-sm active-scale z-20 hover:bg-white transition-all">
                         <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'heart-active' : 'text-slate-400'}"></i>
@@ -681,16 +660,10 @@
             const h = document.getElementById('headerHeartIcon'); 
             const m = document.getElementById('mobileHeartIcon');
             const count = favorites.length;
-            if (count > 0) {
-                h.classList.add('fill-primary', 'text-primary');
-                m.classList.add('fill-primary', 'text-primary');
-            } else {
-                h.classList.remove('fill-primary', 'text-primary');
-                m.classList.remove('fill-primary', 'text-primary');
-            }
+            if (count > 0) { h.classList.add('fill-primary', 'text-primary'); m.classList.add('fill-primary', 'text-primary'); } 
+            else { h.classList.remove('fill-primary', 'text-primary'); m.classList.remove('fill-primary', 'text-primary'); }
             [document.getElementById('favBadgeDesktop'), document.getElementById('favBadgeMobile')].forEach(b => {
-                b.textContent = count;
-                b.classList.toggle('scale-0', count === 0);
+                b.textContent = count; b.classList.toggle('scale-0', count === 0);
             });
         }
         
@@ -718,10 +691,7 @@
         function updateDetailImageDisplay() {
             const img = document.getElementById('detailImg');
             img.style.opacity = '0.7';
-            setTimeout(() => {
-                img.src = currentDetailImages[currentDetailImageIndex];
-                img.style.opacity = '1';
-            }, 100);
+            setTimeout(() => { img.src = currentDetailImages[currentDetailImageIndex]; img.style.opacity = '1'; }, 100);
             document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
             const thumbs = document.getElementById('detailThumbnails').children;
             Array.from(thumbs).forEach((t, i) => {
@@ -735,10 +705,7 @@
                 document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; 
                 const m = document.getElementById('modalImageZoom'); 
                 m.classList.remove('hidden'); 
-                requestAnimationFrame(()=>{
-                    m.classList.remove('opacity-0');
-                    document.getElementById('zoomedImg').classList.replace('scale-95','scale-100');
-                }); 
+                requestAnimationFrame(()=>{ m.classList.remove('opacity-0'); document.getElementById('zoomedImg').classList.replace('scale-95','scale-100'); }); 
             } 
         };
         
@@ -759,11 +726,8 @@
         };
 
         window.openProductModal = (id) => { 
-            const p=allProducts.find(x=>x.id===id); 
-            if(!p)return; 
-            currentDetailId=id; 
-            currentDetailQty=1; 
-            currentDetailSelection={size:null,color:null}; 
+            const p=allProducts.find(x=>x.id===id); if(!p)return; 
+            currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
             currentDetailImages = (p.images && p.images.length > 0) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
             currentDetailImageIndex = 0;
             const thumbContainer = document.getElementById('detailThumbnails');
@@ -772,6 +736,7 @@
                 currentDetailImages.forEach((url, idx) => {
                     const img = document.createElement('img');
                     img.src = url; img.onclick = () => setDetailImage(idx);
+                    img.loading = "lazy"; img.decoding = "async";
                     thumbContainer.appendChild(img);
                 });
                 thumbContainer.style.display = 'flex';
@@ -794,7 +759,17 @@
             lucide.createIcons();
         };
 
-        function renderRelatedProducts(curr) { const s=document.getElementById('relatedProductsSection'),g=document.getElementById('relatedGrid'); g.innerHTML=''; const rel=allProducts.filter(p=>p.category===curr.category&&p.id!==curr.id).slice(0,3); if(rel.length===0){s.classList.add('hidden');return;} s.classList.remove('hidden'); rel.forEach(p=>{ const pr=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; g.innerHTML+=`<div onclick="openProductModal('${p.id}')" class="bg-white border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"><img src="${p.images?.[0]||'https://placehold.co/200'}" class="w-full h-24 object-cover"><div class="p-2"><h5 class="text-xs font-semibold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black text-slate-900 block mt-1">R$ ${pr.toFixed(2).replace('.',',')}</span></div></div>`; }); }
+        function renderRelatedProducts(curr) { 
+            const s=document.getElementById('relatedProductsSection'),g=document.getElementById('relatedGrid'); 
+            g.innerHTML=''; 
+            const rel=allProducts.filter(p=>p.category===curr.category&&p.id!==curr.id).slice(0,3); 
+            if(rel.length===0){s.classList.add('hidden');return;} 
+            s.classList.remove('hidden'); 
+            rel.forEach(p=>{ 
+                const pr=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; 
+                g.innerHTML+=`<div onclick="openProductModal('${p.id}')" class="bg-white border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"><img src="${p.images?.[0]||'https://placehold.co/200'}" loading="lazy" decoding="async" class="w-full h-24 object-cover"><div class="p-2"><h5 class="text-xs font-semibold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black text-slate-900 block mt-1">R$ ${pr.toFixed(2).replace('.',',')}</span></div></div>`; 
+            }); 
+        }
 
         window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const text=`Confira ${p.name} na ${document.title}!`; const url=window.location.href; if(navigator.share)navigator.share({title:p.name,text,url}).catch(console.error); else{navigator.clipboard.writeText(`${text} ${url}`);showToast("Link copiado!");} };
         window.addToCart = (p,q,v) => { const price=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; const uid=`${p.id}-${v.size||''}-${v.color||''}`; const ex=cart.find(x=>x.uid===uid); if(ex)ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v}); updateCartUI(); showToast(`<b>${p.name}</b> adicionado!`); };
@@ -816,4 +791,5 @@
     </script>
 </body>
 </html>
+
 
