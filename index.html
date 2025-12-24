@@ -374,11 +374,19 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // [OTIMIZAÇÃO] Adicionando ferramentas de Cache Persistente em Disco
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.firebasestorage.app", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
 
-        let db, STORE_ID = null;
+        const app = initializeApp(FIREBASE_CONFIG);
+        // [OTIMIZAÇÃO] Configurando initializeFirestore com persistentLocalCache para reduzir leituras (Reads)
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
+        
+        const auth = getAuth(app);
+        let STORE_ID = null;
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
         let activeCoupons=[], deliveryAreas=[], currentCoupon=null;
         
@@ -401,9 +409,6 @@
                 return;
             }
 
-            const app = initializeApp(FIREBASE_CONFIG);
-            db = getFirestore(app);
-            const auth = getAuth(app);
             signInAnonymously(auth).catch(e => console.error("Login anonimo falhou", e));
 
             onAuthStateChanged(auth, (user) => {
@@ -457,7 +462,7 @@
                     renderCategoryTabs();
                     hideLoader();
                 } else {
-                    // Operações pesadas apenas se necessário
+                    // [OTIMIZAÇÃO] Operações pesadas apenas se necessário. O SDK buscará no disco local primeiro.
                     const productsSnap = await getDocs(collection(db, `stores/${STORE_ID}/products`));
                     const bannersSnap = await getDocs(collection(db, `stores/${STORE_ID}/hero_cards`));
                     
@@ -620,7 +625,7 @@
             lucide.createIcons();
         }
 
-        // ESTRATÉGIA BLAZE: Lazy loading nativo para economizar tráfego do Storage
+        // [OTIMIZAÇÃO] Adicionando Lazy Loading nativo nas imagens para reduzir custos de banda (Egress)
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value;
             const price = hasPromo ? p.promoValue : p.value;
@@ -791,3 +796,5 @@
     </script>
 </body>
 </html>
+
+
