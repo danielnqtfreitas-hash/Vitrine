@@ -235,26 +235,22 @@
                 
                 <!-- CARROSEL DE IMAGENS -->
                 <div class="relative bg-white pt-2 pb-4">
-                    <!-- Área Principal da Imagem (com suporte a swipe) -->
                     <div id="mainImageContainer" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" 
                          onclick="openImageZoom()">
                         
                         <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 group-hover:scale-105 select-none" 
                              src="" onerror="this.src='https://placehold.co/600?text=Sem+Imagem';" draggable="false">
 
-                        <!-- Indicador 1/4 -->
                         <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold backdrop-blur-sm">
                             1 / 1
                         </div>
 
-                        <!-- Zoom Hint -->
                         <div class="absolute bottom-4 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none md:flex hidden">
                             <span class="bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded-full backdrop-blur-sm shadow-lg flex items-center gap-1 font-bold">
                                 <i data-lucide="zoom-in" class="w-3.5 h-3.5"></i> Ampliar
                             </span>
                         </div>
 
-                        <!-- Setas Navegação (Desktop/Hover) -->
                         <button onclick="event.stopPropagation(); changeDetailImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-opacity opacity-0 group-hover:opacity-100 hidden md:block z-10">
                             <i data-lucide="chevron-left" class="w-6 h-6"></i>
                         </button>
@@ -263,10 +259,7 @@
                         </button>
                     </div>
 
-                    <!-- Miniaturas / Thumbnails -->
-                    <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center min-h-[50px] items-center hide-scroll">
-                        <!-- JS vai preencher -->
-                    </div>
+                    <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center min-h-[50px] items-center hide-scroll"></div>
                 </div>
 
                 <div class="px-6 pb-24">
@@ -303,25 +296,16 @@
         </div>
     </div>
 
-    <!-- MODAL: ZOOM IMAGEM (com gestos) -->
+    <!-- MODAL: ZOOM IMAGEM -->
     <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out touch-pan-y" onclick="closeImageZoom()">
         <button onclick="closeImageZoom()" class="absolute top-4 right-4 text-white/80 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50"><i data-lucide="x" class="w-10 h-10"></i></button>
-        
-        <!-- Botão Anterior (Só desktop) -->
         <button onclick="event.stopPropagation(); changeZoomImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
             <i data-lucide="chevron-left" class="w-10 h-10"></i>
         </button>
-
         <div id="zoomContainer" class="w-full h-full flex items-center justify-center p-4 relative">
              <img id="zoomedImg" class="max-w-full max-h-full object-contain shadow-2xl transform scale-95 transition-transform duration-300 select-none" onclick="event.stopPropagation()" draggable="false">
-             
-             <!-- Dica de swipe (só mobile) -->
-             <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-xs md:hidden pointer-events-none animate-pulse">
-                 Arraste para navegar
-             </div>
+             <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 text-xs md:hidden pointer-events-none animate-pulse">Arraste para navegar</div>
         </div>
-
-        <!-- Botão Próximo (Só desktop) -->
         <button onclick="event.stopPropagation(); changeZoomImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
             <i data-lucide="chevron-right" class="w-10 h-10"></i>
         </button>
@@ -374,13 +358,12 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // [OTIMIZAÇÃO] Adicionando ferramentas de Cache Persistente em Disco
-        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // 1. IMPORTAÇÃO DOS MÉTODOS DE ANALYTICS SOLICITADOS
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, getDocs, collection, query, where, increment, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.firebasestorage.app", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
 
         const app = initializeApp(FIREBASE_CONFIG);
-        // [OTIMIZAÇÃO] Configurando initializeFirestore com persistentLocalCache para reduzir leituras (Reads)
         const db = initializeFirestore(app, {
             localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
         });
@@ -402,12 +385,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             const urlParams = new URLSearchParams(window.location.search);
-            STORE_ID = urlParams.get('id');
-
-            if (!STORE_ID) {
-                showFatalError("Loja não encontrada", "O link acessado é inválido. Verifique o ID da loja.");
-                return;
-            }
+            
+            // 2. FALLBACK DE IDENTIDADE (MODO TESTE)
+            STORE_ID = urlParams.get('id') || 'admin';
 
             signInAnonymously(auth).catch(e => console.error("Login anonimo falhou", e));
 
@@ -415,6 +395,8 @@
                 if(user) {
                     loadStoreWithCache(); 
                     updateFavoritesUI();
+                    // 3. GATILHO DE ANALYTICS APÓS LOGIN
+                    registerVisit();
                 }
             });
 
@@ -422,14 +404,39 @@
             setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
         });
 
-        // ESTRATÉGIA BLAZE: Redução de leituras via lastUpdate e Cache local
+        // 4. FUNÇÃO DE REGISTRO DE VISITA COM PREVENÇÃO DE DUPLICIDADE
+        async function registerVisit() {
+            if (!STORE_ID) return;
+            
+            const sessionKey = `vst_active_${STORE_ID}`;
+            
+            // Verifica se o visitante já foi contabilizado nesta sessão
+            if (sessionStorage.getItem(sessionKey)) return;
+
+            const analyticsRef = doc(db, "stores", STORE_ID, "analytics", "global");
+
+            try {
+                // Tenta incrementar o valor atômico
+                await updateDoc(analyticsRef, {
+                    totalVisits: increment(1)
+                });
+            } catch (error) {
+                // Se o documento não existir (primeira visita da história da loja), cria-o
+                await setDoc(analyticsRef, { 
+                    totalVisits: 1 
+                }, { merge: true });
+            }
+            
+            // Marca a sessão como contabilizada
+            sessionStorage.setItem(sessionKey, 'true');
+        }
+
         async function loadStoreWithCache() {
             const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
             const CACHE_TIME = 10 * 60 * 1000; 
             const now = Date.now();
             
             try {
-                // Leituras mínimas: apenas 1 documento de config para validar versão
                 const configRef = doc(db, `stores/${STORE_ID}/config/store`);
                 const configSnap = await getDoc(configRef);
                 
@@ -462,7 +469,6 @@
                     renderCategoryTabs();
                     hideLoader();
                 } else {
-                    // [OTIMIZAÇÃO] Operações pesadas apenas se necessário. O SDK buscará no disco local primeiro.
                     const productsSnap = await getDocs(collection(db, `stores/${STORE_ID}/products`));
                     const bannersSnap = await getDocs(collection(db, `stores/${STORE_ID}/hero_cards`));
                     
@@ -625,7 +631,6 @@
             lucide.createIcons();
         }
 
-        // [OTIMIZAÇÃO] Adicionando Lazy Loading nativo nas imagens para reduzir custos de banda (Egress)
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value;
             const price = hasPromo ? p.promoValue : p.value;
