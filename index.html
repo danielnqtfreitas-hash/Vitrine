@@ -280,7 +280,7 @@
 
                     <div id="relatedProductsSection" class="mt-10 pt-8 border-t border-slate-100 hidden">
                         <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Veja Também</h4>
-                        <div id="relatedGrid" class="grid grid-cols-2 md:grid-cols-3 gap-3"></div>
+                        <div id="relatedGrid" class="flex overflow-x-auto gap-3 pb-4 hide-scroll -mx-2 px-2"></div>
                     </div>
                 </div>
             </div>
@@ -770,16 +770,32 @@
         };
 
         function renderRelatedProducts(curr) { 
-            const s=document.getElementById('relatedProductsSection'),g=document.getElementById('relatedGrid'); 
-            g.innerHTML=''; 
-            const rel=allProducts.filter(p=>p.category===curr.category&&p.id!==curr.id).slice(0,3); 
-            if(rel.length===0){s.classList.add('hidden');return;} 
-            s.classList.remove('hidden'); 
-            rel.forEach(p=>{ 
-                const pr=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; 
-                g.innerHTML+=`<div onclick="openProductModal('${p.id}')" class="bg-white border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"><img src="${p.images?.[0]||'https://placehold.co/200'}" loading="lazy" decoding="async" class="w-full h-24 object-cover"><div class="p-2"><h5 class="text-xs font-semibold truncate text-slate-700">${p.name}</h5><span class="text-xs font-black text-slate-900 block mt-1">R$ ${pr.toFixed(2).replace('.',',')}</span></div></div>`; 
-            }); 
-        }
+    const s = document.getElementById('relatedProductsSection'),
+          g = document.getElementById('relatedGrid'); 
+    g.innerHTML = ''; 
+    
+    // Aumentamos o slice para 8 para que o usuário tenha o que "scrollar" horizontalmente
+    const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 8); 
+    
+    if (rel.length === 0) {
+        s.classList.add('hidden');
+        return;
+    } 
+    
+    s.classList.remove('hidden'); 
+    rel.forEach(p => { 
+        const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value; 
+        // Importante: min-w-[140px] e flex-shrink-0 garantem o comportamento de carrossel
+        g.innerHTML += `
+            <div onclick="openProductModal('${p.id}')" class="min-w-[140px] w-40 bg-white border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors flex-shrink-0 shadow-sm">
+                <img src="${p.images?.[0] || 'https://placehold.co/200'}" loading="lazy" class="w-full h-24 object-cover">
+                <div class="p-2">
+                    <h5 class="text-[11px] font-semibold truncate text-slate-700">${p.name}</h5>
+                    <span class="text-xs font-black text-slate-900 block mt-1">R$ ${pr.toFixed(2).replace('.', ',')}</span>
+                </div>
+            </div>`; 
+    }); 
+}
 
         window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const text=`Confira ${p.name} na ${document.title}!`; const url=window.location.href; if(navigator.share)navigator.share({title:p.name,text,url}).catch(console.error); else{navigator.clipboard.writeText(`${text} ${url}`);showToast("Link copiado!");} };
         window.addToCart = (p,q,v) => { const price=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; const uid=`${p.id}-${v.size||''}-${v.color||''}`; const ex=cart.find(x=>x.uid===uid); if(ex)ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v}); updateCartUI(); showToast(`<b>${p.name}</b> adicionado!`); };
