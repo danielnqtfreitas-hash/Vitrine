@@ -358,8 +358,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // 1. IMPORTAÇÃO DOS MÉTODOS DE ANALYTICS SOLICITADOS
-        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, getDocs, collection, query, where, increment, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, getDocs, collection, query, where, increment, setDoc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.firebasestorage.app", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
 
@@ -386,7 +385,7 @@
             lucide.createIcons();
             const urlParams = new URLSearchParams(window.location.search);
             
-            // 2. FALLBACK DE IDENTIDADE (MODO TESTE)
+            // FALLBACK DE IDENTIDADE
             STORE_ID = urlParams.get('id') || 'admin';
 
             signInAnonymously(auth).catch(e => console.error("Login anonimo falhou", e));
@@ -395,7 +394,7 @@
                 if(user) {
                     loadStoreWithCache(); 
                     updateFavoritesUI();
-                    // 3. GATILHO DE ANALYTICS APÓS LOGIN
+                    // GATILHO DE ANALYTICS APÓS LOGIN
                     registerVisit();
                 }
             });
@@ -404,31 +403,34 @@
             setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
         });
 
-        // 4. FUNÇÃO DE REGISTRO DE VISITA COM PREVENÇÃO DE DUPLICIDADE
+        // FUNÇÃO DE REGISTRO DE VISITA AVANÇADA (GLOBAL + HISTÓRICO DIÁRIO)
         async function registerVisit() {
             if (!STORE_ID) return;
             
             const sessionKey = `vst_active_${STORE_ID}`;
             
-            // Verifica se o visitante já foi contabilizado nesta sessão
+            // Prevenção de duplicidade na mesma sessão do navegador
             if (sessionStorage.getItem(sessionKey)) return;
 
-            const analyticsRef = doc(db, "stores", STORE_ID, "analytics", "global");
+            const today = new Date().toISOString().split('T')[0];
+            const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
+            const historyRef = doc(db, "stores", STORE_ID, "analytics_history", today);
 
             try {
-                // Tenta incrementar o valor atômico
-                await updateDoc(analyticsRef, {
-                    totalVisits: increment(1)
-                });
+                // Registro Atômico (Incrementa o total e o diário simultaneamente)
+                const analyticsPromises = [
+                    setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
+                    setDoc(historyRef, { 
+                        visits: increment(1),
+                        date: Timestamp.fromDate(new Date()) 
+                    }, { merge: true })
+                ];
+                
+                await Promise.all(analyticsPromises);
+                sessionStorage.setItem(sessionKey, 'true');
             } catch (error) {
-                // Se o documento não existir (primeira visita da história da loja), cria-o
-                await setDoc(analyticsRef, { 
-                    totalVisits: 1 
-                }, { merge: true });
+                console.warn("Analytics Error (Silent):", error);
             }
-            
-            // Marca a sessão como contabilizada
-            sessionStorage.setItem(sessionKey, 'true');
         }
 
         async function loadStoreWithCache() {
@@ -770,36 +772,24 @@
         };
 
         function renderRelatedProducts(curr) { 
-    const s = document.getElementById('relatedProductsSection'),
-          g = document.getElementById('relatedGrid'); 
-    g.innerHTML = ''; 
-    
-    // Filtra e pega até 10 produtos para o carrossel compacto
-    const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 10); 
-    
-    if (rel.length === 0) {
-        s.classList.add('hidden');
-        return;
-    } 
-    
-    s.classList.remove('hidden'); 
-    rel.forEach(p => { 
-        const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value; 
-        
-        // Ajustes feitos: 
-        // min-w-[110px] (largura menor), h-20 (imagem bem baixa), text-[10px] (fonte pequena)
-        g.innerHTML += `
-            <div onclick="openProductModal('${p.id}')" class="min-w-[110px] w-28 bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors flex-shrink-0 shadow-sm">
-                <img src="${p.images?.[0] || 'https://placehold.co/200'}" 
-                     loading="lazy" 
-                     class="w-full h-20 object-cover bg-slate-50"> 
-                <div class="p-2">
-                    <h5 class="text-[10px] font-medium truncate text-slate-600">${p.name}</h5>
-                    <span class="text-xs font-bold text-slate-900 block mt-0.5">R$ ${pr.toFixed(2).replace('.', ',')}</span>
-                </div>
-            </div>`; 
-    }); 
-}
+            const s = document.getElementById('relatedProductsSection'),
+                  g = document.getElementById('relatedGrid'); 
+            g.innerHTML = ''; 
+            const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 10); 
+            if (rel.length === 0) { s.classList.add('hidden'); return; } 
+            s.classList.remove('hidden'); 
+            rel.forEach(p => { 
+                const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value; 
+                g.innerHTML += `
+                    <div onclick="openProductModal('${p.id}')" class="min-w-[110px] w-28 bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors flex-shrink-0 shadow-sm">
+                        <img src="${p.images?.[0] || 'https://placehold.co/200'}" loading="lazy" class="w-full h-20 object-cover bg-slate-50"> 
+                        <div class="p-2">
+                            <h5 class="text-[10px] font-medium truncate text-slate-600">${p.name}</h5>
+                            <span class="text-xs font-bold text-slate-900 block mt-0.5">R$ ${pr.toFixed(2).replace('.', ',')}</span>
+                        </div>
+                    </div>`; 
+            }); 
+        }
 
         window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const text=`Confira ${p.name} na ${document.title}!`; const url=window.location.href; if(navigator.share)navigator.share({title:p.name,text,url}).catch(console.error); else{navigator.clipboard.writeText(`${text} ${url}`);showToast("Link copiado!");} };
         window.addToCart = (p,q,v) => { const price=(p.promoValue&&p.promoValue<p.value)?p.promoValue:p.value; const uid=`${p.id}-${v.size||''}-${v.color||''}`; const ex=cart.find(x=>x.uid===uid); if(ex)ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v}); updateCartUI(); showToast(`<b>${p.name}</b> adicionado!`); };
@@ -821,3 +811,5 @@
     </script>
 </body>
 </html>
+
+
