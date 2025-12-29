@@ -421,9 +421,10 @@
                 const analyticsPromises = [
                     setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
                     setDoc(historyRef, { 
-                        visits: increment(1),
-                        date: Timestamp.fromDate(new Date()) 
-                    }, { merge: true })
+                      visits: increment(1),
+                      date: Timestamp.fromDate(new Date()),
+                      [`hours.${new Date().getHours()}`]:increment(1)
+                       }, { merge: true })
                 ];
                 
                 await Promise.all(analyticsPromises);
