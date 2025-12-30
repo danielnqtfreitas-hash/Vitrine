@@ -115,16 +115,16 @@
     </div>
 
     <!-- HEADER -->
-    <header class="sticky top-0 z-50 glass-header transition-all duration-300">
-        <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
-            <!-- Logo + Nome da Loja -->
+<!-- Logo + Nome da Loja -->
 <div class="flex items-center gap-3 cursor-pointer active-scale" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
-    <!-- CONTENTOR DA LOGO (ADICIONADO) -->
-    <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden bg-white border border-slate-100 shadow-sm flex-shrink-0">
-        <img id="storeLogoImg" src="" class="w-full h-full object-contain p-1" alt="Logo">
+    <!-- LOGO AGORA TOTALMENTE REDONDA -->
+    <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0">
+        <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
     </div>
     <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[150px] md:max-w-xs">...</h1>
 </div>
+
+    
             <!-- Desktop Search + Filter -->
             <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
                 <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
