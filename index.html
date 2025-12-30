@@ -114,71 +114,76 @@
         </div>
     </div>
 
-    <!-- HEADER -->
-<!-- Logo + Nome da Loja -->
-<div class="flex items-center gap-3 cursor-pointer active-scale" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
-    <!-- LOGO AGORA TOTALMENTE REDONDA -->
-    <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0">
-        <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
-    </div>
-    <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[150px] md:max-w-xs">...</h1>
-</div>
-
     
-            <!-- Desktop Search + Filter -->
-            <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
-                <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
-                    <div class="relative flex-grow">
-                        <input type="text" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
-                    </div>
-                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 relative active-scale bg-white shadow-sm border border-slate-200 text-slate-600 transition-colors" title="Filtrar">
-                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-                        <span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Icons Right -->
-            <div class="flex items-center gap-2 md:gap-4">
-                <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale group bg-white border border-slate-200 relative" title="Meus Favoritos">
-                    <i data-lucide="heart" class="w-5 h-5 text-slate-700 transition-colors" id="headerHeartIcon"></i>
-                    <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-                </button>
-                <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200" id="cartButtonHeader">
-                    <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
-                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-                </button>
-            </div>
-        </div>
-        
-        <!-- Mobile Search + Filter -->
-        <div class="md:hidden px-4 pb-3">
-            <div class="flex items-center gap-2">
-                <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
-                    <div class="relative flex-1">
-                        <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
-                    </div>
-                    <button onclick="openFilterDrawer()" class="p-2.5 my-1 rounded-md bg-white hover:bg-slate-50 relative active-scale border border-slate-200 text-slate-600 shadow-sm" title="Filtrar">
-                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-                        <span class="filter-badge-indicator absolute -top-1 -right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 rounded-full flex items-center justify-center hidden border-2 border-white"></span>
-                    </button>
-                </div>
-                <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
-                    <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
-                    <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300"></span>
-                </button>
-            </div>
-        </div>
-    </header>
 
     <!-- MAIN APP -->
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
         <div id="heroGridContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-3 mb-6 pb-2 hide-scroll -mx-2 px-2 md:mx-0 md:px-0">
-            <div class="min-w-[85vw] md:min-w-[400px] h-36 md:h-48 rounded-2xl bg-slate-200 animate-pulse flex-shrink-0 snap-center"></div>
+            <div class="min-w-[85vw] md:min-w-[400px] h-36 md:h-48 rounded-2xl bg-slate-200 animate-pulse flex-shrink-0 snap-center"></d<!-- HEADER DA VITRINE -->
+<header class="sticky top-0 z-50 glass-header transition-all duration-300">
+    <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
+        
+        <!-- LADO ESQUERDO: LOGO REDONDA + NOME DA LOJA -->
+        <div class="flex items-center gap-3 cursor-pointer active-scale shrink-0" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
+            <!-- LOGO REDONDA (ESTILO REDES SOCIAIS) -->
+            <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0">
+                <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
+            </div>
+            
+            <!-- NOME DA LOJA -->
+            <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[140px] md:max-w-xs">
+                ...
+            </h1>
+        </div>
+
+        <!-- CENTRO: BARRA DE PESQUISA (ESCONDIDA NO MOBILE PARA ALINHAMENTO LIMPO) -->
+        <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
+            <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+                <div class="relative flex-grow">
+                    <input type="text" oninput="handleSearchInput(this.value)" placeholder="O que procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                </div>
+                <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 bg-white shadow-sm border border-slate-200 text-slate-600 transition-colors">
+                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- LADO DIREITO: ÍCONES DE FAVORITOS E CARRINHO -->
+        <div class="flex items-center gap-2 md:gap-4 shrink-0">
+            <!-- BOTÃO FAVORITOS -->
+            <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale bg-white border border-slate-200 relative" title="Favoritos">
+                <i data-lucide="heart" class="w-5 h-5 text-slate-700 transition-colors" id="headerHeartIcon"></i>
+                <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+            </button>
+
+            <!-- BOTÃO CARRINHO (ALINHADO COM A LOGO/NOME) -->
+            <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200 shadow-sm" id="cartButtonHeader">
+                <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
+                <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- BARRA DE PESQUISA MOBILE (APARECE APENAS EM TELAS PEQUENAS) -->
+    <div class="md:hidden px-4 pb-3">
+        <div class="flex items-center gap-2">
+            <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
+                <div class="relative flex-1">
+                    <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                </div>
+            </div>
+            <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
+                <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
+                <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
         </div>
 
         <!-- Categories -->
