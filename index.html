@@ -405,65 +405,42 @@
 
         // --- ESTA É A VERSÃO LIMPA E CORRETA PARA O SEU SITE ---
         async function registerVisit() {
-            if (!STORE_ID) return;
-            
-            const sessionKey = `vst_active_${STORE_ID}`;
-            
-            // Evita contar múltiplas visitas na mesma sessão ao fazer F5
-            if (sessionStorage.getItem(sessionKey)) return;
+    if (!STORE_ID || STORE_ID === 'admin') return;
+    
+    const sessionKey = `vst_active_${STORE_ID}`;
+    if (sessionStorage.getItem(sessionKey)) return;
 
-            // GERAR DATA LOCAL (Evita o erro de fuso horário)
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const todayId = `${year}-${month}-${day}`; 
-            const currentHour = now.getHours();
+    const now = new Date();
+    const todayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; 
+    const currentHour = now.getHours();
 
-            const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
-            const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+    const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
+    const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-            try {
-                await Promise.all([
-                    // Atualiza o total acumulado da loja
-                    setDoc(globalRef, { 
-                        totalVisits: increment(1) 
-                    }, { merge: true }),
+    try {
+        sessionStorage.setItem(sessionKey, 'true');
 
-                    // Atualiza o histórico diário e a hora específica
-                    setDoc(historyRef, { 
-                        visits: increment(1),
-                        date: Timestamp.fromDate(now),
-                        [`hours.${currentHour}`]: increment(1)
-                    }, { merge: true })
-                ]);
-                
-                sessionStorage.setItem(sessionKey, 'true');
-                console.log(`Visita registrada: ${currentHour}h`);
-            } catch (error) {
-                console.warn("Erro no analytics:", error);
-            }
-        }
+        await Promise.all([
+            setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
+            setDoc(historyRef, { 
+                visits: increment(1),
+                date: Timestamp.fromDate(now),
+                [`hours.${currentHour}`]: increment(1)
+            }, { merge: true })
+        ]);
+    } catch (error) {
+        sessionStorage.removeItem(sessionKey);
+    }
+}
 
-        // O SEU LISTENER DEVE FICAR ASSIM (FORA DA FUNÇÃO ACIMA)
-        onAuthStateChanged(auth, (user) => {
-            if(user) {
-                loadStoreWithCache(); 
-                updateFavoritesUI();
-                registerVisit(); // Chama a função aqui
-            }
-        });
-// 2. Garante que a função é chamada dentro do onAuthStateChanged, logo após o login:
 onAuthStateChanged(auth, (user) => {
     if(user) {
         loadStoreWithCache(); 
         updateFavoritesUI();
-        
-        // CHAMA AQUI:
         registerVisit();
     }
 });
-
+        
         async function loadStoreWithCache() {
             const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
             const CACHE_TIME = 10 * 60 * 1000; 
