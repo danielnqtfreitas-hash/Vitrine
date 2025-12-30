@@ -438,16 +438,7 @@
         console.error("Erro ao registrar visita:", error);
         sessionStorage.removeItem(sessionKey);
     }
-}
-
-onAuthStateChanged(auth, (user) => {
-    if(user) {
-        loadStoreWithCache(); 
-        updateFavoritesUI();
-        registerVisit();
-    }
-});
-        
+}     
         async function loadStoreWithCache() {
             const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
             const CACHE_TIME = 10 * 60 * 1000; 
