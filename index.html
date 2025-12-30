@@ -117,11 +117,14 @@
     <!-- HEADER -->
     <header class="sticky top-0 z-50 glass-header transition-all duration-300">
         <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
-            <!-- Logo -->
-            <div class="flex items-center gap-2 cursor-pointer active-scale" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
-                <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none">...</h1>
-            </div>
-
+            <!-- Logo + Nome da Loja -->
+<div class="flex items-center gap-3 cursor-pointer active-scale" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
+    <!-- CONTENTOR DA LOGO (ADICIONADO) -->
+    <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden bg-white border border-slate-100 shadow-sm flex-shrink-0">
+        <img id="storeLogoImg" src="" class="w-full h-full object-contain p-1" alt="Logo">
+    </div>
+    <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[150px] md:max-w-xs">...</h1>
+</div>
             <!-- Desktop Search + Filter -->
             <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
                 <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
@@ -555,6 +558,20 @@
             
             document.getElementById('storeNameDisplay').textContent = name;
             document.getElementById('footerStoreName').textContent = name; 
+                    // --- INÍCIO DA LÓGICA DA LOGO ---
+const logoHeader = document.getElementById('logoContainer');
+const logoHeaderImg = document.getElementById('storeLogoImg');
+
+if (d.logoUrl) {
+    // Se a loja tiver logo, coloca o link na imagem e mostra o quadrado
+    logoHeaderImg.src = d.logoUrl;
+    logoHeader.classList.remove('hidden');
+} else {
+    // Se não tiver logo, esconde o quadrado para não ficar um buraco vazio
+    logoHeader.classList.add('hidden');
+}
+// --- FIM DA LÓGICA DA LOGO ---
+                    
             document.getElementById('footerDescription').textContent = description;
             document.getElementById('footerWaLink').href = `https://wa.me/${whatsappNumber}`;
             
