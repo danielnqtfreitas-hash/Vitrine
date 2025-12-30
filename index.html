@@ -403,14 +403,14 @@
             setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
         });
 
-        // --- ESTA É A VERSÃO LIMPA E CORRETA PARA O SEU SITE ---
-        async function registerVisit() {
+    async function registerVisit() {
     if (!STORE_ID || STORE_ID === 'admin') return;
     
     const sessionKey = `vst_active_${STORE_ID}`;
     if (sessionStorage.getItem(sessionKey)) return;
 
     const now = new Date();
+    // Gera o ID do dia (Ex: 2025-12-30)
     const todayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; 
     const currentHour = now.getHours();
 
@@ -421,14 +421,21 @@
         sessionStorage.setItem(sessionKey, 'true');
 
         await Promise.all([
+            // Incrementa o total de visitas da loja
             setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
+            
+            // Incrementa as visitas do dia e cria o mapa de horas corretamente
             setDoc(historyRef, { 
                 visits: increment(1),
                 date: Timestamp.fromDate(now),
-                [`hours.${currentHour}`]: increment(1)
+                // CORREÇÃO: Estrutura de objeto aninhado para o Firebase criar um Mapa
+                hours: {
+                    [currentHour]: increment(1)
+                }
             }, { merge: true })
         ]);
     } catch (error) {
+        console.error("Erro ao registrar visita:", error);
         sessionStorage.removeItem(sessionKey);
     }
 }
