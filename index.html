@@ -3,7 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carregando Loja...</title>
+    <title id="pageTitle">Carregando Loja...</title>
+    
+    <!-- TAGS DE COMPARTILHAMENTO (WHATSAPP / INSTAGRAM) -->
+    <meta name="description" id="meta-desc" content="Confira nossa vitrine online!">
+    <meta property="og:title" id="og-title" content="Loja Online">
+    <meta property="og:description" id="og-desc" content="Qualidade e confiança em cada detalhe.">
+    <meta property="og:image" id="og-img" content="">
+    <meta property="og:type" content="website">
+
+    <!-- SCRIPTS QUE JÁ ESTAVAM AÍ (MANTIDOS) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -599,6 +608,37 @@ if (d.logoUrl) {
                 stDot.className = "relative inline-flex rounded-full h-2 w-2 bg-red-500"; 
                 stPing.className = "hidden"; 
                 topBar.className = "bg-red-900 text-white text-[10px] py-1.5 transition-colors duration-300"; 
+                            // --- COLE ESTE BLOCO AQUI (SINCRONIZAÇÃO DE COMPARTILHAMENTO) ---
+            const sName = d.storeName || "Minha Loja";
+            const sDesc = d.footerText || "Confira nossa vitrine online e faça seu pedido!";
+            const sLogo = d.logoUrl || "";
+
+            // 1. Atualiza o Título que aparece na aba do navegador
+            document.title = sName;
+            
+            // 2. Atualiza as tags invisíveis que o WhatsApp busca ao ler o link
+            const metaDescEl = document.getElementById('meta-desc');
+            const ogTitleEl = document.getElementById('og-title');
+            const ogDescEl = document.getElementById('og-desc');
+            const ogImgEl = document.getElementById('og-img');
+
+            if(metaDescEl) metaDescEl.content = sDesc;
+            if(ogTitleEl) ogTitleEl.content = sName;
+            if(ogDescEl) ogDescEl.content = sDesc;
+            
+            if (sLogo && ogImgEl) {
+                ogImgEl.content = sLogo;
+                
+                // BÔNUS: Muda o ícone da aba (Favicon) para a logo da loja
+                let link = document.querySelector("link[rel~='icon']");
+                if (!link) {
+                    link = document.createElement('link');
+                    link.rel = 'icon';
+                    document.head.appendChild(link);
+                }
+                link.href = sLogo;
+            }
+            // --- FIM DO BLOCO DE COMPARTILHAMENTO ---
             }
                 }
 
