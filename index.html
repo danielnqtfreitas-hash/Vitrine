@@ -403,49 +403,56 @@
             setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
         });
 
-        // FUNÇÃO DE REGISTRO DE VISITA AVANÇADA (GLOBAL + HISTÓRICO DIÁRIO)
+        // --- ESTA É A VERSÃO LIMPA E CORRETA PARA O SEU SITE ---
         async function registerVisit() {
-            // 1. Substitui a tua função registerVisit por esta:
-async function registerVisit() {
-    if (!STORE_ID) return;
-    
-    const sessionKey = `vst_active_${STORE_ID}`;
-    
-    // Evita contar múltiplas visitas na mesma sessão ao fazer F5
-    if (sessionStorage.getItem(sessionKey)) return;
+            if (!STORE_ID) return;
+            
+            const sessionKey = `vst_active_${STORE_ID}`;
+            
+            // Evita contar múltiplas visitas na mesma sessão ao fazer F5
+            if (sessionStorage.getItem(sessionKey)) return;
 
-    // GERAR DATA LOCAL (Evita o erro de fuso horário do toISOString)
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const todayId = `${year}-${month}-${day}`; // Formato: 2025-12-29
-    const currentHour = now.getHours();
+            // GERAR DATA LOCAL (Evita o erro de fuso horário)
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const todayId = `${year}-${month}-${day}`; 
+            const currentHour = now.getHours();
 
-    const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
-    const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+            const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
+            const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-    try {
-        await Promise.all([
-            // Atualiza o total acumulado da loja
-            setDoc(globalRef, { 
-                totalVisits: increment(1) 
-            }, { merge: true }),
+            try {
+                await Promise.all([
+                    // Atualiza o total acumulado da loja
+                    setDoc(globalRef, { 
+                        totalVisits: increment(1) 
+                    }, { merge: true }),
 
-            // Atualiza o histórico para o gráfico (Visitas do dia + Visita na hora atual)
-            setDoc(historyRef, { 
-                visits: increment(1),
-                date: Timestamp.fromDate(now), // Importante para ordenação no gráfico de semana
-                [`hours.${currentHour}`]: increment(1) // O "pulo do gato" para o efeito sobe/desce
-            }, { merge: true })
-        ]);
-        
-        sessionStorage.setItem(sessionKey, 'true');
-        console.log(`Visita registada às ${currentHour}h no dia ${todayId}`);
-    } catch (error) {
-        console.warn("Erro silencioso no analytics:", error);
-    }
-}
+                    // Atualiza o histórico diário e a hora específica
+                    setDoc(historyRef, { 
+                        visits: increment(1),
+                        date: Timestamp.fromDate(now),
+                        [`hours.${currentHour}`]: increment(1)
+                    }, { merge: true })
+                ]);
+                
+                sessionStorage.setItem(sessionKey, 'true');
+                console.log(`Visita registrada: ${currentHour}h`);
+            } catch (error) {
+                console.warn("Erro no analytics:", error);
+            }
+        }
+
+        // O SEU LISTENER DEVE FICAR ASSIM (FORA DA FUNÇÃO ACIMA)
+        onAuthStateChanged(auth, (user) => {
+            if(user) {
+                loadStoreWithCache(); 
+                updateFavoritesUI();
+                registerVisit(); // Chama a função aqui
+            }
+        });
 // 2. Garante que a função é chamada dentro do onAuthStateChanged, logo após o login:
 onAuthStateChanged(auth, (user) => {
     if(user) {
