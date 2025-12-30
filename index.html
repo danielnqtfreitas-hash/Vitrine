@@ -439,7 +439,7 @@
         sessionStorage.removeItem(sessionKey);
     }
 }     
-        async function loadStoreWithCache() {
+                async function loadStoreWithCache() {
             const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
             const CACHE_TIME = 10 * 60 * 1000; 
             const now = Date.now();
@@ -456,6 +456,9 @@
                 const remoteConfig = configSnap.data();
                 const remoteUpdate = remoteConfig.lastUpdate || 0;
                 
+                // --- AJUSTE AQUI: SEMPRE ATUALIZA O STATUS ABERTO/FECHADO ---
+                applyStoreConfig(remoteConfig); 
+
                 const cachedRaw = localStorage.getItem(CACHE_KEY);
                 let useCache = false;
                 let localData = null;
@@ -464,11 +467,11 @@
                     localData = JSON.parse(cachedRaw);
                     const isExpired = (now - localData.timestamp) > CACHE_TIME;
                     const isVersionMatch = localData.lastUpdate === remoteUpdate;
+                    // Só usa cache para Produtos e Banners, mas Identidade/Status é sempre tempo real
                     if (!isExpired && isVersionMatch) useCache = true;
                 }
 
                 if (useCache) {
-                    applyStoreConfig(localData.config);
                     allProducts = localData.products;
                     categories = localData.categories;
                     renderHeroCarousel(localData.banners);
@@ -486,11 +489,14 @@
                     const cats = Array.from(cs).sort();
 
                     localStorage.setItem(CACHE_KEY, JSON.stringify({
-                        timestamp: now, lastUpdate: remoteUpdate, config: remoteConfig,
-                        products: products, banners: banners, categories: cats
+                        timestamp: now, 
+                        lastUpdate: remoteUpdate, 
+                        config: remoteConfig,
+                        products: products, 
+                        banners: banners, 
+                        categories: cats
                     }));
 
-                    applyStoreConfig(remoteConfig);
                     allProducts = products;
                     categories = cats;
                     renderHeroCarousel(banners);
@@ -503,8 +509,7 @@
                 console.error("Erro ao carregar dados:", error);
                 showFatalError("Erro de Conexão", "Não foi possível sincronizar com o servidor.");
             }
-        }
-
+                }
         function hideLoader() {
             document.getElementById('initialLoader').style.opacity = '0';
             setTimeout(() => { 
