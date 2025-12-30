@@ -528,23 +528,36 @@
             }, {passive: true});
         }
 
-        function showFatalError(title, msg) {
-            document.getElementById('initialLoader').classList.add('hidden');
-            document.getElementById('errorScreen').classList.remove('hidden');
-            document.getElementById('errorTitle').textContent = title;
-            document.getElementById('errorMsg').textContent = msg;
-        }
-
-        function applyStoreConfig(d) {
+                function applyStoreConfig(d) {
             if(d.subscriptionStatus === 'suspended') { showFatalError("Indisponível", "Esta loja está suspensa."); return; }
-            whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"") || "";
-            if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
+            
+            // --- SEO DINÂMICO ---
             const name = d.storeName || "Minha Loja";
-            document.title = name;
+            const description = d.footerText || "Qualidade e confiança. Confira nossa vitrine online!";
+            
+            document.title = name; // Altera o nome na aba do navegador
+
+            // Busca ou cria a meta tag de descrição para buscadores e redes sociais
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (!metaDesc) {
+                metaDesc = document.createElement('meta');
+                metaDesc.name = "description";
+                document.head.appendChild(metaDesc);
+            }
+            metaDesc.setAttribute("content", description);
+            // --------------------
+
+            whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"") || "";
+            if(d.primaryColor) { 
+                document.documentElement.style.setProperty('--color-primary', d.primaryColor); 
+                document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); 
+            }
+            
             document.getElementById('storeNameDisplay').textContent = name;
             document.getElementById('footerStoreName').textContent = name; 
-            document.getElementById('footerDescription').textContent = d.footerText || "Bem-vindo.";
+            document.getElementById('footerDescription').textContent = description;
             document.getElementById('footerWaLink').href = `https://wa.me/${whatsappNumber}`;
+            
             deliveryAreas = d.deliveryAreas || [];
             document.getElementById('deliveryList').innerHTML = deliveryAreas.map(a => `<div class="flex justify-between p-3 bg-slate-50 rounded-lg"><span class="text-sm font-medium">${a.name}</span><span class="text-sm font-bold">R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')}</span></div>`).join('');
             document.getElementById('cartDeliverySelect').innerHTML='<option value="0">Retirar na Loja</option>' + deliveryAreas.map(a=>`<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
@@ -566,7 +579,7 @@
                 stPing.className = "hidden"; 
                 topBar.className = "bg-red-900 text-white text-[10px] py-1.5 transition-colors duration-300"; 
             }
-        }
+                }
 
         function renderHeroCarousel(banners) {
             const container = document.getElementById('heroGridContainer');
