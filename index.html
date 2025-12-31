@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Carregando Loja...</title>
     
-    <!-- TAGS DE COMPARTILHAMENTO (WHATSAPP / INSTAGRAM) -->
+    <!-- SEO & Compartilhamento -->
     <meta name="description" id="meta-desc" content="Confira nossa vitrine online!">
     <meta property="og:title" id="og-title" content="Loja Online">
     <meta property="og:description" id="og-desc" content="Qualidade e confiança em cada detalhe.">
     <meta property="og:image" id="og-img" content="">
     <meta property="og:type" content="website">
 
-    <!-- SCRIPTS QUE JÁ ESTAVAM AÍ (MANTIDOS) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -33,15 +32,8 @@
                     keyframes: {
                         fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
                         slideUp: { from: { opacity: 0, transform: 'translateY(20px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
-                        bounceShort: {
-                            '0%, 100%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.2)' }
-                        },
-                        heartBeat: {
-                            '0%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.3)' },
-                            '100%': { transform: 'scale(1)' }
-                        },
+                        bounceShort: { '0%, 100%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.2)' } },
+                        heartBeat: { '0%': { transform: 'scale(1)' }, '50%': { transform: 'scale(1.3)' }, '100%': { transform: 'scale(1)' } },
                         zoomIn: { from: { transform: 'scale(0.95)', opacity: 0 }, to: { transform: 'scale(1)', opacity: 1 } }
                     }
                 }
@@ -52,55 +44,34 @@
         :root { --color-primary: #EA1D2C; --color-primary-dark: #b91c29; }
         body { background-color: #F3F4F6; color: #334155; -webkit-font-smoothing: antialiased; }
         .glass-header { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,0,0,0.05); }
-        
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-        
         .chip-common { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; user-select: none; }
         .active-scale:active { transform: scale(0.95); }
-        .hero-card { transition: transform 0.3s ease; }
-        .hero-card:active { transform: scale(0.98); }
-        .pattern-dots { background-image: radial-gradient(rgba(255,255,255,0.2) 2px, transparent 2px); background-size: 20px 20px; }
-        
         .product-card { 
-            background: white; 
-            border-radius: 12px; 
-            overflow: hidden; 
-            transition: all 0.3s ease; 
-            border: 1px solid transparent;
+            background: white; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; border: 1px solid transparent;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        .product-card:hover { 
-            transform: translateY(-4px); 
-            box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); 
-            border-color: var(--color-primary);
-        }
-
-        .toast-enter { transform: translateY(100%); opacity: 0; }
-        .toast-enter-active { transform: translateY(0); opacity: 1; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .toast-exit { transform: translateY(0); opacity: 1; }
-        .toast-exit-active { transform: translateY(100%); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        img { max-width: 100%; display: block; }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); border-color: var(--color-primary); }
         .heart-active { fill: var(--color-primary); color: var(--color-primary); animation: heartBeat 0.4s forwards; }
-        
         .thumb-active { border-color: var(--color-primary); opacity: 1; }
         .thumb-inactive { border-color: transparent; opacity: 0.6; }
-        .thumb-inactive:hover { opacity: 1; }
-
-        /* ESTILO PARA OPÇÃO INDISPONÍVEL (ESTILO SHOPEE) */
         .chip-disabled { opacity: 0.25; pointer-events: none; background: #f1f5f9; border-color: #e2e8f0; text-decoration: line-through; color: #94a3b8; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative">
 
-    <!-- ERROR / SUSPENDED SCREEN -->
+    <!-- ERROR SCREEN -->
     <div id="errorScreen" class="fixed inset-0 z-[10000] bg-slate-900 hidden flex flex-col items-center justify-center p-6 text-center">
         <div class="bg-slate-800 p-6 rounded-full mb-6 shadow-2xl">
-            <i id="errorIcon" data-lucide="store" class="w-16 h-16 text-slate-400"></i>
+            <i data-lucide="store" class="w-16 h-16 text-slate-400"></i>
         </div>
         <h1 id="errorTitle" class="text-3xl font-bold text-white mb-3">Loja Indisponível</h1>
-        <p id="errorMsg" class="text-slate-400 max-w-md">Não foi possível carregar as informações desta loja no momento.</p>
+        <p id="errorMsg" class="text-slate-400 max-w-md">Não foi possível carregar as informações.</p>
+        <button onclick="window.location.reload()" class="mt-8 px-6 py-2 bg-primary text-white rounded-full font-bold">Tentar novamente</button>
     </div>
 
     <!-- TOAST CONTAINER -->
@@ -109,7 +80,7 @@
     <!-- INITIAL LOADER -->
     <div id="initialLoader" class="fixed inset-0 bg-white z-[9999] flex flex-col items-center justify-center transition-opacity duration-500">
         <div class="w-12 h-12 border-4 border-slate-100 border-t-primary rounded-full animate-spin"></div>
-        <p class="mt-4 text-xs font-bold text-slate-400 animate-pulse">CARREGANDO VITRINE...</p>
+        <p class="mt-4 text-xs font-bold text-slate-400 animate-pulse uppercase tracking-widest">Sincronizando Vitrine...</p>
     </div>
 
     <!-- STATUS BAR -->
@@ -122,76 +93,67 @@
                 </span>
                 <span id="storeStatusText" class="font-bold tracking-wide uppercase">Verificando...</span>
             </div>
-            <div class="hidden md:block opacity-70">Horário de funcionamento na descrição</div>
+            <div class="hidden md:block opacity-70">Atendimento Digital</div>
         </div>
     </div>
 
-    <!-- HEADER DA VITRINE -->
-<header class="sticky top-0 z-50 glass-header transition-all duration-300">
-    <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
-        
-        <!-- LADO ESQUERDO: LOGO REDONDA + NOME DA LOJA -->
-        <div class="flex items-center gap-3 cursor-pointer active-scale shrink-0" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
-            <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0">
-                <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
-            </div>
-            <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[140px] md:max-w-xs">
-                ...
-            </h1>
-        </div>
-
-        <!-- CENTRO: BARRA DE PESQUISA -->
-        <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
-            <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
-                <div class="relative flex-grow">
-                    <input type="text" oninput="handleSearchInput(this.value)" placeholder="O que procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 glass-header">
+        <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 cursor-pointer active-scale shrink-0" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
+                <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0">
+                    <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
                 </div>
-                <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 bg-white shadow-sm border border-slate-200 text-slate-600 transition-colors">
-                    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[140px] md:max-w-xs">Carregando...</h1>
+            </div>
+
+            <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
+                <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+                    <div class="relative flex-grow">
+                        <input type="text" id="desktopSearch" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    </div>
+                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 bg-white shadow-sm border border-slate-200 text-slate-600">
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 md:gap-4 shrink-0">
+                <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale bg-white border border-slate-200 relative">
+                    <i data-lucide="heart" class="w-5 h-5 text-slate-700" id="headerHeartIcon"></i>
+                    <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+                </button>
+                <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200 shadow-sm">
+                    <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
                 </button>
             </div>
         </div>
-
-        <!-- LADO DIREITO: ÍCONES -->
-        <div class="flex items-center gap-2 md:gap-4 shrink-0">
-            <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale bg-white border border-slate-200 relative" title="Favoritos">
-                <i data-lucide="heart" class="w-5 h-5 text-slate-700 transition-colors" id="headerHeartIcon"></i>
-                <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-            </button>
-            <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200 shadow-sm" id="cartButtonHeader">
-                <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
-                <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-            </button>
-        </div>
-    </div>
-    
-    <!-- BARRA DE PESQUISA MOBILE -->
-    <div class="md:hidden px-4 pb-3">
-        <div class="flex items-center gap-2">
-            <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
-                <div class="relative flex-1">
-                    <input type="text" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
-                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+        
+        <div class="md:hidden px-4 pb-3">
+            <div class="flex items-center gap-2">
+                <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
+                    <div class="relative flex-1">
+                        <input type="text" id="mobileSearch" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
+                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+                    </div>
                 </div>
+                <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
+                    <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
+                    <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+                </button>
             </div>
-            <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
-                <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
-                <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300"></span>
-            </button>
         </div>
-    </div>
-</header>
+    </header>
 
     <!-- MAIN APP -->
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
-        <div id="heroGridContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-3 mb-6 pb-2 hide-scroll -mx-2 px-2 md:mx-0 md:px-0">
-            <div class="min-w-[85vw] md:min-w-[400px] h-36 md:h-48 rounded-2xl bg-slate-200 animate-pulse flex-shrink-0 snap-center"></div>
-        </div>
+        <div id="heroGridContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-3 mb-6 pb-2 hide-scroll -mx-2 px-2 md:mx-0 md:px-0"></div>
 
-        <!-- Categories -->
+        <!-- CATEGORIES -->
         <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 -mx-2 px-2 md:mx-0 md:px-0 bg-transparent">
             <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2 pl-1"></div>
         </nav>
@@ -199,22 +161,15 @@
         <!-- CATALOGO -->
         <div id="catalogContainer" class="pb-20 space-y-10 min-h-[50vh]"></div>
         
-        <!-- Empty States -->
+        <!-- EMPTY STATES -->
         <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-fade-in">
             <div class="w-16 h-16 bg-slate-200 rounded-full flex items-center justify-center mb-4 text-slate-400"><i data-lucide="search-x" class="w-8 h-8"></i></div>
             <h3 class="font-bold text-slate-800">Nenhum produto encontrado</h3>
             <button onclick="resetAllFilters()" class="mt-4 text-primary text-sm font-bold">Limpar filtros</button>
         </div>
-
-        <div id="favoritesEmptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-fade-in">
-            <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mb-4 text-primary"><i data-lucide="heart-off" class="w-8 h-8"></i></div>
-            <h3 class="font-bold text-slate-800">Sua lista de desejos está vazia</h3>
-            <p class="text-slate-500 text-sm mt-2 mb-6">Salve os itens que você mais gostou aqui ❤️</p>
-            <button onclick="resetAllFilters()" class="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg active-scale">Ver Produtos</button>
-        </div>
     </main>
 
-    <!-- RODAPÉ -->
+    <!-- FOOTER -->
     <footer class="bg-white border-t border-slate-200 py-10 mt-auto">
         <div class="container mx-auto px-4 max-w-7xl flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
@@ -223,98 +178,58 @@
             </div>
             <div class="flex gap-4 text-sm font-semibold text-slate-600">
                 <button onclick="openDeliveryModal()" class="hover:text-primary flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</button>
-                <a id="footerWaLink" href="#" target="_blank" class="hover:text-primary flex items-center gap-1"><i data-lucide="message-circle" class="w-4 h-4"></i> Ajuda</a>
+                <a id="footerWaLink" href="#" target="_blank" class="hover:text-primary flex items-center gap-1"><i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp</a>
             </div>
         </div>
     </footer>
 
-    <!-- MODAL: DETALHES -->
+    <!-- MODAL: DETALHES (VARIATIONS LOGIC PRESERVED) -->
     <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
         <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl pointer-events-auto relative flex flex-col max-h-[95vh] overflow-hidden animate-slide-up">
-            
-            <!-- Header Modal Buttons -->
             <div class="absolute top-4 right-4 z-20 flex gap-2">
-                <button onclick="shareProduct()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 active:scale-95" title="Compartilhar">
-                    <i data-lucide="share-2" class="w-5 h-5 text-slate-700"></i>
-                </button>
-                <button onclick="closeModalDetails()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm transition-transform hover:scale-105 active:scale-95">
-                    <i data-lucide="x" class="w-5 h-5 text-slate-700"></i>
-                </button>
+                <button onclick="shareProduct()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm"><i data-lucide="share-2" class="w-5 h-5 text-slate-700"></i></button>
+                <button onclick="closeModalDetails()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-sm backdrop-blur-sm"><i data-lucide="x" class="w-5 h-5 text-slate-700"></i></button>
             </div>
-            
-            <!-- Scroll Area -->
             <div class="flex-1 overflow-y-auto custom-scrollbar">
-                
-                <!-- CARROSEL DE IMAGENS -->
                 <div class="relative bg-white pt-2 pb-4">
-                    <div id="mainImageContainer" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" 
-                         onclick="openImageZoom()">
-                        
-                        <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 group-hover:scale-105 select-none" 
-                             src="" onerror="this.src='https://placehold.co/600?text=Sem+Imagem';" draggable="false">
-
-                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold backdrop-blur-sm">
-                            1 / 1
-                        </div>
-
-                        <button onclick="event.stopPropagation(); changeDetailImage(-1)" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-opacity opacity-0 group-hover:opacity-100 hidden md:block z-10">
-                            <i data-lucide="chevron-left" class="w-6 h-6"></i>
-                        </button>
-                        <button onclick="event.stopPropagation(); changeDetailImage(1)" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white text-slate-800 transition-opacity opacity-0 group-hover:opacity-100 hidden md:block z-10">
-                            <i data-lucide="chevron-right" class="w-6 h-6"></i>
-                        </button>
+                    <div id="mainImageContainer" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" onclick="openImageZoom()">
+                        <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 select-none" src="">
+                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold">1 / 1</div>
                     </div>
-
                     <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center min-h-[50px] items-center hide-scroll"></div>
                 </div>
-
                 <div class="px-6 pb-24">
                     <div class="flex justify-between items-start mb-2">
-                         <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest block pt-1"></span>
-                         <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
-                             <i data-lucide="heart" class="w-6 h-6 text-slate-300 transition-colors"></i>
-                         </button>
+                         <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
+                         <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale"><i data-lucide="heart" class="w-6 h-6 text-slate-300"></i></button>
                     </div>
-                    
-                    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-3 leading-tight"></h2>
+                    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-3"></h2>
                     <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
-                    
                     <div class="space-y-6 border-t border-slate-100 pt-6">
                         <div id="sizesWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Tamanho</span><div id="detailSizesContainer" class="flex flex-wrap gap-2"></div></div>
                         <div id="colorsWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Cor</span><div id="detailColorsContainer" class="flex flex-wrap gap-2"></div></div>
                     </div>
-
                     <div id="relatedProductsSection" class="mt-10 pt-8 border-t border-slate-100 hidden">
-                        <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Veja Também</h4>
+                        <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Relacionados</h4>
                         <div id="relatedGrid" class="flex overflow-x-auto gap-3 pb-4 hide-scroll -mx-2 px-2"></div>
                     </div>
                 </div>
             </div>
-
-            <!-- Footer Action Bar -->
-            <div class="p-4 border-t flex items-center justify-between bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20 absolute bottom-0 w-full">
-                <div><span id="detailOldPrice" class="text-sm text-slate-400 line-through"></span><span id="detailPrice" class="text-3xl font-display font-black text-slate-900 block tracking-tight"></span></div>
+            <div class="p-4 border-t flex items-center justify-between bg-white z-20 absolute bottom-0 w-full shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <div><span id="detailOldPrice" class="text-sm text-slate-400 line-through"></span><span id="detailPrice" class="text-3xl font-display font-black text-slate-900 block"></span></div>
                 <div class="flex gap-3">
                     <div class="flex items-center bg-slate-100 rounded-xl px-2 h-12"><button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button><span id="detailQtyDisplay" class="font-bold w-6 text-center text-lg">1</span><button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button></div>
-                    <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-6 h-12 rounded-xl active-scale shadow-lg transition-all duration-200 text-sm md:text-base disabled:opacity-40 disabled:grayscale">Adicionar</button>
+                    <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-6 h-12 rounded-xl active-scale shadow-lg disabled:opacity-40">Adicionar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: ZOOM IMAGEM -->
-    <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out touch-pan-y" onclick="closeImageZoom()">
-        <button onclick="closeImageZoom()" class="absolute top-4 right-4 text-white/80 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50"><i data-lucide="x" class="w-10 h-10"></i></button>
-        <button onclick="event.stopPropagation(); changeZoomImage(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
-            <i data-lucide="chevron-left" class="w-10 h-10"></i>
-        </button>
-        <div id="zoomContainer" class="w-full h-full flex items-center justify-center p-4 relative">
-             <img id="zoomedImg" class="max-w-full max-h-full object-contain shadow-2xl transform scale-95 transition-transform duration-300 select-none" onclick="event.stopPropagation()" draggable="false">
-        </div>
-        <button onclick="event.stopPropagation(); changeZoomImage(1)" class="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 hidden md:block hover:bg-white/10 rounded-full transition-all">
-            <i data-lucide="chevron-right" class="w-10 h-10"></i>
-        </button>
+    <!-- MODAL: ZOOM -->
+    <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
+        <button class="absolute top-4 right-4 text-white/80 p-3"><i data-lucide="x" class="w-10 h-10"></i></button>
+        <img id="zoomedImg" class="max-w-full max-h-full object-contain transform scale-95 transition-transform duration-300">
     </div>
 
     <!-- MODAL: CARRINHO -->
@@ -324,7 +239,7 @@
             <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold text-lg">Minha Sacola</h3><button onclick="closeCartModal()"><i data-lucide="x" class="w-6 h-6"></i></button></div>
             <div id="cartList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"></div>
             <div class="p-5 border-t bg-white space-y-4">
-                <div id="cartEmptyMsg" class="hidden text-center text-slate-400 py-6">Vazio por enquanto...</div>
+                <div id="cartEmptyMsg" class="hidden text-center text-slate-400 py-6">Sua sacola está vazia.</div>
                 <div id="cartSummary" class="space-y-2">
                     <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border text-sm"><span class="font-bold flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</span><select id="cartDeliverySelect" onchange="updateCartTotals()" class="bg-transparent font-bold outline-none text-right cursor-pointer"></select></div>
                     <div class="flex justify-between text-lg font-bold text-slate-900 pt-3 border-t"><span>Total</span><span id="cartFinalTotal"></span></div>
@@ -334,220 +249,207 @@
         </div>
     </div>
 
-    <!-- MODAL: FILTROS -->
+    <!-- FILTRO DRAWER -->
     <div id="filterModal" class="fixed inset-0 z-[70] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
         <div id="filterDrawer" class="absolute inset-y-0 right-0 max-w-xs w-full bg-white flex flex-col transform translate-x-full transition-transform duration-300">
-            <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold">Filtrar Produtos</h3><button onclick="closeFilterDrawer()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
+            <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold">Filtrar</h3><button onclick="closeFilterDrawer()"><i data-lucide="x" class="w-5 h-5"></i></button></div>
             <div class="p-5 space-y-8 flex-1 overflow-y-auto">
-                <div><label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Preço</label><div class="flex gap-2"><input id="filterMinPrice" type="number" placeholder="Min" oninput="handlePriceInput()" class="w-full border rounded-lg p-2.5 text-sm"><input id="filterMaxPrice" type="number" placeholder="Max" oninput="handlePriceInput()" class="w-full border rounded-lg p-2.5 text-sm"></div></div>
-                <div><div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-400 uppercase block">Tamanhos</label><span id="sizeBadge" class="hidden text-[10px] bg-primary text-white px-1.5 rounded-full">0</span></div><div id="filterSizesContainer" class="flex flex-wrap gap-2"></div></div>
-                <div><div class="flex justify-between items-center mb-3"><label class="text-xs font-bold text-slate-400 uppercase block">Cores</label><span id="colorBadge" class="hidden text-[10px] bg-primary text-white px-1.5 rounded-full">0</span></div><div id="filterColorsContainer" class="flex flex-wrap gap-2"></div></div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Preço Máximo</label><input id="filterMaxPrice" type="number" placeholder="Até R$..." oninput="renderCatalog()" class="w-full border rounded-lg p-2.5 text-sm"></div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Tamanhos</label><div id="filterSizesContainer" class="flex flex-wrap gap-2"></div></div>
+                <div><label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Cores</label><div id="filterColorsContainer" class="flex flex-wrap gap-2"></div></div>
             </div>
-            <div class="p-5 border-t bg-slate-50 flex flex-col gap-2"><button onclick="closeFilterDrawer()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl shadow-lg active-scale">Ver Resultados</button><button onclick="resetAllFilters()" class="w-full text-slate-500 font-bold py-2 text-sm">Limpar Filtros</button></div>
+            <div class="p-5 border-t bg-slate-50 flex flex-col gap-2">
+                <button onclick="closeFilterDrawer()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl">Ver Resultados</button>
+                <button onclick="resetAllFilters()" class="w-full text-slate-500 font-bold py-2 text-sm">Limpar</button>
+            </div>
         </div>
     </div>
 
-    <!-- MODAL: ENTREGA -->
+    <!-- MODAL: TAXAS -->
     <div id="modalDelivery" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onclick="document.getElementById('modalDelivery').classList.add('hidden')"></div>
         <div class="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 shadow-2xl animate-slide-up">
             <h3 class="font-bold text-lg mb-4 text-slate-900">Taxas de Entrega</h3>
             <div id="deliveryList" class="space-y-2 max-h-[50vh] overflow-y-auto mb-6"></div>
-            <button onclick="document.getElementById('modalDelivery').classList.add('hidden')" class="w-full py-3 bg-slate-100 font-bold text-slate-600 rounded-xl">Fechar</button>
+            <button onclick="document.getElementById('modalDelivery').classList.add('hidden')" class="w-full py-3 bg-slate-100 font-bold text-slate-600 rounded-xl font-display">Fechar</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, doc, getDoc, getDocs, collection, query, where, increment, setDoc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { 
+            initializeFirestore, 
+            persistentLocalCache, 
+            persistentMultipleTabManager, 
+            doc, 
+            getDoc, 
+            getDocFromCache, 
+            getDocFromServer,
+            getDocs, 
+            getDocsFromCache,
+            getDocsFromServer,
+            collection, 
+            query, 
+            where, 
+            increment, 
+            setDoc, 
+            updateDoc, 
+            Timestamp 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- CONFIGURAÇÃO & ESTADO ---
         const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.firebasestorage.app", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
-
         const app = initializeApp(FIREBASE_CONFIG);
-        const db = initializeFirestore(app, {
-            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
-        });
-        
+        const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
         const auth = getAuth(app);
+        
         let STORE_ID = null;
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
-        let deliveryAreas=[], currentCoupon=null;
-        
-        let currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
+        let deliveryAreas=[], currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
-        
-        let filters = { search: "", category: null, minPrice: null, maxPrice: null, sizes: [], colors: [] };
-        let favorites = JSON.parse(localStorage.getItem('favorites_v1') || "[]");
+        let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
+        let favorites = JSON.parse(localStorage.getItem('favs_v2') || "[]");
         let isFavoritesView = false;
-        const CHIP_DEFAULT = "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
-        const CHIP_SELECTED = "border-primary bg-primary text-white font-bold ring-2 ring-primary/20 shadow-md";
 
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+        // --- DATA SERVICE (SENIOR OTIMIZAÇÃO) ---
+        const DataService = {
+            async getStoreConfig() {
+                const configRef = doc(db, `stores/${STORE_ID}/config/store`);
+                try {
+                    // Tenta cache primeiro (Custo 0)
+                    const snap = await getDocFromCache(configRef);
+                    return snap.data();
+                } catch (e) {
+                    // Se falhar ou estiver vazio, vai pro servidor (Custo 1)
+                    const snap = await getDocFromServer(configRef);
+                    return snap.data();
+                }
+            },
+
+            async getProducts(forceServer = false) {
+                const colRef = collection(db, `stores/${STORE_ID}/products`);
+                try {
+                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocsFromCache(colRef);
+                    if (snap.empty && !forceServer) return this.getProducts(true);
+                    return snap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
+                } catch (e) {
+                    return forceServer ? [] : this.getProducts(true);
+                }
+            },
+
+            async getBanners(forceServer = false) {
+                const colRef = collection(db, `stores/${STORE_ID}/hero_cards`);
+                try {
+                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocsFromCache(colRef);
+                    if (snap.empty && !forceServer) return this.getBanners(true);
+                    return snap.docs.map(d => ({id: d.id, ...d.data()}));
+                } catch (e) {
+                    return forceServer ? [] : this.getBanners(true);
+                }
+            }
+        };
+
+        // --- APP INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
             STORE_ID = urlParams.get('id') || 'admin';
-            signInAnonymously(auth).catch(e => console.error("Login anonimo falhou", e));
-            onAuthStateChanged(auth, (user) => {
-                if(user) { loadStoreWithCache(); updateFavoritesUI(); registerVisit(); }
-            });
-            setupSwipe(document.getElementById('mainImageContainer'), (dir) => changeDetailImage(dir));
-            setupSwipe(document.getElementById('modalImageZoom'), (dir) => changeZoomImage(dir));
+            
+            await signInAnonymously(auth);
+            onAuthStateChanged(auth, (user) => { if(user) initFlow(); });
+            setupSwipes();
         });
 
-        async function registerVisit() {
-            if (!STORE_ID || STORE_ID === 'admin') return;
-            const sessionKey = `vst_active_${STORE_ID}`;
-            if (sessionStorage.getItem(sessionKey)) return;
-            const now = new Date();
-            const todayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`; 
-            const currentHour = now.getHours();
-            const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
-            const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+        async function initFlow() {
             try {
-                sessionStorage.setItem(sessionKey, 'true');
-                await Promise.all([
-                    setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
-                    setDoc(historyRef, { 
-                        visits: increment(1),
-                        date: Timestamp.fromDate(now),
-                        hours: { [currentHour]: increment(1) }
-                    }, { merge: true })
-                ]);
-            } catch (error) { sessionStorage.removeItem(sessionKey); }
-        }
+                const config = await DataService.getStoreConfig();
+                if(!config) throw new Error("Loja inexistente");
+                if(config.subscriptionStatus === 'suspended') { showFatalError("Indisponível", "Assinatura suspensa."); return; }
+                
+                applyStoreConfig(config);
+                
+                // Lógica de Cache Inteligente (Local Storage para evitar re-fetches desnecessários)
+                const CACHE_KEY = `app_cache_${STORE_ID}`;
+                const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
+                const shouldUpdate = cached.lastUpdate !== config.lastUpdate;
 
-        async function loadStoreWithCache() {
-            const CACHE_KEY = `vitrine_cache_${STORE_ID}`;
-            const CACHE_TIME = 10 * 60 * 1000; 
-            const now = Date.now();
-            try {
-                const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-                const configSnap = await getDoc(configRef);
-                if(!configSnap.exists()) { showFatalError("Loja não existe", "ID inválido."); return; }
-                const remoteConfig = configSnap.data();
-                const remoteUpdate = remoteConfig.lastUpdate || 0;
-                applyStoreConfig(remoteConfig); 
-                const cachedRaw = localStorage.getItem(CACHE_KEY);
-                let useCache = false, localData = null;
-                if (cachedRaw) {
-                    localData = JSON.parse(cachedRaw);
-                    if ((now - localData.timestamp) < CACHE_TIME && localData.lastUpdate === remoteUpdate) useCache = true;
-                }
-                if (useCache) {
-                    allProducts = localData.products; categories = localData.categories;
-                    renderHeroCarousel(localData.banners); renderCatalog(); populateFilterOptions(); renderCategoryTabs(); hideLoader();
+                if (shouldUpdate || !cached.products) {
+                    const [products, banners] = await Promise.all([DataService.getProducts(true), DataService.getBanners(true)]);
+                    const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
+                    
+                    allProducts = products;
+                    categories = cats;
+                    
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        products, banners, categories: cats, lastUpdate: config.lastUpdate, ts: Date.now()
+                    }));
+                    
+                    renderHeroCarousel(banners);
                 } else {
-                    const productsSnap = await getDocs(collection(db, `stores/${STORE_ID}/products`));
-                    const bannersSnap = await getDocs(collection(db, `stores/${STORE_ID}/hero_cards`));
-                    const products = productsSnap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
-                    const banners = bannersSnap.docs.map(d => ({id: d.id, ...d.data()}));
-                    const cs = new Set(products.map(p => p.category).filter(Boolean));
-                    const cats = Array.from(cs).sort();
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: now, lastUpdate: remoteUpdate, config: remoteConfig, products, banners, categories: cats }));
-                    allProducts = products; categories = cats;
-                    renderHeroCarousel(banners); populateFilterOptions(); renderCategoryTabs(); renderCatalog(); hideLoader();
+                    allProducts = cached.products;
+                    categories = cached.categories;
+                    renderHeroCarousel(cached.banners);
                 }
-            } catch (error) { showFatalError("Erro de Conexão", "Falha de sincronização."); }
+
+                renderCategoryTabs();
+                renderCatalog();
+                populateFilterOptions();
+                registerVisit();
+                hideLoader();
+                updateFavoritesUI();
+            } catch (error) {
+                showFatalError("Erro de Conexão", "Não foi possível sincronizar os dados.");
+            }
         }
 
-        function hideLoader() { document.getElementById('initialLoader').style.opacity = '0'; setTimeout(() => { document.getElementById('initialLoader').classList.add('hidden'); document.getElementById('app').classList.remove('hidden', 'opacity-0'); }, 500); }
-        function setupSwipe(element, callback) {
-            let ts = 0;
-            element.addEventListener('touchstart', (e) => { ts = e.changedTouches[0].screenX; }, {passive: true});
-            element.addEventListener('touchend', (e) => {
-                let te = e.changedTouches[0].screenX;
-                if (ts - te > 50) callback(1);
-                if (te - ts > 50) callback(-1);
-            }, {passive: true});
-        }
-
-        function applyStoreConfig(d) {
-            if(d.subscriptionStatus === 'suspended') { showFatalError("Indisponível", "Esta loja está suspensa."); return; }
-            const name = d.storeName || "Minha Loja", description = d.footerText || "Qualidade e confiança.";
-            document.title = name;
-            whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"") || "";
-            if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
-            document.getElementById('storeNameDisplay').textContent = name;
-            document.getElementById('footerStoreName').textContent = name; 
-            if (d.logoUrl) { document.getElementById('storeLogoImg').src = d.logoUrl; document.getElementById('logoContainer').classList.remove('hidden'); } else { document.getElementById('logoContainer').classList.add('hidden'); }
-            document.getElementById('footerDescription').textContent = description;
-            document.getElementById('footerWaLink').href = `https://wa.me/${whatsappNumber}`;
-            deliveryAreas = d.deliveryAreas || [];
-            document.getElementById('deliveryList').innerHTML = deliveryAreas.map(a => `<div class="flex justify-between p-3 bg-slate-50 rounded-lg text-sm"><span class="font-medium">${a.name}</span><span class="font-bold">R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')}</span></div>`).join('');
-            document.getElementById('cartDeliverySelect').innerHTML='<option value="0">Retirar na Loja</option>' + deliveryAreas.map(a=>`<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
-            storeOpen = d.isStoreOpen !== false;
-            const stTxt = document.getElementById('storeStatusText'), stDot = document.getElementById('statusDot'), stPing = document.getElementById('statusPing'), topBar = document.getElementById('topStatusBar');
-            if (storeOpen) { stTxt.textContent = "Loja Aberta Agora"; stDot.className = "bg-green-500 relative inline-flex rounded-full h-2 w-2"; stPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"; topBar.className = "bg-slate-900 text-white text-[10px] py-1.5 transition-colors duration-300"; } 
-            else { stTxt.textContent = "Loja Fechada"; stDot.className = "bg-red-500 relative inline-flex rounded-full h-2 w-2"; stPing.className = "hidden"; topBar.className = "bg-red-900 text-white text-[10px] py-1.5 transition-colors duration-300"; }
-        }
-
-        function renderHeroCarousel(banners) {
-            const container = document.getElementById('heroGridContainer'); container.innerHTML = '';
-            if (!banners || !banners.length) return;
-            banners.forEach(b => {
-                const card = document.createElement('div');
-                card.className = "hero-card min-w-[85vw] md:min-w-[420px] h-36 md:h-44 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-sm";
-                card.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
-                card.onclick = () => selectCategory(b.target);
-                card.innerHTML = `<div class="absolute inset-0 pattern-dots opacity-20"></div><div class="relative z-10"><span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider mb-2">${b.tag || 'Destaque'}</span><h3 class="font-display font-bold text-xl md:text-2xl leading-tight w-2/3">${b.title || 'Novidade'}</h3></div><div class="absolute bottom-5 right-5 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center"><i data-lucide="arrow-right" class="w-4 h-4 text-white"></i></div>`;
-                container.appendChild(card);
-            });
-            lucide.createIcons();
-        }
-
-        function renderCategoryTabs() {
-            const c = document.getElementById('categoryContainer'); c.innerHTML = '';
-            const mk = (id, l, icon) => {
-                const active = filters.category === id && !isFavoritesView;
-                const b = document.createElement('button');
-                b.className = `px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-2 ${active ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-primary'}`;
-                b.innerHTML = icon ? `${icon} ${l}` : l;
-                b.onclick = () => { isFavoritesView = false; updateFavoritesUI(); filters.category = id; renderCategoryTabs(); renderCatalog(); };
-                return b;
-            };
-            c.appendChild(mk('offers', 'Ofertas', '<i data-lucide="flame" class="w-3.5 h-3.5"></i>'));
-            c.appendChild(mk(null, 'Ver Tudo'));
-            categories.forEach(cat => c.appendChild(mk(cat, cat)));
-            lucide.createIcons();
-        }
-
+        // --- RENDERERS ---
         window.renderCatalog = () => {
-            const c = document.getElementById('catalogContainer'), empty = document.getElementById('emptyState'), favEmpty = document.getElementById('favoritesEmptyState');
-            let f = allProducts.filter(p => {
+            const container = document.getElementById('catalogContainer'), empty = document.getElementById('emptyState');
+            let filtered = allProducts.filter(p => {
                 if(isFavoritesView) return favorites.includes(p.id);
-                if(filters.search && !p.name.toLowerCase().includes(filters.search)) return false;
+                if(filters.search && !p.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
                 if(filters.category === 'offers') { if(!(p.promoValue && p.promoValue < p.value)) return false; }
                 else if(filters.category && p.category !== filters.category) return false;
                 const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-                if(filters.minPrice && price < filters.minPrice) return false;
                 if(filters.maxPrice && price > filters.maxPrice) return false;
                 if(filters.sizes.length && !p.sizes?.some(s=>filters.sizes.includes(s))) return false;
                 if(filters.colors.length && !p.colors?.some(co=>filters.colors.includes(co))) return false;
                 return true;
             });
-            c.innerHTML=''; if(!f.length) { if(isFavoritesView) { favEmpty.classList.remove('hidden'); empty.classList.add('hidden'); } else { empty.classList.remove('hidden'); favEmpty.classList.add('hidden'); } return; }
-            empty.classList.add('hidden'); favEmpty.classList.add('hidden');
-            let g = {};
-            if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.minPrice || filters.maxPrice || filters.sizes.length || filters.colors.length) { g['Resultados'] = f; } 
-            else { f.forEach(p => { const k = p.category || 'Outros'; if(!g[k]) g[k]=[]; g[k].push(p); }); }
-            Object.keys(g).sort().forEach(key => {
-                const sec = document.createElement('section'); sec.innerHTML = `<h3 class="font-bold text-slate-800 mb-4 px-1 text-lg flex items-center gap-2"><div class="w-1 h-5 bg-primary rounded-full"></div> ${key}</h3>`;
-                const grid = document.createElement('div'); grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5";
-                g[key].forEach(p => grid.innerHTML += mkProductCard(p));
-                sec.appendChild(grid); c.appendChild(sec);
+
+            container.innerHTML = '';
+            if(!filtered.length) { empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden');
+
+            const groups = {};
+            if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice) {
+                groups['Resultados'] = filtered;
+            } else {
+                filtered.forEach(p => { const k = p.category || 'Geral'; if(!groups[k]) groups[k]=[]; groups[k].push(p); });
+            }
+
+            const fragment = document.createDocumentFragment();
+            Object.keys(groups).sort().forEach(key => {
+                const section = document.createElement('section');
+                section.className = "animate-fade-in";
+                section.innerHTML = `<h3 class="font-bold text-slate-800 mb-4 px-1 text-lg flex items-center gap-2"><div class="w-1 h-5 bg-primary rounded-full"></div> ${key}</h3>`;
+                const grid = document.createElement('div');
+                grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5";
+                groups[key].forEach(p => grid.innerHTML += mkProductCard(p));
+                section.appendChild(grid); fragment.appendChild(section);
             });
+            container.appendChild(fragment);
             lucide.createIcons();
         }
 
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value, price = hasPromo ? p.promoValue : p.value, img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem', isFav = favorites.includes(p.id);
-            let discountBadge = hasPromo ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10 shadow-sm">-${Math.round(((p.value - p.promoValue) / p.value) * 100)}%</span>` : '';
-            return `<div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full animate-fade-in relative">
+            const disc = hasPromo ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10">-${Math.round(((p.value - p.promoValue) / p.value) * 100)}%</span>` : '';
+            return `<div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full relative">
                 <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
-                    <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                    ${discountBadge}
+                    <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                    ${disc}
                     <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm z-20">
                         <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'heart-active' : 'text-slate-400'}"></i>
                     </button>
@@ -555,7 +457,7 @@
                 <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
                     <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">${p.name}</h4>
                     <div class="mt-auto pt-1">
-                        ${hasPromo ? `<span class="text-[11px] text-slate-400 line-through block mb-0.5 font-medium">R$ ${p.value.toFixed(2).replace('.',',')}</span>` : '<span class="block h-4"></span>'}
+                        ${hasPromo ? `<span class="text-[11px] text-slate-400 line-through block mb-0.5">R$ ${p.value.toFixed(2).replace('.',',')}</span>` : '<span class="block h-4"></span>'}
                         <div class="flex items-center justify-between">
                             <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">R$ ${price.toFixed(2).replace('.',',')}</span>
                             <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
@@ -567,41 +469,34 @@
             </div>`;
         }
 
-        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
-        window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1)favorites.splice(idx,1); else favorites.push(id); localStorage.setItem('favorites_v1', JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); if(currentDetailId===id) updateModalHeartBtn(); };
-        window.toggleFavoriteCurrentDetail = () => { if(currentDetailId) toggleFavorite(currentDetailId); };
-        function updateFavoritesUI() { const h = document.getElementById('headerHeartIcon'), m = document.getElementById('mobileHeartIcon'), count = favorites.length; if (count > 0) { h.classList.add('fill-primary', 'text-primary'); m.classList.add('fill-primary', 'text-primary'); } else { h.classList.remove('fill-primary', 'text-primary'); m.classList.remove('fill-primary', 'text-primary'); } [document.getElementById('favBadgeDesktop'), document.getElementById('favBadgeMobile')].forEach(b => { b.textContent = count; b.classList.toggle('scale-0', count === 0); }); }
-        function updateModalHeartBtn() { const b=document.querySelector('#modalHeartBtn svg'); if(favorites.includes(currentDetailId)){b.classList.add('heart-active');b.classList.remove('text-slate-300');}else{b.classList.remove('heart-active');b.classList.add('text-slate-300');} }
-        
-        window.populateFilterOptions = () => { const ss=new Set(), cc=new Set(); allProducts.forEach(p=>{ p.sizes?.forEach(s=>ss.add(s.trim())); p.colors?.forEach(c=>cc.add(c.trim())); }); const sc=document.getElementById('filterSizesContainer'); sc.innerHTML=''; ss.forEach(s=>{ const d=document.createElement('div'); d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${filters.sizes.includes(s)?CHIP_SELECTED:CHIP_DEFAULT}`; d.textContent=s; d.onclick=()=>toggleFilter('sizes',s,d); sc.appendChild(d); }); const cco=document.getElementById('filterColorsContainer'); cco.innerHTML=''; cc.forEach(c=>{ const d=document.createElement('div'); d.className=`px-4 py-2 border rounded-lg text-xs chip-common ${filters.colors.includes(c)?CHIP_SELECTED:CHIP_DEFAULT}`; d.textContent=c; d.onclick=()=>toggleFilter('colors',c,d); cco.appendChild(d); }); };
-        const toggleFilter = (t,v,e) => { const idx=filters[t].indexOf(v); if(idx>-1){filters[t].splice(idx,1);e.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_DEFAULT}`;}else{filters[t].push(v);e.className=`px-4 py-2 border rounded-lg text-xs chip-common ${CHIP_SELECTED}`;} updateLiveFilters(); };
-        window.handleSearchInput = (v) => { filters.search=v.toLowerCase(); renderCatalog(); };
-        window.resetAllFilters = () => { filters={search:"",category:null,minPrice:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; updateFavoritesUI(); document.querySelectorAll('input').forEach(i=>i.value=''); populateFilterOptions(); renderCategoryTabs(); renderCatalog(); };
-
-        window.changeDetailImage = (dir) => { if (currentDetailImages.length <= 1) return; currentDetailImageIndex = (currentDetailImageIndex + dir + currentDetailImages.length) % currentDetailImages.length; updateDetailImageDisplay(); };
-        window.setDetailImage = (index) => { if (index < 0 || index >= currentDetailImages.length) return; currentDetailImageIndex = index; updateDetailImageDisplay(); };
-        function updateDetailImageDisplay() { const img = document.getElementById('detailImg'); img.style.opacity = '0.7'; setTimeout(() => { img.src = currentDetailImages[currentDetailImageIndex]; img.style.opacity = '1'; }, 100); document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`; const thumbs = document.getElementById('detailThumbnails').children; Array.from(thumbs).forEach((t, i) => { t.className = i === currentDetailImageIndex ? "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-active" : "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive"; }); }
-        window.openImageZoom = () => { const s = document.getElementById('detailImg').src; if(!s.includes('placehold')){ document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex]; const m = document.getElementById('modalImageZoom'); m.classList.remove('hidden'); requestAnimationFrame(()=>{ m.classList.remove('opacity-0'); document.getElementById('zoomedImg').classList.replace('scale-95','scale-100'); }); } };
-        window.changeZoomImage = (dir) => { if (currentDetailImages.length <= 1) return; changeDetailImage(dir); const zImg = document.getElementById('zoomedImg'); zImg.style.opacity = '0.5'; setTimeout(() => { zImg.src = currentDetailImages[currentDetailImageIndex]; zImg.style.opacity = '1'; }, 100); };
-        window.closeImageZoom = () => { const m=document.getElementById('modalImageZoom'), i=document.getElementById('zoomedImg'); m.classList.add('opacity-0'); i.classList.replace('scale-100','scale-95'); setTimeout(()=>{m.classList.add('hidden');i.src='';},300); };
-
-        // --- CORE LÓGICA DE VARIATIONS (ESTILO SHOPEE) ---
+        // --- CORE LOGIC (VARIATIONS & CART) ---
         window.openProductModal = (id) => { 
             const p=allProducts.find(x=>x.id===id); if(!p)return; 
             currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
-            currentDetailImages = (p.images && p.images.length > 0) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
+            currentDetailImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
             currentDetailImageIndex = 0;
+            
             const thumbContainer = document.getElementById('detailThumbnails'); thumbContainer.innerHTML = '';
-            if (currentDetailImages.length > 1) { currentDetailImages.forEach((url, idx) => { const img = document.createElement('img'); img.src = url; img.onclick = () => setDetailImage(idx); thumbContainer.appendChild(img); }); thumbContainer.style.display = 'flex'; } else thumbContainer.style.display = 'none';
+            if (currentDetailImages.length > 1) { 
+                currentDetailImages.forEach((url, idx) => { 
+                    const img = document.createElement('img'); 
+                    img.src = url; 
+                    img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+                    img.onclick = () => setDetailImage(idx); 
+                    thumbContainer.appendChild(img); 
+                }); 
+                thumbContainer.style.display = 'flex'; 
+            } else thumbContainer.style.display = 'none';
+            
             updateDetailImageDisplay();
-            document.getElementById('detailCat').textContent=p.category; document.getElementById('detailName').textContent=p.name; document.getElementById('detailDesc').textContent=p.description||''; 
+            document.getElementById('detailCat').textContent=p.category; 
+            document.getElementById('detailName').textContent=p.name; 
+            document.getElementById('detailDesc').textContent=p.description||''; 
 
-            // RENDERIZAÇÃO E VALIDAÇÃO ESTILO SHOPEE
             const renderVariationUI = () => {
                 const matrix = p.variations || [];
                 const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
 
-                // 1. Atualiza Preço e Botão
                 const updatePrices = () => {
                     let price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
                     let oldP = (p.promoValue && p.promoValue < p.value) ? p.value : null;
@@ -618,15 +513,13 @@
                     document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
                     document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
                     document.getElementById('detailAddBtn').disabled = !isComplete;
-                    p.currentFinalPrice = price; // Cache do preço para o carrinho
+                    p.currentFinalPrice = price; 
                 };
 
-                // 2. Renderiza Chips com Validação Cruzada
                 const renderChips = (list, type, container, wrapper) => {
                     container.innerHTML = '';
                     if(!list?.length) { wrapper.classList.add('hidden'); return; }
                     wrapper.classList.remove('hidden');
-
                     const otherType = type === 'size' ? 'color' : 'size';
                     const otherVal = currentDetailSelection[otherType];
 
@@ -634,72 +527,241 @@
                         const chip = document.createElement('div');
                         const normVal = val.trim().toLowerCase();
                         const isSelected = currentDetailSelection[type] && currentDetailSelection[type].trim().toLowerCase() === normVal;
-                        
-                        // Lógica Shopee: Se já tem um valor selecionado do outro tipo, verifica se este é possível
                         let isPossible = true;
                         if(matrix.length) {
                             if(otherVal) {
-                                isPossible = matrix.some(v => v.active && 
-                                    v[type].trim().toLowerCase() === normVal && 
-                                    v[otherType].trim().toLowerCase() === otherVal.trim().toLowerCase()
-                                );
+                                isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal && v[otherType].trim().toLowerCase() === otherVal.trim().toLowerCase());
                             } else {
                                 isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal);
                             }
                         }
-
-                        chip.className = `px-4 py-2 border rounded-lg text-xs chip-common ${isSelected ? CHIP_SELECTED : (isPossible ? CHIP_DEFAULT : 'chip-disabled')}`;
+                        const CHIP_S = "border-primary bg-primary text-white font-bold ring-2 ring-primary/20 shadow-md";
+                        const CHIP_D = "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
+                        chip.className = `px-4 py-2 border rounded-lg text-xs chip-common ${isSelected ? CHIP_S : (isPossible ? CHIP_D : 'chip-disabled')}`;
                         chip.textContent = val;
-                        chip.onclick = () => {
-                            if(!isPossible) return;
-                            currentDetailSelection[type] = isSelected ? null : val;
-                            renderVariationUI(); // Re-render total
-                        };
+                        chip.onclick = () => { if(!isPossible) return; currentDetailSelection[type] = isSelected ? null : val; renderVariationUI(); };
                         container.appendChild(chip);
                     });
                 };
 
-                // Executa
                 renderChips(p.sizes, 'size', document.getElementById('detailSizesContainer'), document.getElementById('sizesWrapper'));
                 renderChips(p.colors, 'color', document.getElementById('detailColorsContainer'), document.getElementById('colorsWrapper'));
                 updatePrices();
             };
 
             renderVariationUI();
-            document.getElementById('detailQtyDisplay').textContent="1"; updateModalHeartBtn(); 
+            document.getElementById('detailQtyDisplay').textContent="1"; 
+            updateModalHeartBtn(); 
             document.getElementById('detailAddBtn').onclick=()=>{ addToCart(p,currentDetailQty,currentDetailSelection); closeModalDetails(); }; 
-            renderRelatedProducts(p); document.getElementById('modalDetails').classList.remove('hidden'); lucide.createIcons();
+            renderRelatedProducts(p);
+            document.getElementById('modalDetails').classList.remove('hidden'); 
+            lucide.createIcons();
         };
 
-        function renderRelatedProducts(curr) { 
-            const s = document.getElementById('relatedProductsSection'), g = document.getElementById('relatedGrid'); g.innerHTML = ''; 
-            const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 10); 
-            if (rel.length === 0) { s.classList.add('hidden'); return; } 
-            s.classList.remove('hidden'); rel.forEach(p => { const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value; g.innerHTML += `<div onclick="openProductModal('${p.id}')" class="min-w-[110px] w-28 bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer shrink-0 shadow-sm"><img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-20 object-cover bg-slate-50"><div class="p-2"><h5 class="text-[10px] font-medium truncate">${p.name}</h5><span class="text-xs font-bold block mt-0.5">R$ ${pr.toFixed(2).replace('.', ',')}</span></div></div>`; }); 
-        }
-
-        window.shareProduct = () => { const p=allProducts.find(x=>x.id===currentDetailId); if(!p)return; const text=`Confira ${p.name} na ${document.title}!`; const url=window.location.href; if(navigator.share)navigator.share({title:p.name,text,url}).catch(console.error); else{navigator.clipboard.writeText(`${text} ${url}`);showToast("Link copiado!");} };
-        window.addToCart = (p,q,v) => { 
+        // --- UTILS ---
+        window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
+        window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
+        window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1)favorites.splice(idx,1); else favorites.push(id); localStorage.setItem('favs_v2', JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); if(currentDetailId===id) updateModalHeartBtn(); };
+        window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
+        window.updateFavoritesUI = () => { const count = favorites.length; [document.getElementById('favBadgeDesktop'), document.getElementById('favBadgeMobile')].forEach(b => { b.textContent = count; b.classList.toggle('scale-0', count === 0); }); };
+        function updateModalHeartBtn() { const b=document.querySelector('#modalHeartBtn svg'); if(favorites.includes(currentDetailId)){b.classList.add('heart-active');}else{b.classList.remove('heart-active');} }
+        
+        window.addToCart = (p,q,v) => {
             const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
-            const uid=`${p.id}-${(v.size||'').trim()}-${(v.color||'').trim()}`, ex=cart.find(x=>x.uid===uid); 
-            if(ex) ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v:{...v}}); updateCartUI(); showToast(`<b>${p.name}</b> adicionado!`); 
+            const uid=`${p.id}-${(v.size||'').trim()}-${(v.color||'').trim()}`;
+            const ex=cart.find(x=>x.uid===uid); 
+            if(ex) ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v:{...v}}); 
+            updateCartUI(); 
+            showToast(`<b>${p.name}</b> na sacola!`); 
         };
 
-        function updateCartUI() { const cnt=cart.reduce((a,b)=>a+b.q,0); const b=document.getElementById('cartBadge'); b.textContent=cnt; b.classList.toggle('scale-0',cnt===0); const l=document.getElementById('cartList'); if(!cart.length){l.innerHTML='';document.getElementById('cartEmptyMsg').classList.remove('hidden');document.getElementById('cartSummary').classList.add('hidden');}else{document.getElementById('cartEmptyMsg').classList.add('hidden');document.getElementById('cartSummary').classList.remove('hidden'); l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1 uppercase">${[i.v.size,i.v.color].filter(Boolean).join(' / ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6 text-slate-500">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6 text-primary">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');} updateCartTotals(); }
+        window.updateCartUI = () => {
+            const cnt=cart.reduce((a,b)=>a+b.q,0); 
+            const b=document.getElementById('cartBadge'); b.textContent=cnt; b.classList.toggle('scale-0',cnt===0);
+            const l=document.getElementById('cartList');
+            if(!cart.length){ l.innerHTML=''; document.getElementById('cartEmptyMsg').classList.remove('hidden'); document.getElementById('cartSummary').classList.add('hidden'); }
+            else {
+                document.getElementById('cartEmptyMsg').classList.add('hidden'); document.getElementById('cartSummary').classList.remove('hidden'); 
+                l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1 uppercase">${[i.v.size,i.v.color].filter(Boolean).join(' / ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');
+            }
+            updateCartTotals();
+        };
+
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
-        window.checkoutWhatsApp = () => { if(!cart.length)return; const m=document.getElementById('cartDeliverySelect'), method=m.options[m.selectedIndex].text; let msg=`*PEDIDO - ${document.getElementById('storeNameDisplay').textContent}*\n--------------------------------\n`; cart.forEach(i=>{msg+=`${i.q}x ${i.name} ${[i.v.size,i.v.color].filter(Boolean).join('/')?`(${[i.v.size,i.v.color].filter(Boolean).join('/')})`:''}\n`;}); msg+=`--------------------------------\n*Entrega:* ${method}\n*Total:* ${document.getElementById('cartFinalTotal').textContent}`; window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank'); };
-        window.showToast = (msg) => { const t=document.createElement('div'); t.className="bg-slate-900/90 text-white text-sm px-6 py-3 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-3 toast-enter pointer-events-auto transform transition-all duration-300"; t.innerHTML=`<i data-lucide="shopping-bag" class="w-4 h-4 text-green-400"></i><span>${msg}</span>`; document.getElementById('toastContainer').appendChild(t); lucide.createIcons(); requestAnimationFrame(()=>{t.classList.add('toast-enter-active');}); setTimeout(()=>{t.classList.add('toast-exit-active');setTimeout(()=>t.remove(),300);},3000); };
-        window.openFilterDrawer = () => { document.getElementById('filterModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('filterDrawer').classList.remove('translate-x-full'),10); };
-        window.closeFilterDrawer = () => { document.getElementById('filterDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('filterModal').classList.add('hidden'),300); };
+        
+        window.checkoutWhatsApp = () => { 
+            if(!cart.length)return; 
+            const m=document.getElementById('cartDeliverySelect'), method=m.options[m.selectedIndex].text; 
+            let msg=`*NOVO PEDIDO - ${document.getElementById('storeNameDisplay').textContent}*\n\n`; 
+            cart.forEach(i=>{msg+=`• ${i.q}x ${i.name} ${[i.v.size,i.v.color].filter(Boolean).join('/')?`(${[i.v.size,i.v.color].filter(Boolean).join('/')})`:''}\n`;}); 
+            msg+=`\n*Entrega:* ${method}\n*Total:* ${document.getElementById('cartFinalTotal').textContent}`; 
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank'); 
+        };
+
+        function applyStoreConfig(d) {
+            whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"");
+            if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
+            document.getElementById('storeNameDisplay').textContent = d.storeName;
+            document.getElementById('footerStoreName').textContent = d.storeName;
+            document.getElementById('footerDescription').textContent = d.footerText || "Qualidade e confiança.";
+            if (d.logoUrl) { document.getElementById('storeLogoImg').src = d.logoUrl; document.getElementById('logoContainer').classList.remove('hidden'); }
+            
+            deliveryAreas = d.deliveryAreas || [];
+            document.getElementById('deliveryList').innerHTML = deliveryAreas.map(a => `<div class="flex justify-between p-3 bg-slate-50 rounded-lg text-sm"><span class="font-medium">${a.name}</span><span class="font-bold">R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')}</span></div>`).join('');
+            document.getElementById('cartDeliverySelect').innerHTML='<option value="0">Retirar na Loja</option>' + deliveryAreas.map(a=>`<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
+            
+            const isOpen = d.isStoreOpen !== false;
+            const topBar = document.getElementById('topStatusBar');
+            document.getElementById('storeStatusText').textContent = isOpen ? "Loja Aberta" : "Loja Fechada";
+            topBar.className = isOpen ? "bg-slate-900 text-white text-[10px] py-1.5" : "bg-red-900 text-white text-[10px] py-1.5";
+            if(!isOpen) document.getElementById('statusPing').classList.add('hidden');
+        }
+
+        async function registerVisit() {
+            if (!STORE_ID || STORE_ID === 'admin') return;
+            const sessionKey = `vst_${STORE_ID}`;
+            if (sessionStorage.getItem(sessionKey)) return;
+            try {
+                const now = new Date();
+                const todayId = now.toISOString().split('T')[0];
+                const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
+                const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+                await Promise.all([
+                    setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
+                    setDoc(historyRef, { visits: increment(1), date: Timestamp.fromDate(now) }, { merge: true })
+                ]);
+                sessionStorage.setItem(sessionKey, '1');
+            } catch (e) {}
+        }
+
+        // --- HELPER UI ---
+        window.showToast = (msg) => {
+            const t=document.createElement('div');
+            t.className="bg-slate-900/90 text-white text-sm px-6 py-3 rounded-full shadow-2xl backdrop-blur-md flex items-center gap-3 toast-enter pointer-events-auto transform transition-all duration-300";
+            t.innerHTML=`<i data-lucide="shopping-bag" class="w-4 h-4 text-green-400"></i><span>${msg}</span>`;
+            document.getElementById('toastContainer').appendChild(t);
+            lucide.createIcons();
+            requestAnimationFrame(()=>{t.classList.add('toast-enter-active');});
+            setTimeout(()=>{t.classList.add('toast-exit-active');setTimeout(()=>t.remove(),300);},3000);
+        };
+
+        function hideLoader() { document.getElementById('initialLoader').style.opacity = '0'; setTimeout(() => { document.getElementById('initialLoader').classList.add('hidden'); document.getElementById('app').classList.remove('hidden', 'opacity-0'); }, 500); }
+        function showFatalError(title, msg) { document.getElementById('errorScreen').classList.remove('hidden'); document.getElementById('errorTitle').textContent = title; document.getElementById('errorMsg').textContent = msg; hideLoader(); }
+
+        // --- PRESERVED REMAINING FUNCTIONS ---
+        window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
         window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(()=>document.getElementById('cartDrawer').classList.remove('translate-x-full'),10); };
         window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('modalCart').classList.add('hidden'),300); };
-        window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
-        window.adjustDetailQty = (d) => { currentDetailQty+=d; if(currentDetailQty<1)currentDetailQty=1; document.getElementById('detailQtyDisplay').textContent=currentDetailQty; };
+        window.openFilterDrawer = () => { document.getElementById('filterModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('filterDrawer').classList.remove('translate-x-full'),10); };
+        window.closeFilterDrawer = () => { document.getElementById('filterDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('filterModal').classList.add('hidden'),300); };
+        window.adjustDetailQty = (d) => { currentDetailQty = Math.max(1, currentDetailQty + d); document.getElementById('detailQtyDisplay').textContent=currentDetailQty; };
+        window.setDetailImage = (idx) => { currentDetailImageIndex = idx; updateDetailImageDisplay(); };
+        window.updateDetailImageDisplay = () => {
+            const img = document.getElementById('detailImg');
+            img.src = currentDetailImages[currentDetailImageIndex];
+            document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
+            const thumbs = document.getElementById('detailThumbnails').children;
+            Array.from(thumbs).forEach((t, i) => { t.classList.toggle('thumb-active', i === currentDetailImageIndex); t.classList.toggle('thumb-inactive', i !== currentDetailImageIndex); });
+        };
+        window.openImageZoom = () => {
+            if(currentDetailImages[currentDetailImageIndex].includes('placehold')) return;
+            document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex];
+            const m = document.getElementById('modalImageZoom');
+            m.classList.remove('hidden');
+            requestAnimationFrame(() => { m.classList.remove('opacity-0'); document.getElementById('zoomedImg').classList.replace('scale-95','scale-100'); });
+        };
+        window.closeImageZoom = () => {
+            const m = document.getElementById('modalImageZoom');
+            m.classList.add('opacity-0');
+            document.getElementById('zoomedImg').classList.replace('scale-100','scale-95');
+            setTimeout(() => m.classList.add('hidden'), 300);
+        };
         window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
-        window.selectCategory = (c) => { filters.category=(c==='offers'||c==='Ofertas')?'offers':c; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:document.getElementById('catalogContainer').getBoundingClientRect().top+window.scrollY-140,behavior:'smooth'}); };
+        
+        function renderHeroCarousel(banners) {
+            const c = document.getElementById('heroGridContainer'); c.innerHTML = '';
+            if (!banners?.length) return;
+            banners.forEach(b => {
+                const div = document.createElement('div');
+                div.className = "hero-card min-w-[85vw] md:min-w-[420px] h-36 md:h-44 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-sm";
+                div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
+                div.onclick = () => { filters.category = b.target; renderCategoryTabs(); renderCatalog(); };
+                div.innerHTML = `<div class="absolute inset-0 opacity-20" style="background-image:radial-gradient(white 2px, transparent 2px);background-size:20px 20px;"></div><div class="relative z-10"><span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider mb-2">${b.tag || 'Destaque'}</span><h3 class="font-display font-bold text-xl md:text-2xl leading-tight w-2/3">${b.title || 'Novidade'}</h3></div>`;
+                c.appendChild(div);
+            });
+        }
+
+        function renderCategoryTabs() {
+            const c = document.getElementById('categoryContainer'); c.innerHTML = '';
+            const mk = (id, l, icon) => {
+                const active = filters.category === id && !isFavoritesView;
+                const b = document.createElement('button');
+                b.className = `px-5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border flex items-center gap-2 ${active ? 'bg-primary text-white border-primary shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-primary'}`;
+                b.innerHTML = icon ? `${icon} ${l}` : l;
+                b.onclick = () => { isFavoritesView = false; filters.category = id; renderCategoryTabs(); renderCatalog(); };
+                return b;
+            };
+            c.appendChild(mk('offers', 'Ofertas', '<i data-lucide="flame" class="w-3.5 h-3.5"></i>'));
+            c.appendChild(mk(null, 'Tudo'));
+            categories.forEach(cat => c.appendChild(mk(cat, cat)));
+            lucide.createIcons();
+        }
+
+        function populateFilterOptions() {
+            const ss=new Set(), cc=new Set(); 
+            allProducts.forEach(p=>{ p.sizes?.forEach(s=>ss.add(s.trim())); p.colors?.forEach(c=>cc.add(c.trim())); });
+            const renderChips = (set, container, type) => {
+                container.innerHTML = '';
+                set.forEach(val => {
+                    const d = document.createElement('div');
+                    const sel = filters[type].includes(val);
+                    d.className = `px-4 py-2 border rounded-lg text-xs chip-common ${sel ? 'border-primary bg-primary text-white font-bold' : 'border-slate-200 bg-slate-50 text-slate-600'}`;
+                    d.textContent = val;
+                    d.onclick = () => {
+                        if(sel) filters[type] = filters[type].filter(x => x !== val);
+                        else filters[type].push(val);
+                        populateFilterOptions(); renderCatalog();
+                    };
+                    container.appendChild(d);
+                });
+            };
+            renderChips(ss, document.getElementById('filterSizesContainer'), 'sizes');
+            renderChips(cc, document.getElementById('filterColorsContainer'), 'colors');
+        }
+
+        function renderRelatedProducts(curr) {
+            const s = document.getElementById('relatedProductsSection'), g = document.getElementById('relatedGrid'); g.innerHTML = ''; 
+            const rel = allProducts.filter(p => p.category === curr.category && p.id !== curr.id).slice(0, 10); 
+            if (!rel.length) { s.classList.add('hidden'); return; } 
+            s.classList.remove('hidden');
+            rel.forEach(p => {
+                const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+                g.innerHTML += `<div onclick="openProductModal('${p.id}')" class="min-w-[110px] w-28 bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer shrink-0"><img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-20 object-cover"><div class="p-2"><h5 class="text-[10px] font-medium truncate">${p.name}</h5><span class="text-xs font-bold block mt-0.5">R$ ${pr.toFixed(2).replace('.', ',')}</span></div></div>`;
+            });
+        }
+
+        function setupSwipes() {
+            const handle = (el, cb) => {
+                let ts = 0;
+                el.addEventListener('touchstart', (e) => ts = e.changedTouches[0].screenX, {passive: true});
+                el.addEventListener('touchend', (e) => {
+                    let te = e.changedTouches[0].screenX;
+                    if (ts - te > 50) cb(1); if (te - ts > 50) cb(-1);
+                }, {passive: true});
+            };
+            handle(document.getElementById('mainImageContainer'), (d) => { if(currentDetailImages.length > 1) { currentDetailImageIndex = (currentDetailImageIndex + d + currentDetailImages.length) % currentDetailImages.length; updateDetailImageDisplay(); } });
+        }
+
+        window.shareProduct = () => { 
+            const p = allProducts.find(x=>x.id===currentDetailId); if(!p) return;
+            const text = `Olha esse ${p.name} que encontrei na ${document.getElementById('storeNameDisplay').textContent}!`;
+            if(navigator.share) navigator.share({title: p.name, text, url: window.location.href});
+            else { navigator.clipboard.writeText(`${text} ${window.location.href}`); showToast("Link copiado!"); }
+        };
+
         window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
-        function showFatalError(title, msg) { document.getElementById('errorScreen').classList.remove('hidden'); document.getElementById('errorTitle').textContent = title; document.getElementById('errorMsg').textContent = msg; hideLoader(); }
+
     </script>
 </body>
 </html>
