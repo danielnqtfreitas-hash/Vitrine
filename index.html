@@ -642,34 +642,51 @@
         }
 
         async function registerVisit() {
-            if (!STORE_ID || STORE_ID === 'admin') return;
-            const sessionKey = `vst_${STORE_ID}`;
-            if (sessionStorage.getItem(sessionKey)) return;
+    if (!STORE_ID || STORE_ID === 'admin') return;
 
-            try {
-                const now = new Date();
-                const todayId = now.toISOString().split('T')[0];
-                const currentHour = now.getHours();
+    const sessionKey = `vst_${STORE_ID}`;
+    if (sessionStorage.getItem(sessionKey)) return;
 
-                const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
-                const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+    try {
+        const now = new Date();
+        const todayId = now.toISOString().split('T')[0];
+        const hour = now.getHours();
 
-                const hourKey = `hours.${currentHour}`;
+        const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
+        const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-                await Promise.all([
-                    setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
-                    setDoc(historyRef, { 
-                        visits: increment(1), 
-                        date: Timestamp.fromDate(now),
-                        [hourKey]: increment(1)
-                    }, { merge: true })
-                ]);
+        // 1️⃣ Garante que os documentos existam
+        await setDoc(globalRef, {
+            totalVisits: 0,
+            createdAt: Timestamp.fromDate(now)
+        }, { merge: true });
 
-                sessionStorage.setItem(sessionKey, '1');
-            } catch (e) {
-                console.error("Erro ao registrar visita:", e);
-            }
-        }
+        await setDoc(historyRef, {
+            visits: 0,
+            date: Timestamp.fromDate(now),
+            hours: {}
+        }, { merge: true });
+
+        // 2️⃣ Incrementa com segurança
+        await Promise.all([
+            updateDoc(globalRef, {
+                totalVisits: increment(1)
+            }),
+            updateDoc(historyRef, {
+                visits: increment(1),
+                [`hours.${hour}`]: increment(1)
+            })
+        ]);
+
+        // 3️⃣ Marca a sessão
+        sessionStorage.setItem(sessionKey, "1");
+
+        console.log("✅ Visita registrada com sucesso");
+
+    } catch (err) {
+        console.error("❌ Erro ao registrar visita:", err);
+    }
+}
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
