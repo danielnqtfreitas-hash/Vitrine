@@ -653,7 +653,7 @@
 
     try {
         const now = new Date();
-        const todayId = now.toISOString().split('T')[0];
+        const todayId = now.toLocaleDateString('en-CA');
         const hour = now.getHours();
 
         // Referências
