@@ -205,7 +205,7 @@
                          <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale"><i data-lucide="heart" class="w-6 h-6 text-slate-300"></i></button>
                     </div>
                     <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
-                    <!-- MELHORIA: EXIBIÇÃO SKU NO MODAL -->
+                    <!-- SKU NO MODAL -->
                     <div id="detailSkuContainer" class="mb-4">
                         <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
                     </div>
@@ -447,7 +447,6 @@
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value, price = hasPromo ? p.promoValue : p.value, img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem', isFav = favorites.includes(p.id);
             const disc = hasPromo ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10">-${Math.round(((p.value - p.promoValue) / p.value) * 100)}%</span>` : '';
-            // MELHORIA: ADICIONADO loading="lazy" na img do card
             return `<div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full relative">
                 <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
                     <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
@@ -493,7 +492,6 @@
             updateDetailImageDisplay();
             document.getElementById('detailCat').textContent=p.category; 
             document.getElementById('detailName').textContent=p.name; 
-            // MELHORIA: EXIBIÇÃO SKU NO MODAL
             document.getElementById('detailSku').textContent = p.sku || 'N/A';
             document.getElementById('detailDesc').textContent=p.description||''; 
 
@@ -574,7 +572,6 @@
             const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
             const uid=`${p.id}-${(v.size||'').trim()}-${(v.color||'').trim()}`;
             const ex=cart.find(x=>x.uid===uid); 
-            // MELHORIA: SKU AGORA É PROPRIEDADE OBRIGATÓRIA DO ITEM NO CARRINHO
             if(ex) ex.q+=q; else cart.push({uid,id:p.id,sku: p.sku || 'N/A', name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v:{...v}}); 
             updateCartUI(); 
             showToast(`<b>${p.name}</b> na sacola!`); 
@@ -595,10 +592,8 @@
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
-        // MELHORIA: REFATORAÇÃO DO SISTEMA DE MENSAGEM (RECIBO PROFISSIONAL)
         window.checkoutWhatsApp = () => { 
             if(!cart.length) return; 
-            
             const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
             const deliveryMethod = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
             const total = document.getElementById('cartFinalTotal').textContent;
@@ -647,35 +642,34 @@
         }
 
         async function registerVisit() {
-    if (!STORE_ID || STORE_ID === 'admin') return;
-    const sessionKey = `vst_${STORE_ID}`;
-    if (sessionStorage.getItem(sessionKey)) return;
+            if (!STORE_ID || STORE_ID === 'admin') return;
+            const sessionKey = `vst_${STORE_ID}`;
+            if (sessionStorage.getItem(sessionKey)) return;
 
-    try {
-        const now = new Date();
-        const todayId = now.toISOString().split('T')[0];
-        const currentHour = now.getHours(); // Obtém a hora atual (0-23)
+            try {
+                const now = new Date();
+                const todayId = now.toISOString().split('T')[0];
+                const currentHour = now.getHours();
 
-        const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
-        const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+                const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
+                const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-        // Prepara o incremento dinâmico da hora atual
-        const hourKey = `hours.${currentHour}`;
+                const hourKey = `hours.${currentHour}`;
 
-        await Promise.all([
-            setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
-            setDoc(historyRef, { 
-                visits: increment(1), 
-                date: Timestamp.fromDate(now),
-                [hourKey]: increment(1) // SALVAMENTO CORRIGIDO: Agora salva a hora para o gráfico
-            }, { merge: true })
-        ]);
+                await Promise.all([
+                    setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
+                    setDoc(historyRef, { 
+                        visits: increment(1), 
+                        date: Timestamp.fromDate(now),
+                        [hourKey]: increment(1)
+                    }, { merge: true })
+                ]);
 
-        sessionStorage.setItem(sessionKey, '1');
-    } catch (e) {
-        console.error("Erro ao registrar visita:", e);
-    }
-}
+                sessionStorage.setItem(sessionKey, '1');
+            } catch (e) {
+                console.error("Erro ao registrar visita:", e);
+            }
+        }
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
@@ -778,7 +772,6 @@
             s.classList.remove('hidden');
             rel.forEach(p => {
                 const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-                // MELHORIA: loading="lazy" também nos relacionados
                 g.innerHTML += `<div onclick="openProductModal('${p.id}')" class="min-w-[110px] w-28 bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer shrink-0"><img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-20 object-cover" loading="lazy"><div class="p-2"><h5 class="text-[10px] font-medium truncate">${p.name}</h5><span class="text-xs font-bold block mt-0.5">R$ ${pr.toFixed(2).replace('.', ',')}</span></div></div>`;
             });
         }
