@@ -183,7 +183,7 @@
         </div>
     </footer>
 
-    <!-- MODAL: DETALHES (VARIATIONS LOGIC PRESERVED) -->
+    <!-- MODAL: DETALHES -->
     <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none">
         <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
         <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-2xl shadow-2xl pointer-events-auto relative flex flex-col max-h-[95vh] overflow-hidden animate-slide-up">
@@ -204,7 +204,11 @@
                          <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
                          <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale"><i data-lucide="heart" class="w-6 h-6 text-slate-300"></i></button>
                     </div>
-                    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-3"></h2>
+                    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
+                    <!-- MELHORIA: EXIBIÇÃO SKU NO MODAL -->
+                    <div id="detailSkuContainer" class="mb-4">
+                        <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
+                    </div>
                     <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
                     <div class="space-y-6 border-t border-slate-100 pt-6">
                         <div id="sizesWrapper" class="hidden"><span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Tamanho</span><div id="detailSizesContainer" class="flex flex-wrap gap-2"></div></div>
@@ -313,16 +317,14 @@
         let favorites = JSON.parse(localStorage.getItem('favs_v2') || "[]");
         let isFavoritesView = false;
 
-        // --- DATA SERVICE (SENIOR OTIMIZAÇÃO) ---
+        // --- DATA SERVICE ---
         const DataService = {
             async getStoreConfig() {
                 const configRef = doc(db, `stores/${STORE_ID}/config/store`);
                 try {
-                    // Tenta cache primeiro (Custo 0)
                     const snap = await getDocFromCache(configRef);
                     return snap.data();
                 } catch (e) {
-                    // Se falhar ou estiver vazio, vai pro servidor (Custo 1)
                     const snap = await getDocFromServer(configRef);
                     return snap.data();
                 }
@@ -369,7 +371,6 @@
                 
                 applyStoreConfig(config);
                 
-                // Lógica de Cache Inteligente (Local Storage para evitar re-fetches desnecessários)
                 const CACHE_KEY = `app_cache_${STORE_ID}`;
                 const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
                 const shouldUpdate = cached.lastUpdate !== config.lastUpdate;
@@ -446,6 +447,7 @@
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value, price = hasPromo ? p.promoValue : p.value, img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem', isFav = favorites.includes(p.id);
             const disc = hasPromo ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10">-${Math.round(((p.value - p.promoValue) / p.value) * 100)}%</span>` : '';
+            // MELHORIA: ADICIONADO loading="lazy" na img do card
             return `<div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full relative">
                 <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
                     <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
@@ -469,7 +471,7 @@
             </div>`;
         }
 
-        // --- CORE LOGIC (VARIATIONS & CART) ---
+        // --- CORE LOGIC ---
         window.openProductModal = (id) => { 
             const p=allProducts.find(x=>x.id===id); if(!p)return; 
             currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
@@ -491,6 +493,8 @@
             updateDetailImageDisplay();
             document.getElementById('detailCat').textContent=p.category; 
             document.getElementById('detailName').textContent=p.name; 
+            // MELHORIA: EXIBIÇÃO SKU NO MODAL
+            document.getElementById('detailSku').textContent = p.sku || 'N/A';
             document.getElementById('detailDesc').textContent=p.description||''; 
 
             const renderVariationUI = () => {
@@ -570,7 +574,8 @@
             const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
             const uid=`${p.id}-${(v.size||'').trim()}-${(v.color||'').trim()}`;
             const ex=cart.find(x=>x.uid===uid); 
-            if(ex) ex.q+=q; else cart.push({uid,id:p.id,name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v:{...v}}); 
+            // MELHORIA: SKU AGORA É PROPRIEDADE OBRIGATÓRIA DO ITEM NO CARRINHO
+            if(ex) ex.q+=q; else cart.push({uid,id:p.id,sku: p.sku || 'N/A', name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v:{...v}}); 
             updateCartUI(); 
             showToast(`<b>${p.name}</b> na sacola!`); 
         };
@@ -590,13 +595,36 @@
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
+        // MELHORIA: REFATORAÇÃO DO SISTEMA DE MENSAGEM (RECIBO PROFISSIONAL)
         window.checkoutWhatsApp = () => { 
-            if(!cart.length)return; 
-            const m=document.getElementById('cartDeliverySelect'), method=m.options[m.selectedIndex].text; 
-            let msg=`*NOVO PEDIDO - ${document.getElementById('storeNameDisplay').textContent}*\n\n`; 
-            cart.forEach(i=>{msg+=`• ${i.q}x ${i.name} ${[i.v.size,i.v.color].filter(Boolean).join('/')?`(${[i.v.size,i.v.color].filter(Boolean).join('/')})`:''}\n`;}); 
-            msg+=`\n*Entrega:* ${method}\n*Total:* ${document.getElementById('cartFinalTotal').textContent}`; 
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`,'_blank'); 
+            if(!cart.length) return; 
+            
+            const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
+            const deliveryMethod = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
+            const total = document.getElementById('cartFinalTotal').textContent;
+
+            let msg = `*${storeName}* 🛍️\n`;
+            msg += `_Recibo de Pedido Online_\n\n`;
+            
+            cart.forEach((item, index) => {
+                const subtotal = (item.price * item.q).toFixed(2).replace('.', ',');
+                const unitPrice = item.price.toFixed(2).replace('.', ',');
+                const variants = [item.v.size, item.v.color].filter(Boolean);
+                const variantText = variants.length ? `📏 Tam: ${item.v.size || '-'} | 🎨 Cor: ${item.v.color || '-'}` : '';
+
+                msg += `${index + 1}. *${item.name.toUpperCase()}*\n`;
+                msg += `   └ 🏷️ Código: \`${item.sku}\`\n`;
+                if(variantText) msg += `   └ ${variantText}\n`;
+                msg += `   ${item.q}x R$ ${unitPrice} = *R$ ${subtotal}*\n\n`;
+            });
+
+            msg += `--------------------------------\n`;
+            msg += `🚚 *Entrega:* ${deliveryMethod}\n`;
+            msg += `💰 *TOTAL GERAL: ${total}* ✅\n`;
+            msg += `--------------------------------\n\n`;
+            msg += `_Aguardando confirmação para prosseguir._`;
+
+            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
         };
 
         function applyStoreConfig(d) {
@@ -649,7 +677,6 @@
         function hideLoader() { document.getElementById('initialLoader').style.opacity = '0'; setTimeout(() => { document.getElementById('initialLoader').classList.add('hidden'); document.getElementById('app').classList.remove('hidden', 'opacity-0'); }, 500); }
         function showFatalError(title, msg) { document.getElementById('errorScreen').classList.remove('hidden'); document.getElementById('errorTitle').textContent = title; document.getElementById('errorMsg').textContent = msg; hideLoader(); }
 
-        // --- PRESERVED REMAINING FUNCTIONS ---
         window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
         window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(()=>document.getElementById('cartDrawer').classList.remove('translate-x-full'),10); };
         window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('modalCart').classList.add('hidden'),300); };
@@ -737,7 +764,8 @@
             s.classList.remove('hidden');
             rel.forEach(p => {
                 const pr = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-                g.innerHTML += `<div onclick="openProductModal('${p.id}')" class="min-w-[110px] w-28 bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer shrink-0"><img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-20 object-cover"><div class="p-2"><h5 class="text-[10px] font-medium truncate">${p.name}</h5><span class="text-xs font-bold block mt-0.5">R$ ${pr.toFixed(2).replace('.', ',')}</span></div></div>`;
+                // MELHORIA: loading="lazy" também nos relacionados
+                g.innerHTML += `<div onclick="openProductModal('${p.id}')" class="min-w-[110px] w-28 bg-white border border-slate-100 rounded-lg overflow-hidden cursor-pointer shrink-0"><img src="${p.images?.[0] || 'https://placehold.co/200'}" class="w-full h-20 object-cover" loading="lazy"><div class="p-2"><h5 class="text-[10px] font-medium truncate">${p.name}</h5><span class="text-xs font-bold block mt-0.5">R$ ${pr.toFixed(2).replace('.', ',')}</span></div></div>`;
             });
         }
 
