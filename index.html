@@ -641,31 +641,11 @@
             if(!isOpen) document.getElementById('statusPing').classList.add('hidden');
         }
 
-        // ===============================
-// 🔧 STORE ID (sem fallback admin)
-// ===============================
-const STORE_ID = new URLSearchParams(window.location.search).get('id');
+        async function registerVisit() {
+    if (!STORE_ID || STORE_ID === 'admin') return;
 
-
-// ===============================
-// 📊 REGISTRO DE VISITA (Analytics)
-// ===============================
-async function registerVisit() {
-    // 🔒 Se não houver loja, é admin → não conta
-    if (!STORE_ID) {
-        console.warn("Analytics desativado (admin ou sem ID)");
-        return;
-    }
-
-    // 🚫 Uma visita por sessão
     const sessionKey = `vst_${STORE_ID}`;
     if (sessionStorage.getItem(sessionKey)) return;
-
-    // 🔐 Garante que o auth já existe
-    if (!auth.currentUser) {
-        console.warn("Usuário não autenticado ainda");
-        return;
-    }
 
     try {
         const now = new Date();
@@ -675,49 +655,38 @@ async function registerVisit() {
         const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
         const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-        // 🔥 Grava total + histórico diário + por hora
-        await Promise.all([
-            setDoc(
-                globalRef,
-                {
-                    totalVisits: increment(1),
-                    updatedAt: Timestamp.now()
-                },
-                { merge: true }
-            ),
+        // 1️⃣ Garante que os documentos existam
+        await setDoc(globalRef, {
+            totalVisits: 0,
+            createdAt: Timestamp.fromDate(now)
+        }, { merge: true });
 
-            setDoc(
-                historyRef,
-                {
-                    visits: increment(1),
-                    date: Timestamp.fromDate(now),
-                    [`hours.${hour}`]: increment(1)
-                },
-                { merge: true }
-            )
+        await setDoc(historyRef, {
+            visits: 0,
+            date: Timestamp.fromDate(now),
+            hours: {}
+        }, { merge: true });
+
+        // 2️⃣ Incrementa com segurança
+        await Promise.all([
+            updateDoc(globalRef, {
+                totalVisits: increment(1)
+            }),
+            updateDoc(historyRef, {
+                visits: increment(1),
+                [`hours.${hour}`]: increment(1)
+            })
         ]);
 
-        // ✅ Marca sessão como registrada
+        // 3️⃣ Marca a sessão
         sessionStorage.setItem(sessionKey, "1");
+
         console.log("✅ Visita registrada com sucesso");
 
-    } catch (error) {
-        console.error("❌ Erro ao registrar visita:", error);
+    } catch (err) {
+        console.error("❌ Erro ao registrar visita:", err);
     }
 }
-
-
-// ===============================
-// 🔐 AUTH + INICIALIZAÇÃO
-// ===============================
-signInAnonymously(auth);
-
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        registerVisit();
-        initFlow();
-    }
-});
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
@@ -848,5 +817,3 @@ onAuthStateChanged(auth, (user) => {
     </script>
 </body>
 </html>
-
-
