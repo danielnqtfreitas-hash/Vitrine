@@ -147,41 +147,38 @@
 
     <!-- HEADER -->
     <header class="sticky top-0 z-50 glass-header">
-        <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3 cursor-pointer active-scale shrink-0" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
-                <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0">
-                    <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
-                </div>
-                <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[140px] md:max-w-xs">Carregando...</h1>
+    <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 cursor-pointer active-scale shrink-0" onclick="resetAllFilters(); window.scrollTo({top:0, behavior:'smooth'})">
+            <div id="logoContainer" class="hidden w-10 h-10 md:w-12 md:h-12 rounded-full overflow-hidden bg-white border border-slate-200 shadow-sm flex-shrink-0">
+                <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
             </div>
-
-            <div class="flex-1 max-w-lg mx-4 hidden md:flex items-center gap-2">
-                <div class="flex items-center w-full bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
-                    <div class="relative flex-grow">
-                        <input type="text" id="desktopSearch" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
-                    </div>
-                    <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 bg-white shadow-sm border border-slate-200 text-slate-600">
-                        <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2 md:gap-4 shrink-0">
-                <button onclick="toggleFavoritesView()" class="hidden md:flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale bg-white border border-slate-200 relative">
-                    <i data-lucide="heart" class="w-5 h-5 text-slate-700" id="headerHeartIcon"></i>
-                    <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-                </button>
-                <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200 shadow-sm">
-                    <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
-                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-                </button>
-            </div>
+            <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-none truncate max-w-[120px] md:max-w-xs">Carregando...</h1>
         </div>
-        
-        <div class="md:hidden px-4 pb-3">
-    <div class="flex items-center gap-2">
-        <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
+
+        <div class="flex-1 max-w-2xl hidden md:flex items-center bg-slate-100 rounded-full px-1 border border-transparent focus-within:border-primary/20 focus-within:bg-white focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+            <div class="relative flex-grow">
+                <input type="text" id="desktopSearch" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
+            </div>
+            <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 bg-white shadow-sm border border-slate-200 text-slate-600">
+                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <div class="flex items-center gap-1 md:gap-3 shrink-0">
+            <button onclick="toggleFavoritesView()" id="headerFavBtn" class="flex items-center justify-center p-2.5 rounded-full hover:bg-slate-50 active-scale bg-white border border-slate-200 relative transition-colors">
+                <i data-lucide="heart" class="w-5 h-5 text-slate-700" id="headerHeartIcon"></i>
+                <span id="favBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+            </button>
+            <button onclick="openCartModal()" class="flex items-center gap-2 p-2.5 rounded-full hover:bg-slate-50 active-scale group relative bg-white border border-slate-200 shadow-sm">
+                <i data-lucide="shopping-cart" class="w-5 h-5 text-slate-700 group-hover:text-primary transition-colors"></i>
+                <span id="cartBadge" class="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-bold h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+            </button>
+        </div>
+    </div>
+    
+    <div class="md:hidden px-4 pb-3">
+        <div class="flex items-center w-full bg-slate-100 rounded-lg pr-1 border border-transparent focus-within:bg-white focus-within:border-primary/20 transition-all">
             <div class="relative flex-1">
                 <input type="text" id="mobileSearch" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
                 <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
@@ -190,14 +187,8 @@
                 <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
             </button>
         </div>
-        <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
-            <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
-            <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-        </button>
     </div>
-</div>
-
-    </header>
+</header>
 
     <!-- MAIN APP -->
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
@@ -707,7 +698,35 @@
     if(currentDetailId === id) updateModalHeartBtn(); 
 };
         window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
-        window.updateFavoritesUI = () => { const count = favorites.length; [document.getElementById('favBadgeDesktop'), document.getElementById('favBadgeMobile')].forEach(b => { b.textContent = count; b.classList.toggle('scale-0', count === 0); }); };
+        window.updateFavoritesUI = () => {
+    const count = favorites.length;
+    const badge = document.getElementById('favBadgeDesktop');
+    const heartIcon = document.getElementById('headerHeartIcon');
+    const favBtn = document.getElementById('headerFavBtn');
+
+    if (!badge || !heartIcon || !favBtn) return;
+
+    // Atualiza o contador (Badge)
+    badge.textContent = count;
+    badge.classList.toggle('scale-0', count === 0);
+
+    // Lógica de cores baseada no tema
+    if (count > 0) {
+        // Ativa a cor do tema
+        heartIcon.style.fill = 'var(--color-primary)';
+        heartIcon.style.color = 'var(--color-primary)';
+        favBtn.style.borderColor = 'var(--color-primary)';
+        favBtn.style.backgroundColor = 'rgba(var(--color-primary-rgb, 234, 29, 44), 0.05)'; 
+        // Nota: O fallback acima é a cor padrão, mas o navegador usará a variável do tema.
+    } else {
+        // Volta ao estado neutro
+        heartIcon.style.fill = 'none';
+        heartIcon.style.color = '#334155'; // Slate 700
+        favBtn.style.borderColor = '#e2e8f0'; // Slate 200
+        favBtn.style.backgroundColor = '#ffffff';
+    }
+};
+
         function updateModalHeartBtn() { const b=document.querySelector('#modalHeartBtn svg'); if(favorites.includes(currentDetailId)){b.classList.add('heart-active');}else{b.classList.remove('heart-active');} }
         
         window.addToCart = (p, q, v) => {
