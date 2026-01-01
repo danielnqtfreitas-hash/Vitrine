@@ -200,7 +200,7 @@
 
         <div class="flex-1 overflow-y-auto custom-scrollbar pt-2">
             <div class="relative bg-white pb-4">
-                <div id="mainImageContainer" class="h-64 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" onclick="openImageZoom()">
+                <div id="mainImageContainer" style="touch-action: pan-y;" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" onclick="openImageZoom()">
                     <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 select-none" src="">
                     <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold">1 / 1</div>
                 </div>
@@ -820,16 +820,42 @@
         }
 
         function setupSwipes() {
-            const handle = (el, cb) => {
-                let ts = 0;
-                el.addEventListener('touchstart', (e) => ts = e.changedTouches[0].screenX, {passive: true});
-                el.addEventListener('touchend', (e) => {
-                    let te = e.changedTouches[0].screenX;
-                    if (ts - te > 50) cb(1); if (te - ts > 50) cb(-1);
-                }, {passive: true});
-            };
-            handle(document.getElementById('mainImageContainer'), (d) => { if(currentDetailImages.length > 1) { currentDetailImageIndex = (currentDetailImageIndex + d + currentDetailImages.length) % currentDetailImages.length; updateDetailImageDisplay(); } });
+    const el = document.getElementById('mainImageContainer');
+    let ts = 0;
+    let ty = 0;
+
+    // Início do toque
+    el.addEventListener('touchstart', (e) => {
+        ts = e.changedTouches[0].screenX;
+        ty = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    // Movimento do toque (Crucial para evitar que a tela role enquanto você arrasta a foto)
+    el.addEventListener('touchmove', (e) => {
+        const dx = Math.abs(e.changedTouches[0].screenX - ts);
+        const dy = Math.abs(e.changedTouches[0].screenY - ty);
+        
+        // Se o movimento for mais horizontal que vertical, cancela a rolagem da página
+        if (dx > dy) {
+            if (e.cancelable) e.preventDefault();
         }
+    }, { passive: false });
+
+    // Fim do toque
+    el.addEventListener('touchend', (e) => {
+        let te = e.changedTouches[0].screenX;
+        let deltaX = ts - te;
+
+        // Sensibilidade: 50 pixels de movimento
+        if (Math.abs(deltaX) > 50) {
+            const direcao = deltaX > 0 ? 1 : -1; // 1 para direita (próxima), -1 para esquerda (anterior)
+            if (currentDetailImages.length > 1) {
+                currentDetailImageIndex = (currentDetailImageIndex + direcao + currentDetailImages.length) % currentDetailImages.length;
+                updateDetailImageDisplay();
+            }
+        }
+    }, { passive: true });
+}
 
         window.shareProduct = () => { 
             const p = allProducts.find(x=>x.id===currentDetailId); if(!p) return;
