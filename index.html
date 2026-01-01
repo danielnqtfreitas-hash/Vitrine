@@ -642,7 +642,11 @@
         }
 
         async function registerVisit() {
-    if (!STORE_ID || STORE_ID === 'admin') return;
+    // 1. Verificação de segurança
+    if (!STORE_ID || STORE_ID === 'admin') {
+        console.warn("Analytics: STORE_ID inválido ou admin. Ignorando.");
+        return;
+    }
 
     const sessionKey = `vst_${STORE_ID}`;
     if (sessionStorage.getItem(sessionKey)) return;
@@ -652,15 +656,17 @@
         const todayId = now.toISOString().split('T')[0];
         const hour = now.getHours();
 
+        // Referências
         const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
         const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-        // O setDoc com { merge: true } resolve o problema de "documento não encontrado"
-        // e cria a coleção/documento automaticamente se não existirem.
+        console.log(`Tentando registrar visita para: ${STORE_ID}`);
+
+        // setDoc com { merge: true } CRIA o documento e as pastas se não existirem
         await Promise.all([
             setDoc(globalRef, {
                 totalVisits: increment(1),
-                lastVisit: Timestamp.fromDate(now)
+                lastUpdate: Timestamp.fromDate(now)
             }, { merge: true }),
 
             setDoc(historyRef, {
@@ -671,13 +677,13 @@
         ]);
 
         sessionStorage.setItem(sessionKey, "1");
-        console.log("✅ Visita registrada com sucesso");
+        console.log("✅ Analytics registrado e pastas criadas!");
 
     } catch (err) {
-        // Verifique o console do navegador para ver o erro exato (ex: Permission Denied)
-        console.error("❌ Erro ao registrar visita:", err);
+        console.error("❌ Erro fatal no Analytics:", err);
     }
 }
+
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
