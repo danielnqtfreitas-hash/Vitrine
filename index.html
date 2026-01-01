@@ -180,19 +180,23 @@
         </div>
         
         <div class="md:hidden px-4 pb-3">
-            <div class="flex items-center gap-2">
-                <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
-                    <div class="relative flex-1">
-                        <input type="text" id="mobileSearch" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
-                        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
-                    </div>
-                </div>
-                <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
-                    <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
-                    <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
-                </button>
+    <div class="flex items-center gap-2">
+        <div class="flex-1 flex items-center bg-slate-100 rounded-lg pr-1">
+            <div class="relative flex-1">
+                <input type="text" id="mobileSearch" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
             </div>
+            <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-lg bg-white shadow-sm border border-slate-200 text-slate-600">
+                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            </button>
         </div>
+        <button onclick="toggleFavoritesView()" class="p-3 rounded-lg bg-white border border-slate-200 text-slate-600 active-scale relative">
+            <i data-lucide="heart" class="w-5 h-5" id="mobileHeartIcon"></i>
+            <span id="favBadgeMobile" class="absolute top-1 right-1 bg-primary text-white text-[9px] font-bold h-3.5 w-3.5 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+        </button>
+    </div>
+</div>
+
     </header>
 
     <!-- MAIN APP -->
