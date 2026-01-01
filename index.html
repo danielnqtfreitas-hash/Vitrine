@@ -483,43 +483,78 @@
 
         // --- RENDERERS ---
         window.renderCatalog = () => {
-            const container = document.getElementById('catalogContainer'), empty = document.getElementById('emptyState');
-            let filtered = allProducts.filter(p => {
-                if(isFavoritesView) return favorites.includes(p.id);
-                if(filters.search && !p.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
-                if(filters.category === 'offers') { if(!(p.promoValue && p.promoValue < p.value)) return false; }
-                else if(filters.category && p.category !== filters.category) return false;
-                const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-                if(filters.maxPrice && price > filters.maxPrice) return false;
-                if(filters.sizes.length && !p.sizes?.some(s=>filters.sizes.includes(s))) return false;
-                if(filters.colors.length && !p.colors?.some(co=>filters.colors.includes(co))) return false;
-                return true;
-            });
-
-            container.innerHTML = '';
-            if(!filtered.length) { empty.classList.remove('hidden'); return; }
-            empty.classList.add('hidden');
-
-            const groups = {};
-            if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice) {
-                groups['Resultados'] = filtered;
-            } else {
-                filtered.forEach(p => { const k = p.category || 'Geral'; if(!groups[k]) groups[k]=[]; groups[k].push(p); });
-            }
-
-            const fragment = document.createDocumentFragment();
-            Object.keys(groups).sort().forEach(key => {
-                const section = document.createElement('section');
-                section.className = "animate-fade-in";
-                section.innerHTML = `<h3 class="font-bold text-slate-800 mb-4 px-1 text-lg flex items-center gap-2"><div class="w-1 h-5 bg-primary rounded-full"></div> ${key}</h3>`;
-                const grid = document.createElement('div');
-                grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5";
-                groups[key].forEach(p => grid.innerHTML += mkProductCard(p));
-                section.appendChild(grid); fragment.appendChild(section);
-            });
-            container.appendChild(fragment);
-            lucide.createIcons();
+    const container = document.getElementById('catalogContainer'), 
+          empty = document.getElementById('emptyState');
+          
+    // Filtra a lista original baseada nas escolhas do usuário
+    let filtered = allProducts.filter(p => {
+        // Filtro de Favoritos
+        if(isFavoritesView) return favorites.includes(p.id);
+        
+        // 1. Busca por texto (Nome ou SKU)
+        if(filters.search) {
+            const searchLower = filters.search.toLowerCase();
+            const nameMatch = p.name.toLowerCase().includes(searchLower);
+            const skuMatch = p.sku && p.sku.toLowerCase().includes(searchLower);
+            if (!nameMatch && !skuMatch) return false;
         }
+        
+        // 2. Filtro de Categoria e Ofertas
+        if(filters.category === 'offers') { 
+            if(!(p.promoValue && p.promoValue < p.value)) return false; 
+        } else if(filters.category && p.category !== filters.category) return false;
+
+        // 3. Filtro de Preço Máximo
+        const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+        if(filters.maxPrice && price > filters.maxPrice) return false;
+
+        // 4. INTELIGÊNCIA DE VARIAÇÕES (Tamanho e Cor)
+        if(filters.sizes.length > 0 || filters.colors.length > 0) {
+            // Se o produto tem matriz de variações, checa a combinação exata
+            if (p.variations && p.variations.length > 0) {
+                const hasMatch = p.variations.some(v => {
+                    if (!v.active) return false;
+                    const sizeMatch = filters.sizes.length === 0 || filters.sizes.includes(v.size);
+                    const colorMatch = filters.colors.length === 0 || filters.colors.includes(v.color);
+                    return sizeMatch && colorMatch;
+                });
+                if (!hasMatch) return false;
+            } else {
+                // Se for um produto simples sem variações cadastradas, checa as tags básicas
+                const sizeMatchBase = filters.sizes.length === 0 || p.sizes?.some(s => filters.sizes.includes(s));
+                const colorMatchBase = filters.colors.length === 0 || p.colors?.some(c => filters.colors.includes(c));
+                if (!sizeMatchBase || !colorMatchBase) return false;
+            }
+        }
+        
+        return true;
+    });
+
+    container.innerHTML = '';
+    if(!filtered.length) { empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+
+    // Agrupamento por Categoria para exibição
+    const groups = {};
+    if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice) {
+        groups['Resultados Encontrados'] = filtered;
+    } else {
+        filtered.forEach(p => { const k = p.category || 'Geral'; if(!groups[k]) groups[k]=[]; groups[k].push(p); });
+    }
+
+    Object.keys(groups).sort().forEach(key => {
+        const section = document.createElement('section');
+        section.className = "animate-fade-in mb-8";
+        section.innerHTML = `<h3 class="font-bold text-slate-800 mb-4 px-1 text-lg flex items-center gap-2"><div class="w-1 h-5 bg-primary rounded-full"></div> ${key}</h3>`;
+        const grid = document.createElement('div');
+        grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5";
+        groups[key].forEach(p => grid.innerHTML += mkProductCard(p));
+        section.appendChild(grid); 
+        container.appendChild(section);
+    });
+    lucide.createIcons();
+}
+
 
         function mkProductCard(p) {
             const hasPromo = p.promoValue && p.promoValue < p.value, price = hasPromo ? p.promoValue : p.value, img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem', isFav = favorites.includes(p.id);
@@ -873,26 +908,67 @@ window.closeImageZoom = () => {
         }
 
         function populateFilterOptions() {
-            const ss=new Set(), cc=new Set(); 
-            allProducts.forEach(p=>{ p.sizes?.forEach(s=>ss.add(s.trim())); p.colors?.forEach(c=>cc.add(c.trim())); });
-            const renderChips = (set, container, type) => {
-                container.innerHTML = '';
-                set.forEach(val => {
-                    const d = document.createElement('div');
-                    const sel = filters[type].includes(val);
-                    d.className = `px-4 py-2 border rounded-lg text-xs chip-common ${sel ? 'border-primary bg-primary text-white font-bold' : 'border-slate-200 bg-slate-50 text-slate-600'}`;
-                    d.textContent = val;
-                    d.onclick = () => {
-                        if(sel) filters[type] = filters[type].filter(x => x !== val);
-                        else filters[type].push(val);
-                        populateFilterOptions(); renderCatalog();
-                    };
-                    container.appendChild(d);
-                });
-            };
-            renderChips(ss, document.getElementById('filterSizesContainer'), 'sizes');
-            renderChips(cc, document.getElementById('filterColorsContainer'), 'colors');
+    const sizeCounts = {}, colorCounts = {};
+    const ss = new Set(), cc = new Set();
+
+    // Contabiliza quantos produtos ativos existem para cada cor e tamanho
+    allProducts.forEach(p => {
+        if (p.sizes) {
+            p.sizes.forEach(s => {
+                const val = s.trim();
+                if (val) {
+                    ss.add(val);
+                    sizeCounts[val] = (sizeCounts[val] || 0) + 1;
+                }
+            });
         }
+        if (p.colors) {
+            p.colors.forEach(c => {
+                const val = c.trim();
+                if (val) {
+                    cc.add(val);
+                    colorCounts[val] = (colorCounts[val] || 0) + 1;
+                }
+            });
+        }
+    });
+
+    const renderChips = (set, container, type, counts) => {
+        container.innerHTML = '';
+        // Ordena alfabeticamente
+        Array.from(set).sort().forEach(val => {
+            const isSelected = filters[type].includes(val);
+            const count = counts[val] || 0;
+            const d = document.createElement('div');
+            
+            // Estilo visual do botão com contador
+            d.className = `px-3 py-2 border rounded-lg text-[11px] chip-common flex items-center justify-between gap-3 transition-all ${
+                isSelected 
+                ? 'border-primary bg-primary text-white font-bold shadow-md' 
+                : 'border-slate-200 bg-white text-slate-600 hover:border-primary'
+            }`;
+
+            d.innerHTML = `
+                <span>${val}</span>
+                <span class="${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} px-1.5 py-0.5 rounded text-[9px]">
+                    ${count}
+                </span>
+            `;
+
+            d.onclick = () => {
+                if(isSelected) filters[type] = filters[type].filter(x => x !== val);
+                else filters[type].push(val);
+                populateFilterOptions(); 
+                renderCatalog();
+            };
+            container.appendChild(d);
+        });
+    };
+
+    renderChips(ss, document.getElementById('filterSizesContainer'), 'sizes', sizeCounts);
+    renderChips(cc, document.getElementById('filterColorsContainer'), 'colors', colorCounts);
+}
+
 
         function renderRelatedProducts(curr) {
             const s = document.getElementById('relatedProductsSection'), g = document.getElementById('relatedGrid'); g.innerHTML = ''; 
