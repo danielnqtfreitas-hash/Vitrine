@@ -60,6 +60,18 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+         /* Localize o final do seu <style> e cole isto: */
+
+#modalImageZoom {
+    touch-action: none; /* Bloqueia o arrastar da página para focar no swipe */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+#zoomedImg {
+    transition: opacity 0.2s ease-in-out, transform 0.3s ease-out;
+}
+
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative">
@@ -743,18 +755,56 @@
             Array.from(thumbs).forEach((t, i) => { t.classList.toggle('thumb-active', i === currentDetailImageIndex); t.classList.toggle('thumb-inactive', i !== currentDetailImageIndex); });
         };
         window.openImageZoom = () => {
-            if(currentDetailImages[currentDetailImageIndex].includes('placehold')) return;
-            document.getElementById('zoomedImg').src = currentDetailImages[currentDetailImageIndex];
-            const m = document.getElementById('modalImageZoom');
-            m.classList.remove('hidden');
-            requestAnimationFrame(() => { m.classList.remove('opacity-0'); document.getElementById('zoomedImg').classList.replace('scale-95','scale-100'); });
-        };
-        window.closeImageZoom = () => {
-            const m = document.getElementById('modalImageZoom');
-            m.classList.add('opacity-0');
-            document.getElementById('zoomedImg').classList.replace('scale-100','scale-95');
-            setTimeout(() => m.classList.add('hidden'), 300);
-        };
+    if(currentDetailImages[currentDetailImageIndex].includes('placehold')) return;
+    
+    const zoomedImg = document.getElementById('zoomedImg');
+    zoomedImg.src = currentDetailImages[currentDetailImageIndex];
+    
+    const m = document.getElementById('modalImageZoom');
+    m.classList.remove('hidden');
+    
+    // Animação de entrada
+    requestAnimationFrame(() => { 
+        m.classList.remove('opacity-0'); 
+        zoomedImg.classList.replace('scale-95','scale-100'); 
+    });
+
+    // --- Lógica de Swipe para o Zoom ---
+    let startX = 0;
+    m.ontouchstart = (e) => startX = e.changedTouches[0].screenX;
+    
+    m.ontouchend = (e) => {
+        let endX = e.changedTouches[0].screenX;
+        let diff = startX - endX;
+
+        if (Math.abs(diff) > 50) { // Sensibilidade do rastro
+            const dir = diff > 0 ? 1 : -1;
+            if (currentDetailImages.length > 1) {
+                // Troca de imagem com efeito suave
+                zoomedImg.style.opacity = '0.5';
+                setTimeout(() => {
+                    currentDetailImageIndex = (currentDetailImageIndex + dir + currentDetailImages.length) % currentDetailImages.length;
+                    zoomedImg.src = currentDetailImages[currentDetailImageIndex];
+                    zoomedImg.style.opacity = '1';
+                    updateDetailImageDisplay(); // Sincroniza o modal de baixo
+                }, 100);
+            }
+        }
+    };
+};
+
+window.closeImageZoom = () => {
+    const m = document.getElementById('modalImageZoom');
+    m.classList.add('opacity-0');
+    document.getElementById('zoomedImg').classList.replace('scale-100','scale-95');
+    
+    // Limpa os eventos ao fechar
+    m.ontouchstart = null;
+    m.ontouchend = null;
+    
+    setTimeout(() => m.classList.add('hidden'), 300);
+};
+
         window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
         
         function renderHeroCarousel(banners) {
