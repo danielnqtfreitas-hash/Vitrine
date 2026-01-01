@@ -647,21 +647,35 @@
         }
 
         async function registerVisit() {
-            if (!STORE_ID || STORE_ID === 'admin') return;
-            const sessionKey = `vst_${STORE_ID}`;
-            if (sessionStorage.getItem(sessionKey)) return;
-            try {
-                const now = new Date();
-                const todayId = now.toISOString().split('T')[0];
-                const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
-                const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
-                await Promise.all([
-                    setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
-                    setDoc(historyRef, { visits: increment(1), date: Timestamp.fromDate(now) }, { merge: true })
-                ]);
-                sessionStorage.setItem(sessionKey, '1');
-            } catch (e) {}
-        }
+    if (!STORE_ID || STORE_ID === 'admin') return;
+    const sessionKey = `vst_${STORE_ID}`;
+    if (sessionStorage.getItem(sessionKey)) return;
+
+    try {
+        const now = new Date();
+        const todayId = now.toISOString().split('T')[0];
+        const currentHour = now.getHours(); // Obtém a hora atual (0-23)
+
+        const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
+        const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+
+        // Prepara o incremento dinâmico da hora atual
+        const hourKey = `hours.${currentHour}`;
+
+        await Promise.all([
+            setDoc(globalRef, { totalVisits: increment(1) }, { merge: true }),
+            setDoc(historyRef, { 
+                visits: increment(1), 
+                date: Timestamp.fromDate(now),
+                [hourKey]: increment(1) // SALVAMENTO CORRIGIDO: Agora salva a hora para o gráfico
+            }, { merge: true })
+        ]);
+
+        sessionStorage.setItem(sessionKey, '1');
+    } catch (e) {
+        console.error("Erro ao registrar visita:", e);
+    }
+}
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
