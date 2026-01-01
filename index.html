@@ -391,6 +391,8 @@
         const auth = getAuth(app);
         
         let STORE_ID = null;
+let FAV_KEY = ""; // Criamos uma variável para guardar o nome da "gaveta"
+let favorites = []; // Começa vazio
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
         let deliveryAreas=[], currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
@@ -436,13 +438,18 @@
 
         // --- APP INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            STORE_ID = urlParams.get('id') || 'admin';
-            
-            await signInAnonymously(auth);
-            onAuthStateChanged(auth, (user) => { if(user) initFlow(); });
-            setupSwipes();
-        });
+    const urlParams = new URLSearchParams(window.location.search);
+    STORE_ID = urlParams.get('id') || 'admin';
+    
+    // DEFINA A CHAVE ÚNICA AQUI
+    FAV_KEY = `favs_v2_${STORE_ID}`;
+    // CARREGUE OS FAVORITOS DESTA LOJA ESPECÍFICA
+    favorites = JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
+    
+    await signInAnonymously(auth);
+    onAuthStateChanged(auth, (user) => { if(user) initFlow(); });
+    setupSwipes();
+});
 
         async function initFlow() {
             try {
@@ -679,19 +686,46 @@
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
         window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
-        window.toggleFavorite = (id) => { const idx=favorites.indexOf(id); if(idx>-1)favorites.splice(idx,1); else favorites.push(id); localStorage.setItem('favs_v2', JSON.stringify(favorites)); renderCatalog(); updateFavoritesUI(); if(currentDetailId===id) updateModalHeartBtn(); };
+        window.toggleFavorite = (id) => { 
+    const idx = favorites.indexOf(id); 
+    if(idx > -1) {
+        favorites.splice(idx, 1); // Remove se já existir
+    } else {
+        favorites.push(id); // Adiciona se não existir
+    }
+    
+    // SALVA NA GAVETA DA LOJA ATUAL
+    localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); 
+    
+    renderCatalog(); 
+    updateFavoritesUI(); 
+    if(currentDetailId === id) updateModalHeartBtn(); 
+};
         window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
         window.updateFavoritesUI = () => { const count = favorites.length; [document.getElementById('favBadgeDesktop'), document.getElementById('favBadgeMobile')].forEach(b => { b.textContent = count; b.classList.toggle('scale-0', count === 0); }); };
         function updateModalHeartBtn() { const b=document.querySelector('#modalHeartBtn svg'); if(favorites.includes(currentDetailId)){b.classList.add('heart-active');}else{b.classList.remove('heart-active');} }
         
-        window.addToCart = (p,q,v) => {
-            const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
-            const uid=`${p.id}-${(v.size||'').trim()}-${(v.color||'').trim()}`;
-            const ex=cart.find(x=>x.uid===uid); 
-            if(ex) ex.q+=q; else cart.push({uid,id:p.id,sku: p.sku || 'N/A', name:p.name,price,q,img:p.images?.[0]||'https://placehold.co/100',v:{...v}}); 
-            updateCartUI(); 
-            showToast(`<b>${p.name}</b> na sacola!`); 
-        };
+        window.addToCart = (p, q, v) => {
+    // 1. Criar uma chave única para o carrinho desta loja
+    const CART_KEY = `cart_${STORE_ID}`;
+    
+    const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
+    const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
+    
+    const ex = cart.find(x => x.uid === uid); 
+    if(ex) {
+        ex.q += q; 
+    } else {
+        cart.push({uid, id: p.id, sku: p.sku || 'N/A', name: p.name, price, q, img: p.images?.[0] || 'https://placehold.co/100', v: {...v}}); 
+    }
+
+    // 2. Salvar o carrinho apenas para esta loja no navegador
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    
+    updateCartUI(); 
+    showToast(`<b>${p.name}</b> na sacola!`); 
+};
+
 
         window.updateCartUI = () => {
             const cnt=cart.reduce((a,b)=>a+b.q,0); 
