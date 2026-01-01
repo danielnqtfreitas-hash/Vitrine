@@ -655,35 +655,26 @@
         const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
         const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-        // 1️⃣ Garante que os documentos existam
-        await setDoc(globalRef, {
-            totalVisits: 0,
-            createdAt: Timestamp.fromDate(now)
-        }, { merge: true });
-
-        await setDoc(historyRef, {
-            visits: 0,
-            date: Timestamp.fromDate(now),
-            hours: {}
-        }, { merge: true });
-
-        // 2️⃣ Incrementa com segurança
+        // O setDoc com { merge: true } resolve o problema de "documento não encontrado"
+        // e cria a coleção/documento automaticamente se não existirem.
         await Promise.all([
-            updateDoc(globalRef, {
-                totalVisits: increment(1)
-            }),
-            updateDoc(historyRef, {
+            setDoc(globalRef, {
+                totalVisits: increment(1),
+                lastVisit: Timestamp.fromDate(now)
+            }, { merge: true }),
+
+            setDoc(historyRef, {
                 visits: increment(1),
+                date: Timestamp.fromDate(now),
                 [`hours.${hour}`]: increment(1)
-            })
+            }, { merge: true })
         ]);
 
-        // 3️⃣ Marca a sessão
         sessionStorage.setItem(sessionKey, "1");
-
         console.log("✅ Visita registrada com sucesso");
 
     } catch (err) {
+        // Verifique o console do navegador para ver o erro exato (ex: Permission Denied)
         console.error("❌ Erro ao registrar visita:", err);
     }
 }
