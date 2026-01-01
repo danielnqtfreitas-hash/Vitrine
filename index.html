@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="color-scheme" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Carregando Loja...</title>
     
@@ -71,10 +72,45 @@
 #zoomedImg {
     transition: opacity 0.2s ease-in-out, transform 0.3s ease-out;
 }
+/* Força o esquema de cores para claro */
+:root {
+    color-scheme: light !important;
+}
+
+/* Bloqueia a inversão de cores em navegadores que ignoram o sistema */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #F3F4F6 !important; /* Seu fundo cinza claro */
+        color: #334155 !important;           /* Seu texto slate */
+    }
+
+    /* Força os elementos brancos a continuarem brancos */
+    .glass-header, 
+    .product-card, 
+    footer, 
+    #modalDetails .bg-white,
+    #modalCart .bg-white,
+    #filterDrawer,
+    #modalDelivery .bg-white {
+        background-color: #FFFFFF !important;
+        color: #334155 !important;
+    }
+
+    /* Impede que o navegador mude as cores das imagens/logos */
+    img {
+        filter: none !important;
+    }
+
+    /* Garante que os inputs não fiquem com fundo preto e texto branco */
+    input, select, textarea {
+        background-color: #FFFFFF !important;
+        color: #334155 !important;
+    }
+}
 
     </style>
 </head>
-<body class="flex flex-col min-h-screen relative">
+<body class="flex flex-col min-h-screen relative bg-[#F3F4F6] text-[#334155]">
 
     <!-- ERROR SCREEN -->
     <div id="errorScreen" class="fixed inset-0 z-[10000] bg-slate-900 hidden flex flex-col items-center justify-center p-6 text-center">
