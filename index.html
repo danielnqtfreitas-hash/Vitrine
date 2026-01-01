@@ -384,20 +384,19 @@
             Timestamp 
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // --- CONFIGURAÇÃO & ESTADO ---
+                // --- CONFIGURAÇÃO & ESTADO ---
         const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.firebasestorage.app", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
         const app = initializeApp(FIREBASE_CONFIG);
         const db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) });
         const auth = getAuth(app);
         
         let STORE_ID = null;
-let FAV_KEY = ""; // Criamos uma variável para guardar o nome da "gaveta"
-let favorites = []; // Começa vazio
+        let FAV_KEY = ""; 
+        let favorites = []; // Declarado apenas uma vez aqui
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
         let deliveryAreas=[], currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
         let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
-        let favorites = JSON.parse(localStorage.getItem('favs_v2') || "[]");
         let isFavoritesView = false;
 
         // --- DATA SERVICE ---
@@ -438,18 +437,24 @@ let favorites = []; // Começa vazio
 
         // --- APP INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    STORE_ID = urlParams.get('id') || 'admin';
-    
-    // DEFINA A CHAVE ÚNICA AQUI
-    FAV_KEY = `favs_v2_${STORE_ID}`;
-    // CARREGUE OS FAVORITOS DESTA LOJA ESPECÍFICA
-    favorites = JSON.parse(localStorage.getItem(FAV_KEY) || "[]");
-    
-    await signInAnonymously(auth);
-    onAuthStateChanged(auth, (user) => { if(user) initFlow(); });
-    setupSwipes();
-});
+            const urlParams = new URLSearchParams(window.location.search);
+            STORE_ID = urlParams.get('id') || 'admin';
+            
+            // Define a chave única para esta loja
+            FAV_KEY = `favs_v2_${STORE_ID}`;
+            
+            // Carrega os favoritos da loja específica
+            try {
+                const saved = localStorage.getItem(FAV_KEY);
+                favorites = saved ? JSON.parse(saved) : [];
+            } catch (e) {
+                favorites = [];
+            }
+            
+            await signInAnonymously(auth);
+            onAuthStateChanged(auth, (user) => { if(user) initFlow(); });
+            setupSwipes();
+        });
 
         async function initFlow() {
             try {
