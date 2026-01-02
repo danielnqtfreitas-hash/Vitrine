@@ -394,7 +394,7 @@
         const DataService = {
             async getStoreConfig() {
                 const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-                // Forçamos buscar do servidor para garantir o lastUpdate real
+                // Sempre buscamos do servidor para validar o carimbo de tempo real
                 const snap = await getDocFromServer(configRef);
                 return snap.data();
             },
@@ -402,11 +402,17 @@
             async getProducts(forceServer = false) {
                 const colRef = collection(db, `stores/${STORE_ID}/products`);
                 try {
-                    // Se forceServer for true, ele ignora o cache do navegador e vai no Google
+                    // MUDANÇA AQUI: Se for forceServer, usamos getDocsFromServer
                     const snap = forceServer ? await getDocsFromServer(colRef) : await getDocs(colRef);
+                    
+                    // Fallback: se o cache estiver vazio e não for force, tenta servidor
+                    if (snap.empty && !forceServer) return this.getProducts(true);
+                    
                     return snap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
                 } catch (e) {
                     console.error("Erro ao buscar produtos:", e);
+                    // Se falhar no cache, tenta no servidor como última esperança
+                    if (!forceServer) return this.getProducts(true);
                     return [];
                 }
             },
@@ -415,9 +421,10 @@
                 const colRef = collection(db, `stores/${STORE_ID}/hero_cards`);
                 try {
                     const snap = forceServer ? await getDocsFromServer(colRef) : await getDocs(colRef);
+                    if (snap.empty && !forceServer) return this.getBanners(true);
                     return snap.docs.map(d => ({id: d.id, ...d.data()}));
                 } catch (e) {
-                    console.error("Erro ao buscar banners:", e);
+                    if (!forceServer) return this.getBanners(true);
                     return [];
                 }
             }
