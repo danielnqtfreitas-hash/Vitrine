@@ -448,44 +448,63 @@
         });
 
         async function initFlow() {
-            try {
-                const config = await DataService.getStoreConfig();
-                if(!config) throw new Error("Loja inexistente");
-                if(config.subscriptionStatus === 'suspended') { showFatalError("Indisponível", "Assinatura suspensa."); return; }
-                
-                applyStoreConfig(config);
-                
-                const CACHE_KEY = `app_cache_${STORE_ID}`;
-                const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
-                const shouldUpdate = cached.lastUpdate !== config.lastUpdate;
+    try {
+        // 1. Buscamos a configuração SEMPRE do servidor para saber se houve mudança
+        const configRef = doc(db, `stores/${STORE_ID}/config/store`);
+        const configSnap = await getDocFromServer(configRef); // Forçamos ir ao servidor aqui
+        const config = configSnap.data();
 
-                if (shouldUpdate || !cached.products) {
-                    const [products, banners] = await Promise.all([DataService.getProducts(true), DataService.getBanners(true)]);
-                    const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
-                    
-                    allProducts = products;
-                    categories = cats;
-                    
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({
-                        products, banners, categories: cats, lastUpdate: config.lastUpdate, ts: Date.now()
-                    }));
-                    
-                    renderHeroCarousel(banners);
-                } else {
-                    allProducts = cached.products;
-                    categories = cached.categories;
-                    renderHeroCarousel(cached.banners);
-                }
+        if(!config) throw new Error("Loja inexistente");
+        if(config.subscriptionStatus === 'suspended') { showFatalError("Indisponível", "Assinatura suspensa."); return; }
+        
+        applyStoreConfig(config);
+        
+        const CACHE_KEY = `app_cache_v3_${STORE_ID}`; // Mudamos a versão do cache para limpar o antigo
+        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
+        
+        // Verificação Real-Time: Se o lastUpdate do servidor for maior que o guardado, baixamos tudo.
+        const needsUpdate = !cached.lastUpdate || config.lastUpdate > cached.lastUpdate;
 
-                renderCategoryTabs();
-                renderCatalog();
-                populateFilterOptions();
-                registerVisit();
-                hideLoader();
-                updateFavoritesUI();
-            } catch (error) {
-                showFatalError("Erro de Conexão", "Não foi possível sincronizar os dados.");
-            }
+        if (needsUpdate) {
+            console.log("🔄 Novidades detectadas! Sincronizando vitrine...");
+            // Buscamos direto do servidor para garantir o dado novo
+            const [products, banners] = await Promise.all([
+                DataService.getProducts(true), 
+                DataService.getBanners(true)
+            ]);
+            
+            const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
+            
+            allProducts = products;
+            categories = cats;
+            
+            // Guardamos a nova versão no celular do cliente
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                products, 
+                banners, 
+                categories: cats, 
+                lastUpdate: config.lastUpdate, 
+                ts: Date.now()
+            }));
+            
+            renderHeroCarousel(banners);
+        } else {
+            console.log("✅ Vitrine já está atualizada via cache.");
+            allProducts = cached.products;
+            categories = cached.categories;
+            renderHeroCarousel(cached.banners);
+        }
+
+        renderCategoryTabs();
+        renderCatalog();
+        populateFilterOptions();
+        registerVisit();
+        hideLoader();
+        updateFavoritesUI();
+    } catch (error) {
+        console.error("Erro no fluxo:", error);
+        showFatalError("Erro de Conexão", "Não foi possível sincronizar os dados.");
+    }
         }
 
         // --- RENDERERS ---
