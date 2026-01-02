@@ -449,7 +449,7 @@
 
         async function initFlow() {
     try {
-        // 1. BUSCA O CARIMBO DE TEMPO DIRETO DO SERVIDOR (Sempre!)
+        // 1. BUSCA A CONFIGURAÇÃO DIRETO DO SERVIDOR (Ignora cache para checar versão)
         const configRef = doc(db, `stores/${STORE_ID}/config/store`);
         const configSnap = await getDocFromServer(configRef); 
         const config = configSnap.data();
@@ -459,21 +459,22 @@
         
         applyStoreConfig(config);
         
-        // Versão do Cache para controle
-        const CACHE_KEY = `app_cache_v3_${STORE_ID}`;
-        const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
+        // 2. GERENCIAMENTO DE CACHE LOCAL
+        const CACHE_KEY = `app_cache_v4_${STORE_ID}`; // Versão v4 para invalidar lixos anteriores
+        const cachedRaw = localStorage.getItem(CACHE_KEY);
+        const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
         
-        // 2. COMPARAÇÃO RÍGIDA
-        // Se não tem cache, ou se o tempo do servidor é DIFERENTE do cache, atualizamos.
-        const needsUpdate = !cached.lastUpdate || config.lastUpdate !== cached.lastUpdate;
+        // 3. COMPARAÇÃO DE SEGURANÇA
+        // Se não tem cache OU se o lastUpdate do servidor é DIFERENTE do cache, atualizamos tudo.
+        const needsUpdate = !cached || config.lastUpdate !== cached.lastUpdate;
 
         if (needsUpdate) {
-            console.log("🔄 Novidades detectadas. Limpando cache antigo e baixando dados novos...");
+            console.log("🔄 Novidades detectadas no servidor. Sincronizando dados novos...");
             
-            // Forçamos a limpeza do que estava no navegador para não haver conflito
+            // Limpa o cache antigo antes de baixar o novo para evitar conflitos
             localStorage.removeItem(CACHE_KEY);
 
-            // Buscamos os produtos novos direto do SERVIDOR (ignora o cache do Firebase)
+            // Buscamos os produtos novos direto do SERVIDOR (forceServer = true)
             const [products, banners] = await Promise.all([
                 DataService.getProducts(true), 
                 DataService.getBanners(true)
@@ -484,18 +485,18 @@
             allProducts = products;
             categories = cats;
             
-            // Grava o novo Cache com o lastUpdate atualizado do servidor
+            // Grava o novo Cache com o lastUpdate exato do servidor
             localStorage.setItem(CACHE_KEY, JSON.stringify({
                 products, 
                 banners, 
                 categories: cats, 
-                lastUpdate: config.lastUpdate,
+                lastUpdate: config.lastUpdate, // Guardamos o selo de tempo para a próxima comparação
                 ts: Date.now()
             }));
             
             renderHeroCarousel(banners);
         } else {
-            console.log("✅ Vitrine carregada do cache (já está atualizada).");
+            console.log("✅ Vitrine carregada do cache local (Versão atualizada).");
             allProducts = cached.products;
             categories = cached.categories;
             renderHeroCarousel(cached.banners);
@@ -508,10 +509,10 @@
         hideLoader();
         updateFavoritesUI();
     } catch (error) {
-        console.error("Erro no fluxo de sincronização:", error);
-        showFatalError("Erro de Conexão", "Não foi possível sincronizar os dados.");
+        console.error("Erro crítico na sincronização:", error);
+        showFatalError("Erro de Conexão", "Não foi possível sincronizar os dados. Tente atualizar a página.");
     }
-        }
+}
 
         // --- RENDERERS ---
         window.renderCatalog = () => {
