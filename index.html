@@ -449,9 +449,9 @@
 
         async function initFlow() {
     try {
-        // 1. Buscamos a configuração SEMPRE do servidor para saber se houve mudança
+        // 1. BUSCA O CARIMBO DE TEMPO DIRETO DO SERVIDOR (Sempre!)
         const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-        const configSnap = await getDocFromServer(configRef); // Forçamos ir ao servidor aqui
+        const configSnap = await getDocFromServer(configRef); 
         const config = configSnap.data();
 
         if(!config) throw new Error("Loja inexistente");
@@ -459,15 +459,21 @@
         
         applyStoreConfig(config);
         
-        const CACHE_KEY = `app_cache_v3_${STORE_ID}`; // Mudamos a versão do cache para limpar o antigo
+        // Versão do Cache para controle
+        const CACHE_KEY = `app_cache_v3_${STORE_ID}`;
         const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || "{}");
         
-        // Verificação Real-Time: Se o lastUpdate do servidor for maior que o guardado, baixamos tudo.
-        const needsUpdate = !cached.lastUpdate || config.lastUpdate > cached.lastUpdate;
+        // 2. COMPARAÇÃO RÍGIDA
+        // Se não tem cache, ou se o tempo do servidor é DIFERENTE do cache, atualizamos.
+        const needsUpdate = !cached.lastUpdate || config.lastUpdate !== cached.lastUpdate;
 
         if (needsUpdate) {
-            console.log("🔄 Novidades detectadas! Sincronizando vitrine...");
-            // Buscamos direto do servidor para garantir o dado novo
+            console.log("🔄 Novidades detectadas. Limpando cache antigo e baixando dados novos...");
+            
+            // Forçamos a limpeza do que estava no navegador para não haver conflito
+            localStorage.removeItem(CACHE_KEY);
+
+            // Buscamos os produtos novos direto do SERVIDOR (ignora o cache do Firebase)
             const [products, banners] = await Promise.all([
                 DataService.getProducts(true), 
                 DataService.getBanners(true)
@@ -478,18 +484,18 @@
             allProducts = products;
             categories = cats;
             
-            // Guardamos a nova versão no celular do cliente
+            // Grava o novo Cache com o lastUpdate atualizado do servidor
             localStorage.setItem(CACHE_KEY, JSON.stringify({
                 products, 
                 banners, 
                 categories: cats, 
-                lastUpdate: config.lastUpdate, 
+                lastUpdate: config.lastUpdate,
                 ts: Date.now()
             }));
             
             renderHeroCarousel(banners);
         } else {
-            console.log("✅ Vitrine já está atualizada via cache.");
+            console.log("✅ Vitrine carregada do cache (já está atualizada).");
             allProducts = cached.products;
             categories = cached.categories;
             renderHeroCarousel(cached.banners);
@@ -502,7 +508,7 @@
         hideLoader();
         updateFavoritesUI();
     } catch (error) {
-        console.error("Erro no fluxo:", error);
+        console.error("Erro no fluxo de sincronização:", error);
         showFatalError("Erro de Conexão", "Não foi possível sincronizar os dados.");
     }
         }
