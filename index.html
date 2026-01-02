@@ -390,41 +390,39 @@
         let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
         let isFavoritesView = false;
 
-        // --- DATA SERVICE ---
+                // --- DATA SERVICE ---
         const DataService = {
             async getStoreConfig() {
                 const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-                try {
-                    const snap = await getDocFromCache(configRef);
-                    return snap.data();
-                } catch (e) {
-                    const snap = await getDocFromServer(configRef);
-                    return snap.data();
-                }
+                // Forçamos buscar do servidor para garantir o lastUpdate real
+                const snap = await getDocFromServer(configRef);
+                return snap.data();
             },
 
             async getProducts(forceServer = false) {
                 const colRef = collection(db, `stores/${STORE_ID}/products`);
                 try {
-                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocsFromCache(colRef);
-                    if (snap.empty && !forceServer) return this.getProducts(true);
+                    // Se forceServer for true, ele ignora o cache do navegador e vai no Google
+                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocs(colRef);
                     return snap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
                 } catch (e) {
-                    return forceServer ? [] : this.getProducts(true);
+                    console.error("Erro ao buscar produtos:", e);
+                    return [];
                 }
             },
 
             async getBanners(forceServer = false) {
                 const colRef = collection(db, `stores/${STORE_ID}/hero_cards`);
                 try {
-                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocsFromCache(colRef);
-                    if (snap.empty && !forceServer) return this.getBanners(true);
+                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocs(colRef);
                     return snap.docs.map(d => ({id: d.id, ...d.data()}));
                 } catch (e) {
-                    return forceServer ? [] : this.getBanners(true);
+                    console.error("Erro ao buscar banners:", e);
+                    return [];
                 }
             }
         };
+        
 
         // --- APP INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', async () => {
