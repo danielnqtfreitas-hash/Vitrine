@@ -771,39 +771,28 @@ function trackProductView(productId) {
 }
 
 async function flushAnalyticsBuffer() {
-    if (productViewBuffer.size === 0) return;
+    if (productViewBuffer.size === 0 && failedSearchBuffer.size === 0) return;
 
-    const idsToSend = Array.from(productViewBuffer);
+    const analyticsRef = doc(db, `stores/${STORE_ID}/analytics`, "product_views");
+    const updates = { lastUpdate: Timestamp.now() };
+
+    productViewBuffer.forEach(id => {
+        updates[`stats.${id}.views`] = increment(1);
+        const p = allProducts.find(x => x.id === id);
+        if (p) updates[`stats.${id}.name`] = p.name;
+    });
     productViewBuffer.clear();
 
-    // Este é o documento único que vai economizar suas escritas
-    const analyticsRef = doc(db, `stores/${STORE_ID}/analytics`, "product_views");
-    
-    const updates = {
-        lastUpdate: Timestamp.now()
-    };
-
-    idsToSend.forEach(id => {
-        // Dot notation para atualizar o campo específico dentro do objeto 'stats'
-        updates[`stats.${id}.views`] = increment(1);
-        
-        const p = allProducts.find(x => x.id === id);
-        if (p) {
-            updates[`stats.${id}.name`] = p.name;
-        }
+    failedSearchBuffer.forEach(term => {
+        updates[`searches.${term}`] = increment(1);
     });
+    failedSearchBuffer.clear();
 
     try {
-        // Tentamos atualizar o documento existente
         await updateDoc(analyticsRef, updates);
-        console.log("✅ Visualizações agregadas com sucesso!");
     } catch (e) {
-        // Se o documento não existir (erro 404), nós o criamos do zero
         if (e.code === 'not-found') {
             await setDoc(analyticsRef, updates);
-            console.log("✅ Documento de analytics criado e iniciado.");
-        } else {
-            console.error("❌ Erro ao processar analytics:", e);
         }
     }
 }
