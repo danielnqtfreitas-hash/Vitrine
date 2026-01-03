@@ -932,7 +932,8 @@
 
     try {
         const now = new Date();
-        const todayId = now.toLocaleDateString('en-CA');
+        const todayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const hour = now.getHours();
         
         // --- DETECÇÃO DE ORIGEM ---
         const ref = document.referrer.toLowerCase();
@@ -940,23 +941,29 @@
         if (ref.includes("instagram.com")) source = "Instagram";
         else if (ref.includes("facebook.com") || ref.includes("fb.me")) source = "Facebook";
         else if (ref.includes("google.com")) source = "Google";
-        else if (ref.includes("t.co") || ref.includes("twitter.com")) source = "Twitter";
 
-        const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
-
+        // 1. ATUALIZA O HISTÓRICO DIÁRIO (O que alimenta o gráfico)
+        const historyRef = doc(db, `stores/${STORE_ID}/analytics_history`, todayId);
         await setDoc(historyRef, {
             visits: increment(1),
             date: Timestamp.fromDate(now),
-            // Salva a contagem por origem (ex: sources.Instagram: 1)
+            [`hours.${hour}`]: increment(1),
             [`sources.${source}`]: increment(1)
         }, { merge: true });
 
+        // 2. ATUALIZA O CONTADOR GLOBAL (O que alimenta o "Total de Visitas" no topo do painel)
+        const globalRef = doc(db, `stores/${STORE_ID}/analytics`, "global");
+        await setDoc(globalRef, { 
+            totalVisits: increment(1),
+            lastUpdate: Timestamp.fromDate(now)
+        }, { merge: true });
+
         sessionStorage.setItem(sessionKey, "1");
+        console.log("Visita registrada com sucesso!");
     } catch (err) {
-        console.error("Erro Analytics Visit:", err);
+        console.error("Erro ao registrar visita:", err);
     }
         }
-
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
