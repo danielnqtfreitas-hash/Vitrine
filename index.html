@@ -405,7 +405,8 @@
         let FAV_KEY = ""; 
         let favorites = []; // Declarado apenas uma vez aqui
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
-        let productViewBuffer = new Set(); 
+        let productViewBuffer = new Set();
+        let failedSearchBuffer = new Set();
         let analyticsTimer = null;
         let deliveryAreas=[], currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
@@ -760,7 +761,7 @@ function startAnalyticsTimer() {
         analyticsTimer = setTimeout(async () => {
             await flushAnalyticsBuffer();
             analyticsTimer = null;
-        }, 120000); // 2 minutos
+        }, 60000); // 1 minuto
     }
 }
 
