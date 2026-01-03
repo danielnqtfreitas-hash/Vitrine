@@ -623,6 +623,30 @@
         // --- CORE LOGIC ---
         window.openProductModal = (id) => { 
             const p=allProducts.find(x=>x.id===id); if(!p)return; 
+            async function trackProductView(productId, productName) {
+    // 1. Criamos uma "etiqueta" na sessão do navegador do cliente
+    const sessionKey = `view_${productId}`;
+    
+    // 2. Se o cliente já viu esse produto hoje, não contamos de novo (para economizar seu Firebase)
+    if (sessionStorage.getItem(sessionKey)) return;
+
+    try {
+        // 3. Vamos na pasta 'product_analytics' dentro da loja desse lojista
+        const prodRef = doc(db, "stores", STORE_ID, "product_analytics", productId);
+        
+        // 4. Usamos o 'increment(1)' para somar sem precisar saber o valor atual
+        await setDoc(prodRef, {
+            name: productName,
+            views: increment(1), // Aqui acontece a mágica: 1, 2, 3... 1000 views
+            lastView: Timestamp.now()
+        }, { merge: true });
+
+        // 5. Marcamos que esse cliente já contou como 1 view nesta sessão
+        sessionStorage.setItem(sessionKey, "1");
+    } catch (e) {
+        console.error("Erro ao rastrear visualização:", e);
+    }
+            }
             currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
             currentDetailImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
             currentDetailImageIndex = 0;
@@ -846,11 +870,7 @@
         }
 
         async function registerVisit() {
-    // 1. Verificação de segurança
-    if (!STORE_ID || STORE_ID === 'admin') {
-        console.warn("Analytics: STORE_ID inválido ou admin. Ignorando.");
-        return;
-    }
+    if (!STORE_ID || STORE_ID === 'admin') return;
 
     const sessionKey = `vst_${STORE_ID}`;
     if (sessionStorage.getItem(sessionKey)) return;
@@ -858,35 +878,29 @@
     try {
         const now = new Date();
         const todayId = now.toLocaleDateString('en-CA');
-        const hour = now.getHours();
+        
+        // --- DETECÇÃO DE ORIGEM ---
+        const ref = document.referrer.toLowerCase();
+        let source = "Direto";
+        if (ref.includes("instagram.com")) source = "Instagram";
+        else if (ref.includes("facebook.com") || ref.includes("fb.me")) source = "Facebook";
+        else if (ref.includes("google.com")) source = "Google";
+        else if (ref.includes("t.co") || ref.includes("twitter.com")) source = "Twitter";
 
-        // Referências
-        const globalRef = doc(db, "stores", STORE_ID, "analytics", "global");
         const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
 
-        console.log(`Tentando registrar visita para: ${STORE_ID}`);
-
-        // setDoc com { merge: true } CRIA o documento e as pastas se não existirem
-        await Promise.all([
-            setDoc(globalRef, {
-                totalVisits: increment(1),
-                lastUpdate: Timestamp.fromDate(now)
-            }, { merge: true }),
-
-            setDoc(historyRef, {
-                visits: increment(1),
-                date: Timestamp.fromDate(now),
-                [`hours.${hour}`]: increment(1)
-            }, { merge: true })
-        ]);
+        await setDoc(historyRef, {
+            visits: increment(1),
+            date: Timestamp.fromDate(now),
+            // Salva a contagem por origem (ex: sources.Instagram: 1)
+            [`sources.${source}`]: increment(1)
+        }, { merge: true });
 
         sessionStorage.setItem(sessionKey, "1");
-        console.log("✅ Analytics registrado e pastas criadas!");
-
     } catch (err) {
-        console.error("❌ Erro fatal no Analytics:", err);
+        console.error("Erro Analytics Visit:", err);
     }
-}
+        }
 
 
         // --- HELPER UI ---
