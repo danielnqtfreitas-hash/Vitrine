@@ -309,7 +309,7 @@
     </div>
 
     <!-- MODAL: CARRINHO -->
-        <div id="modalCart" class="fixed inset-0 z-[60] hidden">
+            <div id="modalCart" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeCartModal()"></div>
         <div id="cartDrawer" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
             <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold text-lg">Minha Sacola</h3><button onclick="closeCartModal()"><i data-lucide="x" class="w-6 h-6"></i></button></div>
@@ -319,7 +319,7 @@
                 <div id="cartSummary" class="space-y-4">
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
                         <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados para Entrega</h4>
-                        <input type="text" id="checkName" placeholder="Teu Nome Completo" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                        <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
                         <div class="flex gap-2">
                             <select id="checkPayment" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
                                 <option value="" disabled selected>Pagamento</option>
@@ -329,7 +329,7 @@
                             </select>
                             <select id="cartDeliverySelect" onchange="updateCartTotals()" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
                         </div>
-                        <textarea id="checkAddress" rows="2" placeholder="Morada completa (Rua, Nº, Bairro)" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"></textarea>
+                        <textarea id="checkAddress" rows="2" placeholder="Endereço completo (Rua, Nº, Bairro)" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"></textarea>
                     </div>
                     <div class="px-2">
                         <div class="flex justify-between text-xl font-display font-black text-slate-900 pt-2">
@@ -343,9 +343,8 @@
                 </div>
             </div>
         </div>
-        </div>
+    </div>
 
-    <!-- FILTRO DRAWER -->
     <div id="filterModal" class="fixed inset-0 z-[70] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
         <div id="filterDrawer" class="absolute inset-y-0 right-0 max-w-xs w-full bg-white flex flex-col transform translate-x-full transition-transform duration-300">
