@@ -372,26 +372,28 @@
     </div>
 
     <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { 
-    initializeFirestore, 
-    persistentLocalCache, 
-    persistentMultipleTabManager, 
-    doc, 
-    getDoc, 
-    getDocFromServer,
-    getDocs, 
-    getDocsFromCache,
-    getDocsFromServer,
-    collection, 
-    query, 
-    where, 
-    increment, 
-    setDoc, 
-    updateDoc, 
-    Timestamp,
-    writeBatch // <--- ADICIONE ESTE
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
+            initializeFirestore, 
+            persistentLocalCache, 
+            persistentMultipleTabManager, 
+            doc, 
+            getDoc, 
+            getDocFromCache, 
+            getDocFromServer,
+            getDocs, 
+            getDocsFromCache,
+            getDocsFromServer,
+            collection, 
+            query, 
+            where, 
+            increment, 
+            setDoc, 
+            updateDoc, 
+            Timestamp 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
                 // --- CONFIGURAÇÃO & ESTADO ---
         const FIREBASE_CONFIG = { apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q", authDomain: "meuestoque-1badc.firebaseapp.com", projectId: "meuestoque-1badc", storageBucket: "meuestoque-1badc.firebasestorage.app", messagingSenderId: "730003067834", appId: "1:730003067834:web:b205f1ea59053345960383" };
         const app = initializeApp(FIREBASE_CONFIG);
@@ -746,71 +748,29 @@
             updateModalHeartBtn(); 
             document.getElementById('detailAddBtn').onclick=()=>{ addToCart(p,currentDetailQty,currentDetailSelection); closeModalDetails(); }; 
             renderRelatedProducts(p);
-                       document.getElementById('modalDetails').classList.remove('hidden'); 
+            document.getElementById('modalDetails').classList.remove('hidden'); 
             lucide.createIcons();
-        }; 
+        };
 
-        // --- SISTEMA DE CACHE E SINCRONIZAÇÃO DE ANALYTICS ---
-
+        // --- FUNÇÃO DE RASTREIO DE PRODUTOS MAIS VISTOS ---
         async function trackProductView(productId, productName) {
             const sessionKey = `view_${productId}`;
+            // Evita contar repetido se o usuário ficar abrindo/fechando na mesma sessão
             if (sessionStorage.getItem(sessionKey)) return;
 
-            // Criamos a chave com o STORE_ID atual
-            const cacheKey = `pending_views_${STORE_ID}`;
-            let cachedViews = JSON.parse(localStorage.getItem(cacheKey) || "{}");
-
-            if (!cachedViews[productId]) {
-                cachedViews[productId] = { name: productName, count: 0 };
-            }
-            
-            cachedViews[productId].count += 1;
-            
-            localStorage.setItem(cacheKey, JSON.stringify(cachedViews));
-            sessionStorage.setItem(sessionKey, "1");
-            console.log(`Pendente no cache: ${productName}`);
-        }
-
-        async function syncViewsToFirebase() {
-            if (!STORE_ID || STORE_ID === 'admin') return;
-            
-            const cacheKey = `pending_views_${STORE_ID}`;
-            const cachedRaw = localStorage.getItem(cacheKey);
-            if (!cachedRaw) return;
-
-            const cachedViews = JSON.parse(cachedRaw);
-            const productIds = Object.keys(cachedViews);
-            if (productIds.length === 0) return;
-
-            const batch = writeBatch(db);
-
-            productIds.forEach(id => {
-                const data = cachedViews[id];
-                const docRef = doc(db, "stores", STORE_ID, "product_analytics", id);
-                
-                batch.set(docRef, {
-                    name: data.name,
-                    views: increment(data.count),
+            try {
+                const prodRef = doc(db, "stores", STORE_ID, "product_analytics", productId);
+                await setDoc(prodRef, {
+                    name: productName,
+                    views: increment(1),
                     lastView: Timestamp.now()
                 }, { merge: true });
-            });
 
-            try {
-                await batch.commit();
-                localStorage.removeItem(cacheKey);
-                console.log("Firebase atualizado com sucesso!");
+                sessionStorage.setItem(sessionKey, "1");
             } catch (e) {
-                console.error("Erro ao sincronizar analytics:", e);
+                console.error("Erro ao registrar visualização do produto:", e);
             }
         }
-
-        // Configura os tempos de execução
-        setInterval(syncViewsToFirebase, 120000); // Tenta enviar a cada 2 minutos
-
-        window.addEventListener('load', () => {
-            setTimeout(syncViewsToFirebase, 5000); // Tenta enviar pendências antigas 5s após abrir
-        });
-
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
         window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
