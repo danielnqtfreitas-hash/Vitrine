@@ -309,43 +309,41 @@
     </div>
 
     <!-- MODAL: CARRINHO -->
-    <div id="modalCart" class="fixed inset-0 z-[60] hidden">
+        <div id="modalCart" class="fixed inset-0 z-[60] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeCartModal()"></div>
         <div id="cartDrawer" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
             <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold text-lg">Minha Sacola</h3><button onclick="closeCartModal()"><i data-lucide="x" class="w-6 h-6"></i></button></div>
             <div id="cartList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"></div>
             <div class="p-5 border-t bg-white space-y-4">
                 <div id="cartEmptyMsg" class="hidden text-center text-slate-400 py-6">Sua sacola está vazia.</div>
-            <div id="cartSummary" class="space-y-4">
-    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
-        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados para Entrega</h4>
-        
-        <input type="text" id="checkName" placeholder="Teu Nome Completo" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-        
-        <div class="flex gap-2">
-            <select id="checkPayment" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
-                <option value="" disabled selected>Pagamento</option>
-                <option value="Pix">Pix</option>
-                <option value="Cartão">Cartão</option>
-                <option value="Dinheiro">Dinheiro</option>
-            </select>
-            <select id="cartDeliverySelect" onchange="updateCartTotals()" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
-                </select>
-        </div>
-
-        <textarea id="checkAddress" rows="2" placeholder="Morada completa (Rua, Nº, Bairro)" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"></textarea>
-    </div>
-
-    <div class="px-2">
-        <div class="flex justify-between text-xl font-display font-black text-slate-900 pt-2">
-            <span>Total</span>
-            <span id="cartFinalTotal">R$ 0,00</span>
-        </div>
-        <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg mt-4 active-scale flex justify-center items-center gap-3 transition-all">
-            Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
-        </button>
-    </div>
+                <div id="cartSummary" class="space-y-4">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados para Entrega</h4>
+                        <input type="text" id="checkName" placeholder="Teu Nome Completo" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                        <div class="flex gap-2">
+                            <select id="checkPayment" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
+                                <option value="" disabled selected>Pagamento</option>
+                                <option value="Pix">Pix</option>
+                                <option value="Cartão">Cartão</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                            </select>
+                            <select id="cartDeliverySelect" onchange="updateCartTotals()" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
+                        </div>
+                        <textarea id="checkAddress" rows="2" placeholder="Morada completa (Rua, Nº, Bairro)" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"></textarea>
+                    </div>
+                    <div class="px-2">
+                        <div class="flex justify-between text-xl font-display font-black text-slate-900 pt-2">
+                            <span>Total</span>
+                            <span id="cartFinalTotal">R$ 0,00</span>
+                        </div>
+                        <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg mt-4 active-scale flex justify-center items-center gap-3 transition-all">
+                            Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
+        </div>
+        </div>
 
     <!-- FILTRO DRAWER -->
     <div id="filterModal" class="fixed inset-0 z-[70] hidden">
@@ -546,7 +544,7 @@
     const container = document.getElementById('catalogContainer'), 
           empty = document.getElementById('emptyState');
           
-    // Lógica de filtragem (Mantém a tua atual)
+        // 1. Lógica de filtragem dos produtos
     let filtered = allProducts.filter(p => {
         if(isFavoritesView) return favorites.includes(p.id);
         if(filters.search) {
@@ -578,24 +576,20 @@
         return true;
     });
 
-    // --- NOVIDADE: RASTREADOR DE BUSCAS SEM RESULTADO ---
+    // 2. RASTREADOR DE BUSCAS SEM RESULTADO
     if (filtered.length === 0 && filters.search.trim().length > 2) {
         const termoBusca = filters.search.toLowerCase().trim();
-        
-        // Evita gravar cada letra enquanto o utilizador escreve (Debounce de 1.5s)
         clearTimeout(window.failedSearchTimer);
         window.failedSearchTimer = setTimeout(async () => {
             try {
-                // Caminho: lojas -> ID_DA_LOJA -> failed_searches -> termo_pesquisado
                 const searchRef = doc(db, `stores/${STORE_ID}/failed_searches`, termoBusca);
                 await setDoc(searchRef, {
                     term: termoBusca,
                     count: increment(1),
                     lastDate: Timestamp.now()
                 }, { merge: true });
-                console.log("🔍 Busca falha registada:", termoBusca);
             } catch (e) {
-                console.error("Erro ao gravar busca falha:", e);
+                console.error("Erro ao registrar busca falha:", e);
             }
         }, 1500); 
     }
@@ -654,32 +648,14 @@
         }
 
         // --- CORE LOGIC ---
+                // --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
         window.openProductModal = (id) => { 
-            const p=allProducts.find(x=>x.id===id); if(!p)return; 
-            async function trackProductView(productId, productName) {
-    // 1. Criamos uma "etiqueta" na sessão do navegador do cliente
-    const sessionKey = `view_${productId}`;
-    
-    // 2. Se o cliente já viu esse produto hoje, não contamos de novo (para economizar seu Firebase)
-    if (sessionStorage.getItem(sessionKey)) return;
+            const p = allProducts.find(x => x.id === id); 
+            if(!p) return; 
 
-    try {
-        // 3. Vamos na pasta 'product_analytics' dentro da loja desse lojista
-        const prodRef = doc(db, "stores", STORE_ID, "product_analytics", productId);
-        
-        // 4. Usamos o 'increment(1)' para somar sem precisar saber o valor atual
-        await setDoc(prodRef, {
-            name: productName,
-            views: increment(1), // Aqui acontece a mágica: 1, 2, 3... 1000 views
-            lastView: Timestamp.now()
-        }, { merge: true });
+            // GATILHO: Registra que o produto foi visto para o Analytics
+            trackProductView(p.id, p.name);
 
-        // 5. Marcamos que esse cliente já contou como 1 view nesta sessão
-        sessionStorage.setItem(sessionKey, "1");
-    } catch (e) {
-        console.error("Erro ao rastrear visualização:", e);
-    }
-            }
             currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
             currentDetailImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
             currentDetailImageIndex = 0;
@@ -767,6 +743,25 @@
             lucide.createIcons();
         };
 
+        // --- FUNÇÃO DE RASTREIO DE PRODUTOS MAIS VISTOS ---
+        async function trackProductView(productId, productName) {
+            const sessionKey = `view_${productId}`;
+            // Evita contar repetido se o usuário ficar abrindo/fechando na mesma sessão
+            if (sessionStorage.getItem(sessionKey)) return;
+
+            try {
+                const prodRef = doc(db, "stores", STORE_ID, "product_analytics", productId);
+                await setDoc(prodRef, {
+                    name: productName,
+                    views: increment(1),
+                    lastView: Timestamp.now()
+                }, { merge: true });
+
+                sessionStorage.setItem(sessionKey, "1");
+            } catch (e) {
+                console.error("Erro ao registrar visualização do produto:", e);
+            }
+        }
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
         window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
