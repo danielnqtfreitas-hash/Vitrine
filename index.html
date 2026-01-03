@@ -773,41 +773,48 @@ function trackProductView(productId) {
 async function flushAnalyticsBuffer() {
     if (productViewBuffer.size === 0) return;
 
-    // 1. Cria o lote (Batch)
-    const batch = writeBatch(db); 
     const idsToSend = Array.from(productViewBuffer);
     productViewBuffer.clear();
 
-    console.log(`🚀 Preparando lote de ${idsToSend.length} registros...`);
+    // Este é o documento único que vai economizar suas escritas
+    const analyticsRef = doc(db, `stores/${STORE_ID}/analytics`, "product_views");
+    
+    const updates = {
+        lastUpdate: Timestamp.now()
+    };
 
     idsToSend.forEach(id => {
-        const p = allProducts.find(x => x.id === id);
-        const ref = doc(db, `stores/${STORE_ID}/product_analytics`, id);
+        // Dot notation para atualizar o campo específico dentro do objeto 'stats'
+        updates[`stats.${id}.views`] = increment(1);
         
-        // 2. Adiciona a instrução de "set" ao lote
-        batch.set(ref, {
-            name: p ? p.name : "Produto",
-            views: increment(1),
-            lastView: Timestamp.now()
-        }, { merge: true });
+        const p = allProducts.find(x => x.id === id);
+        if (p) {
+            updates[`stats.${id}.name`] = p.name;
+        }
     });
 
     try {
-        // 3. Envia o lote inteiro de uma vez só
-        await batch.commit(); 
-        console.log("✅ Lote sincronizado com sucesso via WriteBatch!");
+        // Tentamos atualizar o documento existente
+        await updateDoc(analyticsRef, updates);
+        console.log("✅ Visualizações agregadas com sucesso!");
     } catch (e) {
-        console.error("❌ Erro ao processar WriteBatch:", e);
-        // Opcional: Se falhar, você pode re-adicionar os IDs ao buffer para tentar depois
+        // Se o documento não existir (erro 404), nós o criamos do zero
+        if (e.code === 'not-found') {
+            await setDoc(analyticsRef, updates);
+            console.log("✅ Documento de analytics criado e iniciado.");
+        } else {
+            console.error("❌ Erro ao processar analytics:", e);
+        }
     }
 }
-   window.addEventListener('beforeunload', () => {
+        
+   // SEGURO: Envia os dados se o usuário fechar a página antes dos 2 minutos
+window.addEventListener('beforeunload', () => {
     if (productViewBuffer.size > 0) {
-        // Nota: Operações assíncronas no beforeunload são restritas em alguns browsers,
-        // mas o batch.commit() do Firebase costuma ser rápido o suficiente.
+        // Tentativa de salvar os dados pendentes antes de fechar a aba
         flushAnalyticsBuffer();
     }
-});     
+});
         
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
