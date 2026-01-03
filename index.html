@@ -407,6 +407,7 @@
         let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
         let productViewBuffer = new Set(); 
         let analyticsTimer = null;
+        let analyticsTimer = null;
         let deliveryAreas=[], currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
         let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
@@ -588,22 +589,10 @@
         return true;
     });
 
-    // 2. RASTREADOR DE BUSCAS SEM RESULTADO
+        // 2. RASTREADOR DE BUSCAS SEM RESULTADO
     if (filtered.length === 0 && filters.search.trim().length > 2) {
-        const termoBusca = filters.search.toLowerCase().trim();
-        clearTimeout(window.failedSearchTimer);
-        window.failedSearchTimer = setTimeout(async () => {
-            try {
-                const searchRef = doc(db, `stores/${STORE_ID}/failed_searches`, termoBusca);
-                await setDoc(searchRef, {
-                    term: termoBusca,
-                    count: increment(1),
-                    lastDate: Timestamp.now()
-                }, { merge: true });
-            } catch (e) {
-                console.error("Erro ao registrar busca falha:", e);
-            }
-        }, 1500); 
+        // Envia para o "balde" inteligente em vez de salvar direto no banco
+        trackFailedSearch(filters.search);
     }
     // ---------------------------------------------------
 
@@ -758,21 +747,26 @@
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
 
 function trackProductView(productId) {
-    // 1. Adiciona o ID ao "balde" (Set evita duplicados no mesmo lote)
     productViewBuffer.add(productId);
+    startAnalyticsTimer();
+}
 
-    // 2. Se o cronômetro não estiver rodando, inicia a contagem de 2 minutos
+function trackFailedSearch(term) {
+    failedSearchBuffer.add(term.toLowerCase().trim());
+    startAnalyticsTimer();
+}
+
+function startAnalyticsTimer() {
     if (!analyticsTimer) {
         analyticsTimer = setTimeout(async () => {
             await flushAnalyticsBuffer();
-            analyticsTimer = null; // Reseta para permitir um novo lote depois
-        }, 120000); // 120.000ms = 2 minutos
+            analyticsTimer = null;
+        }, 120000); // 2 minutos
     }
 }
 
 async function flushAnalyticsBuffer() {
     if (productViewBuffer.size === 0 && failedSearchBuffer.size === 0) return;
-
     const analyticsRef = doc(db, `stores/${STORE_ID}/analytics`, "product_views");
     const updates = { lastUpdate: Timestamp.now() };
 
@@ -791,21 +785,18 @@ async function flushAnalyticsBuffer() {
     try {
         await updateDoc(analyticsRef, updates);
     } catch (e) {
-        if (e.code === 'not-found') {
-            await setDoc(analyticsRef, updates);
-        }
+        if (e.code === 'not-found') await setDoc(analyticsRef, updates);
     }
 }
-        
-   // SEGURO: Envia os dados se o usuário fechar a página antes dos 2 minutos
+
+// SEGURO: Envia os dados se o usuário fechar a página antes dos 2 minutos
 window.addEventListener('beforeunload', () => {
-    if (productViewBuffer.size > 0) {
-        // Tentativa de salvar os dados pendentes antes de fechar a aba
+    if (productViewBuffer.size > 0 || failedSearchBuffer.size > 0) {
         flushAnalyticsBuffer();
     }
 });
-        
-        // --- UTILS ---
+
+// --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
         window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
         window.toggleFavorite = (id) => { 
