@@ -391,7 +391,8 @@
             increment, 
             setDoc, 
             updateDoc, 
-            Timestamp 
+            Timestamp,
+            writeBatch
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
                 // --- CONFIGURAÇÃO & ESTADO ---
@@ -772,15 +773,19 @@ function trackProductView(productId) {
 async function flushAnalyticsBuffer() {
     if (productViewBuffer.size === 0) return;
 
+    // 1. Cria o lote (Batch)
+    const batch = writeBatch(db); 
     const idsToSend = Array.from(productViewBuffer);
-    productViewBuffer.clear(); // Limpa o balde antes de enviar
+    productViewBuffer.clear();
 
-    console.log("Sincronizando visualizações pendentes...");
+    console.log(`🚀 Preparando lote de ${idsToSend.length} registros...`);
 
-    // Envia todas as atualizações acumuladas de uma vez
-    const promises = idsToSend.map(id => {
+    idsToSend.forEach(id => {
         const p = allProducts.find(x => x.id === id);
-        return setDoc(doc(db, `stores/${STORE_ID}/product_analytics`, id), {
+        const ref = doc(db, `stores/${STORE_ID}/product_analytics`, id);
+        
+        // 2. Adiciona a instrução de "set" ao lote
+        batch.set(ref, {
             name: p ? p.name : "Produto",
             views: increment(1),
             lastView: Timestamp.now()
@@ -788,11 +793,15 @@ async function flushAnalyticsBuffer() {
     });
 
     try {
-        await Promise.all(promises);
+        // 3. Envia o lote inteiro de uma vez só
+        await batch.commit(); 
+        console.log("✅ Lote sincronizado com sucesso via WriteBatch!");
     } catch (e) {
-        console.error("Erro ao salvar lote de visualizações:", e);
+        console.error("❌ Erro ao processar WriteBatch:", e);
+        // Opcional: Se falhar, você pode re-adicionar os IDs ao buffer para tentar depois
     }
-        }
+}
+        
         
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
