@@ -471,73 +471,83 @@
             setupSwipes();
         });
 
-        async function initFlow() {
-    try {
-        // 1. BUSCA A CONFIGURAÇÃO DIRETO DO SERVIDOR (Ignora cache para checar versão)
-        const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-        const configSnap = await getDocFromServer(configRef); 
-        const config = configSnap.data();
+                async function initFlow() {
+            try {
+                // 1. BUSCA A CONFIGURAÇÃO DIRETO DO SERVIDOR
+                const configRef = doc(db, `stores/${STORE_ID}/config/store`);
+                const configSnap = await getDocFromServer(configRef); 
+                
+                if(!configSnap.exists()) {
+                    showFatalError("Loja não encontrada", "Verifique o ID da loja na URL.");
+                    return;
+                }
 
-        if(!config) throw new Error("Loja inexistente");
-        if(config.subscriptionStatus === 'suspended') { showFatalError("Indisponível", "Assinatura suspensa."); return; }
+                const config = configSnap.data();
+
+                if(config.subscriptionStatus === 'suspended') { 
+                    showFatalError("Indisponível", "Assinatura suspensa."); 
+                    return; 
+                }
+                
+                applyStoreConfig(config);
+                
+                // 2. GERENCIAMENTO DE CACHE LOCAL
+                const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
+                const cachedRaw = localStorage.getItem(CACHE_KEY);
+                const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
+                
+                // 3. COMPARAÇÃO DE SEGURANÇA (Adicionado fallback para lastUpdate)
+                const serverLastUpdate = config.lastUpdate || "initial";
+                const needsUpdate = !cached || serverLastUpdate !== cached.lastUpdate;
+
+                if (needsUpdate) {
+                    console.log("🔄 Sincronizando dados novos...");
+                    
+                    const [products, banners] = await Promise.all([
+                        DataService.getProducts(true), 
+                        DataService.getBanners(true)
+                    ]);
+                    
+                    const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
+                    
+                    allProducts = products;
+                    categories = cats;
+                    
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({
+                        products, 
+                        banners: banners || [], 
+                        categories: cats, 
+                        lastUpdate: serverLastUpdate,
+                        ts: Date.now()
+                    }));
+                    
+                    renderHeroCarousel(banners || []);
+                } else {
+                    console.log("✅ Carregado do cache.");
+                    allProducts = cached.products;
+                    categories = cached.categories;
+                    renderHeroCarousel(cached.banners || []);
+                }
+
+                // Renderização da UI
+                renderCategoryTabs();
+                renderCatalog();
+                populateFilterOptions();
+                registerVisit();
+                updateFavoritesUI();
+                
+                // FINALIZA O LOADER
+                hideLoader();
+
+            } catch (error) {
+                console.error("Erro crítico na sincronização:", error);
+                // Força a saída do loader para mostrar a mensagem de erro ao usuário
+                hideLoader(); 
+                showFatalError("Erro de Conexão", "Não foi possível carregar os dados. Verifique sua internet ou as permissões do Firebase.");
+            }
+                }
         
-        applyStoreConfig(config);
         
-        // 2. GERENCIAMENTO DE CACHE LOCAL
-        const CACHE_KEY = `app_cache_v4_${STORE_ID}`; // Versão v4 para invalidar lixos anteriores
-        const cachedRaw = localStorage.getItem(CACHE_KEY);
-        const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
-        
-        // 3. COMPARAÇÃO DE SEGURANÇA
-        // Se não tem cache OU se o lastUpdate do servidor é DIFERENTE do cache, atualizamos tudo.
-        const needsUpdate = !cached || config.lastUpdate !== cached.lastUpdate;
-
-        if (needsUpdate) {
-            console.log("🔄 Novidades detectadas no servidor. Sincronizando dados novos...");
-            
-            // Limpa o cache antigo antes de baixar o novo para evitar conflitos
-            localStorage.removeItem(CACHE_KEY);
-
-            // Buscamos os produtos novos direto do SERVIDOR (forceServer = true)
-            const [products, banners] = await Promise.all([
-                DataService.getProducts(true), 
-                DataService.getBanners(true)
-            ]);
-            
-            const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
-            
-            allProducts = products;
-            categories = cats;
-            
-            // Grava o novo Cache com o lastUpdate exato do servidor
-            localStorage.setItem(CACHE_KEY, JSON.stringify({
-                products, 
-                banners, 
-                categories: cats, 
-                lastUpdate: config.lastUpdate, // Guardamos o selo de tempo para a próxima comparação
-                ts: Date.now()
-            }));
-            
-            renderHeroCarousel(banners);
-        } else {
-            console.log("✅ Vitrine carregada do cache local (Versão atualizada).");
-            allProducts = cached.products;
-            categories = cached.categories;
-            renderHeroCarousel(cached.banners);
-        }
-
-        renderCategoryTabs();
-        renderCatalog();
-        populateFilterOptions();
-        registerVisit();
-        hideLoader();
-        updateFavoritesUI();
-    } catch (error) {
-        console.error("Erro crítico na sincronização:", error);
-        showFatalError("Erro de Conexão", "Não foi possível sincronizar os dados. Tente atualizar a página.");
-    }
-}
-
         // --- RENDERERS ---
         window.renderCatalog = () => {
     const container = document.getElementById('catalogContainer'), 
