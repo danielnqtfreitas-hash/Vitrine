@@ -546,31 +546,21 @@
     const container = document.getElementById('catalogContainer'), 
           empty = document.getElementById('emptyState');
           
-    // Filtra a lista original baseada nas escolhas do usuário
+    // Lógica de filtragem (Mantém a tua atual)
     let filtered = allProducts.filter(p => {
-        // Filtro de Favoritos
         if(isFavoritesView) return favorites.includes(p.id);
-        
-        // 1. Busca por texto (Nome ou SKU)
         if(filters.search) {
             const searchLower = filters.search.toLowerCase();
             const nameMatch = p.name.toLowerCase().includes(searchLower);
             const skuMatch = p.sku && p.sku.toLowerCase().includes(searchLower);
             if (!nameMatch && !skuMatch) return false;
         }
-        
-        // 2. Filtro de Categoria e Ofertas
         if(filters.category === 'offers') { 
             if(!(p.promoValue && p.promoValue < p.value)) return false; 
         } else if(filters.category && p.category !== filters.category) return false;
-
-        // 3. Filtro de Preço Máximo
         const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
         if(filters.maxPrice && price > filters.maxPrice) return false;
-
-        // 4. INTELIGÊNCIA DE VARIAÇÕES (Tamanho e Cor)
         if(filters.sizes.length > 0 || filters.colors.length > 0) {
-            // Se o produto tem matriz de variações, checa a combinação exata
             if (p.variations && p.variations.length > 0) {
                 const hasMatch = p.variations.some(v => {
                     if (!v.active) return false;
@@ -580,21 +570,42 @@
                 });
                 if (!hasMatch) return false;
             } else {
-                // Se for um produto simples sem variações cadastradas, checa as tags básicas
                 const sizeMatchBase = filters.sizes.length === 0 || p.sizes?.some(s => filters.sizes.includes(s));
                 const colorMatchBase = filters.colors.length === 0 || p.colors?.some(c => filters.colors.includes(c));
                 if (!sizeMatchBase || !colorMatchBase) return false;
             }
         }
-        
         return true;
     });
+
+    // --- NOVIDADE: RASTREADOR DE BUSCAS SEM RESULTADO ---
+    if (filtered.length === 0 && filters.search.trim().length > 2) {
+        const termoBusca = filters.search.toLowerCase().trim();
+        
+        // Evita gravar cada letra enquanto o utilizador escreve (Debounce de 1.5s)
+        clearTimeout(window.failedSearchTimer);
+        window.failedSearchTimer = setTimeout(async () => {
+            try {
+                // Caminho: lojas -> ID_DA_LOJA -> failed_searches -> termo_pesquisado
+                const searchRef = doc(db, `stores/${STORE_ID}/failed_searches`, termoBusca);
+                await setDoc(searchRef, {
+                    term: termoBusca,
+                    count: increment(1),
+                    lastDate: Timestamp.now()
+                }, { merge: true });
+                console.log("🔍 Busca falha registada:", termoBusca);
+            } catch (e) {
+                console.error("Erro ao gravar busca falha:", e);
+            }
+        }, 1500); 
+    }
+    // ---------------------------------------------------
 
     container.innerHTML = '';
     if(!filtered.length) { empty.classList.remove('hidden'); return; }
     empty.classList.add('hidden');
 
-    // Agrupamento por Categoria para exibição
+    // Agrupamento por Categoria (Mantém o teu código)
     const groups = {};
     if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice) {
         groups['Resultados Encontrados'] = filtered;
@@ -613,7 +624,7 @@
         container.appendChild(section);
     });
     lucide.createIcons();
-}
+        }
 
 
         function mkProductCard(p) {
