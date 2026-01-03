@@ -316,14 +316,36 @@
             <div id="cartList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"></div>
             <div class="p-5 border-t bg-white space-y-4">
                 <div id="cartEmptyMsg" class="hidden text-center text-slate-400 py-6">Sua sacola está vazia.</div>
-                <div id="cartSummary" class="space-y-2">
-                    <div class="flex justify-between items-center bg-slate-50 p-3 rounded-lg border text-sm"><span class="font-bold flex items-center gap-1"><i data-lucide="truck" class="w-4 h-4"></i> Entrega</span><select id="cartDeliverySelect" onchange="updateCartTotals()" class="bg-transparent font-bold outline-none text-right cursor-pointer"></select></div>
-                    <div class="flex justify-between text-lg font-bold text-slate-900 pt-3 border-t"><span>Total</span><span id="cartFinalTotal"></span></div>
-                    <button onclick="checkoutWhatsApp()" class="w-full bg-primary text-white font-bold py-4 rounded-xl shadow-lg mt-4 active-scale flex justify-center items-center gap-2">Finalizar Pedido <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                </div>
-            </div>
+            <div id="cartSummary" class="space-y-4">
+    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados para Entrega</h4>
+        
+        <input type="text" id="checkName" placeholder="Teu Nome Completo" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+        
+        <div class="flex gap-2">
+            <select id="checkPayment" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
+                <option value="" disabled selected>Pagamento</option>
+                <option value="Pix">Pix</option>
+                <option value="Cartão">Cartão</option>
+                <option value="Dinheiro">Dinheiro</option>
+            </select>
+            <select id="cartDeliverySelect" onchange="updateCartTotals()" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
+                </select>
         </div>
+
+        <textarea id="checkAddress" rows="2" placeholder="Morada completa (Rua, Nº, Bairro)" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"></textarea>
     </div>
+
+    <div class="px-2">
+        <div class="flex justify-between text-xl font-display font-black text-slate-900 pt-2">
+            <span>Total</span>
+            <span id="cartFinalTotal">R$ 0,00</span>
+        </div>
+        <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg mt-4 active-scale flex justify-center items-center gap-3 transition-all">
+            Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
+        </button>
+    </div>
+            </div>
 
     <!-- FILTRO DRAWER -->
     <div id="filterModal" class="fixed inset-0 z-[70] hidden">
@@ -820,36 +842,54 @@
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
-        window.checkoutWhatsApp = () => { 
-            if(!cart.length) return; 
-            const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
-            const deliveryMethod = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
-            const total = document.getElementById('cartFinalTotal').textContent;
+        window.checkoutWhatsApp = async () => { 
+    if(!cart.length) return; 
 
-            let msg = `*${storeName}* 🛍️\n`;
-            msg += `_Recibo de Pedido Online_\n\n`;
-            
-            cart.forEach((item, index) => {
-                const subtotal = (item.price * item.q).toFixed(2).replace('.', ',');
-                const unitPrice = item.price.toFixed(2).replace('.', ',');
-                const variants = [item.v.size, item.v.color].filter(Boolean);
-                const variantText = variants.length ? `📏 Tam: ${item.v.size || '-'} | 🎨 Cor: ${item.v.color || '-'}` : '';
+    // 1. Captura de Dados
+    const nome = document.getElementById('checkName').value.trim();
+    const pagamento = document.getElementById('checkPayment').value;
+    const morada = document.getElementById('checkAddress').value.trim();
+    const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
+    const total = document.getElementById('cartFinalTotal').textContent;
 
-                msg += `${index + 1}. *${item.name.toUpperCase()}*\n`;
-                msg += `   └ 🏷️ Código: \`${item.sku}\`\n`;
-                if(variantText) msg += `   └ ${variantText}\n`;
-                msg += `   ${item.q}x R$ ${unitPrice} = *R$ ${subtotal}*\n\n`;
-            });
+    // 2. Validação (Impede mensagens vazias)
+    if(!nome || !pagamento || !morada) {
+        showToast("⚠️ Por favor, preenche todos os dados de entrega.");
+        return;
+    }
 
-            msg += `--------------------------------\n`;
-            msg += `🚚 *Entrega:* ${deliveryMethod}\n`;
-            msg += `💰 *TOTAL GERAL: ${total}* ✅\n`;
-            msg += `--------------------------------\n\n`;
-            msg += `_Aguardando confirmação para prosseguir._`;
+    // 3. Métrica de Conversão (Regista que o cliente tentou comprar)
+    const todayId = new Date().toLocaleDateString('en-CA');
+    const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
+    await setDoc(historyRef, { checkoutClicks: increment(1) }, { merge: true });
 
-            window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
-        };
+    // 4. Montagem da Mensagem Profissional
+    const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
+    let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+    msg += `👤 *CLIENTE:* ${nome}\n`;
+    msg += `💳 *PAGAMENTO:* ${pagamento}\n`;
+    msg += `📍 *MORADA:* ${morada}\n`;
+    msg += `🚚 *ENTREGA:* ${freteTexto}\n\n`;
+    
+    msg += `📦 *ITENS DO PEDIDO:*\n`;
+    cart.forEach((item, index) => {
+        const sub = (item.price * item.q).toFixed(2).replace('.', ',');
+        const vars = [item.v.size, item.v.color].filter(Boolean).join(' / ');
+        msg += `${index + 1}. *${item.q}x ${item.name}*\n`;
+        if(vars) msg += `   └ _Var: ${vars}_\n`;
+        msg += `   └ Valor: R$ ${sub}\n\n`;
+    });
 
+    msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `💰 *VALOR TOTAL: ${total}*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+    msg += `_Pedido gerado via Vitrine Pro_`;
+
+    // 5. Redirecionamento
+    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
+};
+                                            
         function applyStoreConfig(d) {
             whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"");
             if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
