@@ -746,66 +746,70 @@
             updateModalHeartBtn(); 
             document.getElementById('detailAddBtn').onclick=()=>{ addToCart(p,currentDetailQty,currentDetailSelection); closeModalDetails(); }; 
             renderRelatedProducts(p);
-            document.getElementById('modalDetails').classList.remove('hidden'); 
+                       document.getElementById('modalDetails').classList.remove('hidden'); 
             lucide.createIcons();
-        };
+        }; 
 
-        // --- SISTEMA DE CACHE E SINCRONIZAÇÃO DE ANALYTICS (PRODUTOS) ---
-
-const VIEW_CACHE_KEY = `pending_views_${STORE_ID}`;
-
-});
         // --- SISTEMA DE CACHE E SINCRONIZAÇÃO DE ANALYTICS ---
 
-async function trackProductView(productId, productName) {
-    const sessionKey = `view_${productId}`;
-    if (sessionStorage.getItem(sessionKey)) return;
+        async function trackProductView(productId, productName) {
+            const sessionKey = `view_${productId}`;
+            if (sessionStorage.getItem(sessionKey)) return;
 
-    const cacheKey = `pending_views_${STORE_ID}`;
-    let cachedViews = JSON.parse(localStorage.getItem(cacheKey) || "{}");
+            // Criamos a chave com o STORE_ID atual
+            const cacheKey = `pending_views_${STORE_ID}`;
+            let cachedViews = JSON.parse(localStorage.getItem(cacheKey) || "{}");
 
-    if (!cachedViews[productId]) {
-        cachedViews[productId] = { name: productName, count: 0 };
-    }
-    
-    cachedViews[productId].count += 1;
-    localStorage.setItem(cacheKey, JSON.stringify(cachedViews));
-    sessionStorage.setItem(sessionKey, "1");
-}
+            if (!cachedViews[productId]) {
+                cachedViews[productId] = { name: productName, count: 0 };
+            }
+            
+            cachedViews[productId].count += 1;
+            
+            localStorage.setItem(cacheKey, JSON.stringify(cachedViews));
+            sessionStorage.setItem(sessionKey, "1");
+            console.log(`Pendente no cache: ${productName}`);
+        }
 
-async function syncViewsToFirebase() {
-    if (!STORE_ID) return;
-    const cacheKey = `pending_views_${STORE_ID}`;
-    const cachedRaw = localStorage.getItem(cacheKey);
-    if (!cachedRaw) return;
+        async function syncViewsToFirebase() {
+            if (!STORE_ID || STORE_ID === 'admin') return;
+            
+            const cacheKey = `pending_views_${STORE_ID}`;
+            const cachedRaw = localStorage.getItem(cacheKey);
+            if (!cachedRaw) return;
 
-    const cachedViews = JSON.parse(cachedRaw);
-    const productIds = Object.keys(cachedViews);
-    if (productIds.length === 0) return;
+            const cachedViews = JSON.parse(cachedRaw);
+            const productIds = Object.keys(cachedViews);
+            if (productIds.length === 0) return;
 
-    const batch = writeBatch(db);
-    productIds.forEach(id => {
-        const data = cachedViews[id];
-        const docRef = doc(db, "stores", STORE_ID, "product_analytics", id);
-        batch.set(docRef, {
-            name: data.name,
-            views: increment(data.count),
-            lastView: Timestamp.now()
-        }, { merge: true });
-    });
+            const batch = writeBatch(db);
 
-    try {
-        await batch.commit();
-        localStorage.removeItem(cacheKey);
-        console.log("Analytics: Sincronizado com sucesso.");
-    } catch (e) {
-        console.error("Analytics: Erro na sincronização", e);
-    }
-}
+            productIds.forEach(id => {
+                const data = cachedViews[id];
+                const docRef = doc(db, "stores", STORE_ID, "product_analytics", id);
+                
+                batch.set(docRef, {
+                    name: data.name,
+                    views: increment(data.count),
+                    lastView: Timestamp.now()
+                }, { merge: true });
+            });
 
-// Configura os disparos automáticos
-setInterval(syncViewsToFirebase, 120000); // 2 minutos
-window.addEventListener('load', () => setTimeout(syncViewsToFirebase, 5000));
+            try {
+                await batch.commit();
+                localStorage.removeItem(cacheKey);
+                console.log("Firebase atualizado com sucesso!");
+            } catch (e) {
+                console.error("Erro ao sincronizar analytics:", e);
+            }
+        }
+
+        // Configura os tempos de execução
+        setInterval(syncViewsToFirebase, 120000); // Tenta enviar a cada 2 minutos
+
+        window.addEventListener('load', () => {
+            setTimeout(syncViewsToFirebase, 5000); // Tenta enviar pendências antigas 5s após abrir
+        });
 
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
