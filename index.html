@@ -801,7 +801,13 @@ async function flushAnalyticsBuffer() {
         // Opcional: Se falhar, você pode re-adicionar os IDs ao buffer para tentar depois
     }
 }
-        
+   window.addEventListener('beforeunload', () => {
+    if (productViewBuffer.size > 0) {
+        // Nota: Operações assíncronas no beforeunload são restritas em alguns browsers,
+        // mas o batch.commit() do Firebase costuma ser rápido o suficiente.
+        flushAnalyticsBuffer();
+    }
+});     
         
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
