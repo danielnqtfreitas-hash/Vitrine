@@ -754,39 +754,39 @@
 
 const VIEW_CACHE_KEY = `pending_views_${STORE_ID}`;
 
-// 1. REGISTRA A VIEW NO CACHE LOCAL (CHAMADA NO MODAL)
+});
+        // --- SISTEMA DE CACHE E SINCRONIZAÇÃO DE ANALYTICS ---
+
 async function trackProductView(productId, productName) {
     const sessionKey = `view_${productId}`;
     if (sessionStorage.getItem(sessionKey)) return;
 
-    let cachedViews = JSON.parse(localStorage.getItem(VIEW_CACHE_KEY) || "{}");
+    const cacheKey = `pending_views_${STORE_ID}`;
+    let cachedViews = JSON.parse(localStorage.getItem(cacheKey) || "{}");
 
     if (!cachedViews[productId]) {
         cachedViews[productId] = { name: productName, count: 0 };
     }
     
     cachedViews[productId].count += 1;
-    
-    localStorage.setItem(VIEW_CACHE_KEY, JSON.stringify(cachedViews));
+    localStorage.setItem(cacheKey, JSON.stringify(cachedViews));
     sessionStorage.setItem(sessionKey, "1");
 }
 
-// 2. ENVIA OS DADOS ACUMULADOS PARA O FIREBASE
 async function syncViewsToFirebase() {
-    const cachedRaw = localStorage.getItem(VIEW_CACHE_KEY);
+    if (!STORE_ID) return;
+    const cacheKey = `pending_views_${STORE_ID}`;
+    const cachedRaw = localStorage.getItem(cacheKey);
     if (!cachedRaw) return;
 
     const cachedViews = JSON.parse(cachedRaw);
     const productIds = Object.keys(cachedViews);
-    
     if (productIds.length === 0) return;
 
     const batch = writeBatch(db);
-
     productIds.forEach(id => {
         const data = cachedViews[id];
         const docRef = doc(db, "stores", STORE_ID, "product_analytics", id);
-        
         batch.set(docRef, {
             name: data.name,
             views: increment(data.count),
@@ -796,19 +796,17 @@ async function syncViewsToFirebase() {
 
     try {
         await batch.commit();
-        localStorage.removeItem(VIEW_CACHE_KEY);
-        console.log("Analytics sincronizado.");
+        localStorage.removeItem(cacheKey);
+        console.log("Analytics: Sincronizado com sucesso.");
     } catch (e) {
-        console.error("Erro na sincronização:", e);
+        console.error("Analytics: Erro na sincronização", e);
     }
 }
 
-// 3. AGENDAMENTO AUTOMÁTICO
-setInterval(syncViewsToFirebase, 120000); // Executa a cada 2 minutos
+// Configura os disparos automáticos
+setInterval(syncViewsToFirebase, 120000); // 2 minutos
+window.addEventListener('load', () => setTimeout(syncViewsToFirebase, 5000));
 
-window.addEventListener('load', () => {
-    setTimeout(syncViewsToFirebase, 5000); // Tenta enviar pendências 5s após abrir o site
-});
         // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
         window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
