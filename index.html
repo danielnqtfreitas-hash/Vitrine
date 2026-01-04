@@ -1080,7 +1080,6 @@ window.closeImageZoom = () => {
 
         window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
         
-                
         function renderHeroCarousel(banners) {
     const c = document.getElementById('heroGridContainer'); 
     c.innerHTML = '';
@@ -1089,48 +1088,42 @@ window.closeImageZoom = () => {
     banners.forEach(b => {
         const div = document.createElement('div');
         
-        // LARGURA FIXA: 92vw (sobra 8% para o próximo)
-        // ALTURA: h-full para preencher o container pai
-        const layoutStyle = b.imageUrl ? 'justify-between text-left' : 'justify-center text-center';
-        
-        div.className = `hero-card w-[92vw] md:w-[500px] h-full rounded-[2.5rem] p-6 md:p-10 flex items-center ${layoutStyle} relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-xl transition-all duration-500 border border-white/10 group ml-2 first:ml-4 last:mr-4`;
+        // W-92vw para os 8% de sobra lateral
+        // H-56 (224px) para ser mais alto e imponente
+        div.className = `hero-card w-[92vw] md:w-[500px] h-56 md:h-64 rounded-[2.5rem] p-7 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-xl transition-all duration-500 border border-white/10 group ml-2 first:ml-4 last:mr-4`;
         
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
 
         div.onclick = () => { filters.category = b.target; renderCategoryTabs(); renderCatalog(); };
         
         div.innerHTML = `
-            <div class="relative z-10 ${b.imageUrl ? 'max-w-[60%]' : 'w-full'} flex flex-col items-${b.imageUrl ? 'start' : 'center'} gap-2 overflow-hidden">
-                <span class="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[8px] font-black uppercase tracking-[0.15em] shrink-0">
+            <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full">
+                <span class="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[8px] font-black uppercase tracking-widest mb-1">
                     ${b.tag || 'Destaque'}
                 </span>
                 
-                <h3 class="font-display font-bold text-2xl md:text-3xl leading-[1.1] uppercase tracking-tighter drop-shadow-md line-clamp-2">
+                <h3 class="font-display font-bold text-3xl md:text-4xl leading-[0.95] uppercase tracking-tighter drop-shadow-md line-clamp-2">
                     ${b.title || 'Novidade'}
                 </h3>
                 
-                ${b.subtitle ? `<p class="text-[9px] md:text-xs opacity-70 font-medium leading-tight uppercase line-clamp-2">${b.subtitle}</p>` : ''}
+                ${b.subtitle ? `<p class="text-[10px] md:text-xs opacity-80 font-medium leading-tight uppercase tracking-wide mt-1">${b.subtitle}</p>` : ''}
                 
-                <div class="mt-auto pt-3">
-                    <div class="px-5 py-2 border border-white/30 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-all duration-300 inline-block">
-                        ${b.btnText || 'Ver Mais'}
-                    </div>
+                <div class="mt-4 px-6 py-2 bg-white/10 border border-white/30 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-all duration-300">
+                    ${b.btnText || 'Ver Agora'}
                 </div>
             </div>
             
             ${b.imageUrl ? `
-                <div class="w-24 h-24 md:w-36 md:h-36 rounded-[1.8rem] overflow-hidden border border-white/20 shadow-2xl shrink-0 rotate-2 group-hover:rotate-0 transition-transform duration-700">
-                    <img src="${b.imageUrl}" class="w-full h-full object-cover">
+                <div class="w-36 h-36 md:w-44 md:h-44 rounded-[2.2rem] overflow-hidden border-2 border-white/20 shadow-2xl shrink-0 rotate-2 group-hover:rotate-0 transition-transform duration-700 ml-2">
+                    <img src="${b.imageUrl}" class="w-full h-full object-cover scale-110">
                 </div>
             ` : ''}
 
-            <div class="absolute -top-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-[60px]"></div>
+            <div class="absolute -top-12 -left-12 w-40 h-40 bg-white/10 rounded-full blur-[80px]"></div>
         `;
         c.appendChild(div);
     });
         }
-        
-        
         
 
         function renderCategoryTabs() {
