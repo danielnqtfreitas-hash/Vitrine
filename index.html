@@ -553,73 +553,76 @@
         
         
         // --- RENDERERS ---
-        window.renderCatalog = () => {
-    const container = document.getElementById('catalogContainer'), 
-          empty = document.getElementById('emptyState');
-          
-        // 1. Lógica de filtragem dos produtos
-    let filtered = allProducts.filter(p => {
-        if(isFavoritesView) return favorites.includes(p.id);
-        if(filters.search) {
-            const searchLower = filters.search.toLowerCase();
-            const nameMatch = p.name.toLowerCase().includes(searchLower);
-            const skuMatch = p.sku && p.sku.toLowerCase().includes(searchLower);
-            if (!nameMatch && !skuMatch) return false;
-        }
-        if(filters.category === 'offers') { 
-            if(!(p.promoValue && p.promoValue < p.value)) return false; 
-        } else if(filters.category && p.category !== filters.category) return false;
-        const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-        if(filters.maxPrice && price > filters.maxPrice) return false;
-        if(filters.sizes.length > 0 || filters.colors.length > 0) {
-            if (p.variations && p.variations.length > 0) {
-                const hasMatch = p.variations.some(v => {
-                    if (!v.active) return false;
-                    const sizeMatch = filters.sizes.length === 0 || filters.sizes.includes(v.size);
-                    const colorMatch = filters.colors.length === 0 || filters.colors.includes(v.color);
-                    return sizeMatch && colorMatch;
-                });
-                if (!hasMatch) return false;
-            } else {
-                const sizeMatchBase = filters.sizes.length === 0 || p.sizes?.some(s => filters.sizes.includes(s));
-                const colorMatchBase = filters.colors.length === 0 || p.colors?.some(c => filters.colors.includes(c));
-                if (!sizeMatchBase || !colorMatchBase) return false;
+                window.renderCatalog = () => {
+            const container = document.getElementById('catalogContainer'), 
+                  empty = document.getElementById('emptyState');
+            
+            empty.classList.add('hidden');
+            container.innerHTML = '';
+
+            let filtered = allProducts.filter(p => {
+                if(isFavoritesView) return favorites.includes(p.id);
+                if(filters.search) {
+                    const searchLower = filters.search.toLowerCase();
+                    const nameMatch = p.name.toLowerCase().includes(searchLower);
+                    const skuMatch = p.sku && p.sku.toLowerCase().includes(searchLower);
+                    if (!nameMatch && !skuMatch) return false;
+                }
+                if(filters.category === 'offers') { 
+                    if(!(p.promoValue && p.promoValue < p.value)) return false; 
+                } else if(filters.category && p.category !== filters.category) return false;
+                const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+                if(filters.maxPrice && price > filters.maxPrice) return false;
+                if(filters.sizes.length > 0 || filters.colors.length > 0) {
+                    if (p.variations && p.variations.length > 0) {
+                        const hasMatch = p.variations.some(v => {
+                            if (!v.active) return false;
+                            const sizeMatch = filters.sizes.length === 0 || filters.sizes.includes(v.size);
+                            const colorMatch = filters.colors.length === 0 || filters.colors.includes(v.color);
+                            return sizeMatch && colorMatch;
+                        });
+                        if (!hasMatch) return false;
+                    } else {
+                        const sizeMatchBase = filters.sizes.length === 0 || p.sizes?.some(s => filters.sizes.includes(s));
+                        const colorMatchBase = filters.colors.length === 0 || p.colors?.some(c => filters.colors.includes(c));
+                        if (!sizeMatchBase || !colorMatchBase) return false;
+                    }
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                empty.classList.remove('hidden');
+                if (filters.search.trim().length > 2) {
+                    trackFailedSearch(filters.search);
+                }
+                return;
             }
-        }
-        return true;
-    });
 
-        // 2. RASTREADOR DE BUSCAS SEM RESULTADO
-    if (filtered.length === 0 && filters.search.trim().length > 2) {
-        // Envia para o "balde" inteligente em vez de salvar direto no banco
-        trackFailedSearch(filters.search);
-    }
-    // ---------------------------------------------------
+            const groups = {};
+            if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice) {
+                groups['Resultados Encontrados'] = filtered;
+            } else {
+                filtered.forEach(p => { 
+                    const k = p.category || 'Geral'; 
+                    if(!groups[k]) groups[k]=[]; 
+                    groups[k].push(p); 
+                });
+            }
 
-    container.innerHTML = '';
-    if(!filtered.length) { empty.classList.remove('hidden'); return; }
-    empty.classList.add('hidden');
-
-    // Agrupamento por Categoria (Mantém o teu código)
-    const groups = {};
-    if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice) {
-        groups['Resultados Encontrados'] = filtered;
-    } else {
-        filtered.forEach(p => { const k = p.category || 'Geral'; if(!groups[k]) groups[k]=[]; groups[k].push(p); });
-    }
-
-    Object.keys(groups).sort().forEach(key => {
-        const section = document.createElement('section');
-        section.className = "animate-fade-in mb-8";
-        section.innerHTML = `<h3 class="font-bold text-slate-800 mb-4 px-1 text-lg flex items-center gap-2"><div class="w-1 h-5 bg-primary rounded-full"></div> ${key}</h3>`;
-        const grid = document.createElement('div');
-        grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5";
-        groups[key].forEach(p => grid.innerHTML += mkProductCard(p));
-        section.appendChild(grid); 
-        container.appendChild(section);
-    });
-    lucide.createIcons();
-        }
+            Object.keys(groups).sort().forEach(key => {
+                const section = document.createElement('section');
+                section.className = "animate-fade-in mb-8";
+                section.innerHTML = `<h3 class="font-bold text-slate-800 mb-4 px-1 text-lg flex items-center gap-2"><div class="w-1 h-5 bg-primary rounded-full"></div> ${key}</h3>`;
+                const grid = document.createElement('div');
+                grid.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5";
+                groups[key].forEach(p => grid.innerHTML += mkProductCard(p));
+                section.appendChild(grid); 
+                container.appendChild(section);
+            });
+            
+            lucide.createIcons();
+        };
 
 
         function mkProductCard(p) {
