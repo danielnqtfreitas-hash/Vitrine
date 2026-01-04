@@ -1183,36 +1183,38 @@ window.closeImageZoom = () => {
         const div = document.createElement('div');
         div.className = `hero-card w-full flex-shrink-0 h-full rounded-3xl p-6 md:p-10 flex items-center relative overflow-hidden snap-center cursor-pointer text-white transition-all duration-500`;
         
-                // --- MODO DIAGNÓSTICO DO FILTRO ---
+                        // --- FILTRO COM AVISO NA TELA PARA CELULAR ---
         div.onclick = () => {
             const bannerCat = b.category || b.filter; 
-            
-            console.log("Categorias disponíveis na loja:", categories);
-            console.log("Valor que veio do Banner clicado:", bannerCat);
 
-            if (bannerCat) {
-                const categoriaReal = categories.find(c => 
-                    c.toLowerCase().trim() === bannerCat.toLowerCase().trim()
-                );
+            if (!bannerCat) {
+                showToast("⚠️ Este banner não tem categoria configurada no Firebase.");
+                return;
+            }
 
-                if (categoriaReal) {
-                    console.log("✅ Sucesso: Categoria correspondente encontrada:", categoriaReal);
-                    filters.category = categoriaReal;
-                } else {
-                    console.warn("❌ Erro: O banner enviou '" + bannerCat + "', mas essa categoria não existe nos produtos ativos.");
-                    filters.category = bannerCat;
-                }
+            // Tenta encontrar a categoria nos produtos da loja
+            const categoriaReal = categories.find(c => 
+                c.toLowerCase().trim() === bannerCat.toLowerCase().trim()
+            );
 
+            if (categoriaReal) {
+                filters.category = categoriaReal;
                 isFavoritesView = false;
                 renderCategoryTabs();
                 renderCatalog();
-
+                
+                // Scroll suave para os produtos
                 const catContainer = document.getElementById('categoryContainer');
-                if(catContainer) {
-                    catContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
+                if(catContainer) catContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } else {
-                console.error("🚫 Este banner não tem nenhuma categoria configurada no Firebase.");
+                // Se não achou, avisa qual nome está vindo do banner
+                showToast("❌ Categoria '" + bannerCat + "' não encontrada nos produtos.");
+                
+                // Força o filtro mesmo assim para ver se algo aparece
+                filters.category = bannerCat;
+                isFavoritesView = false;
+                renderCategoryTabs();
+                renderCatalog();
             }
         };
                     
