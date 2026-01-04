@@ -344,41 +344,42 @@
     </div>
 
     <!-- MODAL: CARRINHO -->
-            <div id="modalCart" class="fixed inset-0 z-[60] hidden">
-        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeCartModal()"></div>
-        <div id="cartDrawer" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
-            <div class="p-5 border-b flex justify-between items-center"><h3 class="font-bold text-lg">Minha Sacola</h3><button onclick="closeCartModal()"><i data-lucide="x" class="w-6 h-6"></i></button></div>
-            <div id="cartList" class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50"></div>
-            <div class="p-5 border-t bg-white space-y-4">
-                <div id="cartEmptyMsg" class="hidden text-center text-slate-400 py-6">Sua sacola está vazia.</div>
-                <div id="cartSummary" class="space-y-4">
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados para Entrega</h4>
-                        <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                        <div class="flex gap-2">
-                            <select id="checkPayment" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
-                                <option value="" disabled selected>Pagamento</option>
-                                <option value="Pix">Pix</option>
-                                <option value="Cartão">Cartão</option>
-                                <option value="Dinheiro">Dinheiro</option>
-                            </select>
-                            <select id="cartDeliverySelect" onchange="updateCartTotals()" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
-                        </div>
-                        <textarea id="checkAddress" rows="2" placeholder="Endereço completo (Rua, Nº, Bairro)" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20"></textarea>
-                    </div>
-                    <div class="px-2">
-                        <div class="flex justify-between text-xl font-display font-black text-slate-900 pt-2">
-                            <span>Total</span>
-                            <span id="cartFinalTotal">R$ 0,00</span>
-                        </div>
-                        <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg mt-4 active-scale flex justify-center items-center gap-3 transition-all">
-                            Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <div id="cartSummary" class="space-y-4">
+    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-3">
+        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados para Entrega</h4>
+        
+        <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+        
+        <div class="flex gap-2">
+            <select id="checkPayment" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none">
+                <option value="" disabled selected>Pagamento</option>
+                <option value="Pix">Pix</option>
+                <option value="Cartão">Cartão</option>
+                <option value="Dinheiro">Dinheiro</option>
+            </select>
+            <select id="cartDeliverySelect" onchange="updateCartTotals()" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
         </div>
+
+        <input type="text" id="checkStreet" placeholder="Nome da Rua / Avenida" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+        
+        <div class="flex gap-2">
+            <input type="text" id="checkNumber" placeholder="Nº" class="w-20 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+            <input type="text" id="checkNeighborhood" placeholder="Bairro" class="flex-1 bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+        </div>
+        
+        <input type="text" id="checkReference" placeholder="Ponto de Referência (Ex: Próximo ao mercado)" class="w-full bg-white border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
     </div>
+
+    <div class="px-2">
+        <div class="flex justify-between text-xl font-display font-black text-slate-900 pt-2">
+            <span>Total</span>
+            <span id="cartFinalTotal">R$ 0,00</span>
+        </div>
+        <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg mt-4 active-scale flex justify-center items-center gap-3 transition-all">
+            Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
+        </button>
+    </div>
+            </div>
 
     <div id="filterModal" class="fixed inset-0 z-[70] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
@@ -929,31 +930,41 @@ window.addEventListener('beforeunload', () => {
         window.checkoutWhatsApp = async () => { 
     if(!cart.length) return; 
 
-    // 1. Captura de Dados
+    // 1. Captura dos novos campos individuais
     const nome = document.getElementById('checkName').value.trim();
     const pagamento = document.getElementById('checkPayment').value;
-    const morada = document.getElementById('checkAddress').value.trim();
+    const rua = document.getElementById('checkStreet').value.trim();
+    const numero = document.getElementById('checkNumber').value.trim();
+    const bairro = document.getElementById('checkNeighborhood').value.trim();
+    const referencia = document.getElementById('checkReference').value.trim();
+    
     const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
     const total = document.getElementById('cartFinalTotal').textContent;
 
-    // 2. Validação (Impede mensagens vazias)
-    if(!nome || !pagamento || !morada) {
-        showToast("⚠️ Por favor, preenche todos os dados de entrega.");
+    // 2. Validação (Exige tudo, exceto referência)
+    if(!nome || !pagamento || !rua || !numero || !bairro) {
+        showToast("⚠️ Por favor, preencha todos os campos obrigatórios de entrega.");
         return;
     }
 
-    // 3. Métrica de Conversão (Regista que o cliente tentou comprar)
+    // 3. Registro de métrica (Analytics)
     const todayId = new Date().toLocaleDateString('en-CA');
     const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
     await setDoc(historyRef, { checkoutClicks: increment(1) }, { merge: true });
 
-    // 4. Montagem da Mensagem Profissional
+    // 4. Montagem da Mensagem formatada
     const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
     let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
     msg += `👤 *CLIENTE:* ${nome}\n`;
     msg += `💳 *PAGAMENTO:* ${pagamento}\n`;
-    msg += `📍 *MORADA:* ${morada}\n`;
+    msg += `📍 *ENDEREÇO:* ${rua}, nº ${numero}\n`;
+    msg += `🏘️ *BAIRRO:* ${bairro}\n`;
+    
+    if(referencia) {
+        msg += `🔍 *REF:* ${referencia}\n`;
+    }
+    
     msg += `🚚 *ENTREGA:* ${freteTexto}\n\n`;
     
     msg += `📦 *ITENS DO PEDIDO:*\n`;
@@ -970,9 +981,10 @@ window.addEventListener('beforeunload', () => {
     msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
     msg += `_Pedido gerado via Vitrine Pro_`;
 
-    // 5. Redirecionamento
+    // 5. Envio para o WhatsApp
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
 };
+        
                                             
         function applyStoreConfig(d) {
             whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"");
