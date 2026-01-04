@@ -1107,12 +1107,9 @@ window.closeImageZoom = () => {
     if (!banners?.length) return;
 
     banners.forEach((b, index) => {
-        
-const div = document.createElement('div');
-// w-full faz o banner ocupar 100% do espaço interno (entre as margens de 4vw)
-// snap-center garante que ele pare no meio exato
-div.className = `hero-card w-full h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500`;
-        
+        const div = document.createElement('div');
+        // largura de 92vw para ocupar o espaço entre os paddings de 4vw
+        div.className = `hero-card w-[92vw] h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500`;
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         div.innerHTML = `
             <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full">
@@ -1130,8 +1127,13 @@ div.className = `hero-card w-full h-56 md:h-64 rounded-2xl p-8 flex items-center
     });
 
     container.onscroll = () => {
-        const itemWidth = container.querySelector('.hero-card').offsetWidth;
+        const item = container.querySelector('.hero-card');
+        if(!item) return;
+        
+        // Cálculo corrigido considerando o gap-8 (32px)
+        const itemWidth = item.offsetWidth + 32; 
         const scrollIndex = Math.round(container.scrollLeft / itemWidth);
+        
         Array.from(dotsContainer.children).forEach((dot, i) => {
             if (i === scrollIndex) {
                 dot.classList.add('w-6', 'bg-white');
@@ -1143,6 +1145,7 @@ div.className = `hero-card w-full h-56 md:h-64 rounded-2xl p-8 flex items-center
         });
     };
         }
+
 
         function renderCategoryTabs() {
             const c = document.getElementById('categoryContainer'); c.innerHTML = '';
