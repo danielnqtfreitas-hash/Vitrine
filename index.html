@@ -1167,7 +1167,8 @@ window.closeImageZoom = () => {
 
         window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
         
-    function renderHeroCarousel(banners) {
+    
+        function renderHeroCarousel(banners) {
     const container = document.getElementById('heroGridContainer');
     const dotsContainer = document.getElementById('carouselDots');
     if (!container || !dotsContainer) return;
@@ -1180,31 +1181,30 @@ window.closeImageZoom = () => {
         const div = document.createElement('div');
         div.className = `hero-card w-full flex-shrink-0 h-full rounded-3xl p-6 md:p-10 flex items-center relative overflow-hidden snap-center cursor-pointer text-white transition-all duration-500`;
         
-        // --- LÓGICA AUTOMÁTICA DE FILTRO ---
+        // --- LÓGICA DE FILTRO INTELIGENTE (MULTI-LOJA) ---
         div.onclick = () => {
-            // 1. Pega o valor que está no banner (seja ID ou Nome)
-            const bannerRef = b.category || b.categoryId; 
+            // O seu painel salva no campo 'target' (conforme vi no handleBannerSubmit)
+            const bannerRef = b.target || b.category; 
 
             if (bannerRef) {
-                // 2. Tenta encontrar um produto que tenha esse ID ou Nome para extrair a categoria correta
-                // Isso sincroniza automaticamente sem você precisar editar o Firebase
-                const produtoCorrespondente = allProducts.find(p => 
-                    (p.categoryId === bannerRef) || 
-                    (p.category === bannerRef)
-                );
+                // Se for 'offers', limpamos o filtro para mostrar tudo ou apenas promoções
+                if (bannerRef === 'offers') {
+                    filters.category = 'offers';
+                } else {
+                    // Tenta encontrar a categoria real na lista de categorias da loja
+                    const categoriaEncontrada = categories.find(c => 
+                        c.toLowerCase().trim() === bannerRef.toLowerCase().trim()
+                    );
+                    filters.category = categoriaEncontrada || bannerRef;
+                }
 
-                // 3. Define o filtro (Prioriza o nome real do produto encontrado)
-                filters.category = produtoCorrespondente ? produtoCorrespondente.category : bannerRef;
                 isFavoritesView = false;
-                
                 renderCategoryTabs();
                 renderCatalog();
 
-                // 4. Scroll suave
+                // Scroll suave até os produtos
                 const catContainer = document.getElementById('categoryContainer');
                 if(catContainer) catContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                
-                showToast("Categoria: " + (filters.category));
             }
         };
 
@@ -1231,8 +1231,8 @@ window.closeImageZoom = () => {
         dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
         dotsContainer.appendChild(dot);
     });
-        
 
+    // Lógica de atualização dos pontos (dots) ao rolar
     const updateDots = () => {
         const scrollIndex = Math.round(container.scrollLeft / (container.offsetWidth + 24));
         Array.from(dotsContainer.children).forEach((dot, i) => {
@@ -1245,9 +1245,9 @@ window.closeImageZoom = () => {
             }
         });
     };
-
     container.onscroll = updateDots;
 
+    // Auto-play do carrossel
     if (window.heroInterval) clearInterval(window.heroInterval);
     window.heroInterval = setInterval(() => {
         const gap = 24; 
@@ -1259,8 +1259,7 @@ window.closeImageZoom = () => {
             container.scrollBy({ left: step, behavior: 'smooth' });
         }
     }, 4000);
-        }
-        
+}
 
         function renderCategoryTabs() {
             const c = document.getElementById('categoryContainer'); c.innerHTML = '';
