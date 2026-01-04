@@ -108,15 +108,13 @@
     }
 }
         #heroGridContainer {
-    -webkit-overflow-scrolling: touch;
-    /* Remove o realce cinza ao clicar no mobile */
-    -webkit-tap-highlight-color: transparent; 
+    /* Permite que o primeiro e último banner centralizem perfeitamente */
+    scroll-padding: 0 2vw; 
 }
 
 .hero-card {
-    /* Garante que o conteúdo não vaze e cause borrões cinzas */
-    backface-visibility: hidden;
-    transform: translateZ(0);
+    /* Suaviza a sombra para não parecer um bloco pesado sobre o fundo cinza */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
     
 
@@ -206,12 +204,13 @@
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
-        <div class="relative w-full overflow-hidden bg-transparent">
-    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-0 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
+        <div class="relative w-full bg-transparent pt-2">
+    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-4 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
         </div>
     
-    <div id="carouselDots" class="flex justify-center gap-1.5 py-2"></div>
+    <div id="carouselDots" class="flex justify-center gap-1.5 py-4"></div>
         </div>
+        
 
         <!-- CATEGORIES -->
         <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 -mx-2 px-2 md:mx-0 md:px-0 bg-transparent">
@@ -1111,7 +1110,7 @@ window.closeImageZoom = () => {
         // Criar o Banner
         // Dentro da função renderHeroCarousel, altere a linha do div.className:
 const div = document.createElement('div');
-div.className = `hero-card w-[88vw] md:w-[600px] h-56 md:h-64 rounded-[2rem] p-7 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-lg transition-all duration-500 border border-white/10 ml-4 last:mr-4`;
+        div.className = `hero-card w-[96vw] md:w-[700px] h-56 md:h-64 rounded-[2.5rem] p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-xl transition-all duration-500 border border-white/10 ml-[2vw] first:ml-[2vw] last:mr-[2vw]`;
                 div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         
         div.innerHTML = `
