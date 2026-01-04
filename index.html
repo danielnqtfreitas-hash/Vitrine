@@ -987,15 +987,18 @@ window.addEventListener('beforeunload', () => {
         window.checkoutWhatsApp = () => { 
     if(!cart.length) return; 
 
+    // 1. Captura dos dados
     const nome = document.getElementById('checkName').value.trim();
     const pagamento = document.getElementById('checkPayment').value;
     const isRetirada = document.getElementById('cartDeliverySelect').value === "0";
     
+    // 2. Validação Obrigatória (Nome e Pagamento)
     if(!nome || !pagamento) {
-        showToast("⚠️ Preencha seu nome e pagamento.");
+        showToast("⚠️ Preencha seu nome e forma de pagamento.");
         return;
     }
 
+    // 3. Validação de Endereço (Apenas se NÃO for retirada)
     if(!isRetirada) {
         const rua = document.getElementById('checkStreet').value.trim();
         const numero = document.getElementById('checkNumber').value.trim();
@@ -1009,7 +1012,7 @@ window.addEventListener('beforeunload', () => {
     const total = document.getElementById('cartFinalTotal').textContent;
     const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
 
-    // Montagem da Mensagem
+    // 4. Montagem da Mensagem para o WhatsApp
     const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
     let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n\n`;
     msg += `👤 *CLIENTE:* ${nome}\n`;
@@ -1034,13 +1037,21 @@ window.addEventListener('beforeunload', () => {
     });
     msg += `\n💰 *TOTAL: ${total}*`;
 
-    // Atualiza o link do WhatsApp no modal de confirmação
+    // 5. Configuração do Modal de Confirmação (Garantia contra bloqueio de pop-up)
     const btnWhatsapp = document.getElementById('btnFinalWhatsapp');
-    btnWhatsapp.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+    const modalConfirm = document.getElementById('modalConfirmFinal');
 
-    // Abre o modal de aviso
-    document.getElementById('modalConfirmFinal').classList.remove('hidden');
-    lucide.createIcons();
+    if(btnWhatsapp && modalConfirm) {
+        // Injeta o link diretamente no botão "Entendi" do modal
+        btnWhatsapp.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+        // Mostra o modal na tela
+        modalConfirm.classList.remove('hidden');
+    } else {
+        // Fallback de segurança: se o modal não existir por algum motivo, tenta abrir direto
+        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
+    }
+    
+    lucide.createIcons(); // Garante que os ícones do modal apareçam
 };
 
 window.closeConfirmFinal = () => {
