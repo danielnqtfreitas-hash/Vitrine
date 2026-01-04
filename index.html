@@ -1514,23 +1514,34 @@ window.updateCartTotals = () => {
     const totalDisplay = document.getElementById('cartFinalTotal');
     if(totalDisplay) totalDisplay.textContent = `R$ ${(sub + df).toFixed(2).replace('.', ',')}`; 
 };
-        window.handleBannerClick = (nomeDaCategoria) => {
-    // 1. Define que a categoria ativa agora é a do banner
-    filters.category = nomeDaCategoria;
-    isFavoritesView = false; // Garante que não está na tela de favoritos
+        window.handleBannerClick = (categoryName) => {
+    if (!categoryName) return;
 
-    // 2. Manda o site redesenhar os botões de categoria (para marcar o selecionado)
+    // 1. Aplica o filtro
+    isFavoritesView = false;
+    filters.category = categoryName;
+    
+    // 2. Renderiza os novos dados na tela
     renderCategoryTabs();
-
-    // 3. Manda o site redesenhar o catálogo (para mostrar só os produtos certos)
     renderCatalog();
 
-    // 4. Faz a tela rolar suavemente até o início da lista de produtos
-    const destino = document.getElementById('categoryContainer');
-    if (destino) {
-        const posicao = destino.getBoundingClientRect().top + window.pageYOffset - 90;
-        window.scrollTo({ top: posicao, behavior: 'smooth' });
-    }
+    // 3. Pequena pausa para o navegador processar os novos elementos
+    setTimeout(() => {
+        // Buscamos o container onde o catálogo começa
+        const container = document.getElementById('catalogContainer');
+        
+        if (container) {
+            // Calculamos a posição exata
+            // Subtraímos 140px para compensar o Header Fixo e a barra de Categorias
+            const yOffset = -140; 
+            const y = container.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
+            window.scrollTo({
+                top: y,
+                behavior: 'smooth'
+            });
+        }
+    }, 100); // 100ms é o suficiente para o catálogo "existir" na tela
 };
         
 
