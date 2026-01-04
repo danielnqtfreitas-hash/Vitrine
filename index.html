@@ -970,7 +970,7 @@ window.addEventListener('beforeunload', () => {
         window.checkoutWhatsApp = async () => { 
     if(!cart.length) return; 
 
-    // 1. Captura dos novos campos individuais
+    // 1. Captura dos campos
     const nome = document.getElementById('checkName').value.trim();
     const pagamento = document.getElementById('checkPayment').value;
     const rua = document.getElementById('checkStreet').value.trim();
@@ -981,47 +981,47 @@ window.addEventListener('beforeunload', () => {
     const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
     const total = document.getElementById('cartFinalTotal').textContent;
 
-    // 2. Validação (Exige tudo, exceto referência)
+    // 2. Validação básica
     if(!nome || !pagamento || !rua || !numero || !bairro) {
-        showToast("⚠️ Por favor, preencha todos os campos obrigatórios de entrega.");
+        showToast("⚠️ Preencha os dados de entrega.");
         return;
     }
 
-    // 3. Registro de métrica (Analytics)
+    // --- NOVA NOTIFICAÇÃO DE CONFIRMAÇÃO SIMPLIFICADA ---
+    const mensagemConfirmacao = 
+        "Quase lá! Ao abrir o WhatsApp, basta ENVIAR a mensagem sem alterar nada.\n\n" +
+        "⚠️ IMPORTANTE: Aguarde nossa confirmação antes de fazer qualquer pagamento.";
+
+    if (!confirm(mensagemConfirmacao)) return; // Cancela se o cliente clicar em "Cancelar"
+
+    // 3. Registro de métrica
     const todayId = new Date().toLocaleDateString('en-CA');
     const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
     await setDoc(historyRef, { checkoutClicks: increment(1) }, { merge: true });
 
-    // 4. Montagem da Mensagem formatada
+    // 4. Montagem da Mensagem
     const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
     let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n`;
     msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
     msg += `👤 *CLIENTE:* ${nome}\n`;
     msg += `💳 *PAGAMENTO:* ${pagamento}\n`;
-    msg += `📍 *ENDEREÇO:* ${rua}, nº ${numero}\n`;
-    msg += `🏘️ *BAIRRO:* ${bairro}\n`;
-    
-    if(referencia) {
-        msg += `🔍 *REF:* ${referencia}\n`;
-    }
-    
+    msg += `📍 *ENDEREÇO:* ${rua}, ${numero} - ${bairro}\n`;
+    if(referencia) msg += `🔍 *REF:* ${referencia}\n`;
     msg += `🚚 *ENTREGA:* ${freteTexto}\n\n`;
     
-    msg += `📦 *ITENS DO PEDIDO:*\n`;
+    msg += `📦 *ITENS:*\n`;
     cart.forEach((item, index) => {
         const sub = (item.price * item.q).toFixed(2).replace('.', ',');
         const vars = [item.v.size, item.v.color].filter(Boolean).join(' / ');
         msg += `${index + 1}. *${item.q}x ${item.name}*\n`;
-        if(vars) msg += `   └ _Var: ${vars}_\n`;
-        msg += `   └ Valor: R$ ${sub}\n\n`;
+        if(vars) msg += `   └ ${vars}\n`;
+        msg += `   └ R$ ${sub}\n\n`;
     });
 
     msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `💰 *VALOR TOTAL: ${total}*\n`;
-    msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
-    msg += `_Pedido gerado via Vitrine Pro_`;
+    msg += `💰 *TOTAL: ${total}*\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━\n`;
 
-    // 5. Envio para o WhatsApp
     window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
 };
         
