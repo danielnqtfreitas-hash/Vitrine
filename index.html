@@ -108,13 +108,15 @@
     }
 }
         #heroGridContainer {
-    background-color: #ffffff !important; /* Força o fundo branco no trilho */
+    /* Permite que o primeiro e último banner centralizem perfeitamente */
+    scroll-padding: 0 2vw; 
 }
 
-/* Se houver algum espaço lateral no container 'main', este ajuste resolve */
-#app > div.relative.w-full {
-    background-color: #ffffff !important;
+.hero-card {
+    /* Suaviza a sombra para não parecer um bloco pesado sobre o fundo cinza */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
+    
 
     </style>
 </head>
@@ -202,10 +204,11 @@
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
-        <div class="relative w-full bg-white mb-4"> <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-0 hide-scroll h-64 md:h-72 scroll-smooth">
+        <div class="relative w-full bg-transparent pt-2">
+    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-4 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
         </div>
     
-    <div id="carouselDots" class="flex justify-center gap-1.5 py-4 bg-white"></div>
+    <div id="carouselDots" class="flex justify-center gap-1.5 py-4"></div>
         </div>
         
 
