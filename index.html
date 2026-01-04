@@ -1179,6 +1179,19 @@ window.closeImageZoom = () => {
         const div = document.createElement('div');
         div.className = `hero-card w-full flex-shrink-0 h-full rounded-3xl p-6 md:p-10 flex items-center relative overflow-hidden snap-center cursor-pointer text-white transition-all duration-500`;
         
+        // --- LÓGICA DE FILTRO AO CLICAR NO BANNER ---
+        div.onclick = () => {
+            if (b.category) {
+                // Se o banner tiver categoria, filtra por ela
+                filters.category = b.category;
+                isFavoritesView = false;
+                renderCategoryTabs();
+                renderCatalog();
+                // Scroll suave para os produtos
+                document.getElementById('categoryContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         div.innerHTML = `
             <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full min-w-0">
@@ -1202,6 +1215,10 @@ window.closeImageZoom = () => {
         `;
         container.appendChild(div);
 
+        const dot = document.createElement('div');
+        dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
+        dotsContainer.appendChild(dot);
+    });
         const dot = document.createElement('div');
         dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
         dotsContainer.appendChild(dot);
