@@ -1170,6 +1170,9 @@ window.closeImageZoom = () => {
         function renderHeroCarousel(banners) {
     const container = document.getElementById('heroGridContainer');
     const dotsContainer = document.getElementById('carouselDots');
+    
+    if (!container || !dotsContainer) return;
+    
     container.innerHTML = '';
     dotsContainer.innerHTML = '';
     
@@ -1182,13 +1185,13 @@ window.closeImageZoom = () => {
         // --- LÓGICA DE FILTRO AO CLICAR NO BANNER ---
         div.onclick = () => {
             if (b.category) {
-                // Se o banner tiver categoria, filtra por ela
                 filters.category = b.category;
                 isFavoritesView = false;
                 renderCategoryTabs();
                 renderCatalog();
                 // Scroll suave para os produtos
-                document.getElementById('categoryContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const catContainer = document.getElementById('categoryContainer');
+                if(catContainer) catContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         };
 
@@ -1215,10 +1218,7 @@ window.closeImageZoom = () => {
         `;
         container.appendChild(div);
 
-        const dot = document.createElement('div');
-        dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
-        dotsContainer.appendChild(dot);
-    });
+        // Criação dos Dots
         const dot = document.createElement('div');
         dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
         dotsContainer.appendChild(dot);
@@ -1239,6 +1239,7 @@ window.closeImageZoom = () => {
 
     container.onscroll = updateDots;
 
+    // Auto-scroll logic
     if (window.heroInterval) clearInterval(window.heroInterval);
     window.heroInterval = setInterval(() => {
         const gap = 24; 
@@ -1252,6 +1253,7 @@ window.closeImageZoom = () => {
         }
     }, 4000);
         }
+        
 
         function renderCategoryTabs() {
             const c = document.getElementById('categoryContainer'); c.innerHTML = '';
