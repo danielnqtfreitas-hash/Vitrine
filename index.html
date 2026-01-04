@@ -1167,6 +1167,7 @@ window.closeImageZoom = () => {
 
         window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
         
+        
         function renderHeroCarousel(banners) {
     const container = document.getElementById('heroGridContainer');
     const dotsContainer = document.getElementById('carouselDots');
@@ -1182,14 +1183,14 @@ window.closeImageZoom = () => {
         const div = document.createElement('div');
         div.className = `hero-card w-full flex-shrink-0 h-full rounded-3xl p-6 md:p-10 flex items-center relative overflow-hidden snap-center cursor-pointer text-white transition-all duration-500`;
         
-        // --- LÓGICA DE FILTRO AO CLICAR NO BANNER ---
+        // --- FILTRO POR CATEGORIA ---
         div.onclick = () => {
             if (b.category) {
                 filters.category = b.category;
                 isFavoritesView = false;
                 renderCategoryTabs();
                 renderCatalog();
-                // Scroll suave para os produtos
+                // Scroll para os produtos
                 const catContainer = document.getElementById('categoryContainer');
                 if(catContainer) catContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
@@ -1201,16 +1202,12 @@ window.closeImageZoom = () => {
                 <span class="animate-fade-in px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[7px] font-black uppercase tracking-widest mb-1">
                     ${b.tag || 'Destaque'}
                 </span>
-                
                 <h3 class="animate-fade-in-right font-display font-bold text-2xl md:text-4xl leading-tight uppercase tracking-tighter w-full break-words">
                     ${b.title}
                 </h3>
-                
                 ${b.subtitle ? `<p class="animate-fade-in opacity-90 text-xs md:text-sm font-medium leading-tight max-w-[90%] break-words line-clamp-2" style="animation-delay: 0.2s">${b.subtitle}</p>` : ''}
-                
                 <div class="animate-fade-in mt-4 px-6 py-2 bg-white/10 border border-white/30 rounded-full text-[9px] font-black uppercase tracking-widest" style="animation-delay: 0.3s">Ver Agora</div>
             </div>
-
             ${b.imageUrl ? `
                 <div class="animate-floating w-32 h-32 md:w-52 md:h-52 rounded-2xl overflow-hidden border-2 border-white/10 shrink-0 ml-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
                     <img src="${b.imageUrl}" class="w-full h-full object-cover scale-110">
@@ -1218,7 +1215,6 @@ window.closeImageZoom = () => {
         `;
         container.appendChild(div);
 
-        // Criação dos Dots
         const dot = document.createElement('div');
         dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
         dotsContainer.appendChild(dot);
@@ -1239,13 +1235,11 @@ window.closeImageZoom = () => {
 
     container.onscroll = updateDots;
 
-    // Auto-scroll logic
     if (window.heroInterval) clearInterval(window.heroInterval);
     window.heroInterval = setInterval(() => {
         const gap = 24; 
         const step = container.offsetWidth + gap;
         const maxScroll = container.scrollWidth - container.offsetWidth;
-        
         if (container.scrollLeft >= maxScroll - 20) {
             container.scrollTo({ left: 0, behavior: 'smooth' });
         } else {
