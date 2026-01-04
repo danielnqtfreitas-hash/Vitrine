@@ -151,6 +151,24 @@
         <button onclick="window.location.reload()" class="mt-8 px-6 py-2 bg-primary text-white rounded-full font-bold">Tentar novamente</button>
     </div>
 
+    <div id="modalConfirmFinal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    <div class="bg-white rounded-[2rem] p-8 w-full max-w-sm relative z-10 shadow-2xl text-center animate-slide-up">
+        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="message-circle" class="w-8 h-8"></i>
+        </div>
+        <h3 class="font-bold text-lg text-slate-900 mb-2">Quase lá!</h3>
+        <p class="text-sm text-slate-500 leading-relaxed mb-6">
+            Envie a mensagem sem alterar nada. <br>
+            <b>Aguarde nossa confirmação antes de pagar.</b>
+        </p>
+        <a id="btnFinalWhatsapp" href="#" target="_blank" onclick="window.closeConfirmFinal()" class="block w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg active-scale uppercase tracking-widest text-xs">
+            Entendi, Ir para WhatsApp
+        </a>
+    </div>
+</div>
+
+    
     <!-- TOAST CONTAINER -->
     <div id="toastContainer" class="fixed bottom-6 left-0 right-0 z-[9999] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
 
@@ -235,23 +253,6 @@
         <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 -mx-2 px-2 md:mx-0 md:px-0 bg-transparent">
             <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2 pl-1"></div>
         </nav>
-
-      <div id="modalConfirmFinal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-    <div class="bg-white rounded-[2rem] p-8 w-full max-w-sm relative z-10 shadow-2xl text-center animate-slide-up">
-        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i data-lucide="message-circle" class="w-8 h-8"></i>
-        </div>
-        <h3 class="font-bold text-lg text-slate-900 mb-2">Quase lá!</h3>
-        <p class="text-sm text-slate-500 leading-relaxed mb-6">
-            Envie a mensagem sem alterar nada. <br>
-            <b>Aguarde nossa confirmação antes de pagar.</b>
-        </p>
-        <a id="btnFinalWhatsapp" href="#" target="_blank" onclick="closeConfirmFinal()" class="block w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg active-scale uppercase tracking-widest text-xs">
-            Entendi, Ir para WhatsApp
-        </a>
-    </div>
-      </div>
         
         
         <!-- CATALOGO -->
