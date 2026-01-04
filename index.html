@@ -1088,42 +1088,45 @@ window.closeImageZoom = () => {
 
     banners.forEach(b => {
         const div = document.createElement('div');
-        // Layout adaptativo: centralizado se não houver imagem, dividido se houver
+        
+        // Ajuste de largura: 
+        // Mobile: 82vw (deixa 18% da tela livre para ver o próximo)
+        // Desktop: 500px fixos
         const layoutStyle = b.imageUrl ? 'justify-between text-left' : 'justify-center text-center';
         
-        div.className = `hero-card min-w-[88vw] md:min-w-[550px] h-52 md:h-60 rounded-[2.5rem] p-8 md:p-10 flex items-center ${layoutStyle} relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-2xl transition-all duration-500 border border-white/10 group`;
+        div.className = `hero-card min-w-[82vw] md:min-w-[500px] h-48 md:h-56 rounded-[2.5rem] p-6 md:p-10 flex items-center ${layoutStyle} relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-xl transition-all duration-500 border border-white/10 group ml-2 first:ml-4 last:mr-4`;
         
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
 
         div.onclick = () => { filters.category = b.target; renderCategoryTabs(); renderCatalog(); };
         
         div.innerHTML = `
-            <div class="relative z-10 ${b.imageUrl ? 'w-[55%]' : 'w-full'} flex flex-col items-${b.imageUrl ? 'start' : 'center'} gap-3">
-                <span class="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[9px] font-black uppercase tracking-[0.2em]">
+            <div class="relative z-10 ${b.imageUrl ? 'w-[60%]' : 'w-full'} flex flex-col items-${b.imageUrl ? 'start' : 'center'} gap-2">
+                <span class="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[8px] font-black uppercase tracking-[0.15em]">
                     ${b.tag || 'Destaque'}
                 </span>
-                <h3 class="font-display font-bold text-3xl md:text-4xl leading-[0.9] uppercase tracking-tighter drop-shadow-lg">
+                <h3 class="font-display font-bold text-2xl md:text-3xl leading-[1] uppercase tracking-tighter drop-shadow-md">
                     ${b.title || 'Novidade'}
                 </h3>
-                ${b.subtitle ? `<p class="text-[10px] md:text-xs opacity-70 font-medium leading-tight uppercase tracking-wide">${b.subtitle}</p>` : ''}
+                ${b.subtitle ? `<p class="text-[9px] md:text-xs opacity-70 font-medium leading-tight uppercase line-clamp-2">${b.subtitle}</p>` : ''}
                 
-                <div class="mt-4 px-6 py-2 border border-white/30 rounded-full text-[10px] font-black uppercase tracking-[0.15em] backdrop-blur-sm hover:bg-white hover:text-black transition-all duration-500 shadow-lg">
-                    ${b.btnText || 'Comprar Agora'}
+                <div class="mt-3 px-5 py-2 border border-white/30 rounded-full text-[9px] font-black uppercase tracking-widest backdrop-blur-sm group-hover:bg-white group-hover:text-black transition-all duration-300">
+                    ${b.btnText || 'Ver Mais'}
                 </div>
             </div>
             
             ${b.imageUrl ? `
-                <div class="w-36 h-36 md:w-44 md:h-44 rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl shrink-0 rotate-2 group-hover:rotate-0 transition-transform duration-700 ease-out">
-                    <img src="${b.imageUrl}" class="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700">
+                <div class="w-28 h-28 md:w-40 md:h-40 rounded-[1.8rem] overflow-hidden border border-white/20 shadow-2xl shrink-0 rotate-2 group-hover:rotate-0 transition-transform duration-700">
+                    <img src="${b.imageUrl}" class="w-full h-full object-cover">
                 </div>
             ` : ''}
 
-            <div class="absolute -top-20 -left-20 w-60 h-60 bg-white/5 rounded-full blur-[100px]"></div>
-            <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-black/20 rounded-full blur-[80px]"></div>
+            <div class="absolute -top-10 -left-10 w-32 h-32 bg-white/5 rounded-full blur-[60px]"></div>
         `;
         c.appendChild(div);
     });
         }
+        
         
 
         function renderCategoryTabs() {
