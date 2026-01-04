@@ -1183,18 +1183,42 @@ window.closeImageZoom = () => {
         const div = document.createElement('div');
         div.className = `hero-card w-full flex-shrink-0 h-full rounded-3xl p-6 md:p-10 flex items-center relative overflow-hidden snap-center cursor-pointer text-white transition-all duration-500`;
         
-        // --- FILTRO POR CATEGORIA ---
+                // --- FILTRO POR CATEGORIA CORRIGIDO ---
         div.onclick = () => {
-            if (b.category) {
-                filters.category = b.category;
+            // Pegamos o valor da categoria do banner (pode vir como 'category' ou 'filter')
+            const bannerCat = b.category || b.filter; 
+
+            if (bannerCat) {
+                // 1. Procuramos a categoria real na nossa lista 'categories' que ignore maiúsculas/minúsculas
+                const categoriaReal = categories.find(c => 
+                    c.toLowerCase().trim() === bannerCat.toLowerCase().trim()
+                );
+
+                // 2. Aplicamos o filtro (se achou a real usa ela, senão usa o texto do banner)
+                filters.category = categoriaReal || bannerCat;
                 isFavoritesView = false;
+                
+                // 3. Atualizamos a interface
                 renderCategoryTabs();
                 renderCatalog();
-                // Scroll para os produtos
+
+                // 4. Scroll suave para os produtos
                 const catContainer = document.getElementById('categoryContainer');
-                if(catContainer) catContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if(catContainer) {
+                    const offset = 100; // compensa o header fixo
+                    const bodyRect = document.body.getBoundingClientRect().top;
+                    const elementRect = catContainer.getBoundingClientRect().top;
+                    const elementPosition = elementRect - bodyRect;
+                    const offsetPosition = elementPosition - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
             }
         };
+                    
 
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         div.innerHTML = `
