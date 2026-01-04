@@ -398,46 +398,44 @@
         </div>
 
         <div id="step2" class="hidden flex-1 overflow-y-auto bg-slate-50">
-            <div class="p-5 space-y-4">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Onde entregamos?</h4>
-                    
-                    <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                    
-                    <div class="flex gap-2">
-                        <select id="checkPayment" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none">
-                            <option value="" disabled selected>Pagamento</option>
-                            <option value="Pix">Pix</option>
-                            <option value="Cartão">Cartão</option>
-                            <option value="Dinheiro">Dinheiro</option>
-                        </select>
-                        <select id="cartDeliverySelect" onchange="updateCartTotals()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
-                    </div>
-
-                    <input type="text" id="checkStreet" placeholder="Nome da Rua / Avenida" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                    
-                    <div class="flex gap-2">
-                        <input type="text" id="checkNumber" placeholder="Nº" class="w-20 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                        <input type="text" id="checkNeighborhood" placeholder="Bairro" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                    </div>
-                    
-                    <input type="text" id="checkReference" placeholder="Ponto de Referência" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                </div>
+    <div class="p-5 space-y-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados do Pedido</h4>
+            
+            <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+            
+            <div class="flex gap-2">
+                <select id="checkPayment" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none">
+                    <option value="" disabled selected>Pagamento</option>
+                    <option value="Pix">Pix</option>
+                    <option value="Cartão">Cartão</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                </select>
+                <select id="cartDeliverySelect" onchange="toggleAddressFields()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
             </div>
 
-            <div class="p-5 border-t bg-white mt-auto">
-                <div class="flex justify-between text-xl font-display font-black text-slate-900 mb-4">
-                    <span>Total</span>
-                    <span id="cartFinalTotal">R$ 0,00</span>
+            <div id="addressFields" class="space-y-3 animate-fade-in">
+                <input type="text" id="checkStreet" placeholder="Nome da Rua / Avenida" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                
+                <div class="flex gap-2">
+                    <input type="text" id="checkNumber" placeholder="Nº" class="w-20 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                    <input type="text" id="checkNeighborhood" placeholder="Bairro" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
                 </div>
-                <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg active-scale flex justify-center items-center gap-3 transition-all">
-                    Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
-                </button>
+                
+                <input type="text" id="checkReference" placeholder="Ponto de Referência" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
             </div>
         </div>
     </div>
-</div>
-
+    <div class="p-5 border-t bg-white mt-auto">
+        <div class="flex justify-between text-xl font-display font-black text-slate-900 mb-4">
+            <span>Total</span>
+            <span id="cartFinalTotal">R$ 0,00</span>
+        </div>
+        <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg active-scale flex justify-center items-center gap-3 transition-all">
+            Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
+        </button>
+    </div>
+        </div>
 
     <div id="filterModal" class="fixed inset-0 z-[70] hidden">
         <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
@@ -990,38 +988,56 @@ window.addEventListener('beforeunload', () => {
 
     const nome = document.getElementById('checkName').value.trim();
     const pagamento = document.getElementById('checkPayment').value;
-    const rua = document.getElementById('checkStreet').value.trim();
-    const numero = document.getElementById('checkNumber').value.trim();
-    const bairro = document.getElementById('checkNeighborhood').value.trim();
-    const referencia = document.getElementById('checkReference').value.trim();
-    const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
-    const total = document.getElementById('cartFinalTotal').textContent;
-
-    if(!nome || !pagamento || !rua || !numero || !bairro) {
-        showToast("⚠️ Preencha os dados de entrega.");
+    const isRetirada = document.getElementById('cartDeliverySelect').value === "0";
+    
+    if(!nome || !pagamento) {
+        showToast("⚠️ Preencha seu nome e pagamento.");
         return;
     }
+
+    if(!isRetirada) {
+        const rua = document.getElementById('checkStreet').value.trim();
+        const numero = document.getElementById('checkNumber').value.trim();
+        const bairro = document.getElementById('checkNeighborhood').value.trim();
+        if(!rua || !numero || !bairro) {
+            showToast("⚠️ Preencha os dados de entrega.");
+            return;
+        }
+    }
+
+    const total = document.getElementById('cartFinalTotal').textContent;
+    const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
 
     // Montagem da Mensagem
     const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
     let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n\n`;
     msg += `👤 *CLIENTE:* ${nome}\n`;
     msg += `💳 *PAGAMENTO:* ${pagamento}\n`;
-    msg += `📍 *ENTREGA:* ${rua}, ${numero} - ${bairro}\n`;
-    if(referencia) msg += `🔍 *REF:* ${referencia}\n`;
-    msg += `🚚 *FRETE:* ${freteTexto}\n\n`;
-    msg += `📦 *ITENS:*\n`;
+    
+    if(isRetirada) {
+        msg += `📍 *ENTREGA:* Vou retirar na loja\n`;
+    } else {
+        const rua = document.getElementById('checkStreet').value.trim();
+        const numero = document.getElementById('checkNumber').value.trim();
+        const bairro = document.getElementById('checkNeighborhood').value.trim();
+        const ref = document.getElementById('checkReference').value.trim();
+        msg += `📍 *ENTREGA:* ${rua}, ${numero} - ${bairro}\n`;
+        if(ref) msg += `🔍 *REF:* ${ref}\n`;
+        msg += `🚚 *FRETE:* ${freteTexto}\n`;
+    }
+
+    msg += `\n📦 *ITENS:*\n`;
     cart.forEach((item, index) => {
         const vars = [item.v.size, item.v.color].filter(Boolean).join(' / ');
         msg += `${index + 1}. ${item.q}x ${item.name}${vars ? ' ('+vars+')' : ''} - R$ ${(item.price * item.q).toFixed(2).replace('.', ',')}\n`;
     });
     msg += `\n💰 *TOTAL: ${total}*`;
 
-    // Prepara o link no botão do novo modal
+    // Atualiza o link do WhatsApp no modal de confirmação
     const btnWhatsapp = document.getElementById('btnFinalWhatsapp');
     btnWhatsapp.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
 
-    // Abre o modal visual
+    // Abre o modal de aviso
     document.getElementById('modalConfirmFinal').classList.remove('hidden');
     lucide.createIcons();
 };
@@ -1546,6 +1562,21 @@ window.updateCartTotals = () => {
     if(totalDisplay) totalDisplay.textContent = `R$ ${(sub + df).toFixed(2).replace('.', ',')}`; 
 };
 
+   window.toggleAddressFields = () => {
+    const deliverySelect = document.getElementById('cartDeliverySelect');
+    const addressFields = document.getElementById('addressFields');
+    
+    // "0" é o valor padrão da opção "Retirar na Loja"
+    if (deliverySelect.value === "0") {
+        addressFields.classList.add('hidden');
+    } else {
+        addressFields.classList.remove('hidden');
+    }
+    
+    // Atualiza os preços (taxa de entrega)
+    updateCartTotals();
+};
+     
     </script>
 </body>
         </html>
