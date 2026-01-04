@@ -108,17 +108,18 @@
     }
 }
         #heroGridContainer {
-    /* Removemos o fundo branco e ajustamos o início do scroll */
     background-color: transparent !important;
-    padding-left: 4%;  /* Margem visual interna inicial */
-    padding-right: 4%; /* Margem visual interna final */
-    scroll-padding-left: 4%; /* Garante que o snap pare exatamente no início do padding */
+    padding-left: 4vw;  /* Margem lateral esquerda */
+    padding-right: 4vw; /* Margem lateral direita */
+    scroll-padding: 0 4vw; /* Faz o snap ignorar o padding ao centralizar */
+    display: flex;
+    align-items: center;
 }
 
 .hero-card {
     box-shadow: none !important;
     border: none !important;
-}
+                        }
         
 
     </style>
@@ -208,8 +209,7 @@
         
         <!-- BANNERS -->
         <div class="relative w-full bg-transparent pt-2">
-    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-0 mb-0 pb-2 hide-scroll h-56 md:h-64 scroll-smooth bg-transparent">
-    </div>
+    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-8 mb-0 pb-2 hide-scroll h-56 md:h-64 scroll-smooth bg-transparent">
     
     <div id="carouselDots" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex justify-center gap-1.5 px-3 py-1.5 bg-black/10 backdrop-blur-md rounded-full">
     </div>
@@ -1109,8 +1109,12 @@ window.closeImageZoom = () => {
     if (!banners?.length) return;
 
     banners.forEach((b, index) => {
-        const div = document.createElement('div');
-        div.className = `hero-card w-[92%] h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-start cursor-pointer shrink-0 text-white transition-all duration-500 mr-4 last:mr-0`;
+        
+const div = document.createElement('div');
+// w-full faz o banner ocupar 100% do espaço interno (entre as margens de 4vw)
+// snap-center garante que ele pare no meio exato
+div.className = `hero-card w-full h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500`;
+        
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         div.innerHTML = `
             <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full">
