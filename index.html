@@ -194,8 +194,11 @@
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
-        <div class="relative w-full overflow-hidden">
-    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-0 mb-2 pb-4 hide-scroll h-64 md:h-72 scroll-smooth">
+        <div class="relative w-full">
+    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-0 mb-0 pb-0 hide-scroll h-64 md:h-72 scroll-smooth">
+        </div>
+    
+    <div id="carouselDots" class="flex justify-center gap-1.5 py-3 bg-transparent"></div>
         </div>
     
     <div id="carouselDots" class="flex justify-center gap-1.5 mb-6"></div>
@@ -1085,6 +1088,7 @@ window.closeImageZoom = () => {
 
         window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
         
+        
         function renderHeroCarousel(banners) {
     const container = document.getElementById('heroGridContainer');
     const dotsContainer = document.getElementById('carouselDots');
@@ -1095,7 +1099,7 @@ window.closeImageZoom = () => {
     if (!banners?.length) return;
 
     banners.forEach((b, index) => {
-        // 1. Criar o Banner
+        // Criar o Banner
         const div = document.createElement('div');
         div.className = `hero-card w-[92vw] md:w-[500px] h-56 md:h-64 rounded-[2.5rem] p-7 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-xl transition-all duration-500 border border-white/10 group ml-[4vw] first:ml-[4vw] last:mr-[4vw]`;
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
@@ -1111,27 +1115,32 @@ window.closeImageZoom = () => {
         
         container.appendChild(div);
 
-        // 2. Criar o Pontinho
+        // Criar o Pontinho
         const dot = document.createElement('div');
-        dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-primary-500' : 'w-1.5 bg-gray-300'}`;
+        // Usando style direto para garantir a cor primária dinâmica
+        dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6' : 'w-1.5 bg-gray-300'}`;
+        if(index === 0) dot.style.backgroundColor = 'var(--color-primary)';
         dotsContainer.appendChild(dot);
     });
 
-    // 3. Lógica para atualizar os pontos ao arrastar
+    // Lógica para atualizar os pontos ao arrastar
     container.onscroll = () => {
-        const scrollIndex = Math.round(container.scrollLeft / (window.innerWidth * 0.92));
+        const itemWidth = container.querySelector('.hero-card').offsetWidth;
+        const scrollIndex = Math.round(container.scrollLeft / itemWidth);
+        
         Array.from(dotsContainer.children).forEach((dot, i) => {
             if (i === scrollIndex) {
-                dot.classList.add('w-6', 'bg-primary-500');
+                dot.classList.add('w-6');
                 dot.classList.remove('w-1.5', 'bg-gray-300');
+                dot.style.backgroundColor = 'var(--color-primary)';
             } else {
-                dot.classList.remove('w-6', 'bg-primary-500');
+                dot.classList.remove('w-6');
                 dot.classList.add('w-1.5', 'bg-gray-300');
+                dot.style.backgroundColor = ''; // Volta para o bg-gray-300 do CSS
             }
         });
     };
         }
-        
 
         function renderCategoryTabs() {
             const c = document.getElementById('categoryContainer'); c.innerHTML = '';
