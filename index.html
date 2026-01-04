@@ -108,15 +108,13 @@
     }
 }
         #heroGridContainer {
-    /* Remove o padding lateral para o banner encostar nas bordas */
-    scroll-padding: 0; 
+    scroll-padding: 0 4vw; 
+    background-color: transparent !important;
 }
 
 .hero-card {
-    /* Removemos a sombra pesada para um visual mais limpo e "flat" */
-    box-shadow: none;
-    /* Removemos arredondamento excessivo se quiser que ele pareça mais integrado */
-    border-radius: 1.5rem; 
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Sombra leve apenas no card */
+    border: none !important;
 }
 
     </style>
@@ -205,12 +203,11 @@
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
-        <div class="relative w-full bg-white pt-2"> <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-2 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-white">
-        </div>
-    <div id="carouselDots" class="flex justify-center gap-1.5 py-2 bg-white"></div>
+        <div class="relative w-full bg-transparent pt-2">
+    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-0 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
         </div>
     
-    <div id="carouselDots" class="flex justify-center gap-1.5 py-4"></div>
+    <div id="carouselDots" class="flex justify-center gap-1.5 py-4 bg-transparent"></div>
         </div>
         
 
@@ -1111,9 +1108,10 @@ window.closeImageZoom = () => {
     banners.forEach((b, index) => {
         // Criar o Banner
         // Dentro da função renderHeroCarousel, altere a linha do div.className:
+       
 const div = document.createElement('div');
-        div.className = `hero-card w-[92vw] md:w-[800px] h-56 md:h-64 rounded-2xl p-6 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500 mx-[4vw] md:mx-4 first:ml-[4vw] last:mr-[4vw]`;
-                div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
+div.className = `hero-card w-[92vw] md:w-[750px] h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500 mx-[4vw] first:ml-[4vw] last:mr-[4vw]`;
+        div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         
         div.innerHTML = `
             <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full">
