@@ -1384,29 +1384,136 @@ window.closeImageZoom = () => {
     document.getElementById('cartTitle').textContent = "Dados de Entrega";
     lucide.createIcons(); // Recarrega o ícone da seta
 };
-
+// --- CONTROLE DE ETAPAS DO CARRINHO ---
 window.goToStep1 = () => {
-    document.getElementById('step2').classList.add('hidden');
-    document.getElementById('step1').classList.remove('hidden');
-    document.getElementById('btnBackStep').classList.add('hidden');
-    document.getElementById('cartTitle').textContent = "Minha Sacola";
+    const s1 = document.getElementById('step1');
+    const s2 = document.getElementById('step2');
+    const btn = document.getElementById('btnBackStep');
+    const title = document.getElementById('cartTitle');
+    
+    if(s1) s1.classList.remove('hidden');
+    if(s2) s2.classList.add('hidden');
+    if(btn) btn.classList.add('hidden');
+    if(title) title.textContent = "Minha Sacola";
 };
 
-// Modifique sua função openCartModal para sempre começar no Step 1
-const originalOpenCart = window.openCartModal;
+window.goToStep2 = () => {
+    if (cart.length === 0) {
+        showToast("Sua sacola está vazia!");
+        return;
+    }
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('step2').classList.remove('hidden');
+    document.getElementById('btnBackStep').classList.remove('hidden');
+    document.getElementById('cartTitle').textContent = "Dados de Entrega";
+    lucide.createIcons();
+};
+
+// --- FUNÇÕES DE MODAL ---
+window.closeModalDetails = () => {
+    document.getElementById('modalDetails').classList.add('hidden');
+};
+
 window.openCartModal = () => {
-    goToStep1(); // Reseta para a lista de itens
-    originalOpenCart();
+    window.goToStep1(); // Garante que sempre abre na lista de produtos
+    document.getElementById('modalCart').classList.remove('hidden'); 
+    setTimeout(() => document.getElementById('cartDrawer').classList.remove('translate-x-full'), 10); 
 };
 
-// Atualize a exibição do subtotal na Etapa 1
-const originalUpdateTotals = window.updateCartTotals;
-window.updateCartTotals = () => {
-    originalUpdateTotals();
-    const sub = cart.reduce((a, b) => a + (b.price * b.q), 0);
-    const displays = document.querySelectorAll('.subtotal-display');
-    displays.forEach(d => d.textContent = `R$ ${sub.toFixed(2).replace('.', ',')}`);
+window.closeCartModal = () => { 
+    document.getElementById('cartDrawer').classList.add('translate-x-full'); 
+    setTimeout(() => document.getElementById('modalCart').classList.add('hidden'), 300); 
 };
+
+// --- LÓGICA DO CARRINHO ATUALIZADA ---
+window.addToCart = (p, q, v) => {
+    const CART_KEY = `cart_${STORE_ID}`;
+    const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
+    const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
+    
+    const ex = cart.find(x => x.uid === uid); 
+    if(ex) {
+        ex.q += q; 
+    } else {
+        cart.push({uid, id: p.id, sku: p.sku || 'N/A', name: p.name, price, q, img: p.images?.[0] || 'https://placehold.co/100', v: {...v}}); 
+    }
+
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    
+    updateCartUI(); 
+    showToast(`<b>${p.name}</b> na sacola!`); 
+    
+    // CORREÇÃO: Fecha o modal de detalhes após adicionar
+    window.closeModalDetails(); 
+};
+
+window.updateCartUI = () => {
+    const cnt = cart.reduce((a, b) => a + b.q, 0); 
+    const b = document.getElementById('cartBadge'); 
+    if(b) {
+        b.textContent = cnt; 
+        b.classList.toggle('scale-0', cnt === 0);
+    }
+
+    const l = document.getElementById('cartList');
+    const empty = document.getElementById('cartEmptyMsg');
+    const step1Footer = document.getElementById('footerStep1');
+
+    if(!cart.length) { 
+        l.innerHTML = ''; 
+        if(empty) empty.classList.remove('hidden'); 
+        if(step1Footer) step1Footer.classList.add('hidden');
+    } else {
+        if(empty) empty.classList.add('hidden'); 
+        if(step1Footer) step1Footer.classList.remove('hidden');
+        l.innerHTML = cart.map(i => `
+            <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
+                <img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
+                <div class="flex-1">
+                    <div class="flex justify-between font-bold text-xs text-slate-800">
+                        <span class="truncate pr-2">${i.name}</span>
+                        <span class="shrink-0">R$ ${(i.price * i.q).toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mt-1 uppercase italic">${[i.v.size, i.v.color].filter(Boolean).join(' / ')}</div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div class="flex items-center bg-slate-100 rounded h-7 border border-slate-200">
+                            <button onclick="modQty('${i.uid}', -1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">-</button>
+                            <span class="w-8 text-center text-xs font-black text-slate-700">${i.q}</span>
+                            <button onclick="modQty('${i.uid}', 1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">+</button>
+                        </div>
+                        <button onclick="modQty('${i.uid}', -${i.q})" class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Remover</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    updateCartTotals();
+};
+
+window.modQty = (u, d) => {
+    const i = cart.find(x => x.uid === u);
+    if(i) {
+        i.q += d;
+        if(i.q <= 0) cart = cart.filter(x => x.uid !== u);
+        const CART_KEY = `cart_${STORE_ID}`;
+        localStorage.setItem(CART_KEY, JSON.stringify(cart));
+        updateCartUI();
+    }
+};
+
+window.updateCartTotals = () => { 
+    const sub = cart.reduce((a, b) => a + (b.price * b.q), 0);
+    const df = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
+    
+    // Atualiza o subtotal da etapa 1
+    const subDisplays = document.querySelectorAll('.subtotal-display');
+    subDisplays.forEach(d => d.textContent = `R$ ${sub.toFixed(2).replace('.', ',')}`);
+    
+    // Atualiza o total final da etapa 2
+    const totalDisplay = document.getElementById('cartFinalTotal');
+    if(totalDisplay) totalDisplay.textContent = `R$ ${(sub + df).toFixed(2).replace('.', ',')}`; 
+};
+
     </script>
 </body>
 </html>
