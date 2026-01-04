@@ -108,15 +108,16 @@
     }
 }
         #heroGridContainer {
-    /* Permite que o primeiro e último banner centralizem perfeitamente */
-    scroll-padding: 0 2vw; 
+    /* Remove o padding lateral para o banner encostar nas bordas */
+    scroll-padding: 0; 
 }
 
 .hero-card {
-    /* Suaviza a sombra para não parecer um bloco pesado sobre o fundo cinza */
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    /* Removemos a sombra pesada para um visual mais limpo e "flat" */
+    box-shadow: none;
+    /* Removemos arredondamento excessivo se quiser que ele pareça mais integrado */
+    border-radius: 1.5rem; 
 }
-    
 
     </style>
 </head>
@@ -204,8 +205,9 @@
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
-        <div class="relative w-full bg-transparent pt-2">
-    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-4 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
+        <div class="relative w-full bg-white pt-2"> <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-2 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-white">
+        </div>
+    <div id="carouselDots" class="flex justify-center gap-1.5 py-2 bg-white"></div>
         </div>
     
     <div id="carouselDots" class="flex justify-center gap-1.5 py-4"></div>
@@ -1110,7 +1112,7 @@ window.closeImageZoom = () => {
         // Criar o Banner
         // Dentro da função renderHeroCarousel, altere a linha do div.className:
 const div = document.createElement('div');
-        div.className = `hero-card w-[96vw] md:w-[700px] h-56 md:h-64 rounded-[2.5rem] p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-xl transition-all duration-500 border border-white/10 ml-[2vw] first:ml-[2vw] last:mr-[2vw]`;
+        div.className = `hero-card w-[92vw] md:w-[800px] h-56 md:h-64 rounded-2xl p-6 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500 mx-[4vw] md:mx-4 first:ml-[4vw] last:mr-[4vw]`;
                 div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         
         div.innerHTML = `
