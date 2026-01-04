@@ -1080,18 +1080,50 @@ window.closeImageZoom = () => {
 
         window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
         
-        function renderHeroCarousel(banners) {
-            const c = document.getElementById('heroGridContainer'); c.innerHTML = '';
+                function renderHeroCarousel(banners) {
+            const c = document.getElementById('heroGridContainer'); 
+            c.innerHTML = '';
             if (!banners?.length) return;
+
             banners.forEach(b => {
                 const div = document.createElement('div');
-                div.className = "hero-card min-w-[85vw] md:min-w-[420px] h-36 md:h-44 rounded-2xl p-6 flex flex-col justify-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-sm";
+                
+                // Define se o conteúdo será centralizado (sem foto) ou dividido (com foto)
+                const layoutClass = b.imageUrl ? 'justify-between text-left' : 'justify-center text-center';
+                
+                div.className = `hero-card min-w-[85vw] md:min-w-[460px] h-40 md:h-48 rounded-[2rem] p-7 flex items-center ${layoutClass} relative overflow-hidden snap-center cursor-pointer shrink-0 text-white shadow-lg transition-all border border-white/10`;
+                
+                // Fundo com o degradê escolhido pelo lojista
                 div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
-                div.onclick = () => { filters.category = b.target; renderCategoryTabs(); renderCatalog(); };
-                div.innerHTML = `<div class="absolute inset-0 opacity-20" style="background-image:radial-gradient(white 2px, transparent 2px);background-size:20px 20px;"></div><div class="relative z-10"><span class="inline-block py-1 px-3 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[10px] font-bold uppercase tracking-wider mb-2">${b.tag || 'Destaque'}</span><h3 class="font-display font-bold text-xl md:text-2xl leading-tight w-2/3">${b.title || 'Novidade'}</h3></div>`;
+
+                div.onclick = () => { 
+                    filters.category = b.target; 
+                    renderCategoryTabs(); 
+                    renderCatalog(); 
+                };
+                
+                div.innerHTML = `
+                    <div class="relative z-10 ${b.imageUrl ? 'w-[60%]' : 'w-full'}">
+                        <span class="inline-block py-1.5 px-3.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-[9px] font-black uppercase tracking-[0.15em] mb-3">
+                            ${b.tag || 'Destaque'}
+                        </span>
+                        <h3 class="font-display font-bold text-2xl md:text-3xl leading-[1.1] tracking-tight drop-shadow-sm">
+                            ${b.title || 'Novidade'}
+                        </h3>
+                    </div>
+                    
+                    ${b.imageUrl ? `
+                        <div class="w-28 h-28 md:w-32 md:h-32 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl shrink-0 rotate-3 transition-transform hover:rotate-0 duration-500">
+                            <img src="${b.imageUrl}" class="w-full h-full object-cover" loading="lazy">
+                        </div>
+                    ` : ''}
+
+                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-[60px]"></div>
+                `;
                 c.appendChild(div);
             });
-        }
+                }
+        
 
         function renderCategoryTabs() {
             const c = document.getElementById('categoryContainer'); c.innerHTML = '';
