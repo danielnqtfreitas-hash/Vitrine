@@ -236,6 +236,24 @@
             <div id="categoryContainer" class="flex items-center gap-2 overflow-x-auto hide-scroll py-2 pl-1"></div>
         </nav>
 
+      <div id="modalConfirmFinal" class="fixed inset-0 z-[110] hidden flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+    <div class="bg-white rounded-[2rem] p-8 w-full max-w-sm relative z-10 shadow-2xl text-center animate-slide-up">
+        <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i data-lucide="message-circle" class="w-8 h-8"></i>
+        </div>
+        <h3 class="font-bold text-lg text-slate-900 mb-2">Quase lá!</h3>
+        <p class="text-sm text-slate-500 leading-relaxed mb-6">
+            Envie a mensagem sem alterar nada. <br>
+            <b>Aguarde nossa confirmação antes de pagar.</b>
+        </p>
+        <a id="btnFinalWhatsapp" href="#" target="_blank" onclick="closeConfirmFinal()" class="block w-full py-4 bg-primary text-white font-bold rounded-2xl shadow-lg active-scale uppercase tracking-widest text-xs">
+            Entendi, Ir para WhatsApp
+        </a>
+    </div>
+      </div>
+        
+        
         <!-- CATALOGO -->
         <div id="catalogContainer" class="pb-20 space-y-10 min-h-[50vh]"></div>
         
@@ -967,65 +985,54 @@ window.addEventListener('beforeunload', () => {
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
-        window.checkoutWhatsApp = async () => { 
+        window.checkoutWhatsApp = () => { 
     if(!cart.length) return; 
 
-    // 1. Captura dos campos
     const nome = document.getElementById('checkName').value.trim();
     const pagamento = document.getElementById('checkPayment').value;
     const rua = document.getElementById('checkStreet').value.trim();
     const numero = document.getElementById('checkNumber').value.trim();
     const bairro = document.getElementById('checkNeighborhood').value.trim();
     const referencia = document.getElementById('checkReference').value.trim();
-    
     const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
     const total = document.getElementById('cartFinalTotal').textContent;
 
-    // 2. Validação básica
     if(!nome || !pagamento || !rua || !numero || !bairro) {
         showToast("⚠️ Preencha os dados de entrega.");
         return;
     }
 
-    // --- NOVA NOTIFICAÇÃO DE CONFIRMAÇÃO SIMPLIFICADA ---
-    const mensagemConfirmacao = 
-        "Quase lá! Ao abrir o WhatsApp, basta ENVIAR a mensagem sem alterar nada.\n\n" +
-        "⚠️ IMPORTANTE: Aguarde nossa confirmação antes de fazer qualquer pagamento.";
-
-    if (!confirm(mensagemConfirmacao)) return; // Cancela se o cliente clicar em "Cancelar"
-
-    // 3. Registro de métrica
-    const todayId = new Date().toLocaleDateString('en-CA');
-    const historyRef = doc(db, "stores", STORE_ID, "analytics_history", todayId);
-    await setDoc(historyRef, { checkoutClicks: increment(1) }, { merge: true });
-
-    // 4. Montagem da Mensagem
+    // Montagem da Mensagem
     const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
-    let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n`;
-    msg += `━━━━━━━━━━━━━━━━━━━━\n\n`;
+    let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n\n`;
     msg += `👤 *CLIENTE:* ${nome}\n`;
     msg += `💳 *PAGAMENTO:* ${pagamento}\n`;
-    msg += `📍 *ENDEREÇO:* ${rua}, ${numero} - ${bairro}\n`;
+    msg += `📍 *ENTREGA:* ${rua}, ${numero} - ${bairro}\n`;
     if(referencia) msg += `🔍 *REF:* ${referencia}\n`;
-    msg += `🚚 *ENTREGA:* ${freteTexto}\n\n`;
-    
+    msg += `🚚 *FRETE:* ${freteTexto}\n\n`;
     msg += `📦 *ITENS:*\n`;
     cart.forEach((item, index) => {
-        const sub = (item.price * item.q).toFixed(2).replace('.', ',');
         const vars = [item.v.size, item.v.color].filter(Boolean).join(' / ');
-        msg += `${index + 1}. *${item.q}x ${item.name}*\n`;
-        if(vars) msg += `   └ ${vars}\n`;
-        msg += `   └ R$ ${sub}\n\n`;
+        msg += `${index + 1}. ${item.q}x ${item.name}${vars ? ' ('+vars+')' : ''} - R$ ${(item.price * item.q).toFixed(2).replace('.', ',')}\n`;
     });
+    msg += `\n💰 *TOTAL: ${total}*`;
 
-    msg += `━━━━━━━━━━━━━━━━━━━━\n`;
-    msg += `💰 *TOTAL: ${total}*\n`;
-    msg += `━━━━━━━━━━━━━━━━━━━━\n`;
+    // Prepara o link no botão do novo modal
+    const btnWhatsapp = document.getElementById('btnFinalWhatsapp');
+    btnWhatsapp.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
 
-    window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
+    // Abre o modal visual
+    document.getElementById('modalConfirmFinal').classList.remove('hidden');
+    lucide.createIcons();
 };
-        
-                                            
+
+window.closeConfirmFinal = () => {
+    document.getElementById('modalConfirmFinal').classList.add('hidden');
+    // Registro de métrica em segundo plano
+    const todayId = new Date().toLocaleDateString('en-CA');
+    setDoc(doc(db, "stores", STORE_ID, "analytics_history", todayId), { checkoutClicks: increment(1) }, { merge: true });
+};
+                                               
         function applyStoreConfig(d) {
             whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"");
             if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
