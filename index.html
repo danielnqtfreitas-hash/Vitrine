@@ -205,14 +205,13 @@
     <main id="app" class="flex-grow container mx-auto px-2 md:px-8 max-w-7xl pt-4 hidden opacity-0 transition-opacity duration-700">
         
         <!-- BANNERS -->
-        <div class="relative w-full bg-transparent pt-2 overflow-visible">
-    <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-8 mb-0 pb-4 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
+        <div class="relative w-full bg-transparent pt-2">
+    <div id="heroGridContainer" class="flex overflow-x-auto snap-x snap-mandatory gap-8 mb-0 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
     </div>
     
-    <div id="carouselDots" class="absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex justify-center gap-1.5 px-3 py-1.5 bg-black/20 backdrop-blur-md rounded-full">
+    <div id="carouselDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex justify-center gap-1.5 px-3 py-1.5 bg-black/20 backdrop-blur-md rounded-full">
     </div>
         </div>
-        
 
         <!-- CATEGORIES -->
         <nav class="sticky top-[115px] md:top-[80px] z-30 mb-6 -mx-2 px-2 md:mx-0 md:px-0 bg-transparent">
@@ -1109,10 +1108,9 @@ window.closeImageZoom = () => {
     banners.forEach((b, index) => {
         
 const div = document.createElement('div');
-// w-full faz o banner ocupar 100% do espaço interno (entre as margens de 4vw)
-// snap-center garante que ele pare no meio exato
-div.className = `hero-card w-full h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500`;
-        
+
+// Alterado: min-w-[92%] para estilo rede social e h-full para preencher o fundo
+div.className = `hero-card min-w-[92%] md:min-w-[100%] h-full rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500`;        
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         div.innerHTML = `
             <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full">
