@@ -1105,6 +1105,7 @@ window.closeImageZoom = () => {
     
     if (!banners?.length) return;
 
+    // Criar os Banners
     banners.forEach((b, index) => {
         const div = document.createElement('div');
         div.className = `hero-card w-[92%] flex-shrink-0 h-full rounded-2xl p-6 md:p-8 flex items-center relative overflow-hidden snap-center cursor-pointer text-white transition-all duration-500`;
@@ -1127,12 +1128,14 @@ window.closeImageZoom = () => {
         dotsContainer.appendChild(dot);
     });
 
-    container.onscroll = () => {
+    // Lógica para Atualizar os Indicadores (Bolinhas)
+    const updateDots = () => {
         const card = container.querySelector('.hero-card');
         if(!card) return;
         const cardWidth = card.offsetWidth;
         const gap = 16; 
         const scrollIndex = Math.round(container.scrollLeft / (cardWidth + gap));
+        
         Array.from(dotsContainer.children).forEach((dot, i) => {
             if (i === scrollIndex) {
                 dot.classList.add('w-6', 'bg-white');
@@ -1143,6 +1146,25 @@ window.closeImageZoom = () => {
             }
         });
     };
+
+    container.onscroll = updateDots;
+
+    // Lógica de Autoplay (Muda a cada 5 segundos)
+    let autoPlayInterval = setInterval(() => {
+        const card = container.querySelector('.hero-card');
+        if(!card) return;
+        const cardWidth = card.offsetWidth + 16;
+        const maxScroll = container.scrollWidth - container.offsetWidth;
+        
+        if (container.scrollLeft >= maxScroll - 10) {
+            container.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            container.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        }
+    }, 5000);
+
+    // Para o Autoplay quando o utilizador toca no banner
+    container.addEventListener('touchstart', () => clearInterval(autoPlayInterval), { passive: true });
         }
 
         function renderCategoryTabs() {
