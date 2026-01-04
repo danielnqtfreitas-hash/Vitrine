@@ -1177,25 +1177,26 @@ window.closeImageZoom = () => {
 
     banners.forEach((b, index) => {
         const div = document.createElement('div');
-        // Adicionamos o evento de clique que chama a função de scroll
-        div.onclick = () => { if(b.link) scrollToCategory(b.link); };
-        
         div.className = `hero-card w-full flex-shrink-0 h-full rounded-3xl p-6 md:p-10 flex items-center relative overflow-hidden snap-center cursor-pointer text-white transition-all duration-500`;
         
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         div.innerHTML = `
-            <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full min-w-0 anim-group">
-                <span class="anim-target-fade px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[7px] font-black uppercase tracking-widest mb-1 opacity-0">
+            <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full min-w-0">
+                <span class="animate-fade-in px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[7px] font-black uppercase tracking-widest mb-1">
                     ${b.tag || 'Destaque'}
                 </span>
-                <h3 class="anim-target-right font-display font-bold text-2xl md:text-4xl leading-tight uppercase tracking-tighter w-full break-words opacity-0">
+                
+                <h3 class="animate-fade-in-right font-display font-bold text-2xl md:text-4xl leading-tight uppercase tracking-tighter w-full break-words">
                     ${b.title}
                 </h3>
-                ${b.subtitle ? `<p class="anim-target-fade opacity-0 text-xs md:text-sm font-medium leading-tight max-w-[90%] break-words line-clamp-2" style="animation-delay: 0.2s">${b.subtitle}</p>` : ''}
-                <div class="anim-target-fade opacity-0 mt-4 px-6 py-2 bg-white/10 border border-white/30 rounded-full text-[9px] font-black uppercase tracking-widest" style="animation-delay: 0.3s">Ver Agora</div>
+                
+                ${b.subtitle ? `<p class="animate-fade-in opacity-90 text-xs md:text-sm font-medium leading-tight max-w-[90%] break-words line-clamp-2" style="animation-delay: 0.2s">${b.subtitle}</p>` : ''}
+                
+                <div class="animate-fade-in mt-4 px-6 py-2 bg-white/10 border border-white/30 rounded-full text-[9px] font-black uppercase tracking-widest" style="animation-delay: 0.3s">Ver Agora</div>
             </div>
+
             ${b.imageUrl ? `
-                <div class="anim-target-float w-32 h-32 md:w-52 md:h-52 rounded-2xl overflow-hidden border-2 border-white/10 shrink-0 ml-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+                <div class="animate-floating w-32 h-32 md:w-52 md:h-52 rounded-2xl overflow-hidden border-2 border-white/10 shrink-0 ml-4 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
                     <img src="${b.imageUrl}" class="w-full h-full object-cover scale-110">
                 </div>` : ''}
         `;
@@ -1205,7 +1206,6 @@ window.closeImageZoom = () => {
         dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
         dotsContainer.appendChild(dot);
     });
-}
 
     const updateDots = () => {
         const scrollIndex = Math.round(container.scrollLeft / (container.offsetWidth + 24));
@@ -1514,38 +1514,6 @@ window.updateCartTotals = () => {
     if(totalDisplay) totalDisplay.textContent = `R$ ${(sub + df).toFixed(2).replace('.', ',')}`; 
 };
 
-        window.scrollToCategory = (categoryName) => {
-    if (!categoryName) return;
-
-    // 1. Aplica o filtro da categoria
-    if (categoryName.toLowerCase() === 'ofertas') {
-        filters.category = 'offers';
-    } else {
-        filters.category = categoryName;
-    }
-    
-    isFavoritesView = false;
-    
-    // 2. Atualiza a interface
-    renderCategoryTabs();
-    renderCatalog();
-
-    // 3. Faz o scroll suave até o container de produtos
-    const catalog = document.getElementById('catalogContainer');
-    if (catalog) {
-        const headerOffset = 160; // Compensação para o header fixo
-        const elementPosition = catalog.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-        window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth"
-        });
-    }
-    
-    showToast(`Filtrando: <b>${categoryName}</b>`);
-};
-
     </script>
 </body>
-</html>
+        </html>
