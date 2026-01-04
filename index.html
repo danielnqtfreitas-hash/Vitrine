@@ -1513,34 +1513,34 @@ window.updateCartTotals = () => {
     const totalDisplay = document.getElementById('cartFinalTotal');
     if(totalDisplay) totalDisplay.textContent = `R$ ${(sub + df).toFixed(2).replace('.', ',')}`; 
 };
-        window.handleBannerClick = (categoryName) => {
+        
+    window.handleBannerClick = (categoryName) => {
     if (!categoryName) return;
 
-    // 1. Aplica o filtro
+    // 1. Limpa busca e favoritos
+    filters.search = "";
     isFavoritesView = false;
+    
+    // 2. Aplica o filtro da categoria exata
     filters.category = categoryName;
     
-    // 2. Renderiza os novos dados na tela
+    // 3. Renderiza os novos dados na tela (Redesenha botões e catálogo)
     renderCategoryTabs();
     renderCatalog();
 
-    // 3. Pequena pausa para o navegador processar os novos elementos
+    // 4. Aguarda a renderização e rola
     setTimeout(() => {
-        // Buscamos o container onde o catálogo começa
-        const container = document.getElementById('catalogContainer');
-        
-        if (container) {
-            // Calculamos a posição exata
-            // Subtraímos 140px para compensar o Header Fixo e a barra de Categorias
-            const yOffset = -140; 
-            const y = container.getBoundingClientRect().top + window.pageYOffset + yOffset;
-
+        // O alvo agora é o topo do catálogo filtrado
+        const target = document.getElementById('catalogContainer');
+        if (target) {
+            // Ajuste de 160px para passar do header e da barra de categorias
+            const y = target.getBoundingClientRect().top + window.pageYOffset - 160;
             window.scrollTo({
                 top: y,
                 behavior: 'smooth'
             });
         }
-    }, 100); // 100ms é o suficiente para o catálogo "existir" na tela
+    }, 150); 
 };
         
 
