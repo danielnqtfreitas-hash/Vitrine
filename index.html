@@ -108,9 +108,13 @@
     }
 }
         #heroGridContainer {
+    /* O padding lateral aqui garante que o primeiro e o último banner parem no lugar certo */
+    padding-left: 4vw;
+    padding-right: 4vw;
     scroll-padding: 0 4vw;
     background-color: transparent !important;
 }
+
 
 .hero-card {
     box-shadow: none !important;
@@ -1106,7 +1110,7 @@ window.closeImageZoom = () => {
 
     banners.forEach((b, index) => {
         const div = document.createElement('div');
-        div.className = `hero-card w-[92vw] md:w-[750px] h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500 mx-[4vw] first:ml-[4vw] last:mr-[4vw]`;
+        div.className = `hero-card w-[92vw] md:w-[750px] h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500 mr-[4vw] last:mr-0`;
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
         div.innerHTML = `
             <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full">
