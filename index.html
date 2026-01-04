@@ -108,12 +108,12 @@
     }
 }
         #heroGridContainer {
-    scroll-padding: 0 4vw; 
+    scroll-padding: 0 4vw;
     background-color: transparent !important;
 }
 
 .hero-card {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); /* Sombra leve apenas no card */
+    box-shadow: none !important;
     border: none !important;
 }
 
@@ -205,9 +205,10 @@
         <!-- BANNERS -->
         <div class="relative w-full bg-transparent pt-2">
     <div id="heroGridContainer" class="flex items-center overflow-x-auto snap-x snap-mandatory gap-0 mb-0 pb-2 hide-scroll h-64 md:h-72 scroll-smooth bg-transparent">
-        </div>
+    </div>
     
-    <div id="carouselDots" class="flex justify-center gap-1.5 py-4 bg-transparent"></div>
+    <div id="carouselDots" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex justify-center gap-1.5 px-3 py-1.5 bg-black/10 backdrop-blur-md rounded-full">
+    </div>
         </div>
         
 
@@ -1099,20 +1100,14 @@ window.closeImageZoom = () => {
         function renderHeroCarousel(banners) {
     const container = document.getElementById('heroGridContainer');
     const dotsContainer = document.getElementById('carouselDots');
-    
     container.innerHTML = '';
     dotsContainer.innerHTML = '';
-    
     if (!banners?.length) return;
 
     banners.forEach((b, index) => {
-        // Criar o Banner
-        // Dentro da função renderHeroCarousel, altere a linha do div.className:
-       
-const div = document.createElement('div');
-div.className = `hero-card w-[92vw] md:w-[750px] h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500 mx-[4vw] first:ml-[4vw] last:mr-[4vw]`;
+        const div = document.createElement('div');
+        div.className = `hero-card w-[92vw] md:w-[750px] h-56 md:h-64 rounded-2xl p-8 flex items-center relative overflow-hidden snap-center cursor-pointer shrink-0 text-white transition-all duration-500 mx-[4vw] first:ml-[4vw] last:mr-[4vw]`;
         div.style.background = `linear-gradient(135deg, ${b.color1 || '#333'}, ${b.color2 || '#000'})`;
-        
         div.innerHTML = `
             <div class="relative z-10 flex-1 flex flex-col justify-center items-start gap-1 h-full">
                 <span class="px-3 py-1 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-[8px] font-black uppercase tracking-widest mb-1">${b.tag || 'Destaque'}</span>
@@ -1121,31 +1116,23 @@ div.className = `hero-card w-[92vw] md:w-[750px] h-56 md:h-64 rounded-2xl p-8 fl
             </div>
             ${b.imageUrl ? `<div class="w-36 h-36 md:w-44 md:h-44 rounded-[2.2rem] overflow-hidden border-2 border-white/20 shrink-0 rotate-2 ml-2"><img src="${b.imageUrl}" class="w-full h-full object-cover scale-110"></div>` : ''}
         `;
-        
         container.appendChild(div);
 
-        // Criar o Pontinho
         const dot = document.createElement('div');
-        // Usando style direto para garantir a cor primária dinâmica
-        dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6' : 'w-1.5 bg-gray-300'}`;
-        if(index === 0) dot.style.backgroundColor = 'var(--color-primary)';
+        dot.className = `h-1.5 transition-all duration-300 rounded-full ${index === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40'}`;
         dotsContainer.appendChild(dot);
     });
 
-    // Lógica para atualizar os pontos ao arrastar
     container.onscroll = () => {
         const itemWidth = container.querySelector('.hero-card').offsetWidth;
         const scrollIndex = Math.round(container.scrollLeft / itemWidth);
-        
         Array.from(dotsContainer.children).forEach((dot, i) => {
             if (i === scrollIndex) {
-                dot.classList.add('w-6');
-                dot.classList.remove('w-1.5', 'bg-gray-300');
-                dot.style.backgroundColor = 'var(--color-primary)';
+                dot.classList.add('w-6', 'bg-white');
+                dot.classList.remove('w-1.5', 'bg-white/40');
             } else {
-                dot.classList.remove('w-6');
-                dot.classList.add('w-1.5', 'bg-gray-300');
-                dot.style.backgroundColor = ''; // Volta para o bg-gray-300 do CSS
+                dot.classList.remove('w-6', 'bg-white');
+                dot.classList.add('w-1.5', 'bg-white/40');
             }
         });
     };
