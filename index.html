@@ -576,6 +576,8 @@
                 // 1. BUSCA A CONFIGURAÇÃO DIRETO DO SERVIDOR
                 const configRef = doc(db, `stores/${STORE_ID}/config/store`);
                 const configSnap = await getDocFromServer(configRef); 
+                const config = configSnap.data();
+storeConfigGlobal = config;
                 
                 if(!configSnap.exists()) {
                     showFatalError("Loja não encontrada", "Verifique o ID da loja na URL.");
@@ -651,13 +653,12 @@
         
         // --- RENDERERS ---
                window.renderCatalog = () => {
-                   renderMagicCategories(allProducts, { magicCategories: { 
-        showNew: document.getElementById('statusDot').parentElement.parentElement.dataset.showNew === 'true',
-        showTop: document.getElementById('statusDot').parentElement.parentElement.dataset.showTop === 'true'
-    }});
+    // FORMA LIMPA: Lê direto da variável, sem depender do HTML
+    renderMagicCategories(allProducts, storeConfigGlobal);
+    
     const container = document.getElementById('catalogContainer'), 
           empty = document.getElementById('emptyState');
-    
+                   
     empty.classList.add('hidden');
     container.innerHTML = '';
 
