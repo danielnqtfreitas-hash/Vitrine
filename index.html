@@ -1604,16 +1604,21 @@ window.updateCartTotals = () => {
 function generateMagicSection(title, products, colorClass) {
     if (products.length === 0) return '';
     return `
-        <section class="animate-fade-in mb-10">
-            <h3 class="font-bold text-slate-800 mb-4 px-3 text-lg flex items-center gap-2">
+        <section class="animate-fade-in mb-8 px-4">
+            <h3 class="font-bold text-slate-800 mb-4 text-lg flex items-center gap-2">
                 <div class="w-1.5 h-6 ${colorClass} rounded-full"></div> ${title}
             </h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5 px-2">
-                ${products.map(p => mkProductCard(p)).join('')}
+            <div class="flex overflow-x-auto gap-4 pb-4 hide-scroll snap-x snap-mandatory -mx-4 px-4">
+                ${products.map(p => `
+                    <div class="min-w-[170px] md:min-w-[220px] snap-start">
+                        ${mkProductCard(p)}
+                    </div>
+                `).join('')}
             </div>
         </section>
     `;
-}
+        }
+                              
 
 // Função que processa e exibe as seções
 async function renderMagicCategories(products, config) {
