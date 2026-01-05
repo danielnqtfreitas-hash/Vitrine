@@ -446,20 +446,25 @@
         </button>
     </div>
         </div>
-
-    <div id="filterModal" class="fixed inset-0 z-[70] hidden">
+         </div>
+            </div>
+    <div id="filterModal" class="fixed inset-0 z-[150] hidden">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
     
-    <div id="filterDrawer" class="absolute inset-y-0 right-0 max-w-xs w-full bg-white flex flex-col transform translate-x-full transition-transform duration-300 z-[1001]">
+    <div id="filterDrawer" class="absolute inset-y-0 right-0 max-w-xs w-full bg-white flex flex-col transform translate-x-full transition-transform duration-300 shadow-2xl">
         <div class="p-5 border-b flex justify-between items-center">
-            <h3 class="font-bold">Filtrar</h3>
-            <button onclick="closeFilterDrawer()"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <h3 class="font-bold text-slate-800">Filtrar</h3>
+            <button onclick="closeFilterDrawer()" class="p-2 hover:bg-slate-100 rounded-full">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
         </div>
         
-        <div class="p-5 space-y-8 flex-1 overflow-y-auto">
+        <div class="p-5 space-y-8 flex-1 overflow-y-auto custom-scrollbar">
             <div>
                 <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Preço Máximo</label>
-                <input id="filterMaxPrice" type="number" placeholder="Até R$..." oninput="filters.maxPrice = parseFloat(this.value); renderCatalog()" class="w-full border rounded-lg p-2.5 text-sm">
+                <input id="filterMaxPrice" type="number" placeholder="Até R$..." 
+                       oninput="filters.maxPrice = this.value ? parseFloat(this.value) : null; renderCatalog()" 
+                       class="w-full border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
             </div>
             <div>
                 <label class="text-xs font-bold text-slate-400 uppercase mb-3 block">Tamanhos</label>
@@ -472,11 +477,16 @@
         </div>
         
         <div class="p-5 border-t bg-slate-50 flex flex-col gap-2">
-            <button onclick="closeFilterDrawer()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl">Ver Resultados</button>
-            <button onclick="resetAllFilters()" class="w-full text-slate-500 font-bold py-2 text-sm">Limpar</button>
+            <button onclick="closeFilterDrawer()" class="w-full bg-primary text-white font-bold py-4 rounded-2xl shadow-lg active-scale">
+                Ver Resultados
+            </button>
+            <button onclick="resetAllFilters(); closeFilterDrawer();" class="w-full text-slate-500 font-bold py-2 text-sm">
+                Limpar Filtros
+            </button>
         </div>
     </div>
-    </div>
+         </div>
+    
 
     <!-- MODAL: TAXAS -->
     <div id="modalDelivery" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
