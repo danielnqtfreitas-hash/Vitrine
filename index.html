@@ -1098,7 +1098,11 @@ window.addEventListener('beforeunload', () => {
     msg += `\n📦 *ITENS:*\n`;
     cart.forEach((item, index) => {
         const vars = [item.v.size, item.v.color].filter(Boolean).join(' / ');
-        msg += `${index + 1}. ${item.q}x ${item.name}${vars ? ' ('+vars+')' : ''} - R$ ${(item.price * item.q).toFixed(2).replace('.', ',')}\n`;
+        
+        // --- ADIÇÃO CIRÚRGICA DO SKU ---
+        const skuText = (item.sku && item.sku !== 'N/A' && item.sku !== '') ? ` [${item.sku}]` : '';
+        
+        msg += `${index + 1}. ${item.q}x ${item.name}${skuText}${vars ? ' ('+vars+')' : ''} - R$ ${(item.price * item.q).toFixed(2).replace('.', ',')}\n`;
     });
     msg += `\n💰 *TOTAL: ${total}*`;
 
@@ -1118,7 +1122,7 @@ window.addEventListener('beforeunload', () => {
     
     lucide.createIcons(); // Garante que os ícones do modal apareçam
 };
-
+        
 window.closeConfirmFinal = () => {
     document.getElementById('modalConfirmFinal').classList.add('hidden');
     // Registro de métrica em segundo plano
