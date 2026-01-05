@@ -1691,20 +1691,32 @@ function generateMagicSection(title, products, colorClass) {
         }
                               
 
-// Função que processa e exibe as seções
+// Função que processa e exibe as seções mágicas (Novidades/Vistos)
 async function renderMagicCategories(products, config) {
     const magicContainer = document.getElementById('magicSections');
     if (!magicContainer) return;
-    magicContainer.innerHTML = '';
+    
+    // LÓGICA DE OCULTAR: 
+    // Se houver busca OU categoria selecionada OU favoritos OU filtros de preço/tamanho/cor ativos
+    const hasActiveFilters = 
+        filters.search.length > 0 || 
+        filters.category !== null || 
+        isFavoritesView || 
+        filters.maxPrice !== null || 
+        filters.sizes.length > 0 || 
+        filters.colors.length > 0;
 
-    // Se estivermos em busca ou favoritos, não mostramos as seções mágicas para não confundir
-    if (filters.search || isFavoritesView || filters.category) {
+    if (hasActiveFilters) {
+        magicContainer.innerHTML = '';
         magicContainer.classList.add('hidden');
         return;
     }
-    magicContainer.classList.remove('hidden');
 
-    // 1. NOVIDADES ✨ (Últimos 10 baseados no timestamp 'createdAt' ou 'lastUpdate')
+    // Se não houver filtros, renderiza as seções
+    magicContainer.classList.remove('hidden');
+    magicContainer.innerHTML = '';
+
+    // 1. NOVIDADES ✨
     if (config.magicCategories?.showNew) {
         const news = [...products]
             .sort((a, b) => (b.lastUpdate?.seconds || 0) - (a.lastUpdate?.seconds || 0))
@@ -1712,7 +1724,7 @@ async function renderMagicCategories(products, config) {
         magicContainer.innerHTML += generateMagicSection("Novidades ✨", news, "bg-purple-600");
     }
 
-    // 2. MAIS VISTOS 🔥 (Baseado no nó de analytics)
+    // 2. MAIS VISTOS 🔥
     if (config.magicCategories?.showTop) {
         try {
             const analyticsRef = doc(db, `stores/${STORE_ID}/analytics`, "product_views");
@@ -1727,8 +1739,9 @@ async function renderMagicCategories(products, config) {
             }
         } catch (e) { console.error("Erro ao carregar mais vistos:", e); }
     }
-    lucide.createIcons();
-        }
+    
+    if (window.lucide) lucide.createIcons();
+}
         
     </script>
 </body>
