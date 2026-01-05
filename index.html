@@ -1173,8 +1173,29 @@ window.closeConfirmFinal = () => {
         window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
         window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(()=>document.getElementById('cartDrawer').classList.remove('translate-x-full'),10); };
         window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('modalCart').classList.add('hidden'),300); };
-        window.openFilterDrawer = () => { document.getElementById('filterModal').classList.remove('hidden'); setTimeout(()=>document.getElementById('filterDrawer').classList.remove('translate-x-full'),10); };
-        window.closeFilterDrawer = () => { document.getElementById('filterDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('filterModal').classList.add('hidden'),300); };
+       // --- FUNÇÕES DE MODAL (CORRIGIDAS E GLOBAIS) ---
+
+window.openFilterDrawer = () => {
+    const modal = document.getElementById('filterModal');
+    const drawer = document.getElementById('filterDrawer');
+    if (modal && drawer) {
+        modal.classList.remove('hidden');
+        // Pequeno delay para a animação de deslizar funcionar
+        setTimeout(() => drawer.classList.remove('translate-x-full'), 10);
+    }
+};
+
+window.closeFilterDrawer = () => {
+    const modal = document.getElementById('filterModal');
+    const drawer = document.getElementById('filterDrawer');
+    if (drawer) drawer.classList.add('translate-x-full');
+    if (modal) setTimeout(() => modal.classList.add('hidden'), 300);
+};
+
+// Se o seu botão de fechar dentro do filtro ainda usar "closeFilterModal", 
+// aponte para a função correta:
+window.closeFilterModal = window.closeFilterDrawer;
+
         window.adjustDetailQty = (d) => { currentDetailQty = Math.max(1, currentDetailQty + d); document.getElementById('detailQtyDisplay').textContent=currentDetailQty; };
         window.setDetailImage = (idx) => { currentDetailImageIndex = idx; updateDetailImageDisplay(); };
         window.updateDetailImageDisplay = () => {
