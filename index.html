@@ -571,20 +571,20 @@
             setupSwipes();
         });
 
-                async function initFlow() {
+                        async function initFlow() {
             try {
                 // 1. BUSCA A CONFIGURAÇÃO DIRETO DO SERVIDOR
                 const configRef = doc(db, `stores/${STORE_ID}/config/store`);
                 const configSnap = await getDocFromServer(configRef); 
-                const config = configSnap.data();
-storeConfigGlobal = config;
                 
                 if(!configSnap.exists()) {
                     showFatalError("Loja não encontrada", "Verifique o ID da loja na URL.");
                     return;
                 }
 
+                // AJUSTE AQUI: Definimos a global ANTES de usar
                 const config = configSnap.data();
+                storeConfigGlobal = config; 
 
                 if(config.subscriptionStatus === 'suspended') { 
                     showFatalError("Indisponível", "Assinatura suspensa."); 
@@ -592,7 +592,7 @@ storeConfigGlobal = config;
                 }
                 
                 applyStoreConfig(config);
-                
+    
                 // 2. GERENCIAMENTO DE CACHE LOCAL
                 const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
                 const cachedRaw = localStorage.getItem(CACHE_KEY);
@@ -652,15 +652,17 @@ storeConfigGlobal = config;
         
         
         // --- RENDERERS ---
-               window.renderCatalog = () => {
-    // FORMA LIMPA: Lê direto da variável, sem depender do HTML
-    renderMagicCategories(allProducts, storeConfigGlobal);
-    
-    const container = document.getElementById('catalogContainer'), 
-          empty = document.getElementById('emptyState');
-                   
-    empty.classList.add('hidden');
-    container.innerHTML = '';
+                       window.renderCatalog = () => {
+            // Chamamos a renderização mágica usando a global segura
+            renderMagicCategories(allProducts, storeConfigGlobal);
+
+            const container = document.getElementById('catalogContainer'), 
+                  empty = document.getElementById('emptyState');
+            
+            if (!container) return; // Proteção extra
+            
+            empty.classList.add('hidden');
+            container.innerHTML = '';
 
     let filtered = allProducts.filter(p => {
         if(isFavoritesView) return favorites.includes(p.id);
