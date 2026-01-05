@@ -137,6 +137,14 @@
     border: none !important;
 }
 
+        /* Garante que o Drawer do filtro fique sempre por cima de tudo */
+#filterModalDrawer {
+    z-index: 1000;
+}
+#filterOverlay {
+    z-index: 990;
+}
+        
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative bg-[#F3F4F6] text-[#334155]">
