@@ -256,7 +256,8 @@
         
         
         <!-- CATALOGO -->
-        <div id="catalogContainer" class="pb-20 space-y-10 min-h-[50vh]"></div>
+        <div id="magicSections" class="pb-4 space-y-10"></div> <div id="catalogContainer" class="pb-20 space-y-10 min-h-[50vh]"></div>
+        
         
         <!-- EMPTY STATES -->
         <div id="emptyState" class="hidden flex flex-col items-center justify-center py-20 text-center animate-fade-in">
@@ -502,6 +503,7 @@
         let failedSearchBuffer = new Set();
         let analyticsTimer = null;
         let searchDebounceTimer = null;
+        let storeConfigGlobal = {};
         let deliveryAreas=[], currentDetailId=null, currentDetailQty=1, currentDetailSelection = { size: null, color: null };
         let currentDetailImages = [], currentDetailImageIndex = 0;
         let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
@@ -630,6 +632,7 @@
                 // Renderização da UI
                 renderCategoryTabs();
                 renderCatalog();
+                renderMagicCategories(allProducts, config); 
                 populateFilterOptions();
                 registerVisit();
                 updateFavoritesUI();
@@ -648,6 +651,10 @@
         
         // --- RENDERERS ---
                window.renderCatalog = () => {
+                   renderMagicCategories(allProducts, { magicCategories: { 
+        showNew: document.getElementById('statusDot').parentElement.parentElement.dataset.showNew === 'true',
+        showTop: document.getElementById('statusDot').parentElement.parentElement.dataset.showTop === 'true'
+    }});
     const container = document.getElementById('catalogContainer'), 
           empty = document.getElementById('emptyState');
     
@@ -1589,7 +1596,61 @@ window.updateCartTotals = () => {
     // Atualiza os preços (taxa de entrega)
     updateCartTotals();
 };
-     
+
+        // Função para gerar o HTML de cada seção mágica
+function generateMagicSection(title, products, colorClass) {
+    if (products.length === 0) return '';
+    return `
+        <section class="animate-fade-in mb-10">
+            <h3 class="font-bold text-slate-800 mb-4 px-3 text-lg flex items-center gap-2">
+                <div class="w-1.5 h-6 ${colorClass} rounded-full"></div> ${title}
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-5 px-2">
+                ${products.map(p => mkProductCard(p)).join('')}
+            </div>
+        </section>
+    `;
+}
+
+// Função que processa e exibe as seções
+async function renderMagicCategories(products, config) {
+    const magicContainer = document.getElementById('magicSections');
+    if (!magicContainer) return;
+    magicContainer.innerHTML = '';
+
+    // Se estivermos em busca ou favoritos, não mostramos as seções mágicas para não confundir
+    if (filters.search || isFavoritesView || filters.category) {
+        magicContainer.classList.add('hidden');
+        return;
+    }
+    magicContainer.classList.remove('hidden');
+
+    // 1. NOVIDADES ✨ (Últimos 10 baseados no timestamp 'createdAt' ou 'lastUpdate')
+    if (config.magicCategories?.showNew) {
+        const news = [...products]
+            .sort((a, b) => (b.lastUpdate?.seconds || 0) - (a.lastUpdate?.seconds || 0))
+            .slice(0, 10);
+        magicContainer.innerHTML += generateMagicSection("Novidades ✨", news, "bg-purple-600");
+    }
+
+    // 2. MAIS VISTOS 🔥 (Baseado no nó de analytics)
+    if (config.magicCategories?.showTop) {
+        try {
+            const analyticsRef = doc(db, `stores/${STORE_ID}/analytics`, "product_views");
+            const snap = await getDoc(analyticsRef);
+            if (snap.exists()) {
+                const stats = snap.data().stats || {};
+                const top = [...products]
+                    .filter(p => stats[p.id]?.views > 0)
+                    .sort((a, b) => (stats[b.id]?.views || 0) - (stats[a.id]?.views || 0))
+                    .slice(0, 10);
+                magicContainer.innerHTML += generateMagicSection("Mais Vistos 🔥", top, "bg-orange-500");
+            }
+        } catch (e) { console.error("Erro ao carregar mais vistos:", e); }
+    }
+    lucide.createIcons();
+        }
+        
     </script>
 </body>
         </html>
