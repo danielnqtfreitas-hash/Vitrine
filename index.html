@@ -215,9 +215,10 @@
                 <input type="text" id="desktopSearch" oninput="handleSearchInput(this.value)" placeholder="O que você procura?" class="w-full bg-transparent border-none py-2.5 pl-10 pr-2 text-sm focus:ring-0">
                 <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
             </div>
-            <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-full hover:bg-slate-200 bg-white shadow-sm border border-slate-200 text-slate-600">
-                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-            </button>
+            <button onclick="openFilterDrawer()" class="relative p-2 m-1 rounded-full hover:bg-slate-200 bg-white shadow-sm border border-slate-200 text-slate-600">
+    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+    <span id="filterBadgeDesktop" class="absolute -top-1 -right-1 bg-primary text-white text-[9px] font-black h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
+</button>
         </div>
 
         <div class="flex items-center gap-1 md:gap-3 shrink-0">
@@ -238,9 +239,11 @@
                 <input type="text" id="mobileSearch" oninput="handleSearchInput(this.value)" placeholder="Buscar produtos..." class="w-full bg-transparent border-none py-3 pl-10 pr-2 text-sm focus:ring-0">
                 <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2"></i>
             </div>
-            <button onclick="openFilterDrawer()" class="p-2 m-1 rounded-lg bg-white shadow-sm border border-slate-200 text-slate-600">
-                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+            <button onclick="openFilterDrawer()" class="relative p-2 m-1 rounded-lg bg-white shadow-sm border border-slate-200 text-slate-600">
+    <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+    <span id="filterBadgeMobile" class="absolute -top-1 -right-1 bg-primary text-white text-[9px] font-black h-4 w-4 flex items-center justify-center rounded-full border-2 border-white transform scale-0 transition-transform duration-300">0</span>
             </button>
+            
         </div>
     </div>
 </header>
