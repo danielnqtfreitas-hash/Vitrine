@@ -448,6 +448,8 @@
         </div>
          </div>
             </div>
+
+    
     <div id="filterModal" class="fixed inset-0 z-[150] hidden">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
     
@@ -942,7 +944,7 @@ window.addEventListener('beforeunload', () => {
 
 // --- UTILS ---
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
-        window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
+        window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog();updateFilterBadge(); };
         window.toggleFavorite = (id) => { 
     // 1. "Fotografa" a posição de scroll de todos os carrosséis antes de resetar
     const containers = document.querySelectorAll('.hide-scroll');
@@ -1446,6 +1448,7 @@ window.closeImageZoom = () => {
                 else filters[type].push(val);
                 populateFilterOptions(); 
                 renderCatalog();
+                updateFilterBadge();
             };
             container.appendChild(d);
         });
@@ -1742,6 +1745,31 @@ async function renderMagicCategories(products, config) {
     
     if (window.lucide) lucide.createIcons();
 }
+
+        window.updateFilterBadge = () => {
+    let count = 0;
+
+    // Conta se o preço máximo foi definido
+    if (filters.maxPrice !== null && filters.maxPrice !== "") count++;
+    
+    // Soma a quantidade de tamanhos selecionados
+    count += filters.sizes.length;
+    
+    // Soma a quantidade de cores selecionadas
+    count += filters.colors.length;
+
+    // Atualiza os elementos visualmente
+    const badges = [document.getElementById('filterBadgeDesktop'), document.getElementById('filterBadgeMobile')];
+    
+    badges.forEach(badge => {
+        if (badge) {
+            badge.textContent = count;
+            // Se count > 0, mostra o badge (scale-100), se não, esconde (scale-0)
+            badge.classList.toggle('scale-100', count > 0);
+            badge.classList.toggle('scale-0', count === 0);
+        }
+    });
+};
         
     </script>
 </body>
