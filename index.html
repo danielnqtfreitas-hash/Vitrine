@@ -416,6 +416,7 @@
             <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados do Pedido</h4>
             
             <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+            <input type="tel" id="checkPhone" placeholder="Seu WhatsApp com DDD" oninput="this.value = this.value.replace(/\D/g,'')" class="w-full mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
             
             <div class="flex gap-2">
                 <select id="checkPayment" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none">
@@ -524,7 +525,9 @@
             setDoc, 
             updateDoc, 
             Timestamp,
-            writeBatch
+            writeBatch,
+            addDoc,
+    serverTimestamp
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
                 // --- CONFIGURAÇÃO & ESTADO ---
@@ -1049,79 +1052,116 @@ window.addEventListener('beforeunload', () => {
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
-        window.checkoutWhatsApp = () => { 
-    if(!cart.length) return; 
+                window.checkoutWhatsApp = async () => { 
+            if(!cart.length) return; 
 
-    // 1. Captura dos dados
-    const nome = document.getElementById('checkName').value.trim();
-    const pagamento = document.getElementById('checkPayment').value;
-    const isRetirada = document.getElementById('cartDeliverySelect').value === "0";
-    
-    // 2. Validação Obrigatória (Nome e Pagamento)
-    if(!nome || !pagamento) {
-        showToast("⚠️ Preencha seu nome e forma de pagamento.");
-        return;
-    }
+            // 1. Captura e Validação
+            const nome = document.getElementById('checkName').value.trim();
+            const telefone = document.getElementById('checkPhone') ? document.getElementById('checkPhone').value.trim() : "";
+            const pagamento = document.getElementById('checkPayment').value;
+            const isRetirada = document.getElementById('cartDeliverySelect').value === "0";
+            
+            // Validações básicas
+            if(!nome || !pagamento) {
+                showToast("⚠️ Preencha nome e pagamento.");
+                return;
+            }
+            
+            // Valida telefone (importante para o "Pedido Fantasma")
+            if(!telefone || telefone.length < 10) {
+                 showToast("⚠️ Digite seu WhatsApp com DDD.");
+                 return;
+            }
 
-    // 3. Validação de Endereço (Apenas se NÃO for retirada)
-    if(!isRetirada) {
-        const rua = document.getElementById('checkStreet').value.trim();
-        const numero = document.getElementById('checkNumber').value.trim();
-        const bairro = document.getElementById('checkNeighborhood').value.trim();
-        if(!rua || !numero || !bairro) {
-            showToast("⚠️ Preencha os dados de entrega.");
-            return;
-        }
-    }
+            // Validação de endereço (apenas se não for retirada)
+            let enderecoCompleto = "Retirada na Loja";
+            let dadosEndereco = {};
+            
+            if(!isRetirada) {
+                const rua = document.getElementById('checkStreet').value.trim();
+                const numero = document.getElementById('checkNumber').value.trim();
+                const bairro = document.getElementById('checkNeighborhood').value.trim();
+                const ref = document.getElementById('checkReference').value.trim();
+                
+                if(!rua || !numero || !bairro) {
+                    showToast("⚠️ Preencha o endereço de entrega.");
+                    return;
+                }
+                enderecoCompleto = `${rua}, ${numero} - ${bairro}${ref ? ' ('+ref+')' : ''}`;
+                dadosEndereco = { street: rua, number: numero, neighborhood: bairro, reference: ref };
+            }
 
-    const total = document.getElementById('cartFinalTotal').textContent;
-    const freteTexto = document.getElementById('cartDeliverySelect').options[document.getElementById('cartDeliverySelect').selectedIndex].text; 
+            // 2. Feedback Visual (Loading no botão)
+            const btn = document.querySelector('button[onclick="checkoutWhatsApp()"]');
+            const oldBtnContent = btn.innerHTML;
+            btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Processando...`;
+            btn.disabled = true;
 
-    // 4. Montagem da Mensagem para o WhatsApp
-    const storeName = document.getElementById('storeNameDisplay').textContent.toUpperCase();
-    let msg = `*🛍️ NOVO PEDIDO - ${storeName}*\n\n`;
-    msg += `👤 *CLIENTE:* ${nome}\n`;
-    msg += `💳 *PAGAMENTO:* ${pagamento}\n`;
-    
-    if(isRetirada) {
-        msg += `📍 *ENTREGA:* Vou retirar na loja\n`;
-    } else {
-        const rua = document.getElementById('checkStreet').value.trim();
-        const numero = document.getElementById('checkNumber').value.trim();
-        const bairro = document.getElementById('checkNeighborhood').value.trim();
-        const ref = document.getElementById('checkReference').value.trim();
-        msg += `📍 *ENTREGA:* ${rua}, ${numero} - ${bairro}\n`;
-        if(ref) msg += `🔍 *REF:* ${ref}\n`;
-        msg += `🚚 *FRETE:* ${freteTexto}\n`;
-    }
+            try {
+                // 3. Preparar dados para o Firestore
+                const totalValueTexto = document.getElementById('cartFinalTotal').textContent.replace('R$ ','').replace('.','').replace(',','.');
+                const totalValue = parseFloat(totalValueTexto);
+                const taxaEntrega = isRetirada ? 0 : parseFloat(document.getElementById('cartDeliverySelect').value);
 
-    msg += `\n📦 *ITENS:*\n`;
-    cart.forEach((item, index) => {
-        const vars = [item.v.size, item.v.color].filter(Boolean).join(' / ');
+                const orderData = {
+                    customer: {
+                        name: nome,
+                        phone: telefone, 
+                        addressString: enderecoCompleto,
+                        addressDetails: isRetirada ? null : dadosEndereco
+                    },
+                    items: cart.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        sku: item.sku || "",
+                        qty: item.q,
+                        price: item.price,
+                        variations: item.v || {}
+                    })),
+                    paymentMethod: pagamento,
+                    deliveryFee: taxaEntrega,
+                    total: totalValue,
+                    status: 'pending_whatsapp', 
+                    createdAt: serverTimestamp(),
+                    platform: 'web_catalog'
+                };
+
+                // 4. Gravar no Firestore (Aqui acontece a mágica do Pedido Fantasma)
+                const docRef = await addDoc(collection(db, `stores/${STORE_ID}/orders`), orderData);
+                
+                // ID curto para facilitar a comunicação (ex: A1B2)
+                const shortId = docRef.id.slice(-4).toUpperCase();
+
+                // 5. Gerar Link do WhatsApp Simplificado
+                const storeName = document.getElementById('storeNameDisplay').textContent;
+                
+                let msg = `Olá, *${storeName}*!\n\n`;
+                msg += `Fiz o pedido *#${shortId}* pelo site.\n`;
+                msg += `Nome: *${nome}*\n`;
+                msg += `Total: *R$ ${totalValue.toFixed(2).replace('.',',')}*\n\n`;
+                msg += `Aguardo a confirmação.`;
+
+                const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+                
+                // 6. Finalização
+                localStorage.removeItem(`cart_${STORE_ID}`);
+                cart = [];
+                updateCartUI();
+                closeCartModal();
+                
+                // Abre o WhatsApp
+                window.open(link, '_blank');
+
+            } catch (error) {
+                console.error("Erro ao processar pedido:", error);
+                showToast("❌ Erro de conexão. Tente novamente.");
+            } finally {
+                // Restaura o botão
+                btn.innerHTML = oldBtnContent;
+                btn.disabled = false;
+            }
+        };
         
-        // --- ADIÇÃO CIRÚRGICA DO SKU ---
-        const skuText = (item.sku && item.sku !== 'N/A' && item.sku !== '') ? ` [${item.sku}]` : '';
-        
-        msg += `${index + 1}. ${item.q}x ${item.name}${skuText}${vars ? ' ('+vars+')' : ''} - R$ ${(item.price * item.q).toFixed(2).replace('.', ',')}\n`;
-    });
-    msg += `\n💰 *TOTAL: ${total}*`;
-
-    // 5. Configuração do Modal de Confirmação (Garantia contra bloqueio de pop-up)
-    const btnWhatsapp = document.getElementById('btnFinalWhatsapp');
-    const modalConfirm = document.getElementById('modalConfirmFinal');
-
-    if(btnWhatsapp && modalConfirm) {
-        // Injeta o link diretamente no botão "Entendi" do modal
-        btnWhatsapp.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
-        // Mostra o modal na tela
-        modalConfirm.classList.remove('hidden');
-    } else {
-        // Fallback de segurança: se o modal não existir por algum motivo, tenta abrir direto
-        window.open(`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`, '_blank'); 
-    }
-    
-    lucide.createIcons(); // Garante que os ícones do modal apareçam
-};
         
 window.closeConfirmFinal = () => {
     document.getElementById('modalConfirmFinal').classList.add('hidden');
