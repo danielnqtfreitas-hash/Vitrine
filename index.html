@@ -912,20 +912,38 @@ window.addEventListener('beforeunload', () => {
         window.handleSearchInput = (v) => { filters.search=v; renderCatalog(); };
         window.resetAllFilters = () => { filters={search:"",category:null,maxPrice:null,sizes:[],colors:[]}; isFavoritesView=false; document.querySelectorAll('input').forEach(i=>i.value=''); renderCategoryTabs(); renderCatalog(); };
         window.toggleFavorite = (id) => { 
+    // 1. "Fotografa" a posição de scroll de todos os carrosséis antes de resetar
+    const containers = document.querySelectorAll('.hide-scroll');
+    const positions = Array.from(containers).map(el => ({
+        element: el,
+        scrollLeft: el.scrollLeft
+    }));
+
     const idx = favorites.indexOf(id); 
     if(idx > -1) {
-        favorites.splice(idx, 1); // Remove se já existir
+        favorites.splice(idx, 1); 
     } else {
-        favorites.push(id); // Adiciona se não existir
+        favorites.push(id); 
     }
     
-    // SALVA NA GAVETA DA LOJA ATUAL
+    // Salva localmente
     localStorage.setItem(FAV_KEY, JSON.stringify(favorites)); 
     
+    // 2. Renderiza novamente (isso normalmente resetaria o scroll)
     renderCatalog(); 
     updateFavoritesUI(); 
     if(currentDetailId === id) updateModalHeartBtn(); 
+
+    // 3. Devolve o scroll para onde estava instantaneamente
+    // Usamos um pequeno timeout de 0ms para garantir que o DOM já foi redesenhado
+    setTimeout(() => {
+        const newContainers = document.querySelectorAll('.hide-scroll');
+        newContainers.forEach((el, i) => {
+            if(positions[i]) el.scrollLeft = positions[i].scrollLeft;
+        });
+    }, 0);
 };
+            
         window.toggleFavoritesView = () => { isFavoritesView = !isFavoritesView; renderCategoryTabs(); renderCatalog(); window.scrollTo({top:0, behavior:'smooth'}); };
         window.updateFavoritesUI = () => {
     const count = favorites.length;
