@@ -1130,7 +1130,7 @@ window.addEventListener('beforeunload', () => {
                 const docRef = await addDoc(collection(db, `stores/${STORE_ID}/orders`), orderData);
                 
                 // ID curto para facilitar a comunicação (ex: A1B2)
-                const shortId = docRef.id.slice(-4).toUpperCase();
+                const shortId = docRef.id.slice(-5).toUpperCase();
 
                 // 5. Gerar Link do WhatsApp Simplificado
                 const storeName = document.getElementById('storeNameDisplay').textContent;
