@@ -770,30 +770,42 @@
 
 
         function mkProductCard(p) {
-            const hasPromo = p.promoValue && p.promoValue < p.value, price = hasPromo ? p.promoValue : p.value, img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem', isFav = favorites.includes(p.id);
-            const disc = hasPromo ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10">-${Math.round(((p.value - p.promoValue) / p.value) * 100)}%</span>` : '';
-            return `<div onclick="openProductModal('${p.id}')" class="product-card cursor-pointer group flex flex-col h-full relative">
-                <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
-                    <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
-                    ${disc}
-                    <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm z-20">
-                        <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'heart-active' : 'text-slate-400'}"></i>
-                    </button>
+    const hasPromo = p.promoValue && p.promoValue < p.value;
+    const price = hasPromo ? p.promoValue : p.value;
+    const img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem';
+    const isFav = favorites.includes(p.id);
+    
+    // NOVA LÓGICA DE ESTOQUE ZERADO
+    const outOfStock = (parseInt(p.stock) || 0) <= 0;
+    
+    const disc = hasPromo && !outOfStock ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10">-${Math.round(((p.value - p.promoValue) / p.value) * 100)}%</span>` : '';
+    
+    const stockBadge = outOfStock ? `<span class="absolute inset-0 bg-white/60 flex items-center justify-center text-red-600 font-black text-xs uppercase z-20">Esgotado</span>` : '';
+
+    return `<div onclick="${outOfStock ? '' : `openProductModal('${p.id}')`}" class="product-card cursor-pointer group flex flex-col h-full relative ${outOfStock ? 'opacity-70 grayscale' : ''}">
+        <div class="aspect-square bg-white relative overflow-hidden border-b border-slate-50">
+            ${stockBadge}
+            <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 ${outOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">
+            ${disc}
+            <button onclick="event.stopPropagation(); toggleFavorite('${p.id}')" class="absolute top-2 left-2 p-1.5 rounded-full bg-white/80 backdrop-blur-sm z-20">
+                <i data-lucide="heart" class="w-4 h-4 ${isFav ? 'heart-active' : 'text-slate-400'}"></i>
+            </button>
+        </div>
+        <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
+            <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
+            <div class="mt-auto pt-1">
+                <div class="flex items-center justify-between">
+                    <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">R$ ${price.toFixed(2).replace('.',',')}</span>
+                    ${outOfStock ? '' : `
+                    <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>`}
                 </div>
-                <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
-                    <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2 group-hover:text-primary transition-colors">${p.name}</h4>
-                    <div class="mt-auto pt-1">
-                        ${hasPromo ? `<span class="text-[11px] text-slate-400 line-through block mb-0.5">R$ ${p.value.toFixed(2).replace('.',',')}</span>` : '<span class="block h-4"></span>'}
-                        <div class="flex items-center justify-between">
-                            <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">R$ ${price.toFixed(2).replace('.',',')}</span>
-                            <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
-                                <i data-lucide="plus" class="w-5 h-5"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        }
+            </div>
+        </div>
+    </div>`;
+}
+
 
         // --- CORE LOGIC ---
                 // --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
