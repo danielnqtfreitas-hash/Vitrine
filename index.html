@@ -1270,7 +1270,22 @@ window.closeFilterDrawer = () => {
 // aponte para a função correta:
 window.closeFilterModal = window.closeFilterDrawer;
 
-        window.adjustDetailQty = (d) => { currentDetailQty = Math.max(1, currentDetailQty + d); document.getElementById('detailQtyDisplay').textContent=currentDetailQty; };
+        window.adjustDetailQty = (d) => {
+    const p = allProducts.find(x => x.id === currentDetailId);
+    if(!p) return;
+
+    const maxStock = parseInt(p.stock) || 0;
+    const novaQuantidade = currentDetailQty + d;
+
+    if (novaQuantidade > maxStock) {
+        showToast(`⚠️ Desculpe, temos apenas ${maxStock} unidades em estoque.`);
+        return;
+    }
+
+    currentDetailQty = Math.max(1, novaQuantidade); 
+    document.getElementById('detailQtyDisplay').textContent = currentDetailQty; 
+};
+
         window.setDetailImage = (idx) => { currentDetailImageIndex = idx; updateDetailImageDisplay(); };
         window.updateDetailImageDisplay = () => {
             const img = document.getElementById('detailImg');
@@ -1618,25 +1633,34 @@ window.closeCartModal = () => {
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
 window.addToCart = (p, q, v) => {
+    // Verificação de estoque antes de adicionar
+    const maxStock = parseInt(p.stock) || 0;
+    
+    // Calcula quanto o cliente já tem desse item na sacola (mesma variação)
+    const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
+    const naSacola = cart.find(x => x.uid === uid);
+    const totalDesejado = (naSacola ? naSacola.q : 0) + q;
+
+    if (totalDesejado > maxStock) {
+        showToast(`⚠️ Estoque insuficiente. Você já tem ${naSacola ? naSacola.q : 0} na sacola e tentou adicionar mais ${q}.`);
+        return;
+    }
+
     const CART_KEY = `cart_${STORE_ID}`;
     const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
-    const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
     
-    const ex = cart.find(x => x.uid === uid); 
-    if(ex) {
-        ex.q += q; 
+    if(naSacola) {
+        naSacola.q += q; 
     } else {
         cart.push({uid, id: p.id, sku: p.sku || 'N/A', name: p.name, price, q, img: p.images?.[0] || 'https://placehold.co/100', v: {...v}}); 
     }
 
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
-    
     updateCartUI(); 
     showToast(`<b>${p.name}</b> na sacola!`); 
-    
-    // CORREÇÃO: Fecha o modal de detalhes após adicionar
     window.closeModalDetails(); 
 };
+
 
 window.updateCartUI = () => {
     const cnt = cart.reduce((a, b) => a + b.q, 0); 
