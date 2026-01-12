@@ -1077,102 +1077,123 @@ window.addEventListener('beforeunload', () => {
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
                 
-            window.checkoutWhatsApp = async () => { 
-    if(!cart.length) return; 
+                    window.checkoutWhatsApp = async () => { 
+            if(!cart.length) return; 
 
-    const nome = document.getElementById('checkName').value.trim();
-    const telefone = document.getElementById('checkPhone') ? document.getElementById('checkPhone').value.trim() : "";
-    const pagamento = document.getElementById('checkPayment').value;
-    const isRetirada = document.getElementById('cartDeliverySelect').value === "0";
-    
-    if(!nome || !pagamento || !telefone || telefone.length < 10) {
-        showToast("⚠️ Preencha nome, WhatsApp e pagamento.");
-        return;
-    }
+            // 1. Captura e Validação de Identidade
+            const nome = document.getElementById('checkName').value.trim();
+            const telefone = document.getElementById('checkPhone') ? document.getElementById('checkPhone').value.trim() : "";
+            const pagamento = document.getElementById('checkPayment').value;
+            const deliverySelect = document.getElementById('cartDeliverySelect');
+            const isRetirada = deliverySelect.value === "0";
+            
+            if(!nome || !pagamento || !telefone || telefone.length < 10) {
+                showToast("⚠️ Preencha nome, WhatsApp e pagamento.");
+                return;
+            }
 
-    let enderecoCompleto = "Retirada na Loja";
-    let dadosEndereco = {};
-    
-    if(!isRetirada) {
-        const rua = document.getElementById('checkStreet').value.trim();
-        const numero = document.getElementById('checkNumber').value.trim();
-        const bairro = document.getElementById('checkNeighborhood').value.trim();
-        const ref = document.getElementById('checkReference').value.trim();
-        
-        if(!rua || !numero || !bairro) {
-            showToast("⚠️ Preencha o endereço de entrega.");
-            return;
-        }
-        enderecoCompleto = `${rua}, ${numero} - ${bairro}${ref ? ' ('+ref+')' : ''}`;
-        dadosEndereco = { street: rua, number: numero, neighborhood: bairro, reference: ref };
-    }
+            // 2. Validação de Endereço Completo
+            let enderecoCompleto = "Retirada na Loja";
+            let dadosEndereco = {};
+            
+            if(!isRetirada) {
+                const rua = document.getElementById('checkStreet').value.trim();
+                const numero = document.getElementById('checkNumber').value.trim();
+                const bairro = document.getElementById('checkNeighborhood').value.trim();
+                const ref = document.getElementById('checkReference').value.trim();
+                
+                if(!rua || !numero || !bairro) {
+                    showToast("⚠️ Preencha o endereço completo para entrega.");
+                    return;
+                }
+                enderecoCompleto = `${rua}, ${numero} - ${bairro}${ref ? ' ('+ref+')' : ''}`;
+                dadosEndereco = { street: rua, number: numero, neighborhood: bairro, reference: ref };
+            }
 
-    const btn = document.querySelector('button[onclick="checkoutWhatsApp()"]');
-    const oldBtnContent = btn.innerHTML;
-    btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Processando...`;
-    btn.disabled = true;
+            // 3. Feedback de Processamento no Botão
+            const btn = document.querySelector('button[onclick="checkoutWhatsApp()"]');
+            const oldBtnContent = btn.innerHTML;
+            btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Processando...`;
+            btn.disabled = true;
 
-    try {
-        const totalValueTexto = document.getElementById('cartFinalTotal').textContent.replace('R$ ','').replace('.','').replace(',','.');
-        const totalValue = parseFloat(totalValueTexto);
-        const taxaEntrega = isRetirada ? 0 : parseFloat(document.getElementById('cartDeliverySelect').value);
+            try {
+                // 4. Cálculos Financeiros
+                const subtotal = cart.reduce((a, b) => a + (b.price * b.q), 0);
+                const taxaEntrega = isRetirada ? 0 : parseFloat(deliverySelect.value);
+                const totalFinal = subtotal + taxaEntrega;
 
-        const orderData = {
-            customer: { name: nome, phone: telefone, addressString: enderecoCompleto, addressDetails: isRetirada ? null : dadosEndereco },
-            items: cart.map(item => ({
-                id: item.id,
-                name: item.name,
-                sku: item.sku || "", // Envia o SKU da variação para o banco
-                qty: item.q,
-                price: item.price,
-                variations: item.v || {}
-            })),
-            paymentMethod: pagamento,
-            deliveryFee: taxaEntrega,
-            total: totalValue,
-            status: 'pending_whatsapp', 
-            createdAt: serverTimestamp(),
-            platform: 'web_catalog'
+                // 5. Registro do Pedido no Firestore (O que aparece no Painel do Lojista)
+                const orderData = {
+                    customer: {
+                        name: nome,
+                        phone: telefone, 
+                        addressString: enderecoCompleto,
+                        addressDetails: isRetirada ? null : dadosEndereco
+                    },
+                    items: cart.map(item => ({
+                        id: item.id,
+                        name: item.name,
+                        sku: item.sku || "N/A", // Captura o SKU Individual da variação
+                        qty: item.q,
+                        price: item.price,
+                        variations: item.v || {}
+                    })),
+                    paymentMethod: pagamento,
+                    deliveryFee: taxaEntrega,
+                    total: totalFinal,
+                    status: 'pending_whatsapp', 
+                    createdAt: serverTimestamp(),
+                    platform: 'web_catalog',
+                    stockDeducted: false // O lojista confirma a baixa no painel
+                };
+
+                const docRef = await addDoc(collection(db, `stores/${STORE_ID}/orders`), orderData);
+                const shortId = docRef.id.slice(-5).toUpperCase(); // ID Curto para referência rápida
+
+                // 6. Montagem da Mensagem para WhatsApp com Design Organizado
+                const storeName = document.getElementById('storeNameDisplay').textContent;
+                
+                let msg = `🛍️ *NOVO PEDIDO: #${shortId}*\n`;
+                msg += `---------------------------\n\n`;
+                msg += `👤 *Cliente:* ${nome}\n`;
+                msg += `📱 *WhatsApp:* ${telefone}\n\n`;
+                
+                msg += `📦 *ITENS DO PEDIDO:*\n`;
+                cart.forEach(item => {
+                    const vars = [item.v.size, item.v.color].filter(Boolean).join('/');
+                    msg += `• ${item.q}x ${item.name} ${vars ? '('+vars+')' : ''}\n`;
+                    msg += `  _Ref: ${item.sku}_\n`; // Código único da variação
+                });
+
+                msg += `\n💰 *VALORES:*\n`;
+                msg += `Subtotal: R$ ${subtotal.toFixed(2).replace('.',',')}\n`;
+                if(!isRetirada) msg += `Entrega: R$ ${taxaEntrega.toFixed(2).replace('.',',')}\n`;
+                msg += `*Total: R$ ${totalFinal.toFixed(2).replace('.',',')}*\n\n`;
+
+                msg += `💳 *PAGAMENTO:* ${pagamento}\n`;
+                msg += `📍 *ENTREGA:* ${enderecoCompleto}\n\n`;
+                msg += `---------------------------\n`;
+                msg += `_Pedido gerado via Vitrine Online_`;
+
+                const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+                
+                // 7. Limpeza e Redirecionamento
+                localStorage.removeItem(`cart_${STORE_ID}`);
+                cart = [];
+                updateCartUI();
+                closeCartModal();
+                
+                window.open(link, '_blank');
+
+            } catch (error) {
+                console.error("Erro no checkout:", error);
+                showToast("❌ Erro ao enviar pedido. Verifique sua conexão.");
+            } finally {
+                btn.innerHTML = oldBtnContent;
+                btn.disabled = false;
+            }
         };
-
-        const docRef = await addDoc(collection(db, `stores/${STORE_ID}/orders`), orderData);
-        const shortId = docRef.id.slice(-5).toUpperCase();
-        const storeName = document.getElementById('storeNameDisplay').textContent;
-        
-        // --- MONTAGEM DA MENSAGEM COM SKUs ---
-        let msg = `Olá, *${storeName}*!\n\n`;
-        msg += `Fiz o pedido *#${shortId}* pelo site.\n`;
-        msg += `Nome: *${nome}*\n\n`;
-        
-        msg += `*ITENS DO PEDIDO:*\n`;
-        cart.forEach(item => {
-            const vars = [item.v.size, item.v.color].filter(Boolean).join('/');
-            msg += `• ${item.q}x ${item.name} ${vars ? '('+vars+')' : ''}\n`;
-            msg += `  _Ref: ${item.sku}_\n`; // Código SKU da variação no WhatsApp
-        });
-
-        msg += `\nTotal: *R$ ${totalValue.toFixed(2).replace('.',',')}*\n`;
-        msg += `Pagamento: *${pagamento}*\n`;
-        msg += `Entrega: *${enderecoCompleto}*\n\n`;
-        msg += `Aguardo a confirmação.`;
-
-        const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
-        
-        localStorage.removeItem(`cart_${STORE_ID}`);
-        cart = [];
-        updateCartUI();
-        closeCartModal();
-        window.open(link, '_blank');
-
-    } catch (error) {
-        console.error("Erro:", error);
-        showToast("❌ Erro de conexão.");
-    } finally {
-        btn.innerHTML = oldBtnContent;
-        btn.disabled = false;
-    }
-};        
-        
+       
         
 window.closeConfirmFinal = () => {
     document.getElementById('modalConfirmFinal').classList.add('hidden');
