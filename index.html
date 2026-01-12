@@ -838,13 +838,14 @@
             document.getElementById('detailSku').textContent = p.sku || 'N/A';
             document.getElementById('detailDesc').textContent=p.description||''; 
 
-            const renderVariationUI = () => {
+                        const renderVariationUI = () => {
                 const matrix = p.variations || [];
                 const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
 
                 const updatePrices = () => {
                     let price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
                     let oldP = (p.promoValue && p.promoValue < p.value) ? p.value : null;
+                    let skuDinamico = p.sku || 'N/A'; // SKU base padrão
                     let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
 
                     if(isComplete && matrix.length) {
@@ -852,13 +853,23 @@
                             (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
                             (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
                         );
-                        if(comb && comb.active) { price = comb.price; oldP = null; } 
+                        if(comb && comb.active) { 
+                            price = comb.price; 
+                            oldP = null;
+                            skuDinamico = comb.sku || skuDinamico; // Captura o SKU da variação
+                        } 
                         else if(hasS || hasC) isComplete = false;
                     }
+                    
+                    // Atualização cirúrgica da UI
                     document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
                     document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
+                    document.getElementById('detailSku').textContent = skuDinamico; // Reflete o SKU na tela
                     document.getElementById('detailAddBtn').disabled = !isComplete;
+                    
+                    // Armazena no objeto temporário para o carrinho
                     p.currentFinalPrice = price; 
+                    p.currentSKU = skuDinamico; 
                 };
 
                 const renderChips = (list, type, container, wrapper) => {
@@ -893,6 +904,7 @@
                 renderChips(p.colors, 'color', document.getElementById('detailColorsContainer'), document.getElementById('colorsWrapper'));
                 updatePrices();
             };
+
 
             renderVariationUI();
             document.getElementById('detailQtyDisplay').textContent="1"; 
@@ -1064,115 +1076,102 @@ window.addEventListener('beforeunload', () => {
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
-                window.checkoutWhatsApp = async () => { 
-            if(!cart.length) return; 
-
-            // 1. Captura e Validação
-            const nome = document.getElementById('checkName').value.trim();
-            const telefone = document.getElementById('checkPhone') ? document.getElementById('checkPhone').value.trim() : "";
-            const pagamento = document.getElementById('checkPayment').value;
-            const isRetirada = document.getElementById('cartDeliverySelect').value === "0";
-            
-            // Validações básicas
-            if(!nome || !pagamento) {
-                showToast("⚠️ Preencha nome e pagamento.");
-                return;
-            }
-            
-            // Valida telefone (importante para o "Pedido Fantasma")
-            if(!telefone || telefone.length < 10) {
-                 showToast("⚠️ Digite seu WhatsApp com DDD.");
-                 return;
-            }
-
-            // Validação de endereço (apenas se não for retirada)
-            let enderecoCompleto = "Retirada na Loja";
-            let dadosEndereco = {};
-            
-            if(!isRetirada) {
-                const rua = document.getElementById('checkStreet').value.trim();
-                const numero = document.getElementById('checkNumber').value.trim();
-                const bairro = document.getElementById('checkNeighborhood').value.trim();
-                const ref = document.getElementById('checkReference').value.trim();
                 
-                if(!rua || !numero || !bairro) {
-                    showToast("⚠️ Preencha o endereço de entrega.");
-                    return;
-                }
-                enderecoCompleto = `${rua}, ${numero} - ${bairro}${ref ? ' ('+ref+')' : ''}`;
-                dadosEndereco = { street: rua, number: numero, neighborhood: bairro, reference: ref };
-            }
+            window.checkoutWhatsApp = async () => { 
+    if(!cart.length) return; 
 
-            // 2. Feedback Visual (Loading no botão)
-            const btn = document.querySelector('button[onclick="checkoutWhatsApp()"]');
-            const oldBtnContent = btn.innerHTML;
-            btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Processando...`;
-            btn.disabled = true;
+    const nome = document.getElementById('checkName').value.trim();
+    const telefone = document.getElementById('checkPhone') ? document.getElementById('checkPhone').value.trim() : "";
+    const pagamento = document.getElementById('checkPayment').value;
+    const isRetirada = document.getElementById('cartDeliverySelect').value === "0";
+    
+    if(!nome || !pagamento || !telefone || telefone.length < 10) {
+        showToast("⚠️ Preencha nome, WhatsApp e pagamento.");
+        return;
+    }
 
-            try {
-                // 3. Preparar dados para o Firestore
-                const totalValueTexto = document.getElementById('cartFinalTotal').textContent.replace('R$ ','').replace('.','').replace(',','.');
-                const totalValue = parseFloat(totalValueTexto);
-                const taxaEntrega = isRetirada ? 0 : parseFloat(document.getElementById('cartDeliverySelect').value);
+    let enderecoCompleto = "Retirada na Loja";
+    let dadosEndereco = {};
+    
+    if(!isRetirada) {
+        const rua = document.getElementById('checkStreet').value.trim();
+        const numero = document.getElementById('checkNumber').value.trim();
+        const bairro = document.getElementById('checkNeighborhood').value.trim();
+        const ref = document.getElementById('checkReference').value.trim();
+        
+        if(!rua || !numero || !bairro) {
+            showToast("⚠️ Preencha o endereço de entrega.");
+            return;
+        }
+        enderecoCompleto = `${rua}, ${numero} - ${bairro}${ref ? ' ('+ref+')' : ''}`;
+        dadosEndereco = { street: rua, number: numero, neighborhood: bairro, reference: ref };
+    }
 
-                const orderData = {
-                    customer: {
-                        name: nome,
-                        phone: telefone, 
-                        addressString: enderecoCompleto,
-                        addressDetails: isRetirada ? null : dadosEndereco
-                    },
-                    items: cart.map(item => ({
-                        id: item.id,
-                        name: item.name,
-                        sku: item.sku || "",
-                        qty: item.q,
-                        price: item.price,
-                        variations: item.v || {}
-                    })),
-                    paymentMethod: pagamento,
-                    deliveryFee: taxaEntrega,
-                    total: totalValue,
-                    status: 'pending_whatsapp', 
-                    createdAt: serverTimestamp(),
-                    platform: 'web_catalog'
-                };
+    const btn = document.querySelector('button[onclick="checkoutWhatsApp()"]');
+    const oldBtnContent = btn.innerHTML;
+    btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Processando...`;
+    btn.disabled = true;
 
-                // 4. Gravar no Firestore (Aqui acontece a mágica do Pedido Fantasma)
-                const docRef = await addDoc(collection(db, `stores/${STORE_ID}/orders`), orderData);
-                
-                // ID curto para facilitar a comunicação (ex: A1B2)
-                const shortId = docRef.id.slice(-5).toUpperCase();
+    try {
+        const totalValueTexto = document.getElementById('cartFinalTotal').textContent.replace('R$ ','').replace('.','').replace(',','.');
+        const totalValue = parseFloat(totalValueTexto);
+        const taxaEntrega = isRetirada ? 0 : parseFloat(document.getElementById('cartDeliverySelect').value);
 
-                // 5. Gerar Link do WhatsApp Simplificado
-                const storeName = document.getElementById('storeNameDisplay').textContent;
-                
-                let msg = `Olá, *${storeName}*!\n\n`;
-                msg += `Fiz o pedido *#${shortId}* pelo site.\n`;
-                msg += `Nome: *${nome}*\n`;
-                msg += `Total: *R$ ${totalValue.toFixed(2).replace('.',',')}*\n\n`;
-                msg += `Aguardo a confirmação.`;
-
-                const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
-                
-                // 6. Finalização
-                localStorage.removeItem(`cart_${STORE_ID}`);
-                cart = [];
-                updateCartUI();
-                closeCartModal();
-                
-                // Abre o WhatsApp
-                window.open(link, '_blank');
-
-            } catch (error) {
-                console.error("Erro ao processar pedido:", error);
-                showToast("❌ Erro de conexão. Tente novamente.");
-            } finally {
-                // Restaura o botão
-                btn.innerHTML = oldBtnContent;
-                btn.disabled = false;
-            }
+        const orderData = {
+            customer: { name: nome, phone: telefone, addressString: enderecoCompleto, addressDetails: isRetirada ? null : dadosEndereco },
+            items: cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                sku: item.sku || "", // Envia o SKU da variação para o banco
+                qty: item.q,
+                price: item.price,
+                variations: item.v || {}
+            })),
+            paymentMethod: pagamento,
+            deliveryFee: taxaEntrega,
+            total: totalValue,
+            status: 'pending_whatsapp', 
+            createdAt: serverTimestamp(),
+            platform: 'web_catalog'
         };
+
+        const docRef = await addDoc(collection(db, `stores/${STORE_ID}/orders`), orderData);
+        const shortId = docRef.id.slice(-5).toUpperCase();
+        const storeName = document.getElementById('storeNameDisplay').textContent;
+        
+        // --- MONTAGEM DA MENSAGEM COM SKUs ---
+        let msg = `Olá, *${storeName}*!\n\n`;
+        msg += `Fiz o pedido *#${shortId}* pelo site.\n`;
+        msg += `Nome: *${nome}*\n\n`;
+        
+        msg += `*ITENS DO PEDIDO:*\n`;
+        cart.forEach(item => {
+            const vars = [item.v.size, item.v.color].filter(Boolean).join('/');
+            msg += `• ${item.q}x ${item.name} ${vars ? '('+vars+')' : ''}\n`;
+            msg += `  _Ref: ${item.sku}_\n`; // Código SKU da variação no WhatsApp
+        });
+
+        msg += `\nTotal: *R$ ${totalValue.toFixed(2).replace('.',',')}*\n`;
+        msg += `Pagamento: *${pagamento}*\n`;
+        msg += `Entrega: *${enderecoCompleto}*\n\n`;
+        msg += `Aguardo a confirmação.`;
+
+        const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+        
+        localStorage.removeItem(`cart_${STORE_ID}`);
+        cart = [];
+        updateCartUI();
+        closeCartModal();
+        window.open(link, '_blank');
+
+    } catch (error) {
+        console.error("Erro:", error);
+        showToast("❌ Erro de conexão.");
+    } finally {
+        btn.innerHTML = oldBtnContent;
+        btn.disabled = false;
+    }
+};        
         
         
 window.closeConfirmFinal = () => {
@@ -1645,10 +1644,7 @@ window.closeCartModal = () => {
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
 window.addToCart = (p, q, v) => {
-    // Verificação de estoque antes de adicionar
     const maxStock = parseInt(p.stock) || 0;
-    
-    // Calcula quanto o cliente já tem desse item na sacola (mesma variação)
     const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
@@ -1661,10 +1657,23 @@ window.addToCart = (p, q, v) => {
     const CART_KEY = `cart_${STORE_ID}`;
     const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
     
+    // Captura o SKU dinâmico ou o SKU base do produto
+    const skuFinal = p.currentSKU || p.sku || 'N/A';
+    
     if(naSacola) {
         naSacola.q += q; 
+        naSacola.sku = skuFinal; // Garante que o SKU esteja atualizado
     } else {
-        cart.push({uid, id: p.id, sku: p.sku || 'N/A', name: p.name, price, q, img: p.images?.[0] || 'https://placehold.co/100', v: {...v}}); 
+        cart.push({
+            uid, 
+            id: p.id, 
+            sku: skuFinal, // <--- Aqui o SKU da variação entra no pedido
+            name: p.name, 
+            price, 
+            q, 
+            img: p.images?.[0] || 'https://placehold.co/100', 
+            v: {...v}
+        }); 
     }
 
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
