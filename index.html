@@ -416,32 +416,28 @@
             <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados do Pedido</h4>
             
             <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-            <input type="tel" id="checkPhone" placeholder="Seu WhatsApp com DDD" oninput="this.value = this.value.replace(/\D/g,'')" class="w-full mt-3 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
             
-
+            <input type="tel" id="checkPhone" placeholder="Seu WhatsApp com DDD" oninput="this.value = this.value.replace(/\D/g,'')" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+            
             <div class="flex flex-col gap-2">
-    <div class="flex gap-2">
-        <select id="checkPayment" onchange="toggleChangeField(this.value)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-            <option value="" disabled selected>Pagamento</option>
-            <option value="Pix">Pix</option>
-            <option value="Cartão">Cartão</option>
-            <option value="Dinheiro">Dinheiro</option>
-        </select>
-        <select id="cartDeliverySelect" onchange="toggleAddressFields()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
-    </div>
+                <div class="flex gap-2">
+                    <select id="checkPayment" onchange="toggleChangeField(this.value)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                        <option value="" disabled selected>Pagamento</option>
+                        <option value="Pix">Pix</option>
+                        <option value="Cartão">Cartão</option>
+                        <option value="Dinheiro">Dinheiro</option>
+                    </select>
+                    <select id="cartDeliverySelect" onchange="toggleAddressFields()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
+                </div>
 
-    <div id="changeField" class="hidden animate-fade-in bg-amber-50 p-3 rounded-xl border border-amber-100">
-        <label class="text-[9px] font-black text-amber-600 uppercase tracking-widest ml-1">Precisa de troco para quanto?</label>
-        <div class="relative mt-1">
-            <span class="absolute left-3 top-2.5 text-amber-600 text-sm font-bold">R$</span>
-            <input type="number" id="checkChange" placeholder="Ex: 50,00" 
-                   class="w-full bg-white border border-amber-200 rounded-lg p-2 pl-10 text-sm outline-none focus:ring-2 focus:ring-amber-400/20">
-        </div>
-    </div>
-            </div>
-
-                </select>
-                <select id="cartDeliverySelect" onchange="toggleAddressFields()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
+                <div id="changeField" class="hidden animate-fade-in bg-amber-50 p-3 rounded-xl border border-amber-100">
+                    <label class="text-[9px] font-black text-amber-600 uppercase tracking-widest ml-1">Troco para quanto?</label>
+                    <div class="relative mt-1">
+                        <span class="absolute left-3 top-2.5 text-amber-600 text-sm font-bold">R$</span>
+                        <input type="number" id="checkChange" placeholder="Ex: 100,00" 
+                               class="w-full bg-white border border-amber-200 rounded-lg p-2 pl-10 text-sm outline-none focus:ring-2 focus:ring-amber-400/20">
+                    </div>
+                </div>
             </div>
 
             <div id="addressFields" class="space-y-3 animate-fade-in">
@@ -456,6 +452,7 @@
             </div>
         </div>
     </div>
+    
     <div class="p-5 border-t bg-white mt-auto">
         <div class="flex justify-between text-xl font-display font-black text-slate-900 mb-4">
             <span>Total</span>
@@ -465,9 +462,8 @@
             Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
         </button>
     </div>
-        </div>
-         </div>
-            </div>
+</div>
+
 
     
     <div id="filterModal" class="fixed inset-0 z-[150] hidden">
