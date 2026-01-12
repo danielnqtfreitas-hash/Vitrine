@@ -424,6 +424,15 @@
                     <option value="Pix">Pix</option>
                     <option value="Cartão">Cartão</option>
                     <option value="Dinheiro">Dinheiro</option>
+                    <div id="changeField" class="hidden animate-fade-in mt-3">
+    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Precisa de troco para quanto?</label>
+    <div class="relative mt-1">
+        <span class="absolute left-3 top-3 text-slate-400 text-sm font-bold">R$</span>
+        <input type="number" id="checkChange" placeholder="Ex: 100,00" 
+               class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+    </div>
+</div>
+
                 </select>
                 <select id="cartDeliverySelect" onchange="toggleAddressFields()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
             </div>
@@ -1165,6 +1174,24 @@ window.addEventListener('beforeunload', () => {
                     msg += `  _Ref: ${item.sku}_\n`; // Código único da variação
                 });
 
+                const trocoPara = document.getElementById('checkChange').value;
+                let infoPagamento = `*${pagamento}*`;
+                
+                if(pagamento === 'Dinheiro' && trocoPara) {
+                    const valorTroco = parseFloat(trocoPara) - totalFinal;
+                    if(valorTroco > 0) {
+                        infoPagamento += ` (Troco para R$ ${parseFloat(trocoPara).toFixed(2).replace('.',',')})`;
+                    }
+                }
+
+                msg += `\n💰 *VALORES:*\n`;
+                msg += `Subtotal: R$ ${subtotal.toFixed(2).replace('.',',')}\n`;
+                if(!isRetirada) msg += `Entrega: R$ ${taxaEntrega.toFixed(2).replace('.',',')}\n`;
+                msg += `*Total: R$ ${totalFinal.toFixed(2).replace('.',',')}*\n\n`;
+
+                msg += `💳 *PAGAMENTO:* ${infoPagamento}\n`; // Aqui vai a info de troco
+                msg += `📍 *ENTREGA:* ${enderecoCompleto}\n\n`;
+
                 msg += `\n💰 *VALORES:*\n`;
                 msg += `Subtotal: R$ ${subtotal.toFixed(2).replace('.',',')}\n`;
                 if(!isRetirada) msg += `Entrega: R$ ${taxaEntrega.toFixed(2).replace('.',',')}\n`;
@@ -1883,6 +1910,19 @@ async function renderMagicCategories(products, config) {
         }
     });
 };
+// Monitora a seleção de pagamento para mostrar o campo de troco
+document.addEventListener('change', (e) => {
+    if(e.target.id === 'checkPayment') {
+        const changeField = document.getElementById('changeField');
+        if(e.target.value === 'Dinheiro') {
+            changeField.classList.remove('hidden');
+        } else {
+            changeField.classList.add('hidden');
+            document.getElementById('checkChange').value = ''; // Limpa se mudar de ideia
+        }
+    }
+});
+
         
     </script>
 </body>
