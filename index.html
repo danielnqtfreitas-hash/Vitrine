@@ -1069,24 +1069,47 @@ window.addEventListener('beforeunload', () => {
         function updateModalHeartBtn() { const b=document.querySelector('#modalHeartBtn svg'); if(favorites.includes(currentDetailId)){b.classList.add('heart-active');}else{b.classList.remove('heart-active');} }
         
         window.addToCart = (p, q, v) => {
-    // 1. Criar uma chave única para o carrinho desta loja
-    const CART_KEY = `cart_${STORE_ID}`;
-    
-    const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
+    const maxStock = parseInt(p.stock) || 0;
     const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
-    
-    const ex = cart.find(x => x.uid === uid); 
-    if(ex) {
-        ex.q += q; 
-    } else {
-        cart.push({uid, id: p.id, sku: p.sku || 'N/A', name: p.name, price, q, img: p.images?.[0] || 'https://placehold.co/100', v: {...v}}); 
+    const naSacola = cart.find(x => x.uid === uid);
+    const totalDesejado = (naSacola ? naSacola.q : 0) + q;
+
+    if (totalDesejado > maxStock) {
+        showToast(`⚠️ Estoque insuficiente.`);
+        return;
     }
 
-    // 2. Salvar o carrinho apenas para esta loja no navegador
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    const CART_KEY = `cart_${STORE_ID}`;
+    const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
+    const skuFinal = p.currentSKU || p.sku || 'N/A';
     
+    // Captura a imagem específica da variação ou a principal do pai
+    const imagemVenda = v.image || p.images[0];
+
+    if(naSacola) {
+        naSacola.q += q; 
+    } else {
+        cart.push({
+            uid, 
+            id: p.id, 
+            sku: skuFinal,
+            name: p.name, 
+            price, 
+            q, 
+            img: imagemVenda, // Foto que aparece no carrinho do cliente
+            variationDetails: {
+                size: v.size,
+                color: v.color,
+                image: imagemVenda // Foto que o Painel do Lojista vai ler
+            },
+            v: {...v} // Mantém compatibilidade com funções antigas
+        }); 
+    }
+
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
     updateCartUI(); 
     showToast(`<b>${p.name}</b> na sacola!`); 
+    window.closeModalDetails(); 
 };
 
 
@@ -1746,7 +1769,6 @@ window.addToCart = (p, q, v) => {
     window.closeModalDetails(); 
 };
 
-
 window.updateCartUI = () => {
     const cnt = cart.reduce((a, b) => a + b.q, 0); 
     const b = document.getElementById('cartBadge'); 
@@ -1768,7 +1790,8 @@ window.updateCartUI = () => {
         if(step1Footer) step1Footer.classList.remove('hidden');
         l.innerHTML = cart.map(i => `
             <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
-                <img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
+                <img src="${i.variationDetails?.image || i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
+                
                 <div class="flex-1">
                     <div class="flex justify-between font-bold text-xs text-slate-800">
                         <span class="truncate pr-2">${i.name}</span>
@@ -1790,6 +1813,7 @@ window.updateCartUI = () => {
     updateCartTotals();
     window.toggleAddressFields();
 };
+
 
 window.modQty = (u, d) => {
     const i = cart.find(x => x.uid === u);
