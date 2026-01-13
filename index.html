@@ -820,7 +820,7 @@
 
 
         // --- CORE LOGIC ---
-// --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
+  // --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
 window.openProductModal = (id) => { 
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
@@ -828,11 +828,22 @@ window.openProductModal = (id) => {
     // GATILHO: Registra que o produto foi visto para o Analytics
     trackProductView(p.id, p.name);
 
-    currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
-    currentDetailImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
+    currentDetailId = id; 
+    currentDetailQty = 1; 
+    currentDetailSelection = {size: null, color: null}; 
+    
+    // --- ATUALIZAÇÃO CIRÚRGICA: COLECIONAR TODAS AS IMAGENS (PRODUTO + VARIAÇÕES) LOGO NO INÍCIO ---
+    const mainImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
+    const variationImages = (p.variations || [])
+        .map(v => v.image)
+        .filter(img => img && !mainImages.includes(img)); // Evita duplicatas
+    
+    currentDetailImages = [...mainImages, ...variationImages];
     currentDetailImageIndex = 0;
     
-    const thumbContainer = document.getElementById('detailThumbnails'); thumbContainer.innerHTML = '';
+    const thumbContainer = document.getElementById('detailThumbnails'); 
+    thumbContainer.innerHTML = '';
+    
     if (currentDetailImages.length > 1) { 
         currentDetailImages.forEach((url, idx) => { 
             const img = document.createElement('img'); 
@@ -842,13 +853,15 @@ window.openProductModal = (id) => {
             thumbContainer.appendChild(img); 
         }); 
         thumbContainer.style.display = 'flex'; 
-    } else thumbContainer.style.display = 'none';
+    } else {
+        thumbContainer.style.display = 'none';
+    }
     
     updateDetailImageDisplay();
-    document.getElementById('detailCat').textContent=p.category; 
-    document.getElementById('detailName').textContent=p.name; 
+    document.getElementById('detailCat').textContent = p.category; 
+    document.getElementById('detailName').textContent = p.name; 
     document.getElementById('detailSku').textContent = p.sku || 'N/A';
-    document.getElementById('detailDesc').textContent=p.description||''; 
+    document.getElementById('detailDesc').textContent = p.description || ''; 
 
     const renderVariationUI = () => {
         const matrix = p.variations || [];
@@ -870,24 +883,10 @@ window.openProductModal = (id) => {
                     oldP = null;
                     skuDinamico = comb.sku || skuDinamico; 
 
-                    // --- ATUALIZAÇÃO CIRÚRGICA: TROCA DE IMAGEM POR VARIAÇÃO ---
+                    // --- SINCRONIA DE FOTO AO CLICAR NA VARIAÇÃO ---
                     if (comb.image) {
-                        let imgIdx = currentDetailImages.indexOf(comb.image);
-                        if (imgIdx !== -1) {
-                            setDetailImage(imgIdx);
-                        } else {
-                            // Caso a imagem da variação não esteja na galeria principal, 
-                            // adicionamos ela dinamicamente para garantir a exibição
-                            currentDetailImages.push(comb.image);
-                            const newIdx = currentDetailImages.length - 1;
-                            const img = document.createElement('img'); 
-                            img.src = comb.image; 
-                            img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
-                            img.onclick = () => setDetailImage(newIdx); 
-                            thumbContainer.appendChild(img);
-                            thumbContainer.style.display = 'flex';
-                            setDetailImage(newIdx);
-                        }
+                        const imgIdx = currentDetailImages.indexOf(comb.image);
+                        if (imgIdx !== -1) setDetailImage(imgIdx);
                     }
                 } 
                 else if(hasS || hasC) isComplete = false;
@@ -936,13 +935,14 @@ window.openProductModal = (id) => {
     };
 
     renderVariationUI();
-    document.getElementById('detailQtyDisplay').textContent="1"; 
+    document.getElementById('detailQtyDisplay').textContent = "1"; 
     updateModalHeartBtn(); 
-    document.getElementById('detailAddBtn').onclick=()=>{ addToCart(p,currentDetailQty,currentDetailSelection); closeModalDetails(); }; 
+    document.getElementById('detailAddBtn').onclick = () => { addToCart(p, currentDetailQty, currentDetailSelection); closeModalDetails(); }; 
     renderRelatedProducts(p);
     document.getElementById('modalDetails').classList.remove('hidden'); 
     lucide.createIcons();
 };
+                    
 
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
       function trackProductView(productId) {
