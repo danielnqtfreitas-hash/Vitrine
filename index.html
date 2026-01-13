@@ -820,112 +820,129 @@
 
 
         // --- CORE LOGIC ---
-                // --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
-        window.openProductModal = (id) => { 
-            const p = allProducts.find(x => x.id === id); 
-            if(!p) return; 
+// --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
+window.openProductModal = (id) => { 
+    const p = allProducts.find(x => x.id === id); 
+    if(!p) return; 
 
-            // GATILHO: Registra que o produto foi visto para o Analytics
-            trackProductView(p.id, p.name);
+    // GATILHO: Registra que o produto foi visto para o Analytics
+    trackProductView(p.id, p.name);
 
-            currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
-            currentDetailImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
-            currentDetailImageIndex = 0;
-            
-            const thumbContainer = document.getElementById('detailThumbnails'); thumbContainer.innerHTML = '';
-            if (currentDetailImages.length > 1) { 
-                currentDetailImages.forEach((url, idx) => { 
-                    const img = document.createElement('img'); 
-                    img.src = url; 
-                    img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
-                    img.onclick = () => setDetailImage(idx); 
-                    thumbContainer.appendChild(img); 
-                }); 
-                thumbContainer.style.display = 'flex'; 
-            } else thumbContainer.style.display = 'none';
-            
-            updateDetailImageDisplay();
-            document.getElementById('detailCat').textContent=p.category; 
-            document.getElementById('detailName').textContent=p.name; 
-            document.getElementById('detailSku').textContent = p.sku || 'N/A';
-            document.getElementById('detailDesc').textContent=p.description||''; 
+    currentDetailId=id; currentDetailQty=1; currentDetailSelection={size:null,color:null}; 
+    currentDetailImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
+    currentDetailImageIndex = 0;
+    
+    const thumbContainer = document.getElementById('detailThumbnails'); thumbContainer.innerHTML = '';
+    if (currentDetailImages.length > 1) { 
+        currentDetailImages.forEach((url, idx) => { 
+            const img = document.createElement('img'); 
+            img.src = url; 
+            img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+            img.onclick = () => setDetailImage(idx); 
+            thumbContainer.appendChild(img); 
+        }); 
+        thumbContainer.style.display = 'flex'; 
+    } else thumbContainer.style.display = 'none';
+    
+    updateDetailImageDisplay();
+    document.getElementById('detailCat').textContent=p.category; 
+    document.getElementById('detailName').textContent=p.name; 
+    document.getElementById('detailSku').textContent = p.sku || 'N/A';
+    document.getElementById('detailDesc').textContent=p.description||''; 
 
-                        const renderVariationUI = () => {
-                const matrix = p.variations || [];
-                const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
+    const renderVariationUI = () => {
+        const matrix = p.variations || [];
+        const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
 
-                const updatePrices = () => {
-                    let price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-                    let oldP = (p.promoValue && p.promoValue < p.value) ? p.value : null;
-                    let skuDinamico = p.sku || 'N/A'; // SKU base padrão
-                    let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
+        const updatePrices = () => {
+            let price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+            let oldP = (p.promoValue && p.promoValue < p.value) ? p.value : null;
+            let skuDinamico = p.sku || 'N/A'; 
+            let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
 
-                    if(isComplete && matrix.length) {
-                        const comb = matrix.find(v => 
-                            (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
-                            (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
-                        );
-                        if(comb && comb.active) { 
-                            price = comb.price; 
-                            oldP = null;
-                            skuDinamico = comb.sku || skuDinamico; // Captura o SKU da variação
-                        } 
-                        else if(hasS || hasC) isComplete = false;
-                    }
-                    
-                    // Atualização cirúrgica da UI
-                    document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
-                    document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
-                    document.getElementById('detailSku').textContent = skuDinamico; // Reflete o SKU na tela
-                    document.getElementById('detailAddBtn').disabled = !isComplete;
-                    
-                    // Armazena no objeto temporário para o carrinho
-                    p.currentFinalPrice = price; 
-                    p.currentSKU = skuDinamico; 
-                };
+            if(isComplete && matrix.length) {
+                const comb = matrix.find(v => 
+                    (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
+                    (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
+                );
+                if(comb && comb.active) { 
+                    price = comb.price; 
+                    oldP = null;
+                    skuDinamico = comb.sku || skuDinamico; 
 
-                const renderChips = (list, type, container, wrapper) => {
-                    container.innerHTML = '';
-                    if(!list?.length) { wrapper.classList.add('hidden'); return; }
-                    wrapper.classList.remove('hidden');
-                    const otherType = type === 'size' ? 'color' : 'size';
-                    const otherVal = currentDetailSelection[otherType];
-
-                    list.forEach(val => {
-                        const chip = document.createElement('div');
-                        const normVal = val.trim().toLowerCase();
-                        const isSelected = currentDetailSelection[type] && currentDetailSelection[type].trim().toLowerCase() === normVal;
-                        let isPossible = true;
-                        if(matrix.length) {
-                            if(otherVal) {
-                                isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal && v[otherType].trim().toLowerCase() === otherVal.trim().toLowerCase());
-                            } else {
-                                isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal);
-                            }
+                    // --- ATUALIZAÇÃO CIRÚRGICA: TROCA DE IMAGEM POR VARIAÇÃO ---
+                    if (comb.image) {
+                        let imgIdx = currentDetailImages.indexOf(comb.image);
+                        if (imgIdx !== -1) {
+                            setDetailImage(imgIdx);
+                        } else {
+                            // Caso a imagem da variação não esteja na galeria principal, 
+                            // adicionamos ela dinamicamente para garantir a exibição
+                            currentDetailImages.push(comb.image);
+                            const newIdx = currentDetailImages.length - 1;
+                            const img = document.createElement('img'); 
+                            img.src = comb.image; 
+                            img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+                            img.onclick = () => setDetailImage(newIdx); 
+                            thumbContainer.appendChild(img);
+                            thumbContainer.style.display = 'flex';
+                            setDetailImage(newIdx);
                         }
-                        const CHIP_S = "border-primary bg-primary text-white font-bold ring-2 ring-primary/20 shadow-md";
-                        const CHIP_D = "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
-                        chip.className = `px-4 py-2 border rounded-lg text-xs chip-common ${isSelected ? CHIP_S : (isPossible ? CHIP_D : 'chip-disabled')}`;
-                        chip.textContent = val;
-                        chip.onclick = () => { if(!isPossible) return; currentDetailSelection[type] = isSelected ? null : val; renderVariationUI(); };
-                        container.appendChild(chip);
-                    });
-                };
-
-                renderChips(p.sizes, 'size', document.getElementById('detailSizesContainer'), document.getElementById('sizesWrapper'));
-                renderChips(p.colors, 'color', document.getElementById('detailColorsContainer'), document.getElementById('colorsWrapper'));
-                updatePrices();
-            };
-
-
-            renderVariationUI();
-            document.getElementById('detailQtyDisplay').textContent="1"; 
-            updateModalHeartBtn(); 
-            document.getElementById('detailAddBtn').onclick=()=>{ addToCart(p,currentDetailQty,currentDetailSelection); closeModalDetails(); }; 
-            renderRelatedProducts(p);
-            document.getElementById('modalDetails').classList.remove('hidden'); 
-            lucide.createIcons();
+                    }
+                } 
+                else if(hasS || hasC) isComplete = false;
+            }
+            
+            document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
+            document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
+            document.getElementById('detailSku').textContent = skuDinamico; 
+            document.getElementById('detailAddBtn').disabled = !isComplete;
+            
+            p.currentFinalPrice = price; 
+            p.currentSKU = skuDinamico; 
         };
+
+        const renderChips = (list, type, container, wrapper) => {
+            container.innerHTML = '';
+            if(!list?.length) { wrapper.classList.add('hidden'); return; }
+            wrapper.classList.remove('hidden');
+            const otherType = type === 'size' ? 'color' : 'size';
+            const otherVal = currentDetailSelection[otherType];
+
+            list.forEach(val => {
+                const chip = document.createElement('div');
+                const normVal = val.trim().toLowerCase();
+                const isSelected = currentDetailSelection[type] && currentDetailSelection[type].trim().toLowerCase() === normVal;
+                let isPossible = true;
+                if(matrix.length) {
+                    if(otherVal) {
+                        isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal && v[otherType].trim().toLowerCase() === otherVal.trim().toLowerCase());
+                    } else {
+                        isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal);
+                    }
+                }
+                const CHIP_S = "border-primary bg-primary text-white font-bold ring-2 ring-primary/20 shadow-md";
+                const CHIP_D = "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
+                chip.className = `px-4 py-2 border rounded-lg text-xs chip-common ${isSelected ? CHIP_S : (isPossible ? CHIP_D : 'chip-disabled')}`;
+                chip.textContent = val;
+                chip.onclick = () => { if(!isPossible) return; currentDetailSelection[type] = isSelected ? null : val; renderVariationUI(); };
+                container.appendChild(chip);
+            });
+        };
+
+        renderChips(p.sizes, 'size', document.getElementById('detailSizesContainer'), document.getElementById('sizesWrapper'));
+        renderChips(p.colors, 'color', document.getElementById('detailColorsContainer'), document.getElementById('colorsWrapper'));
+        updatePrices();
+    };
+
+    renderVariationUI();
+    document.getElementById('detailQtyDisplay').textContent="1"; 
+    updateModalHeartBtn(); 
+    document.getElementById('detailAddBtn').onclick=()=>{ addToCart(p,currentDetailQty,currentDetailSelection); closeModalDetails(); }; 
+    renderRelatedProducts(p);
+    document.getElementById('modalDetails').classList.remove('hidden'); 
+    lucide.createIcons();
+};
 
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
       function trackProductView(productId) {
@@ -1089,14 +1106,14 @@ window.addEventListener('beforeunload', () => {
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
                 
-           window.checkoutWhatsApp = async () => { 
+window.checkoutWhatsApp = async () => { 
     if(!cart.length) return; 
 
     // 1. Captura e Validação de Identidade
     const nome = document.getElementById('checkName').value.trim();
     const telefone = document.getElementById('checkPhone') ? document.getElementById('checkPhone').value.trim() : "";
     const pagamento = document.getElementById('checkPayment').value;
-    const trocoPara = document.getElementById('checkChange').value; // Novo campo
+    const trocoPara = document.getElementById('checkChange').value;
     const deliverySelect = document.getElementById('cartDeliverySelect');
     const isRetirada = deliverySelect.value === "0";
     
@@ -1105,7 +1122,7 @@ window.addEventListener('beforeunload', () => {
         return;
     }
 
-    // 2. Validação de Endereço Completo
+    // 2. Validação de Endereço
     let enderecoCompleto = "Retirada na Loja";
     let dadosEndereco = {};
     
@@ -1123,7 +1140,7 @@ window.addEventListener('beforeunload', () => {
         dadosEndereco = { street: rua, number: numero, neighborhood: bairro, reference: ref };
     }
 
-    // 3. Feedback de Processamento no Botão
+    // 3. Feedback visual
     const btn = document.querySelector('button[onclick="checkoutWhatsApp()"]');
     const oldBtnContent = btn.innerHTML;
     btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Processando...`;
@@ -1135,7 +1152,6 @@ window.addEventListener('beforeunload', () => {
         const taxaEntrega = isRetirada ? 0 : parseFloat(deliverySelect.value);
         const totalFinal = subtotal + taxaEntrega;
 
-        // Lógica de Troco
         let infoPagamento = pagamento;
         if(pagamento === 'Dinheiro' && trocoPara) {
             const valorTrocoDigitado = parseFloat(trocoPara);
@@ -1144,7 +1160,7 @@ window.addEventListener('beforeunload', () => {
             }
         }
 
-        // 5. Registro do Pedido no Firestore
+        // 5. REGISTRO DO PEDIDO (ATUALIZAÇÃO CIRÚRGICA PARA VARIAÇÕES)
         const orderData = {
             customer: {
                 name: nome,
@@ -1155,12 +1171,17 @@ window.addEventListener('beforeunload', () => {
             items: cart.map(item => ({
                 id: item.id,
                 name: item.name,
-                sku: item.sku || "N/A",
+                sku: item.sku || "N/A", // Captura SKU da variação (Ex: CAM-AZUL-P)
                 qty: item.q,
                 price: item.price,
-                variations: item.v || {}
+                // Passamos os detalhes para o painel administrativo dar a baixa correta
+                variationDetails: {
+                    color: item.v.color || null,
+                    size: item.v.size || null,
+                    image: item.img // Foto da variação escolhida
+                }
             })),
-            paymentMethod: infoPagamento, // Salva o método com info de troco
+            paymentMethod: infoPagamento,
             deliveryFee: taxaEntrega,
             total: totalFinal,
             status: 'pending_whatsapp', 
@@ -1178,7 +1199,6 @@ window.addEventListener('beforeunload', () => {
         let msg = `🛍️ *PEDIDO: #${shortId}*\n`;
         msg += `---------------------------\n\n`;
         msg += `👤 *Cliente:* ${nome}\n`;
-        msg += `📱 *WhatsApp:* ${telefone}\n\n`;
         
         msg += `📦 *ITENS DO PEDIDO:*\n`;
         cart.forEach(item => {
@@ -1199,7 +1219,7 @@ window.addEventListener('beforeunload', () => {
 
         const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
         
-        // 7. Limpeza e Redirecionamento
+        // 7. Limpeza
         const CART_KEY = `cart_${STORE_ID}`;
         localStorage.removeItem(CART_KEY);
         cart = [];
@@ -1216,7 +1236,6 @@ window.addEventListener('beforeunload', () => {
         btn.disabled = false;
     }
 };
-
        
         
 window.closeConfirmFinal = () => {
@@ -1919,6 +1938,18 @@ document.addEventListener('change', (e) => {
         }
     }
 });
+
+        function renderThumbnails() {
+    const thumbContainer = document.getElementById('detailThumbnails');
+    thumbContainer.innerHTML = '';
+    currentDetailImages.forEach((url, idx) => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+        img.onclick = () => setDetailImage(idx);
+        thumbContainer.appendChild(img);
+    });
+}
 
         
     </script>
