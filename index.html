@@ -2003,15 +2003,18 @@ document.addEventListener('change', (e) => {
 
         function renderThumbnails() {
     const thumbContainer = document.getElementById('detailThumbnails');
+    if (!thumbContainer) return;
+
     thumbContainer.innerHTML = '';
     currentDetailImages.forEach((url, idx) => {
         const img = document.createElement('img');
         img.src = url;
-        img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+        // Miniaturas consistentes em 44px
+        img.className = "min-w-[44px] w-11 h-11 rounded-lg border-2 object-cover cursor-pointer transition-all snap-center thumb-inactive shrink-0";
         img.onclick = () => setDetailImage(idx);
         thumbContainer.appendChild(img);
     });
-}
+        }
 
         
     </script>
