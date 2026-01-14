@@ -293,82 +293,83 @@
     </footer>
 
     <!-- MODAL: DETALHES -->
-    <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none p-0 md:p-4">
-    <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
-    
-    <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-[2.5rem] shadow-2xl pointer-events-auto relative flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden animate-slide-up">
+        <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none p-0 md:p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
         
-        <div class="sticky top-0 right-0 z-50 flex justify-end gap-2 p-4 h-0 overflow-visible">
-            <button onclick="shareProduct()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-lg backdrop-blur-sm border border-slate-100 active-scale">
-                <i data-lucide="share-2" class="w-5 h-5 text-slate-700"></i>
-            </button>
-            <button onclick="closeModalDetails()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-lg backdrop-blur-sm border border-slate-100 active-scale">
-                <i data-lucide="x" class="w-5 h-5 text-slate-700"></i>
-            </button>
-        </div>
-
-        <div class="flex-1 overflow-y-auto custom-scrollbar pt-2">
-            <div class="relative bg-white pb-4">
-                <div id="mainImageContainer" style="touch-action: pan-y;" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" onclick="openImageZoom()">
-                    <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 select-none" src="">
-                    <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold">1 / 1</div>
-                </div>
-                
-                <div id="detailThumbnails" class="flex gap-3 px-6 py-2 overflow-x-auto items-center hide-scroll snap-x scroll-smooth outline-none min-h-[60px]"></div>
-            </div>
-
-            <div class="px-6 pb-32"> 
-                <div class="flex justify-between items-start mb-2">
-                     <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
-                     <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
-                        <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
-                     </button>
-                </div>
-                
-                <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
-                
-                <div id="detailSkuContainer" class="mb-4">
-                    <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
-                </div>
-                
-                <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
-                
-                <div class="space-y-6 border-t border-slate-100 pt-6">
-                    <div id="sizesWrapper" class="hidden">
-                        <span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Tamanho</span>
-                        <div id="detailSizesContainer" class="flex flex-wrap gap-2"></div>
-                    </div>
-                    <div id="colorsWrapper" class="hidden">
-                        <span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Cor</span>
-                        <div id="detailColorsContainer" class="flex flex-wrap gap-2"></div>
-                    </div>
-                </div>
-
-                <div id="relatedProductsSection" class="mt-10 pt-8 border-t border-slate-100 hidden">
-                    <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Relacionados</h4>
-                    <div id="relatedGrid" class="flex overflow-x-auto gap-3 pb-4 hide-scroll -mx-2 px-2"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="p-4 border-t flex items-center justify-between bg-white/95 backdrop-blur-md z-20 absolute bottom-0 w-full shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.08)]">
-            <div class="flex flex-col">
-                <span id="detailOldPrice" class="text-xs text-slate-400 line-through"></span>
-                <span id="detailPrice" class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight"></span>
-            </div>
-            <div class="flex gap-2">
-                <div class="flex items-center bg-slate-100 rounded-xl px-1 h-12">
-                    <button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button>
-                    <span id="detailQtyDisplay" class="font-bold w-6 text-center text-sm">1</span>
-                    <button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button>
-                </div>
-                <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-8 h-12 rounded-xl active-scale shadow-lg disabled:opacity-40 transition-all text-sm md:text-base">
-                    Adicionar
+        <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-[2.5rem] shadow-2xl pointer-events-auto relative flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden animate-slide-up">
+            
+            <div class="sticky top-0 right-0 z-50 flex justify-end gap-2 p-4 h-0 overflow-visible">
+                <button onclick="shareProduct()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-lg backdrop-blur-sm border border-slate-100 active-scale">
+                    <i data-lucide="share-2" class="w-5 h-5 text-slate-700"></i>
+                </button>
+                <button onclick="closeModalDetails()" class="bg-white/90 hover:bg-white p-2 rounded-full shadow-lg backdrop-blur-sm border border-slate-100 active-scale">
+                    <i data-lucide="x" class="w-5 h-5 text-slate-700"></i>
                 </button>
             </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar pt-2">
+                <div class="relative bg-white pb-4">
+                    <div id="mainImageContainer" style="touch-action: pan-y;" class="h-72 md:h-96 w-full flex items-center justify-center p-4 relative group cursor-zoom-in overflow-hidden touch-pan-y" onclick="openImageZoom()">
+                        <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 select-none" src="">
+                        <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold">1 / 1</div>
+                    </div>
+                    
+                    <div id="detailThumbnails" class="flex gap-3 px-6 py-2 overflow-x-auto items-center hide-scroll snap-x scroll-smooth outline-none min-h-[60px]"></div>
+                </div>
+
+                <div class="px-6 pb-32"> 
+                    <div class="flex justify-between items-start mb-2">
+                         <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
+                         <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
+                            <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
+                         </button>
+                    </div>
+                    
+                    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
+                    
+                    <div id="detailSkuContainer" class="mb-4">
+                        <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
+                    </div>
+                    
+                    <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
+                    
+                    <div class="space-y-6 border-t border-slate-100 pt-6">
+                        <div id="sizesWrapper" class="hidden">
+                            <span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Tamanho</span>
+                            <div id="detailSizesContainer" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        <div id="colorsWrapper" class="hidden">
+                            <span class="text-xs font-bold text-slate-800 uppercase mb-3 block">Cor</span>
+                            <div id="detailColorsContainer" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+
+                    <div id="relatedProductsSection" class="mt-10 pt-8 border-t border-slate-100 hidden">
+                        <h4 class="font-bold text-slate-800 mb-4 text-sm uppercase tracking-wide">Relacionados</h4>
+                        <div id="relatedGrid" class="flex overflow-x-auto gap-3 pb-4 hide-scroll -mx-2 px-2"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t flex items-center justify-between bg-white/95 backdrop-blur-md z-20 absolute bottom-0 w-full shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.08)]">
+                <div class="flex flex-col">
+                    <span id="detailOldPrice" class="text-xs text-slate-400 line-through"></span>
+                    <span id="detailPrice" class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight"></span>
+                </div>
+                <div class="flex gap-2">
+                    <div class="flex items-center bg-slate-100 rounded-xl px-1 h-12">
+                        <button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button>
+                        <span id="detailQtyDisplay" class="font-bold w-6 text-center text-sm">1</span>
+                        <button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button>
+                    </div>
+                    <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-8 h-12 rounded-xl active-scale shadow-lg disabled:opacity-40 transition-all text-sm md:text-base">
+                        Adicionar
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
+
 
     <!-- MODAL: ZOOM -->
     <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
@@ -1418,26 +1419,6 @@ window.closeFilterModal = window.closeFilterDrawer;
         }
     });
 };
-
-function renderThumbnails() {
-    const thumbContainer = document.getElementById('detailThumbnails');
-    if (!thumbContainer) return;
-
-    thumbContainer.innerHTML = '';
-    if (currentDetailImages.length <= 1) {
-        thumbContainer.style.display = 'none';
-        return;
-    }
-
-    thumbContainer.style.display = 'flex';
-    currentDetailImages.forEach((url, idx) => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.className = "min-w-[44px] w-11 h-11 rounded-lg border-2 object-cover cursor-pointer transition-all snap-center thumb-inactive shrink-0";
-        img.onclick = () => setDetailImage(idx);
-        thumbContainer.appendChild(img);
-    });
-}
 
         window.openImageZoom = () => {
     if(currentDetailImages[currentDetailImageIndex].includes('placehold')) return;
