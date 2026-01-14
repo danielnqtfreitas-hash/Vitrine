@@ -551,7 +551,7 @@
         let STORE_ID = null;
         let FAV_KEY = ""; 
         let favorites = []; // Declarado apenas uma vez aqui
-        let allProducts=[], categories=[], cart=[], whatsappNumber="", storeOpen=true;
+        let allProducts=[], categories=[], cart=[], lojaZapDestino = "" , storeOpen=true;
         let productViewBuffer = new Set();
         let failedSearchBuffer = new Set();
         let analyticsTimer = null;
@@ -820,7 +820,8 @@
 
 
         // --- CORE LOGIC ---
-  // --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
+  // --- CORE LOGIC ---
+// --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
 window.openProductModal = (id) => { 
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
@@ -830,7 +831,13 @@ window.openProductModal = (id) => {
 
     currentDetailId = id; 
     currentDetailQty = 1; 
-    currentDetailSelection = {size: null, color: null}; 
+    
+    // --- ATUALIZAÇÃO: Inicializa com a imagem principal do produto ---
+    currentDetailSelection = { 
+        size: null, 
+        color: null, 
+        image: p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem' 
+    }; 
     
     // --- ATUALIZAÇÃO CIRÚRGICA: COLECIONAR TODAS AS IMAGENS (PRODUTO + VARIAÇÕES) LOGO NO INÍCIO ---
     const mainImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
@@ -883,13 +890,20 @@ window.openProductModal = (id) => {
                     oldP = null;
                     skuDinamico = comb.sku || skuDinamico; 
 
+                    // --- NOVIDADE: Salva a imagem da variação para ser enviada ao carrinho ---
+                    currentDetailSelection.image = comb.image || p.images[0];
+
                     // --- SINCRONIA DE FOTO AO CLICAR NA VARIAÇÃO ---
                     if (comb.image) {
                         const imgIdx = currentDetailImages.indexOf(comb.image);
                         if (imgIdx !== -1) setDetailImage(imgIdx);
                     }
                 } 
-                else if(hasS || hasC) isComplete = false;
+                else if(hasS || hasC) {
+                    isComplete = false;
+                    // Se a seleção estiver incompleta, volta para a imagem principal
+                    currentDetailSelection.image = p.images[0];
+                }
             }
             
             document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
@@ -941,8 +955,7 @@ window.openProductModal = (id) => {
     renderRelatedProducts(p);
     document.getElementById('modalDetails').classList.remove('hidden'); 
     lucide.createIcons();
-};
-                    
+};                 
 
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
       function trackProductView(productId) {
@@ -1079,15 +1092,16 @@ window.addEventListener('beforeunload', () => {
         return;
     }
 
-    const CART_KEY = `cart_${STORE_ID}`;
     const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
     const skuFinal = p.currentSKU || p.sku || 'N/A';
     
-    // Captura a imagem específica da variação ou a principal do pai
-    const imagemVenda = v.image || p.images[0];
+    // IMPORTANTE: Usa a imagem da variação salva no modal ou a imagem principal como reserva
+    const imagemFinal = v.image || (p.images && p.images[0]) || 'https://placehold.co/600?text=Sem+Imagem';
 
     if(naSacola) {
         naSacola.q += q; 
+        naSacola.sku = skuFinal;
+        naSacola.img = imagemFinal;
     } else {
         cart.push({
             uid, 
@@ -1096,21 +1110,22 @@ window.addEventListener('beforeunload', () => {
             name: p.name, 
             price, 
             q, 
-            img: imagemVenda, // Foto que aparece no carrinho do cliente
+            img: imagemFinal, 
             variationDetails: {
                 size: v.size,
                 color: v.color,
-                image: imagemVenda // Foto que o Painel do Lojista vai ler
+                image: imagemFinal
             },
-            v: {...v} // Mantém compatibilidade com funções antigas
+            v: {...v}
         }); 
     }
 
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    localStorage.setItem(`cart_${STORE_ID}`, JSON.stringify(cart));
     updateCartUI(); 
     showToast(`<b>${p.name}</b> na sacola!`); 
     window.closeModalDetails(); 
 };
+
 
 
         window.updateCartUI = () => {
@@ -1163,7 +1178,7 @@ window.checkoutWhatsApp = async () => {
         dadosEndereco = { street: rua, number: numero, neighborhood: bairro, reference: ref };
     }
 
-    // 3. Feedback visual
+    // 3. Feedback visual (Spinner e desabilitar botão)
     const btn = document.querySelector('button[onclick="checkoutWhatsApp()"]');
     const oldBtnContent = btn.innerHTML;
     btn.innerHTML = `<span class="animate-spin inline-block w-4 h-4 border-2 border-white/20 border-t-white rounded-full mr-2"></span> Processando...`;
@@ -1183,7 +1198,7 @@ window.checkoutWhatsApp = async () => {
             }
         }
 
-        // 5. REGISTRO DO PEDIDO (ATUALIZAÇÃO CIRÚRGICA PARA VARIAÇÕES)
+        // 5. REGISTRO DO PEDIDO (Firebase)
         const orderData = {
             customer: {
                 name: nome,
@@ -1194,14 +1209,13 @@ window.checkoutWhatsApp = async () => {
             items: cart.map(item => ({
                 id: item.id,
                 name: item.name,
-                sku: item.sku || "N/A", // Captura SKU da variação (Ex: CAM-AZUL-P)
+                sku: item.sku || "N/A", 
                 qty: item.q,
                 price: item.price,
-                // Passamos os detalhes para o painel administrativo dar a baixa correta
                 variationDetails: {
                     color: item.v.color || null,
                     size: item.v.size || null,
-                    image: item.img // Foto da variação escolhida
+                    image: item.img // Foto da variação escolhida que salvamos no addToCart
                 }
             })),
             paymentMethod: infoPagamento,
@@ -1217,8 +1231,6 @@ window.checkoutWhatsApp = async () => {
         const shortId = docRef.id.slice(-5).toUpperCase();
 
         // 6. Montagem da Mensagem para WhatsApp
-        const storeName = document.getElementById('storeNameDisplay').textContent;
-        
         let msg = `🛍️ *PEDIDO: #${shortId}*\n`;
         msg += `---------------------------\n\n`;
         msg += `👤 *Cliente:* ${nome}\n`;
@@ -1240,14 +1252,16 @@ window.checkoutWhatsApp = async () => {
         msg += `---------------------------\n`;
         msg += `_Pedido gerado via Vitrine Online_`;
 
-        const link = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+        // ATUALIZAÇÃO: Usa a variável renomeada para não bugar a busca
+        const link = `https://wa.me/${lojaZapDestino}?text=${encodeURIComponent(msg)}`;
         
-        // 7. Limpeza
+        // 7. Limpeza e Finalização
         const CART_KEY = `cart_${STORE_ID}`;
         localStorage.removeItem(CART_KEY);
         cart = [];
         updateCartUI();
-        closeCartModal();
+        if(typeof closeCartModal === 'function') closeCartModal();
+        if(typeof closeCheckout === 'function') closeCheckout();
         
         window.open(link, '_blank');
 
@@ -1269,7 +1283,7 @@ window.closeConfirmFinal = () => {
 };
                                                
         function applyStoreConfig(d) {
-            whatsappNumber = (d.whatsappNumber||"").replace(/\D/g,"");
+            lojaZapDestino = (d.whatsappNumber || "").replace(/\D/g, "");
             if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
             document.getElementById('storeNameDisplay').textContent = d.storeName;
             document.getElementById('footerStoreName').textContent = d.storeName;
