@@ -886,19 +886,19 @@ window.openProductModal = (id) => {
                     (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
                 );
                 if(comb && comb.active) { 
-                    price = comb.price; 
-                    oldP = null;
-                    skuDinamico = comb.sku || skuDinamico; 
+    price = comb.price; 
+    oldP = null;
+    skuDinamico = comb.sku || skuDinamico; 
 
-                    // --- NOVIDADE: Salva a imagem da variação para ser enviada ao carrinho ---
-                    currentDetailSelection.image = comb.image || p.images[0];
+    // ADICIONE ESTA LINHA AQUI:
+    currentDetailSelection.image = comb.image || p.images[0]; 
 
-                    // --- SINCRONIA DE FOTO AO CLICAR NA VARIAÇÃO ---
-                    if (comb.image) {
-                        const imgIdx = currentDetailImages.indexOf(comb.image);
-                        if (imgIdx !== -1) setDetailImage(imgIdx);
-                    }
-                } 
+    if (comb.image) {
+        const imgIdx = currentDetailImages.indexOf(comb.image);
+        if (imgIdx !== -1) setDetailImage(imgIdx);
+    }
+}
+
                 else if(hasS || hasC) {
                     isComplete = false;
                     // Se a seleção estiver incompleta, volta para a imagem principal
@@ -1757,22 +1757,30 @@ window.addToCart = (p, q, v) => {
 
     const CART_KEY = `cart_${STORE_ID}`;
     const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
-    
-    // Captura o SKU dinâmico ou o SKU base do produto
     const skuFinal = p.currentSKU || p.sku || 'N/A';
     
+    // CORREÇÃO AQUI: Captura a imagem específica da variação salva no modal
+    // Se não houver imagem na variação, ele usa a primeira do produto
+    const imagemFinal = v.image || (p.images && p.images[0]) || 'https://placehold.co/100';
+
     if(naSacola) {
         naSacola.q += q; 
-        naSacola.sku = skuFinal; // Garante que o SKU esteja atualizado
+        naSacola.sku = skuFinal;
+        naSacola.img = imagemFinal; // Atualiza a imagem também no item existente
     } else {
         cart.push({
             uid, 
             id: p.id, 
-            sku: skuFinal, // <--- Aqui o SKU da variação entra no pedido
+            sku: skuFinal,
             name: p.name, 
             price, 
             q, 
-            img: p.images?.[0] || 'https://placehold.co/100', 
+            img: imagemFinal, // Exibição na sacola do cliente
+            variationDetails: { // Dados para o seu Painel do Lojista
+                size: v.size || null,
+                color: v.color || null,
+                image: imagemFinal
+            },
             v: {...v}
         }); 
     }
@@ -1782,6 +1790,7 @@ window.addToCart = (p, q, v) => {
     showToast(`<b>${p.name}</b> na sacola!`); 
     window.closeModalDetails(); 
 };
+
 
 window.updateCartUI = () => {
     const cnt = cart.reduce((a, b) => a + b.q, 0); 
