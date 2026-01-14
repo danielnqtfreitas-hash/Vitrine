@@ -829,20 +829,17 @@ window.openProductModal = (id) => {
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
 
-    // Rastreio para o Analytics
     trackProductView(p.id, p.name);
 
     currentDetailId = id; 
     currentDetailQty = 1; 
     
-    // Inicializa com a imagem principal
     currentDetailSelection = { 
         size: null, 
         color: null, 
         image: p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem' 
     }; 
     
-    // Coleta todas as imagens únicas (Produto + Variações)
     const mainImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
     const variationImages = (p.variations || [])
         .map(v => v.image)
@@ -851,22 +848,7 @@ window.openProductModal = (id) => {
     currentDetailImages = [...mainImages, ...variationImages];
     currentDetailImageIndex = 0;
     
-    const thumbContainer = document.getElementById('detailThumbnails'); 
-    thumbContainer.innerHTML = '';
-    
-    if (currentDetailImages.length > 1) { 
-        currentDetailImages.forEach((url, idx) => { 
-            const img = document.createElement('img'); 
-            img.src = url; 
-            // Atualização: Miniaturas 44px (w-11 h-11) com snap-center
-            img.className = "min-w-[44px] w-11 h-11 rounded-lg border-2 object-cover cursor-pointer transition-all snap-center thumb-inactive shrink-0";
-            img.onclick = () => setDetailImage(idx); 
-            thumbContainer.appendChild(img); 
-        }); 
-        thumbContainer.style.display = 'flex'; 
-    } else {
-        thumbContainer.style.display = 'none';
-    }
+    renderThumbnails(); // Chama a função que criamos antes
     
     updateDetailImageDisplay();
     document.getElementById('detailCat').textContent = p.category; 
@@ -883,13 +865,22 @@ window.openProductModal = (id) => {
             let oldP = (p.promoValue && p.promoValue < p.value) ? p.value : null;
             let skuDinamico = p.sku || 'N/A'; 
             let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
+            let outOfStockVariation = false;
 
             if(isComplete && matrix.length) {
                 const comb = matrix.find(v => 
                     (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
                     (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
                 );
+
                 if(comb && comb.active) { 
+                    // ATUALIZAÇÃO: Verifica estoque da variação específica
+                    const vStock = parseInt(comb.stock) || 0;
+                    if(vStock <= 0) {
+                        outOfStockVariation = true;
+                        isComplete = false; 
+                    }
+
                     price = comb.price; 
                     oldP = null;
                     skuDinamico = comb.sku || skuDinamico; 
@@ -904,10 +895,23 @@ window.openProductModal = (id) => {
                 }
             }
             
+            const btnAdd = document.getElementById('detailAddBtn');
             document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
             document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
             document.getElementById('detailSku').textContent = skuDinamico; 
-            document.getElementById('detailAddBtn').disabled = !isComplete;
+            
+            // UI: Muda o texto do botão se a variação estiver zerada
+            if (outOfStockVariation) {
+                btnAdd.textContent = "Esgotado";
+                btnAdd.disabled = true;
+                btnAdd.classList.add('opacity-50', 'bg-slate-400');
+                btnAdd.classList.remove('bg-primary');
+            } else {
+                btnAdd.textContent = "Adicionar";
+                btnAdd.disabled = !isComplete;
+                btnAdd.classList.remove('opacity-50', 'bg-slate-400');
+                btnAdd.classList.add('bg-primary');
+            }
             
             p.currentFinalPrice = price; 
             p.currentSKU = skuDinamico; 
@@ -924,19 +928,28 @@ window.openProductModal = (id) => {
                 const chip = document.createElement('div');
                 const normVal = val.trim().toLowerCase();
                 const isSelected = currentDetailSelection[type] && currentDetailSelection[type].trim().toLowerCase() === normVal;
+                
+                // ATUALIZAÇÃO: Verifica se existe estoque para este chip considerando a outra seleção
                 let isPossible = true;
                 if(matrix.length) {
-                    if(otherVal) {
-                        isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal && v[otherType].trim().toLowerCase() === otherVal.trim().toLowerCase());
-                    } else {
-                        isPossible = matrix.some(v => v.active && v[type].trim().toLowerCase() === normVal);
-                    }
+                    isPossible = matrix.some(v => 
+                        v.active && 
+                        (parseInt(v.stock) > 0) && // Deve ter estoque > 0
+                        v[type].trim().toLowerCase() === normVal && 
+                        (!otherVal || v[otherType].trim().toLowerCase() === otherVal.trim().toLowerCase())
+                    );
                 }
+
                 const CHIP_S = "border-primary bg-primary text-white font-bold ring-2 ring-primary/20 shadow-md";
                 const CHIP_D = "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100";
+                
                 chip.className = `px-4 py-2 border rounded-lg text-xs chip-common ${isSelected ? CHIP_S : (isPossible ? CHIP_D : 'chip-disabled')}`;
                 chip.textContent = val;
-                chip.onclick = () => { if(!isPossible) return; currentDetailSelection[type] = isSelected ? null : val; renderVariationUI(); };
+                chip.onclick = () => { 
+                    if(!isPossible) return; 
+                    currentDetailSelection[type] = isSelected ? null : val; 
+                    renderVariationUI(); 
+                };
                 container.appendChild(chip);
             });
         };
@@ -949,11 +962,12 @@ window.openProductModal = (id) => {
     renderVariationUI();
     document.getElementById('detailQtyDisplay').textContent = "1"; 
     updateModalHeartBtn(); 
-    document.getElementById('detailAddBtn').onclick = () => { addToCart(p, currentDetailQty, currentDetailSelection); closeModalDetails(); }; 
+    document.getElementById('detailAddBtn').onclick = () => { addToCart(p, currentDetailQty, currentDetailSelection); }; 
     renderRelatedProducts(p);
     document.getElementById('modalDetails').classList.remove('hidden'); 
     lucide.createIcons();
 };
+
                          
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
       function trackProductView(productId) {
@@ -1759,13 +1773,24 @@ window.closeCartModal = () => {
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
 window.addToCart = (p, q, v) => {
-    const maxStock = parseInt(p.stock) || 0;
+    const matrix = p.variations || [];
+    let stockDisponivel = parseInt(p.stock) || 0;
+
+    // Se houver variações, busca o estoque da variação específica
+    if(matrix.length && (v.size || v.color)) {
+        const comb = matrix.find(varItem => 
+            (!p.sizes?.length || varItem.size.trim().toLowerCase() === (v.size || "").trim().toLowerCase()) &&
+            (!p.colors?.length || varItem.color.trim().toLowerCase() === (v.color || "").trim().toLowerCase())
+        );
+        stockDisponivel = comb ? (parseInt(comb.stock) || 0) : 0;
+    }
+
     const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-    if (totalDesejado > maxStock) {
-        showToast(`⚠️ Estoque insuficiente. Você já tem ${naSacola ? naSacola.q : 0} na sacola e tentou adicionar mais ${q}.`);
+    if (totalDesejado > stockDisponivel) {
+        showToast(`⚠️ Desculpe, estoque insuficiente (${stockDisponivel} unid. disponíveis).`);
         return;
     }
 
