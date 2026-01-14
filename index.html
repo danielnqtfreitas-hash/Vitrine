@@ -293,7 +293,7 @@
     </footer>
 
     <!-- MODAL: DETALHES -->
-    <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none p-0 md:p-4">
+    <div id="detailThumbnails" class="flex gap-3 px-6 py-2 overflow-x-auto items-center hide-scroll snap-x scroll-smooth outline-none min-h-[60px]"></div>
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
     
     <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-[2.5rem] shadow-2xl pointer-events-auto relative flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden animate-slide-up">
@@ -826,24 +826,24 @@ window.openProductModal = (id) => {
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
 
-    // GATILHO: Registra que o produto foi visto para o Analytics
+    // Rastreio para o Analytics
     trackProductView(p.id, p.name);
 
     currentDetailId = id; 
     currentDetailQty = 1; 
     
-    // --- ATUALIZAÇÃO: Inicializa com a imagem principal do produto ---
+    // Inicializa com a imagem principal
     currentDetailSelection = { 
         size: null, 
         color: null, 
         image: p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem' 
     }; 
     
-    // --- ATUALIZAÇÃO CIRÚRGICA: COLECIONAR TODAS AS IMAGENS (PRODUTO + VARIAÇÕES) LOGO NO INÍCIO ---
+    // Coleta todas as imagens únicas (Produto + Variações)
     const mainImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
     const variationImages = (p.variations || [])
         .map(v => v.image)
-        .filter(img => img && !mainImages.includes(img)); // Evita duplicatas
+        .filter(img => img && !mainImages.includes(img));
     
     currentDetailImages = [...mainImages, ...variationImages];
     currentDetailImageIndex = 0;
@@ -855,7 +855,8 @@ window.openProductModal = (id) => {
         currentDetailImages.forEach((url, idx) => { 
             const img = document.createElement('img'); 
             img.src = url; 
-            img.className = "min-w-[50px] w-[50px] h-[50px] rounded-md border-2 object-cover cursor-pointer transition-all thumb-inactive";
+            // Atualização: Miniaturas 44px (w-11 h-11) com snap-center
+            img.className = "min-w-[44px] w-11 h-11 rounded-lg border-2 object-cover cursor-pointer transition-all snap-center thumb-inactive shrink-0";
             img.onclick = () => setDetailImage(idx); 
             thumbContainer.appendChild(img); 
         }); 
@@ -886,23 +887,17 @@ window.openProductModal = (id) => {
                     (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
                 );
                 if(comb && comb.active) { 
-    price = comb.price; 
-    oldP = null;
-    skuDinamico = comb.sku || skuDinamico; 
+                    price = comb.price; 
+                    oldP = null;
+                    skuDinamico = comb.sku || skuDinamico; 
+                    currentDetailSelection.image = comb.image || p.images[0]; 
 
-    // ADICIONE ESTA LINHA AQUI:
-    currentDetailSelection.image = comb.image || p.images[0]; 
-
-    if (comb.image) {
-        const imgIdx = currentDetailImages.indexOf(comb.image);
-        if (imgIdx !== -1) setDetailImage(imgIdx);
-    }
-}
-
-                else if(hasS || hasC) {
+                    if (comb.image) {
+                        const imgIdx = currentDetailImages.indexOf(comb.image);
+                        if (imgIdx !== -1) setDetailImage(imgIdx);
+                    }
+                } else if(hasS || hasC) {
                     isComplete = false;
-                    // Se a seleção estiver incompleta, volta para a imagem principal
-                    currentDetailSelection.image = p.images[0];
                 }
             }
             
@@ -955,8 +950,8 @@ window.openProductModal = (id) => {
     renderRelatedProducts(p);
     document.getElementById('modalDetails').classList.remove('hidden'); 
     lucide.createIcons();
-};                 
-
+};
+                         
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
       function trackProductView(productId) {
     productViewBuffer.add(productId);
@@ -1400,12 +1395,32 @@ window.closeFilterModal = window.closeFilterDrawer;
 
         window.setDetailImage = (idx) => { currentDetailImageIndex = idx; updateDetailImageDisplay(); };
         window.updateDetailImageDisplay = () => {
-            const img = document.getElementById('detailImg');
-            img.src = currentDetailImages[currentDetailImageIndex];
-            document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
-            const thumbs = document.getElementById('detailThumbnails').children;
-            Array.from(thumbs).forEach((t, i) => { t.classList.toggle('thumb-active', i === currentDetailImageIndex); t.classList.toggle('thumb-inactive', i !== currentDetailImageIndex); });
-        };
+    const img = document.getElementById('detailImg');
+    if (!img) return;
+
+    img.src = currentDetailImages[currentDetailImageIndex];
+    document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
+    
+    const thumbContainer = document.getElementById('detailThumbnails');
+    const thumbs = thumbContainer.children;
+    
+    Array.from(thumbs).forEach((t, i) => { 
+        const isActive = i === currentDetailImageIndex;
+        
+        // Estilização da borda e opacidade
+        t.classList.toggle('thumb-active', isActive); 
+        t.classList.toggle('thumb-inactive', !isActive); 
+        
+        // Centralização automática da miniatura ativa no carrossel inferior
+        if(isActive) {
+            t.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'nearest', 
+                inline: 'center' 
+            });
+        }
+    });
+};
         window.openImageZoom = () => {
     if(currentDetailImages[currentDetailImageIndex].includes('placehold')) return;
     
