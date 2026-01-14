@@ -293,7 +293,7 @@
     </footer>
 
     <!-- MODAL: DETALHES -->
-    <div id="detailThumbnails" class="flex gap-3 px-6 py-2 overflow-x-auto items-center hide-scroll snap-x scroll-smooth outline-none min-h-[60px]"></div>
+    <div id="modalDetails" class="fixed inset-0 z-[60] hidden flex items-end md:items-center justify-center pointer-events-none p-0 md:p-4">
     <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm pointer-events-auto" onclick="closeModalDetails()"></div>
     
     <div class="bg-white w-full max-w-2xl md:rounded-2xl rounded-t-[2.5rem] shadow-2xl pointer-events-auto relative flex flex-col max-h-[92vh] md:max-h-[85vh] overflow-hidden animate-slide-up">
@@ -313,10 +313,12 @@
                     <img id="detailImg" class="max-w-full max-h-full object-contain transition-all duration-300 select-none" src="">
                     <div id="imageCounter" class="absolute bottom-4 left-4 bg-black/60 text-white text-[10px] px-2 py-1 rounded-full font-bold">1 / 1</div>
                 </div>
-                <div id="detailThumbnails" class="flex gap-2 px-4 overflow-x-auto justify-center min-h-[50px] items-center hide-scroll"></div>
+                
+                <div id="detailThumbnails" class="flex gap-3 px-6 py-2 overflow-x-auto items-center hide-scroll snap-x scroll-smooth outline-none min-h-[60px]"></div>
             </div>
 
-            <div class="px-6 pb-32"> <div class="flex justify-between items-start mb-2">
+            <div class="px-6 pb-32"> 
+                <div class="flex justify-between items-start mb-2">
                      <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
                      <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
                         <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
@@ -366,7 +368,7 @@
             </div>
         </div>
     </div>
-</div>
+    </div>
 
     <!-- MODAL: ZOOM -->
     <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
@@ -1396,31 +1398,47 @@ window.closeFilterModal = window.closeFilterDrawer;
         window.setDetailImage = (idx) => { currentDetailImageIndex = idx; updateDetailImageDisplay(); };
         window.updateDetailImageDisplay = () => {
     const img = document.getElementById('detailImg');
-    if (!img) return;
+    const counter = document.getElementById('imageCounter');
+    const thumbContainer = document.getElementById('detailThumbnails');
+    
+    if (!img || !thumbContainer) return;
 
     img.src = currentDetailImages[currentDetailImageIndex];
-    document.getElementById('imageCounter').textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
+    if (counter) counter.textContent = `${currentDetailImageIndex + 1} / ${currentDetailImages.length}`;
     
-    const thumbContainer = document.getElementById('detailThumbnails');
     const thumbs = thumbContainer.children;
-    
     Array.from(thumbs).forEach((t, i) => { 
         const isActive = i === currentDetailImageIndex;
-        
-        // Estilização da borda e opacidade
         t.classList.toggle('thumb-active', isActive); 
         t.classList.toggle('thumb-inactive', !isActive); 
         
-        // Centralização automática da miniatura ativa no carrossel inferior
+        // Centraliza a miniatura selecionada automaticamente
         if(isActive) {
-            t.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'nearest', 
-                inline: 'center' 
-            });
+            t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
     });
 };
+
+function renderThumbnails() {
+    const thumbContainer = document.getElementById('detailThumbnails');
+    if (!thumbContainer) return;
+
+    thumbContainer.innerHTML = '';
+    if (currentDetailImages.length <= 1) {
+        thumbContainer.style.display = 'none';
+        return;
+    }
+
+    thumbContainer.style.display = 'flex';
+    currentDetailImages.forEach((url, idx) => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = "min-w-[44px] w-11 h-11 rounded-lg border-2 object-cover cursor-pointer transition-all snap-center thumb-inactive shrink-0";
+        img.onclick = () => setDetailImage(idx);
+        thumbContainer.appendChild(img);
+    });
+}
+
         window.openImageZoom = () => {
     if(currentDetailImages[currentDetailImageIndex].includes('placehold')) return;
     
