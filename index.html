@@ -186,20 +186,6 @@
         <p class="mt-4 text-xs font-bold text-slate-400 animate-pulse uppercase tracking-widest">Sincronizando Vitrine...</p>
     </div>
 
-    <!-- STATUS BAR -->
-    <div id="topStatusBar" class="bg-slate-900 text-white text-[10px] py-1.5 transition-colors duration-300">
-        <div class="container mx-auto px-4 max-w-7xl flex justify-between items-center">
-            <div class="flex items-center gap-2">
-                <span class="flex h-2 w-2 relative">
-                    <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                </span>
-                <span id="storeStatusText" class="font-bold tracking-wide uppercase">Verificando...</span>
-            </div>
-            <div class="hidden md:block opacity-70">Atendimento Digital</div>
-        </div>
-    </div>
-
     <!-- HEADER -->
     <header class="sticky top-0 z-50 glass-header">
     <div class="container mx-auto px-4 lg:px-8 max-w-7xl h-16 md:h-20 flex items-center justify-between gap-4">
@@ -1295,22 +1281,42 @@ window.closeConfirmFinal = () => {
 };
                                                
         function applyStoreConfig(d) {
-            lojaZapDestino = (d.whatsappNumber || "").replace(/\D/g, "");
-            if(d.primaryColor) { document.documentElement.style.setProperty('--color-primary', d.primaryColor); document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); }
-            document.getElementById('storeNameDisplay').textContent = d.storeName;
-            document.getElementById('footerStoreName').textContent = d.storeName;
-            document.getElementById('footerDescription').textContent = d.footerText || "Qualidade e confiança.";
-            if (d.logoUrl) { document.getElementById('storeLogoImg').src = d.logoUrl; document.getElementById('logoContainer').classList.remove('hidden'); }
-            
-            deliveryAreas = d.deliveryAreas || [];
-            document.getElementById('deliveryList').innerHTML = deliveryAreas.map(a => `<div class="flex justify-between p-3 bg-slate-50 rounded-lg text-sm"><span class="font-medium">${a.name}</span><span class="font-bold">R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')}</span></div>`).join('');
-            document.getElementById('cartDeliverySelect').innerHTML='<option value="0">Retirar na Loja</option>' + deliveryAreas.map(a=>`<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
-            
-            const isOpen = d.isStoreOpen !== false;
-            const topBar = document.getElementById('topStatusBar');
-            document.getElementById('storeStatusText').textContent = isOpen ? "Loja Aberta" : "Loja Fechada";
-            topBar.className = isOpen ? "bg-slate-900 text-white text-[10px] py-1.5" : "bg-red-900 text-white text-[10px] py-1.5";
-            if(!isOpen) document.getElementById('statusPing').classList.add('hidden');
+    // 1. Número do WhatsApp para destino
+    lojaZapDestino = (d.whatsappNumber || "").replace(/\D/g, "");
+    
+    // 2. Cor Primária do Tema
+    if(d.primaryColor) { 
+        document.documentElement.style.setProperty('--color-primary', d.primaryColor); 
+        document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); 
+    }
+    
+    // 3. Identidade Visual
+    document.getElementById('storeNameDisplay').textContent = d.storeName;
+    document.getElementById('footerStoreName').textContent = d.storeName;
+    document.getElementById('footerDescription').textContent = d.footerText || "Qualidade e confiança.";
+    
+    if (d.logoUrl) { 
+        document.getElementById('storeLogoImg').src = d.logoUrl; 
+        document.getElementById('logoContainer').classList.remove('hidden'); 
+    }
+    
+    // 4. Taxas e Áreas de Entrega
+    deliveryAreas = d.deliveryAreas || [];
+    const deliveryList = document.getElementById('deliveryList');
+    if (deliveryList) {
+        deliveryList.innerHTML = deliveryAreas.map(a => `
+            <div class="flex justify-between p-3 bg-slate-50 rounded-lg text-sm">
+                <span class="font-medium">${a.name}</span>
+                <span class="font-bold">R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')}</span>
+            </div>
+        `).join('');
+    }
+    
+    const deliverySelect = document.getElementById('cartDeliverySelect');
+    if (deliverySelect) {
+        deliverySelect.innerHTML = '<option value="0">Retirar na Loja</option>' + 
+            deliveryAreas.map(a => `<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
+    }
         }
 
         async function registerVisit() {
