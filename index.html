@@ -1971,13 +1971,23 @@ async function renderMagicCategories(products, config) {
     magicContainer.classList.remove('hidden');
     magicContainer.innerHTML = '';
 
-    // 1. NOVIDADES ✨
-    if (config.magicCategories?.showNew) {
-        const news = [...products]
-            .sort((a, b) => (b.lastUpdate?.seconds || 0) - (a.lastUpdate?.seconds || 0))
-            .slice(0, 10);
+    // 1. NOVIDADES ✨ (Apenas produtos recém-cadastrados no catálogo)
+if (config.magicCategories?.showNew) {
+    const news = [...products]
+        .filter(p => p.status === 'active')
+        .sort((a, b) => {
+            // Comparamos a data de CRIAÇÃO (createdAt)
+            // Itens criados por último aparecem primeiro
+            const dateA = a.createdAt?.seconds || 0;
+            const dateB = b.createdAt?.seconds || 0;
+            return dateB - dateA; 
+        })
+        .slice(0, 10); 
+
+    if (news.length > 0) {
         magicContainer.innerHTML += generateMagicSection("Novidades ✨", news, "bg-purple-600");
     }
+}
 
     // 2. MAIS VISTOS 🔥
     if (config.magicCategories?.showTop) {
