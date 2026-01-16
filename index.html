@@ -697,8 +697,9 @@
         
         
         // --- RENDERERS ---
-                       window.renderCatalog = () => {
+                       window.renderCatalog = async () => {
             // Chamamos a renderização mágica usando a global segura
+                           await
             renderMagicCategories(allProducts, storeConfigGlobal);
 
             const container = document.getElementById('catalogContainer'), 
