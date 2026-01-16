@@ -1971,23 +1971,27 @@ async function renderMagicCategories(products, config) {
     magicContainer.classList.remove('hidden');
     magicContainer.innerHTML = '';
 
-    // 1. NOVIDADES ✨ (Apenas produtos recém-cadastrados no catálogo)
-if (config.magicCategories?.showNew) {
-    const news = [...products]
-        .filter(p => p.status === 'active')
-        .sort((a, b) => {
-            // Comparamos a data de CRIAÇÃO (createdAt)
-            // Itens criados por último aparecem primeiro
-            const dateA = a.createdAt?.seconds || 0;
-            const dateB = b.createdAt?.seconds || 0;
-            return dateB - dateA; 
-        })
-        .slice(0, 10); 
+        // 1. NOVIDADES ✨
+    if (config.magicCategories?.showNew) {
+        const news = [...products]
+            .filter(p => p.status === 'active')
+            .sort((a, b) => {
+                // Função auxiliar para transformar qualquer data em número comparável
+                const getTime = (p) => {
+                    if (p.createdAt?.toMillis) return p.createdAt.toMillis(); // Formato Firebase
+                    if (p.createdAt?.seconds) return p.createdAt.seconds * 1000; // Formato Firebase reduzido
+                    if (p.createdAt instanceof Date) return p.createdAt.getTime(); // Formato JS
+                    return p.lastUpdate || 0; // Fallback para última atualização ou zero
+                };
 
-    if (news.length > 0) {
-        magicContainer.innerHTML += generateMagicSection("Novidades ✨", news, "bg-purple-600");
+                return getTime(b) - getTime(a); // Do mais novo para o mais velho
+            })
+            .slice(0, 10); 
+
+        if (news.length > 0) {
+            magicContainer.innerHTML += generateMagicSection("Novidades ✨", news, "bg-purple-600");
+        }
     }
-}
 
         // 2. MAIS VISTOS 🔥
     if (config.magicCategories?.showTop) {
