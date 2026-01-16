@@ -1990,21 +1990,31 @@ if (config.magicCategories?.showNew) {
     }
 }
 
-    // 2. MAIS VISTOS 🔥
+        // 2. MAIS VISTOS 🔥
     if (config.magicCategories?.showTop) {
         try {
             const analyticsRef = doc(db, `stores/${STORE_ID}/analytics`, "product_views");
-            const snap = await getDoc(analyticsRef);
-            if (snap.exists()) {
+            
+            // MUDANÇA AQUI: Trocamos getDoc por getDocFromServer
+            const snap = await getDocFromServer(analyticsRef).catch(() => null);
+            
+            if (snap && snap.exists()) {
                 const stats = snap.data().stats || {};
                 const top = [...products]
-                    .filter(p => stats[p.id]?.views > 0)
+                    .filter(p => stats[p.id] && stats[p.id].views > 0)
                     .sort((a, b) => (stats[b.id]?.views || 0) - (stats[a.id]?.views || 0))
                     .slice(0, 10);
-                magicContainer.innerHTML += generateMagicSection("Mais Vistos 🔥", top, "bg-orange-500");
+                
+                // Só adiciona ao HTML se encontrar produtos com visualizações
+                if (top.length > 0) {
+                    magicContainer.innerHTML += generateMagicSection("Mais Vistos 🔥", top, "bg-orange-500");
+                }
             }
-        } catch (e) { console.error("Erro ao carregar mais vistos:", e); }
+        } catch (e) { 
+            console.warn("Analytics ainda não disponível ou sem dados de cliques."); 
+        }
     }
+
     
     if (window.lucide) lucide.createIcons();
 }
