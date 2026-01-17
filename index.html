@@ -634,26 +634,40 @@ function sanitizeTerm(term) {
         };
         
 
-        // --- APP INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            STORE_ID = urlParams.get('id') || 'admin';
-            
-            // Define a chave única para esta loja
-            FAV_KEY = `favs_v2_${STORE_ID}`;
-            
-            // Carrega os favoritos da loja específica
-            try {
-                const saved = localStorage.getItem(FAV_KEY);
-                favorites = saved ? JSON.parse(saved) : [];
-            } catch (e) {
-                favorites = [];
-            }
-            
-            await signInAnonymously(auth);
-            onAuthStateChanged(auth, (user) => { if(user) initFlow(); });
-            setupSwipes();
-        });
+        // --- APP INITIALIZATION (VERSÃO MULTILOJA PROFISSIONAL) ---
+document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 1. CAPTURA O NOME DA LOJA PELA BARRA (Ex: /loja-da-barbara)
+    const pathSegments = window.location.pathname.split('/');
+    // O split cria um array, onde o índice [1] é o que vem após a primeira barra
+    const slugDaUrl = pathSegments[1];
+
+    // 2. DEFINE O STORE_ID (Prioridade para a URL amigável)
+    // Se não houver nada na barra, ele tenta o antigo ?id=, senão usa 'admin'
+    STORE_ID = slugDaUrl || urlParams.get('id') || 'admin';
+    
+    // 3. FILTRO DE SEGURANÇA
+    // Impede que nomes de arquivos técnicos sejam lidos como nomes de lojas
+    if (STORE_ID === "" || STORE_ID === "index.html" || STORE_ID === "index") {
+        STORE_ID = "admin"; 
+    }
+
+    // Define a chave única para favoritos desta loja
+    FAV_KEY = `favs_v2_${STORE_ID}`;
+    
+    try {
+        const saved = localStorage.getItem(FAV_KEY);
+        favorites = saved ? JSON.parse(saved) : [];
+    } catch (e) {
+        favorites = [];
+    }
+    
+    await signInAnonymously(auth);
+    onAuthStateChanged(auth, (user) => { if(user) initFlow(); });
+    setupSwipes();
+});
+
 
                         async function initFlow() {
             try {
