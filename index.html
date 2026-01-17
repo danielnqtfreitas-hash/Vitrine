@@ -1116,64 +1116,6 @@ window.addEventListener('beforeunload', () => {
 };
 
         
-        window.addToCart = (p, q, v) => {
-    const maxStock = parseInt(p.stock) || 0;
-    const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
-    const naSacola = cart.find(x => x.uid === uid);
-    const totalDesejado = (naSacola ? naSacola.q : 0) + q;
-
-    if (totalDesejado > maxStock) {
-        showToast(`⚠️ Estoque insuficiente.`);
-        return;
-    }
-
-    const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
-    const skuFinal = p.currentSKU || p.sku || 'N/A';
-    
-    // IMPORTANTE: Usa a imagem da variação salva no modal ou a imagem principal como reserva
-    const imagemFinal = v.image || (p.images && p.images[0]) || 'https://placehold.co/600?text=Sem+Imagem';
-
-    if(naSacola) {
-        naSacola.q += q; 
-        naSacola.sku = skuFinal;
-        naSacola.img = imagemFinal;
-    } else {
-        cart.push({
-            uid, 
-            id: p.id, 
-            sku: skuFinal,
-            name: p.name, 
-            price, 
-            q, 
-            img: imagemFinal, 
-            variationDetails: {
-                size: v.size,
-                color: v.color,
-                image: imagemFinal
-            },
-            v: {...v}
-        }); 
-    }
-
-    localStorage.setItem(`cart_${STORE_ID}`, JSON.stringify(cart));
-    updateCartUI(); 
-    showToast(`<b>${p.name}</b> na sacola!`); 
-    window.closeModalDetails(); 
-};
-
-
-
-        window.updateCartUI = () => {
-            const cnt=cart.reduce((a,b)=>a+b.q,0); 
-            const b=document.getElementById('cartBadge'); b.textContent=cnt; b.classList.toggle('scale-0',cnt===0);
-            const l=document.getElementById('cartList');
-            if(!cart.length){ l.innerHTML=''; document.getElementById('cartEmptyMsg').classList.remove('hidden'); document.getElementById('cartSummary').classList.add('hidden'); }
-            else {
-                document.getElementById('cartEmptyMsg').classList.add('hidden'); document.getElementById('cartSummary').classList.remove('hidden'); 
-                l.innerHTML=cart.map(i=>`<div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200"><img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50"><div class="flex-1"><div class="flex justify-between font-bold text-xs"><span>${i.name}</span><span>R$ ${(i.price*i.q).toFixed(2).replace('.',',')}</span></div><div class="text-[10px] text-slate-400 mt-1 uppercase">${[i.v.size,i.v.color].filter(Boolean).join(' / ')}</div><div class="flex items-center gap-4 mt-2"><div class="flex items-center bg-slate-100 rounded h-6"><button onclick="modQty('${i.uid}',-1)" class="w-6">-</button><span class="w-6 text-center text-xs font-bold">${i.q}</span><button onclick="modQty('${i.uid}',1)" class="w-6">+</button></div><button onclick="modQty('${i.uid}',-${i.q})" class="text-[10px] text-red-500 font-bold uppercase">Remover</button></div></div></div>`).join('');
-            }
-            updateCartTotals();
-        };
 
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
