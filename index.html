@@ -840,11 +840,15 @@ function sanitizeTerm(term) {
         // --- CORE LOGIC ---
   // --- CORE LOGIC ---
 // --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
+// --- LOGICA DE DETALHES DO PRODUTO (VERSÃO COMPLETA E CORRIGIDA) ---
 window.openProductModal = (id) => { 
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
 
-    trackProductView(p.id, p.name);
+    // CORREÇÃO: Chama o rastreio com proteção para não travar o modal
+    try { 
+        if (typeof trackProductView === 'function') trackProductView(p.id); 
+    } catch(e) { console.error("Erro no analytics"); }
 
     currentDetailId = id; 
     currentDetailQty = 1; 
@@ -863,14 +867,16 @@ window.openProductModal = (id) => {
     currentDetailImages = [...mainImages, ...variationImages];
     currentDetailImageIndex = 0;
     
-    renderThumbnails(); // Chama a função que criamos antes
+    // Renderiza a estrutura básica
+    if(typeof renderThumbnails === 'function') renderThumbnails();
+    if(typeof updateDetailImageDisplay === 'function') updateDetailImageDisplay();
     
-    updateDetailImageDisplay();
-    document.getElementById('detailCat').textContent = p.category; 
+    document.getElementById('detailCat').textContent = p.category || "Geral"; 
     document.getElementById('detailName').textContent = p.name; 
     document.getElementById('detailSku').textContent = p.sku || 'N/A';
     document.getElementById('detailDesc').textContent = p.description || ''; 
 
+    // --- SUA LÓGICA DE VARIAÇÕES COMPLETA ---
     const renderVariationUI = () => {
         const matrix = p.variations || [];
         const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
@@ -889,13 +895,11 @@ window.openProductModal = (id) => {
                 );
 
                 if(comb && comb.active) { 
-                    // ATUALIZAÇÃO: Verifica estoque da variação específica
                     const vStock = parseInt(comb.stock) || 0;
                     if(vStock <= 0) {
                         outOfStockVariation = true;
                         isComplete = false; 
                     }
-
                     price = comb.price; 
                     oldP = null;
                     skuDinamico = comb.sku || skuDinamico; 
@@ -915,7 +919,6 @@ window.openProductModal = (id) => {
             document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
             document.getElementById('detailSku').textContent = skuDinamico; 
             
-            // UI: Muda o texto do botão se a variação estiver zerada
             if (outOfStockVariation) {
                 btnAdd.textContent = "Esgotado";
                 btnAdd.disabled = true;
@@ -944,12 +947,11 @@ window.openProductModal = (id) => {
                 const normVal = val.trim().toLowerCase();
                 const isSelected = currentDetailSelection[type] && currentDetailSelection[type].trim().toLowerCase() === normVal;
                 
-                // ATUALIZAÇÃO: Verifica se existe estoque para este chip considerando a outra seleção
                 let isPossible = true;
                 if(matrix.length) {
                     isPossible = matrix.some(v => 
                         v.active && 
-                        (parseInt(v.stock) > 0) && // Deve ter estoque > 0
+                        (parseInt(v.stock) > 0) && 
                         v[type].trim().toLowerCase() === normVal && 
                         (!otherVal || v[otherType].trim().toLowerCase() === otherVal.trim().toLowerCase())
                     );
@@ -976,13 +978,18 @@ window.openProductModal = (id) => {
 
     renderVariationUI();
     document.getElementById('detailQtyDisplay').textContent = "1"; 
-    updateModalHeartBtn(); 
+    
+    // CORREÇÃO: Chama funções de apoio com segurança
+    if(typeof updateModalHeartBtn === 'function') updateModalHeartBtn(); 
+    if(typeof renderRelatedProducts === 'function') renderRelatedProducts(p);
+    
     document.getElementById('detailAddBtn').onclick = () => { addToCart(p, currentDetailQty, currentDetailSelection); }; 
-    renderRelatedProducts(p);
+    
     document.getElementById('modalDetails').classList.remove('hidden'); 
-    lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 };
-
+        
+            
                          
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
 function trackFailedSearch(term) {
@@ -2102,7 +2109,16 @@ document.addEventListener('change', (e) => {
         thumbContainer.appendChild(img);
     });
         }
+function trackProductView(productId) {
+    if (typeof isBotLikely === 'function' && isBotLikely()) return;
+    productViewBuffer.add(productId);
+    startAnalyticsTimer();
+}
 
+function updateModalHeartBtn() { 
+    const btn = document.querySelector('#modalHeartBtn i');
+    if(btn) btn.classList.toggle('heart-active', favorites.includes(currentDetailId));
+}
         
     </script>
 </body>
