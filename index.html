@@ -555,6 +555,31 @@
         let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
         let isFavoritesView = false;
 
+// --- CONFIGURAÇÃO ANTIBOT ---
+const BOT_CONFIG = {
+    minSearchLength: 3,
+    maxSearchLength: 30,
+    searchCooldown: 2500, // 2.5 segundos entre registros
+    forbiddenChars: /[<>{}\[\]\\/|]/g, // Caracteres usados em ataques/bots
+};
+
+// Variável para controle de tempo local
+let lastSearchRecordedAt = 0;
+
+function isBotLikely() {
+    // Detecta se é um navegador automatizado simples (Headless Chrome, etc)
+    return navigator.webdriver === true;
+}
+
+function sanitizeTerm(term) {
+    // Remove espaços extras e caracteres proibidos
+    return term.trim()
+               .toLowerCase()
+               .replace(BOT_CONFIG.forbiddenChars, '')
+               .substring(0, BOT_CONFIG.maxSearchLength);
+}
+
+        
                 // --- DATA SERVICE ---
         const DataService = {
             async getStoreConfig() {
@@ -960,18 +985,20 @@ window.openProductModal = (id) => {
 
                          
        // --- NOVA LÓGICA DE RASTREIO COM CACHE DE 2 MINUTOS ---
-      function trackProductView(productId) {
-    productViewBuffer.add(productId);
-    startAnalyticsTimer();
-}
-
 function trackFailedSearch(term) {
-    const cleanTerm = term.toLowerCase().trim();
-    if (cleanTerm.length < 3 || !/[a-z]/i.test(cleanTerm)) return;
+    if (isBotLikely()) return; 
+
+    const cleanTerm = sanitizeTerm(term);
+    const now = Date.now();
+
+    // Validações Antibot:
+    if (cleanTerm.length < BOT_CONFIG.minSearchLength) return;
+    if (now - lastSearchRecordedAt < BOT_CONFIG.searchCooldown) return;
 
     clearTimeout(searchDebounceTimer);
     searchDebounceTimer = setTimeout(() => {
         failedSearchBuffer.add(cleanTerm);
+        lastSearchRecordedAt = Date.now(); 
         startAnalyticsTimer();
     }, 1500); 
 }
@@ -1325,10 +1352,12 @@ window.closeConfirmFinal = () => {
 
         async function registerVisit() {
     if (!STORE_ID || STORE_ID === 'admin') return;
+   
+    if (isBotLikely()) return;
 
     const sessionKey = `vst_${STORE_ID}`;
     if (sessionStorage.getItem(sessionKey)) return;
-
+            
     try {
         const now = new Date();
         const todayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
