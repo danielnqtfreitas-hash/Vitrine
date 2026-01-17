@@ -377,8 +377,7 @@
     </div>
 
     <!-- MODAL: CARRINHO -->
-        
-            <div id="modalCart" class="fixed inset-0 z-[60] hidden">
+        <div id="modalCart" class="fixed inset-0 z-[60] hidden">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeCartModal()"></div>
     
     <div id="cartDrawer" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
@@ -407,66 +406,69 @@
                     <span class="subtotal-display">R$ 0,00</span>
                 </div>
                 <button onclick="goToStep2()" class="w-full bg-primary hover:brightness-90 text-white font-bold py-4 rounded-2xl shadow-lg active-scale flex justify-center items-center gap-2 transition-all">
-    Continuar para Entrega <i data-lucide="chevron-right" class="w-5 h-5"></i>
-</button>
-
+                    Continuar para Entrega <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </button>
             </div>
         </div>
-    </div>
 
-        <div id="step2" class="hidden flex-1 overflow-y-auto bg-slate-50">
-    <div class="p-5 space-y-4">
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-            <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados do Pedido</h4>
-            
-            <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-            
-            <input type="tel" id="checkPhone" placeholder="Seu WhatsApp com DDD" oninput="this.value = this.value.replace(/\D/g,'')" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-            
-            <div class="flex flex-col gap-2">
-                <div class="flex gap-2">
-                    <select id="checkPayment" onchange="toggleChangeField(this.value)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                        <option value="" disabled selected>Pagamento</option>
-                        <option value="Pix">Pix</option>
-                        <option value="Cartão">Cartão</option>
-                        <option value="Dinheiro">Dinheiro</option>
-                    </select>
-                    <select id="cartDeliverySelect" onchange="toggleAddressFields()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
-                </div>
+        <div id="step2" class="hidden flex-1 overflow-y-auto bg-slate-50 flex flex-col">
+            <div class="p-5 space-y-4 flex-1">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dados do Pedido</h4>
+                    
+                    <input type="text" id="checkName" placeholder="Seu Nome Completo" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                    
+                    <input type="tel" id="checkPhone" placeholder="Seu WhatsApp com DDD" oninput="this.value = this.value.replace(/\D/g,'')" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                    
+                    <div class="flex flex-col gap-2">
+                        <div class="flex gap-2">
+                            <select id="checkPayment" onchange="toggleChangeField(this.value)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                                <option value="" disabled selected>Pagamento</option>
+                                <option value="Pix">Pix</option>
+                                <option value="Cartão">Cartão</option>
+                                <option value="Dinheiro">Dinheiro</option>
+                            </select>
+                            <select id="cartDeliverySelect" onchange="toggleAddressFields()" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none"></select>
+                        </div>
 
-                <div id="changeField" class="hidden animate-fade-in bg-amber-50 p-3 rounded-xl border border-amber-100">
-                    <label class="text-[9px] font-black text-amber-600 uppercase tracking-widest ml-1">Troco para quanto?</label>
-                    <div class="relative mt-1">
-                        <span class="absolute left-3 top-2.5 text-amber-600 text-sm font-bold">R$</span>
-                        <input type="number" id="checkChange" placeholder="Ex: 100,00" 
-                               class="w-full bg-white border border-amber-200 rounded-lg p-2 pl-10 text-sm outline-none focus:ring-2 focus:ring-amber-400/20">
+                        <div id="changeField" class="hidden animate-fade-in bg-amber-50 p-3 rounded-xl border border-amber-100">
+                            <label class="text-[9px] font-black text-amber-600 uppercase tracking-widest ml-1">Troco para quanto?</label>
+                            <div class="relative mt-1">
+                                <span class="absolute left-3 top-2.5 text-amber-600 text-sm font-bold">R$</span>
+                                <input type="number" id="checkChange" placeholder="Ex: 100,00" 
+                                       class="w-full bg-white border border-amber-200 rounded-lg p-2 pl-10 text-sm outline-none focus:ring-2 focus:ring-amber-400/20">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="addressFields" class="space-y-3 animate-fade-in">
+                        <input type="text" id="checkStreet" placeholder="Nome da Rua / Avenida" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                        
+                        <div class="flex gap-2">
+                            <input type="text" id="checkNumber" placeholder="Nº" class="w-20 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                            <input type="text" id="checkNeighborhood" placeholder="Bairro" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                        </div>
+                        
+                        <input type="text" id="checkReference" placeholder="Ponto de Referência" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
                     </div>
                 </div>
             </div>
-
-            <div id="addressFields" class="space-y-3 animate-fade-in">
-                <input type="text" id="checkStreet" placeholder="Nome da Rua / Avenida" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                
-                <div class="flex gap-2">
-                    <input type="text" id="checkNumber" placeholder="Nº" class="w-20 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
-                    <input type="text" id="checkNeighborhood" placeholder="Bairro" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+            
+            <div class="p-5 border-t bg-white mt-auto">
+                <div class="flex justify-between text-xl font-display font-black text-slate-900 mb-4">
+                    <span>Total</span>
+                    <span id="cartFinalTotal">R$ 0,00</span>
                 </div>
-                
-                <input type="text" id="checkReference" placeholder="Ponto de Referência" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
+                <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg active-scale flex justify-center items-center gap-3 transition-all">
+                    Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
+                </button>
             </div>
         </div>
-    </div>
-    
-    <div class="p-5 border-t bg-white mt-auto">
-        <div class="flex justify-between text-xl font-display font-black text-slate-900 mb-4">
-            <span>Total</span>
-            <span id="cartFinalTotal">R$ 0,00</span>
-        </div>
-        <button onclick="checkoutWhatsApp()" class="w-full bg-primary hover:bg-primaryDark text-white font-bold py-4 rounded-2xl shadow-lg active-scale flex justify-center items-center gap-3 transition-all">
-            Finalizar Pedido <i data-lucide="message-circle" class="w-5 h-5"></i>
-        </button>
-    </div>
-</div>
+        </div> </div>
+
+            
+
+        
 
 
     
