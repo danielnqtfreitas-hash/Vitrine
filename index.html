@@ -2108,9 +2108,11 @@ document.addEventListener('change', (e) => {
         thumbContainer.appendChild(img);
     });
         }
-function trackProductView(productId) {
+
+function trackProductView(productId, productName = "") {
     if (typeof isBotLikely === 'function' && isBotLikely()) return;
     productViewBuffer.add(productId);
+    // Se o nome foi passado, podemos salvar no buffer também
     startAnalyticsTimer();
 }
 
@@ -2118,6 +2120,16 @@ function updateModalHeartBtn() {
     const btn = document.querySelector('#modalHeartBtn i');
     if(btn) btn.classList.toggle('heart-active', favorites.includes(currentDetailId));
 }
+
+// Resolve o erro do botão de coração no modal
+window.toggleFavoriteCurrentDetail = () => {
+    if (currentDetailId) {
+        window.toggleFavorite(currentDetailId);
+        // Atualiza o visual do coração no modal imediatamente
+        updateModalHeartBtn();
+    }
+};
+
         
     </script>
 </body>
