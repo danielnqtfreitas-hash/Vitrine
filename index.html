@@ -112,15 +112,16 @@
     }
 
     /* Força os elementos brancos a continuarem brancos */
-    .glass-header { 
-    background: rgba(255, 255, 255, 0.95); 
-    backdrop-filter: blur(12px); 
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    /* Linha fina no topo com a cor da marca */
-    border-top: 3px solid var(--color-primary); 
-    box-shadow: 0 10px 15px -3px color-mix(in srgb, var(--color-primary), transparent 95%);
-}
-
+    .glass-header, 
+    .product-card, 
+    footer, 
+    #modalDetails .bg-white,
+    #modalCart .bg-white,
+    #filterDrawer,
+    #modalDelivery .bg-white {
+        background-color: #FFFFFF !important;
+        color: #334155 !important;
+    }
 
     /* Impede que o navegador mude as cores das imagens/logos */
     img {
