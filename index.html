@@ -60,6 +60,19 @@
     }
     </script>
     <style>
+
+        /* Garante que o modal nunca esconda os botões no topo */
+#modalDetails .bg-white {
+    margin-top: env(safe-area-inset-top, 20px);
+    max-height: calc(100vh - 80px) !important;
+}
+
+/* Força os botões de fechar a ficarem sempre visíveis e clicáveis */
+.modal-close-btn {
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+}
+        
         :root { --color-primary: #EA1D2C; --color-primary-dark: #b91c29; }
         body { 
     background-color: #F3F4F6 !important; /* Cor base */
@@ -2152,9 +2165,15 @@ function checkDeepLink() {
     if (productId && allProducts.length > 0) {
         const product = allProducts.find(p => p.id === productId);
         if (product) {
-            console.log("Abrindo produto via link direto:", product.name);
-            // Chamando a função correta que você definiu lá em cima
-            window.openProductModal(product.id); 
+            // Aguarda 300ms para o layout do site estabilizar no celular
+            setTimeout(() => {
+                console.log("Abrindo produto via link direto:", product.name);
+                window.openProductModal(product.id);
+                
+                // Força o scroll do modal para o topo ao abrir via link
+                const modalBody = document.querySelector('#modalDetails .overflow-y-auto');
+                if(modalBody) modalBody.scrollTop = 0;
+            }, 300);
         }
     }
 }
