@@ -607,44 +607,89 @@ function sanitizeTerm(term) {
 
         
                 // --- DATA SERVICE ---
-        const DataService = {
-            async getStoreConfig() {
-                const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-                // Sempre buscamos do servidor para validar o carimbo de tempo real
-                const snap = await getDocFromServer(configRef);
-                return snap.data();
-            },
+        // --- DATA SERVICE OTIMIZADO ---
+const DataService = {
+    // Busca a config sempre do servidor para verificar a "versão" da loja
+    async getStoreConfig() {
+        const configRef = doc(db, `stores/${STORE_ID}/config/store`);
+        const snap = await getDocFromServer(configRef); // 1 leitura de custo
+        return snap.data();
+    },
 
-            async getProducts(forceServer = false) {
-                const colRef = collection(db, `stores/${STORE_ID}/products`);
-                try {
-                    // MUDANÇA AQUI: Se for forceServer, usamos getDocsFromServer
-                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocs(colRef);
-                    
-                    // Fallback: se o cache estiver vazio e não for force, tenta servidor
-                    if (snap.empty && !forceServer) return this.getProducts(true);
-                    
-                    return snap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
-                } catch (e) {
-                    console.error("Erro ao buscar produtos:", e);
-                    // Se falhar no cache, tenta no servidor como última esperança
-                    if (!forceServer) return this.getProducts(true);
-                    return [];
-                }
-            },
+    async getProducts(forceServer = false) {
+        const colRef = collection(db, `stores/${STORE_ID}/products`);
+        try {
+            // Se NÃO for forçado, tenta buscar do CACHE do Firestore primeiro (Custo Zero)
+            const snap = forceServer 
+                ? await getDocsFromServer(colRef) 
+                : await getDocs(colRef); // O Firebase decide se usa cache ou server
+            
+            return snap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
+        } catch (e) {
+            console.error("Erro ao buscar produtos:", e);
+            return [];
+        }
+    }
+};
 
-            async getBanners(forceServer = false) {
-                const colRef = collection(db, `stores/${STORE_ID}/hero_cards`);
-                try {
-                    const snap = forceServer ? await getDocsFromServer(colRef) : await getDocs(colRef);
-                    if (snap.empty && !forceServer) return this.getBanners(true);
-                    return snap.docs.map(d => ({id: d.id, ...d.data()}));
-                } catch (e) {
-                    if (!forceServer) return this.getBanners(true);
-                    return [];
-                }
-            }
-        };
+async function initFlow() {
+    try {
+        // 1. LER APENAS A CONFIGURAÇÃO (1 leitura)
+        const config = await DataService.getStoreConfig();
+        if(!config) {
+            showFatalError("Loja não encontrada", "Verifique a URL.");
+            return;
+        }
+        storeConfigGlobal = config;
+        applyStoreConfig(config);
+
+        const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
+        const cachedRaw = localStorage.getItem(CACHE_KEY);
+        const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
+
+        // 2. COMPARAR VERSÃO (lastUpdate)
+        const serverLastUpdate = config.lastUpdate || "initial";
+        
+        // Só vai ao servidor ler todos os produtos se o timestamp mudou
+        if (!cached || serverLastUpdate !== cached.lastUpdate) {
+            console.log("🔄 Versão nova detectada. Lendo do servidor...");
+            
+            const [products, banners] = await Promise.all([
+                DataService.getProducts(true), // Força leitura server (Custo: N produtos)
+                DataService.getBanners(true)
+            ]);
+            
+            const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
+            
+            allProducts = products;
+            categories = cats;
+            
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                products, 
+                banners: banners || [], 
+                categories: cats, 
+                lastUpdate: serverLastUpdate
+            }));
+            
+            renderHeroCarousel(banners || []);
+        } else {
+            console.log("🚀 Versão idêntica. Usando Cache Local (Custo Zero).");
+            allProducts = cached.products;
+            categories = cached.categories;
+            renderHeroCarousel(cached.banners || []);
+        }
+
+        // Renderização normal
+        renderCategoryTabs();
+        await renderCatalog();
+        hideLoader();
+
+    } catch (error) {
+        console.error("Erro:", error);
+        hideLoader();
+    }
+}
+
         
 
         // --- APP INITIALIZATION (VERSÃO MULTILOJA PROFISSIONAL) ---
