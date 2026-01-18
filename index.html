@@ -606,91 +606,42 @@ function sanitizeTerm(term) {
 }
 
         
-                // --- DATA SERVICE ---
-        // --- DATA SERVICE OTIMIZADO ---
+                // --- DATA SERVICE OTIMIZADO ---
 const DataService = {
-    // Busca a config sempre do servidor para verificar a "versão" da loja
     async getStoreConfig() {
         const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-        const snap = await getDocFromServer(configRef); // 1 leitura de custo
+        const snap = await getDocFromServer(configRef); 
         return snap.data();
     },
 
     async getProducts(forceServer = false) {
         const colRef = collection(db, `stores/${STORE_ID}/products`);
         try {
-            // Se NÃO for forçado, tenta buscar do CACHE do Firestore primeiro (Custo Zero)
             const snap = forceServer 
                 ? await getDocsFromServer(colRef) 
-                : await getDocs(colRef); // O Firebase decide se usa cache ou server
-            
+                : await getDocs(colRef);
             return snap.docs.map(d => ({id: d.id, ...d.data()})).filter(p => p.status === 'active');
         } catch (e) {
             console.error("Erro ao buscar produtos:", e);
             return [];
         }
+    },
+
+    async getBanners(forceServer = false) {
+        const colRef = collection(db, `stores/${STORE_ID}/banners`);
+        try {
+            const snap = forceServer 
+                ? await getDocsFromServer(colRef) 
+                : await getDocs(colRef);
+            return snap.docs.map(d => ({id: d.id, ...d.data()}));
+        } catch (e) {
+            console.error("Erro ao buscar banners:", e);
+            return [];
+        }
     }
 };
+    
 
-async function initFlow() {
-    try {
-        // 1. LER APENAS A CONFIGURAÇÃO (1 leitura)
-        const config = await DataService.getStoreConfig();
-        if(!config) {
-            showFatalError("Loja não encontrada", "Verifique a URL.");
-            return;
-        }
-        storeConfigGlobal = config;
-        applyStoreConfig(config);
-
-        const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
-        const cachedRaw = localStorage.getItem(CACHE_KEY);
-        const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
-
-        // 2. COMPARAR VERSÃO (lastUpdate)
-        const serverLastUpdate = config.lastUpdate || "initial";
-        
-        // Só vai ao servidor ler todos os produtos se o timestamp mudou
-        if (!cached || serverLastUpdate !== cached.lastUpdate) {
-            console.log("🔄 Versão nova detectada. Lendo do servidor...");
-            
-            const [products, banners] = await Promise.all([
-                DataService.getProducts(true), // Força leitura server (Custo: N produtos)
-                DataService.getBanners(true)
-            ]);
-            
-            const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
-            
-            allProducts = products;
-            categories = cats;
-            
-            localStorage.setItem(CACHE_KEY, JSON.stringify({
-                products, 
-                banners: banners || [], 
-                categories: cats, 
-                lastUpdate: serverLastUpdate
-            }));
-            
-            renderHeroCarousel(banners || []);
-        } else {
-            console.log("🚀 Versão idêntica. Usando Cache Local (Custo Zero).");
-            allProducts = cached.products;
-            categories = cached.categories;
-            renderHeroCarousel(cached.banners || []);
-        }
-
-        // Renderização normal
-        renderCategoryTabs();
-        await renderCatalog();
-        hideLoader();
-
-    } catch (error) {
-        console.error("Erro:", error);
-        hideLoader();
-    }
-}
-
-        
 
         // --- APP INITIALIZATION (VERSÃO MULTILOJA PROFISSIONAL) ---
 document.addEventListener('DOMContentLoaded', async () => {
@@ -727,84 +678,73 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-                        async function initFlow() {
-            try {
-                // 1. BUSCA A CONFIGURAÇÃO DIRETO DO SERVIDOR
-                const configRef = doc(db, `stores/${STORE_ID}/config/store`);
-                const configSnap = await getDocFromServer(configRef); 
-                
-                if(!configSnap.exists()) {
-                    showFatalError("Loja não encontrada", "Verifique o ID da loja na URL.");
-                    return;
-                }
+                   async function initFlow() {
+    try {
+        // 1. LER CONFIGURAÇÃO DO SERVIDOR (Custo: 1 leitura)
+        const config = await DataService.getStoreConfig();
+        if(!config) {
+            showFatalError("Loja não encontrada", "Verifique o ID da loja.");
+            return;
+        }
 
-                // AJUSTE AQUI: Definimos a global ANTES de usar
-                const config = configSnap.data();
-                storeConfigGlobal = config; 
+        if(config.subscriptionStatus === 'suspended') { 
+            showFatalError("Indisponível", "Assinatura suspensa."); 
+            return; 
+        }
 
-                if(config.subscriptionStatus === 'suspended') { 
-                    showFatalError("Indisponível", "Assinatura suspensa."); 
-                    return; 
-                }
-                
-                applyStoreConfig(config);
-    
-                // 2. GERENCIAMENTO DE CACHE LOCAL
-                const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
-                const cachedRaw = localStorage.getItem(CACHE_KEY);
-                const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
-                
-                // 3. COMPARAÇÃO DE SEGURANÇA (Adicionado fallback para lastUpdate)
-                const serverLastUpdate = config.lastUpdate || "initial";
-                const needsUpdate = !cached || serverLastUpdate !== cached.lastUpdate;
+        storeConfigGlobal = config;
+        applyStoreConfig(config);
 
-                if (needsUpdate) {
-                    console.log("🔄 Sincronizando dados novos...");
-                    
-                    const [products, banners] = await Promise.all([
-                        DataService.getProducts(true), 
-                        DataService.getBanners(true)
-                    ]);
-                    
-                    const cats = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
-                    
-                    allProducts = products;
-                    categories = cats;
-                    
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({
-                        products, 
-                        banners: banners || [], 
-                        categories: cats, 
-                        lastUpdate: serverLastUpdate,
-                        ts: Date.now()
-                    }));
-                    
-                    renderHeroCarousel(banners || []);
-                } else {
-                    console.log("✅ Carregado do cache.");
-                    allProducts = cached.products;
-                    categories = cached.categories;
-                    renderHeroCarousel(cached.banners || []);
-                }
+        // 2. GERENCIAMENTO DE CACHE
+        const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
+        const cachedRaw = localStorage.getItem(CACHE_KEY);
+        const cached = cachedRaw ? JSON.parse(cachedRaw) : null;
+        
+        const serverLastUpdate = config.lastUpdate || "initial";
+        const needsUpdate = !cached || serverLastUpdate !== cached.lastUpdate;
 
-                // Renderização da UI
-                renderCategoryTabs();
-                await renderCatalog();
-                checkDeepLink(); 
-                populateFilterOptions();
-                registerVisit();
-                updateFavoritesUI();
-                
-                // FINALIZA O LOADER
-                hideLoader();
+        if (needsUpdate) {
+            console.log("🔄 Versão nova. Sincronizando com servidor...");
+            
+            const [products, banners] = await Promise.all([
+                DataService.getProducts(true), 
+                DataService.getBanners(true)
+            ]);
+            
+            allProducts = products;
+            categories = Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort();
+            
+            localStorage.setItem(CACHE_KEY, JSON.stringify({
+                products, 
+                banners: banners || [], 
+                categories: categories, 
+                lastUpdate: serverLastUpdate
+            }));
+            
+            renderHeroCarousel(banners || []);
+        } else {
+            console.log("🚀 Versão idêntica. Usando Cache Local.");
+            allProducts = cached.products;
+            categories = cached.categories;
+            renderHeroCarousel(cached.banners || []);
+        }
 
-            } catch (error) {
-                console.error("Erro crítico na sincronização:", error);
-                // Força a saída do loader para mostrar a mensagem de erro ao usuário
-                hideLoader(); 
-                showFatalError("Erro de Conexão", "Não foi possível carregar os dados. Verifique sua internet ou as permissões do Firebase.");
-            }
-                }
+        // 3. RENDERIZAÇÃO DA INTERFACE
+        renderCategoryTabs();
+        await renderCatalog();
+        populateFilterOptions();
+        updateFavoritesUI();
+        checkDeepLink();
+        registerVisit();
+        
+        hideLoader();
+
+    } catch (error) {
+        console.error("Erro crítico:", error);
+        showFatalError("Erro de Conexão", "Não foi possível carregar os dados.");
+        hideLoader();
+    }
+                   }     
         
         
         // --- RENDERERS ---
