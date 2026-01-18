@@ -873,6 +873,23 @@ window.openProductModal = (id) => {
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
 
+    // --- NOVO: Lógica de Deep Linking e SEO ---
+    // 1. Atualiza a URL na barra de endereços sem recarregar a página
+    const newURL = window.location.pathname + `?id=${p.id}`;
+    window.history.pushState({ path: newURL }, '', newURL);
+
+    // 2. Atualiza o Título da Aba e as Meta Tags para o "robô" do WhatsApp/Instagram
+    document.title = `${p.name} | ${storeConfigGlobal.storeName || 'Vitrine'}`;
+    const metaTitle = document.getElementById('og-title');
+    const metaDesc = document.getElementById('og-desc');
+    const metaImg = document.getElementById('og-img');
+    
+    if(metaTitle) metaTitle.content = p.name;
+    if(metaDesc) metaDesc.content = p.description || "Confira esse produto incrível!";
+    if(metaImg) metaImg.content = p.images?.[0] || '';
+
+    // --- FIM DO BLOCO DE DEEP LINKING ---
+
     // CORREÇÃO: Chama o rastreio com proteção para não travar o modal
     try { 
         if (typeof trackProductView === 'function') trackProductView(p.id); 
@@ -886,6 +903,7 @@ window.openProductModal = (id) => {
         color: null, 
         image: p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem' 
     }; 
+
     
     const mainImages = (p.images?.length) ? p.images : ['https://placehold.co/600?text=Sem+Imagem'];
     const variationImages = (p.variations || [])
@@ -1738,11 +1756,26 @@ window.closeImageZoom = () => {
 }
 
         window.shareProduct = () => { 
-            const p = allProducts.find(x=>x.id===currentDetailId); if(!p) return;
-            const text = `Olha esse ${p.name} que encontrei na ${document.getElementById('storeNameDisplay').textContent}!`;
-            if(navigator.share) navigator.share({title: p.name, text, url: window.location.href});
-            else { navigator.clipboard.writeText(`${text} ${window.location.href}`); showToast("Link copiado!"); }
-        };
+    const p = allProducts.find(x => x.id === currentDetailId); 
+    if(!p) return;
+
+    const shareTitle = p.name;
+    const shareText = `Olha o que encontrei na ${storeConfigGlobal.storeName || 'loja'}: ${p.name}`;
+    const shareUrl = window.location.href; // Isso agora já pega a URL com o ?id=...
+
+    if(navigator.share) {
+        navigator.share({
+            title: shareTitle,
+            text: shareText,
+            url: shareUrl
+        }).catch(err => console.log('Erro ao compartilhar', err));
+    } else {
+        // Fallback para computadores ou navegadores antigos
+        navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+        showToast("Link copiado! Cole no WhatsApp.");
+    }
+};
+
 
         window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
 
