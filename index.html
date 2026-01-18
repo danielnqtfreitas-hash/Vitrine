@@ -2104,6 +2104,23 @@ window.toggleFavoriteCurrentDetail = () => {
         updateModalHeartBtn();
     }
 };
+// Esta função deve rodar após os produtos serem baixados do Firestore
+function checkDeepLink() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('id');
+
+    if (productId) {
+        // Procure o produto na sua lista local 'allProducts'
+        const product = allProducts.find(p => p.id === productId);
+        
+        if (product) {
+            // Chama a função que você já usa para abrir o modal
+            // Exemplo: window.openProductDetail(productId);
+            console.log("Abrindo produto via link direto:", product.name);
+            abrirModalDetalhes(product); 
+        }
+    }
+}
 
         
     </script>
