@@ -732,6 +732,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Renderização da UI
                 renderCategoryTabs();
                 await renderCatalog();
+                checkDeepLink(); 
                 populateFilterOptions();
                 registerVisit();
                 updateFavoritesUI();
@@ -1382,7 +1383,13 @@ window.closeConfirmFinal = () => {
         function hideLoader() { document.getElementById('initialLoader').style.opacity = '0'; setTimeout(() => { document.getElementById('initialLoader').classList.add('hidden'); document.getElementById('app').classList.remove('hidden', 'opacity-0'); }, 500); }
         function showFatalError(title, msg) { document.getElementById('errorScreen').classList.remove('hidden'); document.getElementById('errorTitle').textContent = title; document.getElementById('errorMsg').textContent = msg; hideLoader(); }
 
-        window.closeModalDetails = () => document.getElementById('modalDetails').classList.add('hidden');
+        window.closeModalDetails = () => {
+    document.getElementById('modalDetails').classList.add('hidden');
+    
+    // Remove o ?id=... da barra de navegação sem recarregar a página
+    window.history.pushState({}, '', window.location.pathname);
+};
+
         window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(()=>document.getElementById('cartDrawer').classList.remove('translate-x-full'),10); };
         window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('modalCart').classList.add('hidden'),300); };
        // --- FUNÇÕES DE MODAL (CORRIGIDAS E GLOBAIS) ---
