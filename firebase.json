@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "VitrinePublic",
+    "public": ".",
     "ignore": [
       "firebase.json",
       "**/.*",
