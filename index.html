@@ -2149,19 +2149,15 @@ function checkDeepLink() {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
 
-    if (productId) {
-        // Procure o produto na sua lista local 'allProducts'
+    if (productId && allProducts.length > 0) {
         const product = allProducts.find(p => p.id === productId);
-        
         if (product) {
-            // Chama a função que você já usa para abrir o modal
-            // Exemplo: window.openProductDetail(productId);
             console.log("Abrindo produto via link direto:", product.name);
-            abrirModalDetalhes(product); 
+            // Chamando a função correta que você definiu lá em cima
+            window.openProductModal(product.id); 
         }
     }
 }
-
         
     </script>
 </body>
