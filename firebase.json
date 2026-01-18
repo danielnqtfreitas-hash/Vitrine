@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "meuestoque-1badc",
     "public": ".",
     "ignore": [
       "firebase.json",
