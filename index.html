@@ -628,19 +628,19 @@ const DataService = {
     },
 
     async getBanners(forceServer = false) {
-        const colRef = collection(db, `stores/${STORE_ID}/banners`);
-        try {
-            const snap = forceServer 
-                ? await getDocsFromServer(colRef) 
-                : await getDocs(colRef);
-            return snap.docs.map(d => ({id: d.id, ...d.data()}));
-        } catch (e) {
-            console.error("Erro ao buscar banners:", e);
-            return [];
-        }
+    // Trocamos 'banners' por 'hero_cards' para bater com o Painel Admin
+    const colRef = collection(db, `stores/${STORE_ID}/hero_cards`); 
+    try {
+        const snap = forceServer 
+            ? await getDocsFromServer(colRef) 
+            : await getDocs(colRef);
+        return snap.docs.map(d => ({id: d.id, ...d.data()}));
+    } catch (e) {
+        console.error("Erro ao buscar banners:", e);
+        return [];
     }
+}
 };
-    
 
 
         // --- APP INITIALIZATION (VERSÃO MULTILOJA PROFISSIONAL) ---
