@@ -61,6 +61,12 @@
     </script>
     <style>
 
+        .timer-accent { 
+    background-color: color-mix(in srgb, var(--color-primary), transparent 92%);
+    color: var(--color-primary);
+    border: 1px solid color-mix(in srgb, var(--color-primary), transparent 85%);
+        }
+
         /* Garante que o modal nunca esconda os botões no topo */
 #modalDetails .bg-white {
     margin-top: env(safe-area-inset-top, 20px);
@@ -822,11 +828,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     
     lucide.createIcons();
+
+             initGlobalCountdowns();              
 }; 
 
 
         function mkProductCard(p) {
-    const hasPromo = p.promoValue && p.promoValue < p.value;
+    const isPromoValid = p.promoUntil ? (p.promoUntil > Date.now()) : true;
+    const hasPromo = p.promoValue && p.promoValue < p.value && isPromoValid;
     const price = hasPromo ? p.promoValue : p.value;
     const img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem';
     const isFav = favorites.includes(p.id);
@@ -848,6 +857,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             </button>
         </div>
         <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
+        <div id="timer-${p.id}" class="hidden mb-2 py-1 px-2 rounded-lg flex items-center gap-1.5 timer-accent animate-pulse">
+        <i data-lucide="clock" class="w-3 h-3"></i>
+        <span class="text-[9px] font-black uppercase tracking-tighter countdown-text">Carregando...</span>
+    </div>
+    <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
             <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
             <div class="mt-auto pt-1">
                 <div class="flex items-center justify-between">
@@ -2162,6 +2176,37 @@ function checkDeepLink() {
         }
     }
 }
+
+    function initGlobalCountdowns() {
+    setInterval(() => {
+        const agora = Date.now();
+        
+        allProducts.forEach(p => {
+            const timerEl = document.getElementById(`timer-${p.id}`);
+            if (!p.promoUntil || !timerEl) return;
+
+            const restante = p.promoUntil - agora;
+
+            if (restante > 0) {
+                timerEl.classList.remove('hidden');
+                
+                const dias = Math.floor(restante / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((restante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutos = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((restante % (1000 * 60)) / 1000);
+
+                const texto = dias > 0 
+                    ? `Expira em: ${dias}d ${horas}h ${minutos}m` 
+                    : `Expira em: ${String(horas).padStart(2,'0')}:${String(minutos).padStart(2,'0')}:${String(segundos).padStart(2,'0')}`;
+                
+                timerEl.querySelector('.countdown-text').innerText = texto;
+            } else {
+                // Se o tempo acabou, esconde o relógio e remove o preço promo visualmente
+                timerEl.classList.add('hidden');
+                // Opcional: Aqui você poderia disparar um renderCatalog() para limpar a tela
+            }
+        });
+    }, 1000);
         
     </script>
 </body>
