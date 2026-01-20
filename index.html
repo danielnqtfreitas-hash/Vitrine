@@ -62,10 +62,13 @@
     <style>
 
         .timer-accent { 
-    background-color: color-mix(in srgb, var(--color-primary), transparent 92%);
+    background-color: color-mix(in srgb, var(--color-primary), transparent 90%);
     color: var(--color-primary);
-    border: 1px solid color-mix(in srgb, var(--color-primary), transparent 85%);
-        }
+    border: none;
+    border-radius: 6px;
+    font-weight: 800;
+}
+
 
         /* Garante que o modal nunca esconda os botões no topo */
 #modalDetails .bg-white {
@@ -857,11 +860,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             </button>
         </div>
         <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
-        <div id="timer-${p.id}" class="hidden mb-2 py-1 px-2 rounded-lg flex items-center gap-1.5 timer-accent animate-pulse">
+        <div id="timer-${p.id}" class="hidden mb-2 py-1 px-2 flex items-center gap-1.5 timer-accent">
         <i data-lucide="clock" class="w-3 h-3"></i>
         <span class="text-[9px] font-black uppercase tracking-tighter countdown-text">Carregando...</span>
     </div>
-    <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
             <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
             <div class="mt-auto pt-1">
                 <div class="flex items-center justify-between">
