@@ -61,15 +61,19 @@
     </script>
     <style>
 
-        .timer-accent { 
-    background-color: color-mix(in srgb, var(--color-primary), transparent 90%);
-    color: var(--color-primary);
-    border: none;
-    border-radius: 6px;
-    font-weight: 800;
+        .countdown-text {
+    font-variant-numeric: tabular-nums; /* Mantém os números com a mesma largura */
+    min-width: 80px; /* Garante que o espaço seja reservado */
+    display: inline-block;
 }
 
-
+.timer-accent {
+    /* Cor "pele/nude" elegante que você mencionou */
+    background-color: #fdf2f0; 
+    color: #d48377;
+    border: 1px solid #f9e4e0;
+    font-weight: 700;
+}
         /* Garante que o modal nunca esconda os botões no topo */
 #modalDetails .bg-white {
     margin-top: env(safe-area-inset-top, 20px);
@@ -2180,44 +2184,58 @@ function checkDeepLink() {
 }
 
         // --- LÓGICA DO RELÓGIO REGRESSIVO ---
-    function initGlobalCountdowns() {
-        if (window.timerInterval) clearInterval(window.timerInterval);
+function initGlobalCountdowns() {
+    if (window.timerInterval) clearInterval(window.timerInterval);
+    
+    window.timerInterval = setInterval(() => {
+        const agora = Date.now();
         
-        window.timerInterval = setInterval(() => {
-            const agora = Date.now();
+        allProducts.forEach(p => {
+            const timerEl = document.getElementById(`timer-${p.id}`);
+            const modalTimer = document.getElementById('modalTimer');
+            const modalTimerText = document.getElementById('modalTimerText');
             
-            allProducts.forEach(p => {
-                const timerEl = document.getElementById(`timer-${p.id}`);
-                if (!p.promoUntil || !timerEl) return;
+            if (!p.promoUntil) return;
 
-                const restante = p.promoUntil - agora;
+            const restante = p.promoUntil - agora;
 
-                if (restante > 0) {
+            if (restante > 0) {
+                // Cálculos de tempo
+                const dias = Math.floor(restante / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((restante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutos = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
+                const segundos = Math.floor((restante % (1000 * 60)) / 1000);
+
+                let texto = "";
+                if (dias > 0) {
+                    texto = `Expira em: ${dias}d ${horas}h`;
+                } else {
+                    const h = String(horas).padStart(2, '0');
+                    const m = String(minutos).padStart(2, '0');
+                    const s = String(segundos).padStart(2, '0');
+                    texto = `Oferta termina em: ${h}:${m}:${s}`;
+                }
+
+                // Atualiza o card na vitrine
+                if (timerEl) {
                     timerEl.classList.remove('hidden');
-                    
-                    const dias = Math.floor(restante / (1000 * 60 * 60 * 24));
-                    const horas = Math.floor((restante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const minutos = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
-                    const segundos = Math.floor((restante % (1000 * 60)) / 1000);
-
-                    const texto = dias > 0 
-                        ? `Expira em: ${dias}d ${horas}h` 
-                        : `Expira em: ${String(horas).padStart(2,'0')}:${String(minutos).padStart(2,'0')}:${String(segundos).padStart(2,'0')}`;
-                    
                     const textSpan = timerEl.querySelector('.countdown-text');
                     if (textSpan) textSpan.innerText = texto;
-                } else {
-                    timerEl.classList.add('hidden');
                 }
-            });
-        }, 1000);
-    }
-    // FIM DA FUNÇÃO INITGLOBAL
-</script>
-</body>
-</html>
 
-        
+                // Atualiza o modal de detalhes (se estiver aberto com este produto)
+                if (currentDetailId === p.id && modalTimer && modalTimerText) {
+                    modalTimer.classList.remove('hidden');
+                    modalTimerText.innerText = texto;
+                }
+            } else {
+                // Esconde se o tempo acabou
+                if (timerEl) timerEl.classList.add('hidden');
+                if (currentDetailId === p.id && modalTimer) modalTimer.classList.add('hidden');
+            }
+        });
+    }, 1000);
+}        
     </script>
 </body>
         </html>
