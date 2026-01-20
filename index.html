@@ -2177,36 +2177,44 @@ function checkDeepLink() {
     }
 }
 
+        // --- LÓGICA DO RELÓGIO REGRESSIVO ---
     function initGlobalCountdowns() {
-    setInterval(() => {
-        const agora = Date.now();
+        if (window.timerInterval) clearInterval(window.timerInterval);
         
-        allProducts.forEach(p => {
-            const timerEl = document.getElementById(`timer-${p.id}`);
-            if (!p.promoUntil || !timerEl) return;
+        window.timerInterval = setInterval(() => {
+            const agora = Date.now();
+            
+            allProducts.forEach(p => {
+                const timerEl = document.getElementById(`timer-${p.id}`);
+                if (!p.promoUntil || !timerEl) return;
 
-            const restante = p.promoUntil - agora;
+                const restante = p.promoUntil - agora;
 
-            if (restante > 0) {
-                timerEl.classList.remove('hidden');
-                
-                const dias = Math.floor(restante / (1000 * 60 * 60 * 24));
-                const horas = Math.floor((restante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutos = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
-                const segundos = Math.floor((restante % (1000 * 60)) / 1000);
+                if (restante > 0) {
+                    timerEl.classList.remove('hidden');
+                    
+                    const dias = Math.floor(restante / (1000 * 60 * 60 * 24));
+                    const horas = Math.floor((restante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutos = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
+                    const segundos = Math.floor((restante % (1000 * 60)) / 1000);
 
-                const texto = dias > 0 
-                    ? `Expira em: ${dias}d ${horas}h ${minutos}m` 
-                    : `Expira em: ${String(horas).padStart(2,'0')}:${String(minutos).padStart(2,'0')}:${String(segundos).padStart(2,'0')}`;
-                
-                timerEl.querySelector('.countdown-text').innerText = texto;
-            } else {
-                // Se o tempo acabou, esconde o relógio e remove o preço promo visualmente
-                timerEl.classList.add('hidden');
-                // Opcional: Aqui você poderia disparar um renderCatalog() para limpar a tela
-            }
-        });
-    }, 1000);
+                    const texto = dias > 0 
+                        ? `Expira em: ${dias}d ${horas}h` 
+                        : `Expira em: ${String(horas).padStart(2,'0')}:${String(minutos).padStart(2,'0')}:${String(segundos).padStart(2,'0')}`;
+                    
+                    const textSpan = timerEl.querySelector('.countdown-text');
+                    if (textSpan) textSpan.innerText = texto;
+                } else {
+                    timerEl.classList.add('hidden');
+                }
+            });
+        }, 1000);
+    }
+    // FIM DA FUNÇÃO INITGLOBAL
+</script>
+</body>
+</html>
+
         
     </script>
 </body>
