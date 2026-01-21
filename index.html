@@ -939,65 +939,72 @@ window.openProductModal = (id) => {
     const renderVariationUI = () => {
         const matrix = p.variations || [];
         const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
-
-        const updatePrices = () => {
+  
+         const updatePrices = () => {
     const agora = Date.now();
-    // Checa se a promoção é válida agora
     const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
+    const fatorDesconto = isPromoAtiva ? (p.promoValue / p.value) : 1;
     
     let price = isPromoAtiva ? p.promoValue : p.value;
     let oldP = isPromoAtiva ? p.value : null;
     
     let skuDinamico = p.sku || 'N/A'; 
-            let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
-            let outOfStockVariation = false;
+    let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
+    
+    // --- CORREÇÃO AQUI: Criamos a variável começando como 'falso' ---
+    let outOfStockVariation = false;
 
-            if(isComplete && matrix.length) {
-                const comb = matrix.find(v => 
-                    (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
-                    (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
-                );
+    if(isComplete && matrix.length) {
+        const comb = matrix.find(v => 
+            (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
+            (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
+        );
 
-                if(comb && comb.active) { 
-                    const vStock = parseInt(comb.stock) || 0;
-                    if(vStock <= 0) {
-                        outOfStockVariation = true;
-                        isComplete = false; 
-                    }
-                    price = comb.price; 
-                    oldP = null;
-                    skuDinamico = comb.sku || skuDinamico; 
-                    currentDetailSelection.image = comb.image || p.images[0]; 
-
-                    if (comb.image) {
-                        const imgIdx = currentDetailImages.indexOf(comb.image);
-                        if (imgIdx !== -1) setDetailImage(imgIdx);
-                    }
-                } else if(hasS || hasC) {
-                    isComplete = false;
-                }
+        if(comb && comb.active) { 
+            // Verificamos se a variação específica está sem estoque
+            const vStock = parseInt(comb.stock) || 0;
+            if(vStock <= 0) {
+                outOfStockVariation = true;
+                isComplete = false; 
             }
+
+            price = isPromoAtiva ? (comb.price * fatorDesconto) : comb.price;
+            oldP = isPromoAtiva ? comb.price : null; 
             
-            const btnAdd = document.getElementById('detailAddBtn');
-            document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
-            document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
-            document.getElementById('detailSku').textContent = skuDinamico; 
-            
-            if (outOfStockVariation) {
-                btnAdd.textContent = "Esgotado";
-                btnAdd.disabled = true;
-                btnAdd.classList.add('opacity-50', 'bg-slate-400');
-                btnAdd.classList.remove('bg-primary');
-            } else {
-                btnAdd.textContent = "Adicionar";
-                btnAdd.disabled = !isComplete;
-                btnAdd.classList.remove('opacity-50', 'bg-slate-400');
-                btnAdd.classList.add('bg-primary');
+            skuDinamico = comb.sku || skuDinamico;
+            currentDetailSelection.image = comb.image || p.images[0]; 
+
+            if (comb.image) {
+                const imgIdx = currentDetailImages.indexOf(comb.image);
+                if (imgIdx !== -1) setDetailImage(imgIdx);
             }
-            
-            p.currentFinalPrice = price; 
-            p.currentSKU = skuDinamico; 
-        };
+        } else if(hasS || hasC) {
+            isComplete = false;
+        }
+    }
+    
+    const btnAdd = document.getElementById('detailAddBtn');
+    document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
+    document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
+    document.getElementById('detailSku').textContent = skuDinamico; 
+    
+    // Agora o código sabe o que é 'outOfStockVariation' e não vai travar!
+    if (outOfStockVariation) {
+        btnAdd.textContent = "Esgotado";
+        btnAdd.disabled = true;
+        btnAdd.classList.add('opacity-50', 'bg-slate-400');
+        btnAdd.classList.remove('bg-primary');
+    } else {
+        btnAdd.textContent = "Adicionar";
+        btnAdd.disabled = !isComplete;
+        btnAdd.classList.remove('opacity-50', 'bg-slate-400');
+        btnAdd.classList.add('bg-primary');
+    }
+    
+    p.currentFinalPrice = price; 
+    p.currentSKU = skuDinamico; 
+};
+
 
         const renderChips = (list, type, container, wrapper) => {
             container.innerHTML = '';
@@ -1892,21 +1899,22 @@ window.closeCartModal = () => {
 };
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
-// --- LÓGICA DO CARRINHO CORRIGIDA E REVISADA ---
 window.addToCart = (p, q, v) => {
     const matrix = p.variations || [];
     let stockDisponivel = parseInt(p.stock) || 0;
 
-    // 1. Lógica de preço com checagem de cronômetro (Promoção)
+    // --- PASSO 1: LÓGICA DE PERCENTUAL DE DESCONTO ---
     const agora = Date.now();
     const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
-    const precoBaseComOferta = isPromoAtiva ? p.promoValue : p.value;
     
-    // Declaramos o preço aqui (permitindo alteração se houver variação)
-    let price = precoBaseComOferta; 
+    // Calculamos quanto o preço promocional representa do original (ex: 0.8 = 20% de desconto)
+    const fatorDesconto = isPromoAtiva ? (p.promoValue / p.value) : 1;
+    
+    // Preço inicial (baseado no produto pai)
+    let price = isPromoAtiva ? p.promoValue : p.value; 
 
     // 2. Ajuste de estoque e preço específico se o cliente escolheu uma variação
-    let skuFinal = p.sku || 'N/A'; // SKU padrão (pai)
+    let skuFinal = p.sku || 'N/A'; 
 
     if(matrix.length && (v.size || v.color)) {
         const comb = matrix.find(varItem => 
@@ -1915,16 +1923,20 @@ window.addToCart = (p, q, v) => {
         );
         if (comb) {
             stockDisponivel = parseInt(comb.stock) || 0;
-            price = comb.price; // O preço da variação manda
-            skuFinal = comb.sku || skuFinal; // O SKU da variação manda
+            
+            // --- PASSO 2: APLICAÇÃO PROPORCIONAL NA VARIAÇÃO ---
+            // Se a promo está ativa, aplicamos o fator de desconto no preço da variação
+            price = isPromoAtiva ? (comb.price * fatorDesconto) : comb.price;
+            
+            skuFinal = comb.sku || skuFinal;
         }
     }
 
+    // --- DAQUI PARA BAIXO SEGUE IGUAL AO SEU ---
     const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-    // 3. Validação de Estoque
     if (totalDesejado > stockDisponivel) {
         showToast(`⚠️ Desculpe, estoque insuficiente (${stockDisponivel} unid. disponíveis).`);
         return;
@@ -1937,21 +1949,21 @@ window.addToCart = (p, q, v) => {
         naSacola.q += q; 
         naSacola.sku = skuFinal;
         naSacola.img = imagemFinal;
-        naSacola.price = price; // Mantém o preço atualizado no carrinho
+        naSacola.price = price; 
     } else {
         cart.push({
             uid, 
             id: p.id, 
-            sku: skuFinal, // Para visualização rápida no painel
+            sku: skuFinal,
             name: p.name, 
-            price: price, // Usando o valor calculado corretamente
+            price: price, 
             q, 
             img: imagemFinal, 
             variationDetails: { 
                 size: v.size || null,
                 color: v.color || null,
                 image: imagemFinal,
-                sku: skuFinal // <--- ESSENCIAL para sua baixa silenciosa funcionar
+                sku: skuFinal
             },
             v: {...v}
         }); 
@@ -1962,7 +1974,6 @@ window.addToCart = (p, q, v) => {
     showToast(`<b>${p.name}</b> na sacola!`); 
     window.closeModalDetails(); 
 };
-
 
 window.updateCartUI = () => {
     const cnt = cart.reduce((a, b) => a + b.q, 0); 
