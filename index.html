@@ -1322,14 +1322,26 @@ window.closeConfirmFinal = () => {
     // 1. Número do WhatsApp para destino
     lojaZapDestino = (d.whatsappNumber || "").replace(/\D/g, "");
     
+    // --- NOVO: Vincula o número ao botão do rodapé ---
+    const footerLink = document.getElementById('footerWaLink');
+    if (footerLink && lojaZapDestino) {
+        footerLink.href = `https://wa.me/${lojaZapDestino}`;
+    }
+
     // 2. Cor Primária do Tema
     if(d.primaryColor) { 
         document.documentElement.style.setProperty('--color-primary', d.primaryColor); 
         document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); 
     }
     
-    // 3. Identidade Visual
-    document.getElementById('storeNameDisplay').textContent = d.storeName;
+    // 3. Identidade Visual (Aqui já aplicamos o ajuste do nome da Gata Attrevida)
+    const storeNameElement = document.getElementById('storeNameDisplay');
+    if (storeNameElement) {
+        storeNameElement.textContent = d.storeName;
+        // Ajuste de largura para nomes grandes
+        storeNameElement.classList.replace('max-w-[140px]', 'max-w-[220px]');
+    }
+
     document.getElementById('footerStoreName').textContent = d.storeName;
     document.getElementById('footerDescription').textContent = d.footerText || "Qualidade e confiança.";
     
@@ -1355,7 +1367,7 @@ window.closeConfirmFinal = () => {
         deliverySelect.innerHTML = '<option value="0">Retirar na Loja</option>' + 
             deliveryAreas.map(a => `<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
     }
-        }
+        }   
 
         async function registerVisit() {
     if (!STORE_ID || STORE_ID === 'admin') return;
