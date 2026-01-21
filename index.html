@@ -1263,17 +1263,19 @@ window.checkoutWhatsApp = async () => {
                 addressDetails: isRetirada ? null : dadosEndereco
             },
             items: cart.map(item => ({
-                id: item.id,
-                name: item.name,
-                sku: item.sku || "N/A", 
-                qty: item.q,
-                price: item.price,
-                variationDetails: {
-                    color: item.v.color || null,
-                    size: item.v.size || null,
-                    image: item.img // Foto da variação escolhida que salvamos no addToCart
-                }
-            })),
+    id: item.id,
+    name: item.name,
+    sku: item.sku || "N/A", 
+    qty: item.q,
+    price: item.price,
+    variationDetails: {
+        color: item.v.color || null,
+        size: item.v.size || null,
+        image: item.img,
+        sku: item.sku || "N/A" // <--- ADICIONE ESTA LINHA AQUI!
+    }
+})),
+
             paymentMethod: infoPagamento,
             deliveryFee: taxaEntrega,
             total: totalFinal,
