@@ -349,7 +349,18 @@
                             <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
                          </button>
                     </div>
-                    
+
+                    <div class="px-6 pb-32"> 
+    <div class="flex justify-between items-start mb-2">
+         <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
+         </div>
+
+    <div id="modalTimer" class="hidden timer-accent p-2 rounded-lg mb-4 flex items-center gap-2">
+        <i data-lucide="clock" class="w-4 h-4 text-primary"></i>
+        <span id="modalTimerText" class="text-xs font-bold"></span>
+    </div>
+    
+    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
                     <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
                     
                     <div id="detailSkuContainer" class="mb-4">
@@ -864,10 +875,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             </button>
         </div>
         <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
-        <div id="timer-${p.id}" class="hidden mb-2 py-1 px-2 flex items-center gap-1.5 timer-accent">
-        <i data-lucide="clock" class="w-3 h-3"></i>
-        <span class="text-[9px] font-black uppercase tracking-tighter countdown-text">Carregando...</span>
-    </div>
+        <div class="product-timer hidden mb-2 py-1 px-2 rounded-lg flex items-center gap-1.5 timer-accent animate-pulse" data-pid="${p.id}">
+    <i data-lucide="clock" class="w-3 h-3"></i>
+    <span class="text-[9px] font-black uppercase tracking-tighter countdown-text">Carregando...</span>
+</div>
             <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
             <div class="mt-auto pt-1">
                 <div class="flex items-center justify-between">
@@ -883,15 +894,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 }
 
 
-        // --- CORE LOGIC ---
-  // --- CORE LOGIC ---
-// --- LOGICA DE DETALHES DO PRODUTO (ABRIR MODAL) ---
-// --- LOGICA DE DETALHES DO PRODUTO (VERSÃO COMPLETA E CORRIGIDA) ---
+        // --- LOGICA DE DETALHES DO PRODUTO (VERSÃO COMPLETA E CORRIGIDA) ---
 window.openProductModal = (id) => { 
+    document.getElementById('modalTimer')?.classList.add('hidden');
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
 
-    // --- NOVO: Lógica de Deep Linking e SEO ---
     // 1. Atualiza a URL na barra de endereços sem recarregar a página
     const newURL = window.location.pathname + `?id=${p.id}`;
     window.history.pushState({ path: newURL }, '', newURL);
@@ -2186,56 +2194,58 @@ function checkDeepLink() {
         // --- LÓGICA DO RELÓGIO REGRESSIVO ---
 function initGlobalCountdowns() {
     if (window.timerInterval) clearInterval(window.timerInterval);
+
+window.timerInterval = setInterval(() => {
+    const agora = Date.now();
     
-    window.timerInterval = setInterval(() => {
-        const agora = Date.now();
+    // 1. Atualiza todos os timers da vitrine (pode ter o mesmo produto em vários lugares)
+    const allTimers = document.querySelectorAll('.product-timer');
+    allTimers.forEach(timerEl => {
+        const pid = timerEl.getAttribute('data-pid');
+        const p = allProducts.find(x => x.id === pid);
         
-        allProducts.forEach(p => {
-            const timerEl = document.getElementById(`timer-${p.id}`);
-            const modalTimer = document.getElementById('modalTimer');
-            const modalTimerText = document.getElementById('modalTimerText');
-            
-            if (!p.promoUntil) return;
-
+        if (p && p.promoUntil) {
             const restante = p.promoUntil - agora;
-
             if (restante > 0) {
-                // Cálculos de tempo
-                const dias = Math.floor(restante / (1000 * 60 * 60 * 24));
-                const horas = Math.floor((restante % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutos = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
-                const segundos = Math.floor((restante % (1000 * 60)) / 1000);
-
-                let texto = "";
-                if (dias > 0) {
-                    texto = `Expira em: ${dias}d ${horas}h`;
-                } else {
-                    const h = String(horas).padStart(2, '0');
-                    const m = String(minutos).padStart(2, '0');
-                    const s = String(segundos).padStart(2, '0');
-                    texto = `Oferta termina em: ${h}:${m}:${s}`;
-                }
-
-                // Atualiza o card na vitrine
-                if (timerEl) {
-                    timerEl.classList.remove('hidden');
-                    const textSpan = timerEl.querySelector('.countdown-text');
-                    if (textSpan) textSpan.innerText = texto;
-                }
-
-                // Atualiza o modal de detalhes (se estiver aberto com este produto)
-                if (currentDetailId === p.id && modalTimer && modalTimerText) {
-                    modalTimer.classList.remove('hidden');
-                    modalTimerText.innerText = texto;
-                }
+                const texto = formatarTempo(restante);
+                timerEl.classList.remove('hidden');
+                timerEl.querySelector('.countdown-text').innerText = texto;
             } else {
-                // Esconde se o tempo acabou
-                if (timerEl) timerEl.classList.add('hidden');
-                if (currentDetailId === p.id && modalTimer) modalTimer.classList.add('hidden');
+                timerEl.classList.add('hidden');
             }
-        });
-    }, 1000);
-}        
+        }
+    });
+
+    // 2. Atualiza o timer do MODAL (se estiver aberto)
+    if (currentDetailId) {
+        const pModal = allProducts.find(x => x.id === currentDetailId);
+        const modalTimer = document.getElementById('modalTimer');
+        const modalTimerText = document.getElementById('modalTimerText');
+
+        if (pModal && pModal.promoUntil && modalTimer && modalTimerText) {
+            const restanteModal = pModal.promoUntil - agora;
+            if (restanteModal > 0) {
+                modalTimer.classList.remove('hidden');
+                modalTimerText.innerText = formatarTempo(restanteModal);
+            } else {
+                modalTimer.classList.add('hidden');
+            }
+        } else if (modalTimer) {
+            modalTimer.classList.add('hidden');
+        }
+    }
+}, 1000);
+
+// Função auxiliar para não repetir código de cálculo
+function formatarTempo(ms) {
+    const dias = Math.floor(ms / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutos = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const segundos = Math.floor((ms % (1000 * 60)) / 1000);
+
+    if (dias > 0) return `Expira em: ${dias}d ${horas}h`;
+    return `Oferta termina em: ${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+}
     </script>
 </body>
         </html>
