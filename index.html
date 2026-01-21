@@ -231,7 +231,7 @@
                 <img id="storeLogoImg" src="" class="w-full h-full object-cover" alt="Logo">
             </div>
             <div class="flex flex-col justify-center">
-                <h1 id="storeNameDisplay" class="font-display font-bold text-xl md:text-2xl text-slate-800 leading-tight truncate max-w-[140px] md:max-w-xs">Carregando...</h1>
+                <h1 id="storeNameDisplay" class="font-display font-bold text-lg md:text-2xl text-slate-800 leading-tight truncate max-w-[220px] md:max-w-md">Carregando...</h1>
                 <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tighter md:hidden">Vitrine Online</span>
             </div>
         </div>
@@ -495,12 +495,6 @@
             </div>
         </div>
         </div> </div>
-
-            
-
-        
-
-
     
     <div id="filterModal" class="fixed inset-0 z-[150] hidden">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeFilterDrawer()"></div>
@@ -1957,14 +1951,45 @@ window.updateCartUI = () => {
 
 
 window.modQty = (u, d) => {
-    const i = cart.find(x => x.uid === u);
-    if(i) {
-        i.q += d;
-        if(i.q <= 0) cart = cart.filter(x => x.uid !== u);
-        const CART_KEY = `cart_${STORE_ID}`;
-        localStorage.setItem(CART_KEY, JSON.stringify(cart));
-        updateCartUI();
+    const item = cart.find(x => x.uid === u);
+    if (!item) return;
+
+    // Se a intenção for aumentar a quantidade
+    if (d > 0) {
+        const produtoOriginal = allProducts.find(p => p.id === item.id);
+        if (!produtoOriginal) return;
+
+        let estoqueDisponivel = parseInt(produtoOriginal.stock) || 0;
+
+        // Se o produto tiver variações, precisamos checar o estoque da variação específica
+        if (produtoOriginal.variations && produtoOriginal.variations.length > 0) {
+            const variacao = produtoOriginal.variations.find(v => 
+                v.size === item.v.size && v.color === item.v.color
+            );
+            if (variacao) {
+                estoqueDisponivel = parseInt(variacao.stock) || 0;
+            }
+        }
+
+        // Verifica se o aumento ultrapassa o estoque
+        if (item.q + d > estoqueDisponivel) {
+            showToast(`⚠️ Limite atingido! Temos apenas ${estoqueDisponivel} unidades em estoque.`);
+            return; // Interrompe a função aqui
+        }
     }
+
+    // Se passou na verificação (ou se for diminuição), atualiza a quantidade
+    item.q += d;
+
+    // Se a quantidade chegar a 0 ou menos, remove do carrinho
+    if (item.q <= 0) {
+        cart = cart.filter(x => x.uid !== u);
+    }
+
+    // Salva e atualiza a interface
+    const CART_KEY = `cart_${STORE_ID}`;
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    updateCartUI();
 };
 
 window.updateCartTotals = () => { 
