@@ -941,9 +941,14 @@ window.openProductModal = (id) => {
         const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
 
         const updatePrices = () => {
-            let price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
-            let oldP = (p.promoValue && p.promoValue < p.value) ? p.value : null;
-            let skuDinamico = p.sku || 'N/A'; 
+    const agora = Date.now();
+    // Checa se a promoção é válida agora
+    const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
+    
+    let price = isPromoAtiva ? p.promoValue : p.value;
+    let oldP = isPromoAtiva ? p.value : null;
+    
+    let skuDinamico = p.sku || 'N/A'; 
             let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
             let outOfStockVariation = false;
 
@@ -1887,53 +1892,66 @@ window.closeCartModal = () => {
 };
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
+// --- LÓGICA DO CARRINHO CORRIGIDA E REVISADA ---
 window.addToCart = (p, q, v) => {
     const matrix = p.variations || [];
     let stockDisponivel = parseInt(p.stock) || 0;
 
-    // Se houver variações, busca o estoque da variação específica
+    // 1. Lógica de preço com checagem de cronômetro (Promoção)
+    const agora = Date.now();
+    const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
+    const precoBaseComOferta = isPromoAtiva ? p.promoValue : p.value;
+    
+    // Declaramos o preço aqui (permitindo alteração se houver variação)
+    let price = precoBaseComOferta; 
+
+    // 2. Ajuste de estoque e preço específico se o cliente escolheu uma variação
+    let skuFinal = p.sku || 'N/A'; // SKU padrão (pai)
+
     if(matrix.length && (v.size || v.color)) {
         const comb = matrix.find(varItem => 
             (!p.sizes?.length || varItem.size.trim().toLowerCase() === (v.size || "").trim().toLowerCase()) &&
             (!p.colors?.length || varItem.color.trim().toLowerCase() === (v.color || "").trim().toLowerCase())
         );
-        stockDisponivel = comb ? (parseInt(comb.stock) || 0) : 0;
+        if (comb) {
+            stockDisponivel = parseInt(comb.stock) || 0;
+            price = comb.price; // O preço da variação manda
+            skuFinal = comb.sku || skuFinal; // O SKU da variação manda
+        }
     }
 
     const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
+    // 3. Validação de Estoque
     if (totalDesejado > stockDisponivel) {
         showToast(`⚠️ Desculpe, estoque insuficiente (${stockDisponivel} unid. disponíveis).`);
         return;
     }
 
     const CART_KEY = `cart_${STORE_ID}`;
-    const price = p.currentFinalPrice || ((p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value);
-    const skuFinal = p.currentSKU || p.sku || 'N/A';
-    
-    // CORREÇÃO AQUI: Captura a imagem específica da variação salva no modal
-    // Se não houver imagem na variação, ele usa a primeira do produto
     const imagemFinal = v.image || (p.images && p.images[0]) || 'https://placehold.co/100';
 
     if(naSacola) {
         naSacola.q += q; 
         naSacola.sku = skuFinal;
-        naSacola.img = imagemFinal; // Atualiza a imagem também no item existente
+        naSacola.img = imagemFinal;
+        naSacola.price = price; // Mantém o preço atualizado no carrinho
     } else {
         cart.push({
             uid, 
             id: p.id, 
-            sku: skuFinal,
+            sku: skuFinal, // Para visualização rápida no painel
             name: p.name, 
-            price, 
+            price: price, // Usando o valor calculado corretamente
             q, 
-            img: imagemFinal, // Exibição na sacola do cliente
-            variationDetails: { // Dados para o seu Painel do Lojista
+            img: imagemFinal, 
+            variationDetails: { 
                 size: v.size || null,
                 color: v.color || null,
-                image: imagemFinal
+                image: imagemFinal,
+                sku: skuFinal // <--- ESSENCIAL para sua baixa silenciosa funcionar
             },
             v: {...v}
         }); 
