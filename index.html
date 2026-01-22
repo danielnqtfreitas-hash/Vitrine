@@ -2137,26 +2137,33 @@ async function renderMagicCategories(products, config) {
     magicContainer.innerHTML = '';
 
         // 1. NOVIDADES ✨
-    if (config.magicCategories?.showNew) {
-        const news = [...products]
-            .filter(p => p.status === 'active')
-            .sort((a, b) => {
-                // Função auxiliar para transformar qualquer data em número comparável
-                const getTime = (p) => {
-                    if (p.createdAt?.toMillis) return p.createdAt.toMillis(); // Formato Firebase
-                    if (p.createdAt?.seconds) return p.createdAt.seconds * 1000; // Formato Firebase reduzido
-                    if (p.createdAt instanceof Date) return p.createdAt.getTime(); // Formato JS
-                    return p.lastUpdate || 0; // Fallback para última atualização ou zero
-                };
+if (config.magicCategories?.showNew) {
+    const news = [...products]
+        .filter(p => p.status === 'active')
+        .sort((a, b) => {
+            const getTime = (p) => {
+                // 1. Verifica se já é um Número (O Painel salva assim com Date.now())
+                if (typeof p.createdAt === 'number') return p.createdAt;
+                
+                // 2. Verifica formatos do Firebase (Timestamp)
+                if (p.createdAt?.toMillis) return p.createdAt.toMillis();
+                if (p.createdAt?.seconds) return p.createdAt.seconds * 1000;
+                
+                // 3. Verifica se é um objeto Date
+                if (p.createdAt instanceof Date) return p.createdAt.getTime();
+                
+                // 4. Fallback final
+                return p.lastUpdate || 0;
+            };
 
-                return getTime(b) - getTime(a); // Do mais novo para o mais velho
-            })
-            .slice(0, 10); 
+            return getTime(b) - getTime(a); // Do mais novo para o mais velho
+        })
+        .slice(0, 15); // Aumentei para 15 para dar mais volume ao carrossel
 
-        if (news.length > 0) {
-            magicContainer.innerHTML += generateMagicSection("Novidades ✨", news, "bg-purple-600");
-        }
+    if (news.length > 0) {
+        magicContainer.innerHTML += generateMagicSection("Novidades ✨", news, "bg-purple-600");
     }
+}
 
         // 2. MAIS VISTOS 🔥
     if (config.magicCategories?.showTop) {
