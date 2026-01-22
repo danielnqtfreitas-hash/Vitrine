@@ -117,18 +117,19 @@
          /* Localize o final do seu <style> e cole isto: */
 
 #modalImageZoom {
-    touch-action: none; /* Bloqueia o arrastar da página para focar no swipe */
+    touch-action: pinch-zoom; /* Permite zoom nativo com os dedos */
     user-select: none;
     -webkit-user-select: none;
+    background-color: rgba(0, 0, 0, 0.95);
 }
 
 #zoomedImg {
-    transition: opacity 0.2s ease-in-out, transform 0.3s ease-out;
+    transition: opacity 0.2s ease-in-out;
+    max-width: 100%;
+    max-height: 100%;
+    object-contain: contain;
 }
-/* Força o esquema de cores para claro */
-:root {
-    color-scheme: light !important;
-}
+
 
 /* Bloqueia a inversão de cores em navegadores que ignoram o sistema */
 @media (prefers-color-scheme: dark) {
@@ -1541,43 +1542,62 @@ window.closeFilterModal = window.closeFilterDrawer;
 };
 
         window.openImageZoom = () => {
-    if(currentDetailImages[currentDetailImageIndex].includes('placehold')) return;
-    
-    const zoomedImg = document.getElementById('zoomedImg');
-    zoomedImg.src = currentDetailImages[currentDetailImageIndex];
+    // 1. Pega a imagem atual do carrossel de detalhes
+    const currentImg = currentDetailImages[currentDetailImageIndex];
+    if(!currentImg || currentImg.includes('placehold')) return;
     
     const m = document.getElementById('modalImageZoom');
+    const zoomedImg = document.getElementById('zoomedImg');
+    
+    // 2. Prepara a imagem e exibe o modal
+    zoomedImg.src = currentImg;
     m.classList.remove('hidden');
     
-    // Animação de entrada
-    requestAnimationFrame(() => { 
-        m.classList.remove('opacity-0'); 
-        zoomedImg.classList.replace('scale-95','scale-100'); 
-    });
+    // Reset de escala para garantir que a imagem comece no tamanho original
+    zoomedImg.style.transform = "scale(1)";
+    zoomedImg.style.opacity = '1';
+    
+    setTimeout(() => { m.classList.remove('opacity-0'); }, 10);
 
-    // --- Lógica de Swipe para o Zoom ---
     let startX = 0;
-    m.ontouchstart = (e) => startX = e.changedTouches[0].screenX;
+
+    // 3. Lógica de toque refinada
+    m.ontouchstart = (e) => {
+        // REGRA DE OURO: Só inicia lógica de passar foto se houver APENAS 1 DEDO na tela.
+        // Se houver 2 dedos, o navegador entende que é ZOOM e ignora o código abaixo.
+        if (e.touches.length === 1) {
+            startX = e.touches[0].screenX;
+        }
+    };
     
     m.ontouchend = (e) => {
+        // Se ainda houver dedos na tela (gesto de pinça incompleto), não troca a foto.
+        if (e.touches.length > 0) return; 
+
         let endX = e.changedTouches[0].screenX;
         let diff = startX - endX;
 
-        if (Math.abs(diff) > 50) { // Sensibilidade do rastro
+        // Troca de foto se o arrasto for maior que 70 pixels
+        if (Math.abs(diff) > 70) { 
             const dir = diff > 0 ? 1 : -1;
             if (currentDetailImages.length > 1) {
-                // Troca de imagem com efeito suave
-                zoomedImg.style.opacity = '0.5';
+                zoomedImg.style.opacity = '0.3';
                 setTimeout(() => {
                     currentDetailImageIndex = (currentDetailImageIndex + dir + currentDetailImages.length) % currentDetailImages.length;
                     zoomedImg.src = currentDetailImages[currentDetailImageIndex];
                     zoomedImg.style.opacity = '1';
-                    updateDetailImageDisplay(); // Sincroniza o modal de baixo
-                }, 100);
+                    updateDetailImageDisplay();
+                }, 150);
             }
         }
     };
+
+    // 4. Fecha o modal ao clicar em qualquer lugar que não seja a imagem
+    m.onclick = (e) => {
+        if (e.target.id !== 'zoomedImg') closeImageZoom();
+    };
 };
+
 
 window.closeImageZoom = () => {
     const m = document.getElementById('modalImageZoom');
@@ -1786,41 +1806,40 @@ window.closeImageZoom = () => {
 
         function setupSwipes() {
     const el = document.getElementById('mainImageContainer');
-    let ts = 0;
-    let ty = 0;
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
 
-    // Início do toque
     el.addEventListener('touchstart', (e) => {
-        ts = e.changedTouches[0].screenX;
-        ty = e.changedTouches[0].screenY;
+        startX = e.changedTouches[0].screenX;
+        startY = e.changedTouches[0].screenY;
+        startTime = Date.now();
     }, { passive: true });
 
-    // Movimento do toque (Crucial para evitar que a tela role enquanto você arrasta a foto)
-    el.addEventListener('touchmove', (e) => {
-        const dx = Math.abs(e.changedTouches[0].screenX - ts);
-        const dy = Math.abs(e.changedTouches[0].screenY - ty);
-        
-        // Se o movimento for mais horizontal que vertical, cancela a rolagem da página
-        if (dx > dy) {
-            if (e.cancelable) e.preventDefault();
-        }
-    }, { passive: false });
-
-    // Fim do toque
     el.addEventListener('touchend', (e) => {
-        let te = e.changedTouches[0].screenX;
-        let deltaX = ts - te;
+        const endX = e.changedTouches[0].screenX;
+        const endY = e.changedTouches[0].screenY;
+        const deltaTime = Date.now() - startTime;
+        
+        const diffX = startX - endX;
+        const diffY = startY - endY;
 
-        // Sensibilidade: 50 pixels de movimento
-        if (Math.abs(deltaX) > 50) {
-            const direcao = deltaX > 0 ? 1 : -1; // 1 para direita (próxima), -1 para esquerda (anterior)
+        // Se o movimento foi pequeno e rápido, é um CLIQUE
+        if (Math.abs(diffX) < 10 && Math.abs(diffY) < 10 && deltaTime < 250) {
+            window.openImageZoom();
+            return;
+        }
+
+        // Se o movimento foi horizontal e longo, é um SWIPE
+        if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+            const direcao = diffX > 0 ? 1 : -1;
             if (currentDetailImages.length > 1) {
                 currentDetailImageIndex = (currentDetailImageIndex + direcao + currentDetailImages.length) % currentDetailImages.length;
                 updateDetailImageDisplay();
             }
         }
     }, { passive: true });
-}
+        }
 
         window.shareProduct = () => { 
     const p = allProducts.find(x => x.id === currentDetailId); 
