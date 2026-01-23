@@ -1,26 +1,32 @@
 name: Atualizar Feeds XML
+
 on:
   schedule:
-    - cron: '0 * * * *' # Roda a cada 1 hora automaticamente
-  workflow_dispatch: # Permite que você clique num botão para rodar agora
+    - cron: '0 * * * *' # Roda a cada hora
+  workflow_dispatch: # Permite rodar manualmente
+
+permissions:
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Usar Node.js
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
-      - name: Gerar arquivos XML
+          node-version: '18'
+
+      - name: Gerar os arquivos XML
         run: node generate_feeds.js
-      - name: Salvar alterações no GitHub
+
+      - name: Salvar e subir arquivos para o GitHub
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add .
-          git commit -m "Atualização automática do feed XML" || exit 0
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add *.xml
+          git commit -m "Atualização automática dos feeds XML" || echo "Sem mudanças para salvar"
           git push
