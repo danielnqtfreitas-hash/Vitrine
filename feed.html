@@ -5,14 +5,13 @@
     <meta name="robots" content="noindex">
     <title>Gerador de Feed RSS - Vitrine Online</title>
 </head>
-<body>
-    <pre id="xmlOutput" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace; font-size: 12px; color: #333; padding: 20px;"></pre>
+<body style="margin:0; background: #f4f4f4;">
+    <pre id="xmlOutput" style="white-space: pre-wrap; font-family: monospace; padding: 20px;"></pre>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIGURAÇÃO REAL DO SEU PROJETO
         const firebaseConfig = {
             apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q",
             authDomain: "meuestoque-1badc.firebaseapp.com",
@@ -30,12 +29,17 @@
             const STORE_ID = urlParams.get('id'); 
 
             if (!STORE_ID) {
-                document.getElementById('xmlOutput').innerText = "Erro: Forneça o ID da loja na URL. Exemplo: feed.html?id=nome-da-loja";
+                document.getElementById('xmlOutput').innerText = "Erro: ID da loja ausente.";
                 return;
             }
 
             try {
-                // Busca apenas produtos ativos da loja informada
+                // 1. Busca Configurações da Loja (para pegar o nome real/marca)
+                const configRef = doc(db, `stores/${STORE_ID}/config/store`);
+                const configSnap = await getDoc(configRef);
+                const storeData = configSnap.exists() ? configSnap.data() : { storeName: STORE_ID };
+
+                // 2. Busca Produtos Ativos
                 const productsRef = collection(db, `stores/${STORE_ID}/products`);
                 const q = query(productsRef, where("status", "==", "active"));
                 const querySnapshot = await getDocs(q);
@@ -43,18 +47,20 @@
                 let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
                 xml += `<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n`;
                 xml += `<channel>\n`;
-                xml += `  <title>Catálogo - ${STORE_ID}</title>\n`;
+                xml += `  <title><![CDATA[Catálogo - ${storeData.storeName}]]></title>\n`;
                 xml += `  <link>${window.location.origin}/${STORE_ID}</link>\n`;
-                xml += `  <description>Feed dinâmico de produtos da loja ${STORE_ID}</description>\n`;
+                xml += `  <description>Feed dinâmico da loja ${storeData.storeName}</description>\n`;
 
                 querySnapshot.forEach((docSnap) => {
                     const p = docSnap.data();
                     const productId = docSnap.id;
                     
-                    // Lógica de Preço (Usa promo se existir e for menor)
-                    const finalPrice = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+                    // Preço e Promoção
+                    const price = parseFloat(p.value || 0).toFixed(2);
+                    const hasPromo = p.promoValue && p.promoValue < p.value;
+                    const salePrice = hasPromo ? parseFloat(p.promoValue).toFixed(2) : null;
                     
-                    // Monta o link direto para o produto na vitrine multi-loja
+                    // Link direto (Deep Link que configuramos no index.html)
                     const productLink = `${window.location.origin}/${STORE_ID}?id=${productId}`;
                     
                     xml += `  <item>\n`;
@@ -65,20 +71,21 @@
                     xml += `    <g:image_link>${p.images?.[0] || ''}</g:image_link>\n`;
                     xml += `    <g:condition>new</g:condition>\n`;
                     xml += `    <g:availability>${(parseInt(p.stock) > 0) ? 'in stock' : 'out of stock'}</g:availability>\n`;
-                    xml += `    <g:price>${finalPrice.toFixed(2)} BRL</g:price>\n`;
-                    xml += `    <g:brand><![CDATA[${STORE_ID}]]></g:brand>\n`;
+                    xml += `    <g:price>${price} BRL</g:price>\n`;
+                    if (salePrice) xml += `    <g:sale_price>${salePrice} BRL</g:sale_price>\n`;
+                    xml += `    <g:brand><![CDATA[${storeData.storeName}]]></g:brand>\n`;
                     xml += `    <g:google_product_category>Apparel &amp; Accessories</g:google_product_category>\n`;
                     xml += `  </item>\n`;
                 });
 
                 xml += `</channel>\n</rss>`;
                 
-                // Renderiza o XML como texto puro para que o Facebook consiga processar
-                document.getElementById('xmlOutput').innerText = xml;
+                // Saída limpa para o crawler
+                document.getElementById('xmlOutput').textContent = xml;
 
             } catch (e) {
                 console.error(e);
-                document.getElementById('xmlOutput').innerText = "Erro ao gerar feed: " + e.message;
+                document.getElementById('xmlOutput').innerText = "Erro ao carregar feed.";
             }
         }
 
