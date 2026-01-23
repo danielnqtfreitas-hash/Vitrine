@@ -7,26 +7,14 @@ async function run() {
     try {
         console.log("🔍 Iniciando Varredura de Lojas...");
         
-        // 1. Tenta pegar a lista de IDs pela coleção 'stores_registry' (mais confiável)
         let storeIds = [];
         const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
         const registryData = await registryResp.json();
 
         if (registryData.documents) {
             storeIds = registryData.documents.map(d => d.name.split('/').pop());
-            console.log(`📂 Encontradas ${storeIds.length} lojas no Registro.`);
+            console.log(`📂 Lojas encontradas: ${storeIds.join(', ')}`);
         } else {
-            // Fallback: Tenta a coleção 'stores' diretamente se o registro falhar
-            const storesResp = await fetch(`${BASE_URL}/stores?pageSize=500`);
-            const storesData = await storesResp.json();
-            if (storesData.documents) {
-                storeIds = storesData.documents.map(d => d.name.split('/').pop());
-            }
-        }
-
-        // Se mesmo assim não achar nada, força a 'dandan' para não parar o sistema
-        if (storeIds.length === 0) {
-            console.log("⚠️ Nenhuma loja listada via API. Usando lista de segurança.");
             storeIds = ['dandan']; 
         }
 
@@ -35,7 +23,7 @@ async function run() {
         }
 
     } catch (e) {
-        console.error("💥 Erro crítico na varredura:", e);
+        console.error("💥 Erro crítico:", e);
     }
 }
 
@@ -48,24 +36,20 @@ async function processStore(storeId) {
 
         const fields = configData.fields;
         const planFields = fields.plan?.mapValue?.fields || {};
-        
-        // Normalização dos dados do plano
         const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
-        const pName = (planFields.name?.stringValue || fields.name?.stringValue || "").trim().toLowerCase();
         const storeName = fields.storeName?.stringValue || storeId;
-        const status = (fields.subscriptionStatus?.stringValue || "").toLowerCase();
+        const subStatus = (fields.subscriptionStatus?.stringValue || "").toLowerCase();
 
-        // Regra de Aprovação
         const eDandan = storeId.toLowerCase() === 'dandan';
-        const ePro = pId.includes("profissional") || pId.includes("beta") || pName.includes("profissional");
-        const estaAtivo = status !== 'suspended';
+        const ePro = pId.includes("profissional") || pId.includes("beta") || pId.includes("xqes739tk");
+        const estaAtivo = subStatus !== 'suspended';
 
         if (eDandan || (ePro && estaAtivo)) {
-            console.log(`✅ Gerando XML: ${storeName} [${storeId}]`);
+            console.log(`✅ Gerando XML para: ${storeName}`);
             await generateXml(storeId, storeName);
         }
     } catch (err) {
-        console.log(`Erro ao processar ${storeId}:`, err.message);
+        console.log(`Erro em ${storeId}:`, err.message);
     }
 }
 
@@ -80,9 +64,9 @@ async function generateXml(storeId, storeName) {
 <channel>
   <title><![CDATA[${storeName}]]></title>
   <link>https://loja.vitrineonline.app.br/${storeId}</link>
-  <description>Feed de Produtos - ${storeName}</description>`;
+  <description><![CDATA[Feed de Produtos - ${storeName}]]></description>`;
 
-        if (data.documents) {
+        if (data.documents && data.documents.length > 0) {
             data.documents.forEach(doc => {
                 const f = doc.fields;
                 if (f.status?.stringValue !== 'active') return;
@@ -90,14 +74,16 @@ async function generateXml(storeId, storeName) {
                 const id = doc.name.split('/').pop();
                 const price = parseFloat(f.value?.doubleValue || f.value?.integerValue || 0).toFixed(2);
                 const img = f.images?.arrayValue?.values?.[0]?.stringValue || '';
+                const link = `https://loja.vitrineonline.app.br/${storeId}?id=${id}`;
 
+                // A MUDANÇA ESTÁ AQUI: CDATA PROTEGENDO OS LINKS
                 xml += `
   <item>
     <g:id>${id}</g:id>
     <g:title><![CDATA[${f.name?.stringValue || ''}]]></g:title>
     <g:description><![CDATA[${f.description?.stringValue || f.name?.stringValue || ''}]]></g:description>
-    <g:link>https://loja.vitrineonline.app.br/${storeId}?id=${id}</g:link>
-    <g:image_link>${img}</g:image_link>
+    <g:link><![CDATA[${link}]]></g:link>
+    <g:image_link><![CDATA[${img}]]></g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>${price} BRL</g:price>
@@ -108,7 +94,7 @@ async function generateXml(storeId, storeName) {
 
         xml += `\n</channel>\n</rss>`;
         fs.writeFileSync(`./${storeId}.xml`, xml);
-        console.log(`📦 Arquivo [${storeId}.xml] atualizado.`);
+        console.log(`📦 Arquivo [${storeId}.xml] salvo!`);
     } catch (e) {
         console.error(`Erro no XML de ${storeId}:`, e);
     }
