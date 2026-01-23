@@ -1,103 +1,83 @@
 const fs = require('fs');
-
 const PROJECT_ID = "meuestoque-1badc";
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
-async function run() {
-    try {
-        console.log("🔍 Iniciando Varredura de Lojas...");
-        
-        let storeIds = [];
-        const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
-        const registryData = await registryResp.json();
-
-        if (registryData.documents) {
-            storeIds = registryData.documents.map(d => d.name.split('/').pop());
-            console.log(`📂 Lojas encontradas: ${storeIds.join(', ')}`);
-        } else {
-            storeIds = ['dandan']; 
-        }
-
-        for (const storeId of storeIds) {
-            await processStore(storeId);
-        }
-
-    } catch (e) {
-        console.error("💥 Erro crítico:", e);
-    }
+// Função para limpar links e textos (Essencial para evitar o erro EntityRef)
+function clean(text) {
+    if (!text) return "";
+    return text.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;');
 }
 
-async function processStore(storeId) {
+async function run() {
     try {
-        const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
-        const configData = await configResp.json();
+        const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
+        const registryData = await registryResp.json();
+        const storeIds = registryData.documents ? registryData.documents.map(d => d.name.split('/').pop()) : ['dandan'];
 
-        if (!configData.fields) return;
+        for (const storeId of storeIds) {
+            const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
+            const configData = await configResp.json();
+            if (!configData.fields) continue;
 
-        const fields = configData.fields;
-        const planFields = fields.plan?.mapValue?.fields || {};
-        const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
-        const storeName = fields.storeName?.stringValue || storeId;
-        const subStatus = (fields.subscriptionStatus?.stringValue || "").toLowerCase();
-
-        const eDandan = storeId.toLowerCase() === 'dandan';
-        const ePro = pId.includes("profissional") || pId.includes("beta") || pId.includes("xqes739tk");
-        const estaAtivo = subStatus !== 'suspended';
-
-        if (eDandan || (ePro && estaAtivo)) {
-            console.log(`✅ Gerando XML para: ${storeName}`);
-            await generateXml(storeId, storeName);
+            const fields = configData.fields;
+            const planFields = fields.plan?.mapValue?.fields || {};
+            const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
+            
+            if (storeId === 'dandan' || pId.includes("profissional") || pId.includes("beta")) {
+                await generateXml(storeId, fields.storeName?.stringValue || storeId);
+            }
         }
-    } catch (err) {
-        console.log(`Erro em ${storeId}:`, err.message);
-    }
+    } catch (e) { console.error("Erro na varredura:", e); }
 }
 
 async function generateXml(storeId, storeName) {
-    const productsUrl = `${BASE_URL}/stores/${storeId}/products?pageSize=1000`;
     try {
-        const resp = await fetch(productsUrl);
+        const resp = await fetch(`${BASE_URL}/stores/${storeId}/products?pageSize=1000`);
         const data = await resp.json();
         
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
 <channel>
-  <title><![CDATA[${storeName}]]></title>
+  <title>${clean(storeName)}</title>
   <link>https://loja.vitrineonline.app.br/${storeId}</link>
-  <description><![CDATA[Feed de Produtos - ${storeName}]]></description>`;
+  <description>Feed de Produtos - ${clean(storeName)}</description>`;
 
-        if (data.documents && data.documents.length > 0) {
+        if (data.documents) {
             data.documents.forEach(doc => {
                 const f = doc.fields;
                 if (f.status?.stringValue !== 'active') return;
 
                 const id = doc.name.split('/').pop();
+                const name = f.name?.stringValue || '';
+                const desc = f.description?.stringValue || name;
                 const price = parseFloat(f.value?.doubleValue || f.value?.integerValue || 0).toFixed(2);
                 const img = f.images?.arrayValue?.values?.[0]?.stringValue || '';
-                const link = `https://loja.vitrineonline.app.br/${storeId}?id=${id}`;
+                const prodLink = `https://loja.vitrineonline.app.br/${storeId}?id=${id}`;
 
-                // A MUDANÇA ESTÁ AQUI: CDATA PROTEGENDO OS LINKS
                 xml += `
   <item>
     <g:id>${id}</g:id>
-    <g:title><![CDATA[${f.name?.stringValue || ''}]]></g:title>
-    <g:description><![CDATA[${f.description?.stringValue || f.name?.stringValue || ''}]]></g:description>
-    <g:link><![CDATA[${link}]]></g:link>
-    <g:image_link><![CDATA[${img}]]></g:image_link>
+    <g:title>${clean(name)}</g:title>
+    <g:description>${clean(desc)}</g:description>
+    <g:link>${clean(prodLink)}</g:link>
+    <g:image_link>${clean(img)}</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>${price} BRL</g:price>
-    <g:brand><![CDATA[${storeName}]]></g:brand>
+    <g:brand>${clean(storeName)}</g:brand>
   </item>`;
             });
         }
 
         xml += `\n</channel>\n</rss>`;
         fs.writeFileSync(`./${storeId}.xml`, xml);
-        console.log(`📦 Arquivo [${storeId}.xml] salvo!`);
-    } catch (e) {
-        console.error(`Erro no XML de ${storeId}:`, e);
-    }
+        console.log(`✅ Arquivo ${storeId}.xml gerado com links limpos!`);
+    } catch (e) { console.error(`Erro ao gerar XML de ${storeId}:`, e); }
 }
 
 run();
