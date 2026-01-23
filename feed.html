@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <title>Gerador de Feed RSS - Vitrine Online</title>
+</head>
+<body>
+    <pre id="xmlOutput" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace; font-size: 12px; color: #333; padding: 20px;"></pre>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // CONFIGURAÇÃO REAL DO SEU PROJETO
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdwsGBTApwOwqr37qCv72gdPRbipsZG0Q",
+            authDomain: "meuestoque-1badc.firebaseapp.com",
+            projectId: "meuestoque-1badc",
+            storageBucket: "meuestoque-1badc.firebasestorage.app",
+            messagingSenderId: "730003067834",
+            appId: "1:730003067834:web:b205f1ea59053345960383"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function generateFeed() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const STORE_ID = urlParams.get('id'); 
+
+            if (!STORE_ID) {
+                document.getElementById('xmlOutput').innerText = "Erro: Forneça o ID da loja na URL. Exemplo: feed.html?id=nome-da-loja";
+                return;
+            }
+
+            try {
+                // Busca apenas produtos ativos da loja informada
+                const productsRef = collection(db, `stores/${STORE_ID}/products`);
+                const q = query(productsRef, where("status", "==", "active"));
+                const querySnapshot = await getDocs(q);
+
+                let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+                xml += `<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">\n`;
+                xml += `<channel>\n`;
+                xml += `  <title>Catálogo - ${STORE_ID}</title>\n`;
+                xml += `  <link>${window.location.origin}/${STORE_ID}</link>\n`;
+                xml += `  <description>Feed dinâmico de produtos da loja ${STORE_ID}</description>\n`;
+
+                querySnapshot.forEach((docSnap) => {
+                    const p = docSnap.data();
+                    const productId = docSnap.id;
+                    
+                    // Lógica de Preço (Usa promo se existir e for menor)
+                    const finalPrice = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
+                    
+                    // Monta o link direto para o produto na vitrine multi-loja
+                    const productLink = `${window.location.origin}/${STORE_ID}?id=${productId}`;
+                    
+                    xml += `  <item>\n`;
+                    xml += `    <g:id>${productId}</g:id>\n`;
+                    xml += `    <g:title><![CDATA[${p.name}]]></g:title>\n`;
+                    xml += `    <g:description><![CDATA[${p.description || p.name}]]></g:description>\n`;
+                    xml += `    <g:link>${productLink}</g:link>\n`;
+                    xml += `    <g:image_link>${p.images?.[0] || ''}</g:image_link>\n`;
+                    xml += `    <g:condition>new</g:condition>\n`;
+                    xml += `    <g:availability>${(parseInt(p.stock) > 0) ? 'in stock' : 'out of stock'}</g:availability>\n`;
+                    xml += `    <g:price>${finalPrice.toFixed(2)} BRL</g:price>\n`;
+                    xml += `    <g:brand><![CDATA[${STORE_ID}]]></g:brand>\n`;
+                    xml += `    <g:google_product_category>Apparel &amp; Accessories</g:google_product_category>\n`;
+                    xml += `  </item>\n`;
+                });
+
+                xml += `</channel>\n</rss>`;
+                
+                // Renderiza o XML como texto puro para que o Facebook consiga processar
+                document.getElementById('xmlOutput').innerText = xml;
+
+            } catch (e) {
+                console.error(e);
+                document.getElementById('xmlOutput').innerText = "Erro ao gerar feed: " + e.message;
+            }
+        }
+
+        generateFeed();
+    </script>
+</body>
+</html>
