@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="facebook-domain-verification" content="iwnyy7sgy9l6coj4nnqge630wn2wis" />
     <meta name="color-scheme" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">Carregando Loja...</title>
@@ -887,6 +888,31 @@ window.openProductModal = (id) => {
     document.getElementById('modalTimer')?.classList.add('hidden');
     const p = allProducts.find(x => x.id === id); 
     if(!p) return; 
+
+    const productUrl = window.location.origin + window.location.pathname + '?id=' + p.id;
+
+const metaUpdates = {
+    'og:title': p.name,
+    'og:description': p.description || "Confira em nossa vitrine!",
+    'og:image': p.images?.[0] || '',
+    'og:url': productUrl,
+    'product:price:amount': p.promoValue || p.value,
+    'product:price:currency': 'BRL',
+    'product:availability': (parseInt(p.stock) > 0) ? 'in stock' : 'out of stock',
+    'product:condition': 'new',
+    'product:brand': storeConfigGlobal.storeName || 'Vitrine'
+};
+
+// Aplica as atualizações no cabeçalho da página em tempo real
+Object.keys(metaUpdates).forEach(prop => {
+    let el = document.querySelector(`meta[property="${prop}"]`);
+    if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute('property', prop);
+        document.head.appendChild(el);
+    }
+    el.setAttribute('content', metaUpdates[prop]);
+});
 
     // 1. Atualiza a URL na barra de endereços sem recarregar a página
     const newURL = window.location.pathname + `?id=${p.id}`;
