@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+  <title><![CDATA[Sissi Closet]]></title>
+  <link>https://loja.vitrineonline.app.br/sissi-closet</link>
+  <description>Feed de Produtos - Sissi Closet</description>
+  <item>
+    <g:id>prod_1769032497596</g:id>
+    <g:title><![CDATA[Bory poliamida ]]></g:title>
+    <g:description><![CDATA[Bory poliamida ]]></g:description>
+    <g:link>https://loja.vitrineonline.app.br/sissi-closet?id=prod_1769032497596</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fsissi-closet%2Fproducts%2Fprod_1769032497596_main_0.jpg?alt=media&token=f174981e-5f8d-4a4d-ab17-eec3856b9ecd</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>48.00 BRL</g:price>
+    <g:brand><![CDATA[Sissi Closet]]></g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769032704795</g:id>
+    <g:title><![CDATA[Blusa na poliamida ]]></g:title>
+    <g:description><![CDATA[Consulta cores ]]></g:description>
+    <g:link>https://loja.vitrineonline.app.br/sissi-closet?id=prod_1769032704795</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fsissi-closet%2Fproducts%2Fprod_1769032704795_main_0.jpg?alt=media&token=8040ba85-87fb-4c2e-a010-a01584ea14e5</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>48.00 BRL</g:price>
+    <g:brand><![CDATA[Sissi Closet]]></g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769131055968</g:id>
+    <g:title><![CDATA[Vestido liz]]></g:title>
+    <g:description><![CDATA[Vestido liz]]></g:description>
+    <g:link>https://loja.vitrineonline.app.br/sissi-closet?id=prod_1769131055968</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fsissi-closet%2Fproducts%2Fprod_1769131055968_main_0.jpg?alt=media&token=2c021790-c6e4-4568-bf38-c5acf59e167e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand><![CDATA[Sissi Closet]]></g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769131702838</g:id>
+    <g:title><![CDATA[Vestido Lara ]]></g:title>
+    <g:description><![CDATA[Vestido Lara ]]></g:description>
+    <g:link>https://loja.vitrineonline.app.br/sissi-closet?id=prod_1769131702838</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fsissi-closet%2Fproducts%2Fprod_1769131702838_main_0.jpg?alt=media&token=7de8cbb7-d8fb-410a-89b3-d464b20038ad</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>89.90 BRL</g:price>
+    <g:brand><![CDATA[Sissi Closet]]></g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769131932211</g:id>
+    <g:title><![CDATA[Vestido vitória ]]></g:title>
+    <g:description><![CDATA[Vestido vitória ]]></g:description>
+    <g:link>https://loja.vitrineonline.app.br/sissi-closet?id=prod_1769131932211</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fsissi-closet%2Fproducts%2Fprod_1769131932211_main_0.jpg?alt=media&token=21eae97c-10ee-4538-8c20-27214a575576</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand><![CDATA[Sissi Closet]]></g:brand>
+  </item>
+</channel>
+</rss>
