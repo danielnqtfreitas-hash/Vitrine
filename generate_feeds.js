@@ -5,54 +5,71 @@ const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/dat
 
 async function run() {
     try {
-        console.log("🔍 Iniciando Varredura Automática de Lojas...");
+        console.log("🔍 Iniciando Varredura de Lojas...");
+        
+        // 1. Tenta pegar a lista de IDs pela coleção 'stores_registry' (mais confiável)
+        let storeIds = [];
+        const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
+        const registryData = await registryResp.json();
 
-        // 1. Busca TODAS as lojas da coleção (o Firebase retornará uma lista)
-        const storesResponse = await fetch(`${BASE_URL}/stores?pageSize=500`);
-        const storesData = await storesResponse.json();
-
-        if (!storesData.documents || storesData.documents.length === 0) {
-            console.log("⚠️ Nenhuma loja listada. Verifique as Regras de Segurança do Firestore (allow list: if true).");
-            return;
-        }
-
-        console.log(`📂 Encontradas ${storesData.documents.length} lojas. Filtrando quem é Profissional/Beta...`);
-
-        for (const storeDoc of storesData.documents) {
-            const storeId = storeDoc.name.split('/').pop();
-            
-            // 2. Acessa a configuração de cada loja encontrada
-            const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
-            const configData = await configResp.json();
-
-            if (!configData.fields) continue;
-
-            const fields = configData.fields;
-            const planFields = fields.plan?.mapValue?.fields || {};
-            
-            // Identificação do Plano
-            const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
-            const pName = (planFields.name?.stringValue || fields.name?.stringValue || "").trim().toLowerCase();
-            const storeName = fields.storeName?.stringValue || storeId;
-            const status = (fields.subscriptionStatus?.stringValue || "").toLowerCase();
-
-            // REGRA: dandan sempre passa, outros só se forem Profissional/Beta e ativos
-            const eDandan = storeId.toLowerCase() === 'dandan';
-            const ePlanoValido = pId.includes("profissional") || pId.includes("beta") || pName.includes("profissional");
-            const estaAtivo = status !== 'suspended';
-
-            if (eDandan || (ePlanoValido && estaAtivo)) {
-                console.log(`✅ Aprovada: ${storeName} [${storeId}]`);
-                await generateXml(storeId, storeName);
+        if (registryData.documents) {
+            storeIds = registryData.documents.map(d => d.name.split('/').pop());
+            console.log(`📂 Encontradas ${storeIds.length} lojas no Registro.`);
+        } else {
+            // Fallback: Tenta a coleção 'stores' diretamente se o registro falhar
+            const storesResp = await fetch(`${BASE_URL}/stores?pageSize=500`);
+            const storesData = await storesResp.json();
+            if (storesData.documents) {
+                storeIds = storesData.documents.map(d => d.name.split('/').pop());
             }
         }
+
+        // Se mesmo assim não achar nada, força a 'dandan' para não parar o sistema
+        if (storeIds.length === 0) {
+            console.log("⚠️ Nenhuma loja listada via API. Usando lista de segurança.");
+            storeIds = ['dandan']; 
+        }
+
+        for (const storeId of storeIds) {
+            await processStore(storeId);
+        }
+
     } catch (e) {
-        console.error("💥 Erro durante a varredura:", e);
+        console.error("💥 Erro crítico na varredura:", e);
+    }
+}
+
+async function processStore(storeId) {
+    try {
+        const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
+        const configData = await configResp.json();
+
+        if (!configData.fields) return;
+
+        const fields = configData.fields;
+        const planFields = fields.plan?.mapValue?.fields || {};
+        
+        // Normalização dos dados do plano
+        const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
+        const pName = (planFields.name?.stringValue || fields.name?.stringValue || "").trim().toLowerCase();
+        const storeName = fields.storeName?.stringValue || storeId;
+        const status = (fields.subscriptionStatus?.stringValue || "").toLowerCase();
+
+        // Regra de Aprovação
+        const eDandan = storeId.toLowerCase() === 'dandan';
+        const ePro = pId.includes("profissional") || pId.includes("beta") || pName.includes("profissional");
+        const estaAtivo = status !== 'suspended';
+
+        if (eDandan || (ePro && estaAtivo)) {
+            console.log(`✅ Gerando XML: ${storeName} [${storeId}]`);
+            await generateXml(storeId, storeName);
+        }
+    } catch (err) {
+        console.log(`Erro ao processar ${storeId}:`, err.message);
     }
 }
 
 async function generateXml(storeId, storeName) {
-    // Busca até 1000 produtos da loja aprovada
     const productsUrl = `${BASE_URL}/stores/${storeId}/products?pageSize=1000`;
     try {
         const resp = await fetch(productsUrl);
@@ -63,16 +80,15 @@ async function generateXml(storeId, storeName) {
 <channel>
   <title><![CDATA[${storeName}]]></title>
   <link>https://loja.vitrineonline.app.br/${storeId}</link>
-  <description>Vitrine Digital - ${storeName}</description>`;
+  <description>Feed de Produtos - ${storeName}</description>`;
 
-        if (data.documents && data.documents.length > 0) {
+        if (data.documents) {
             data.documents.forEach(doc => {
                 const f = doc.fields;
                 if (f.status?.stringValue !== 'active') return;
 
                 const id = doc.name.split('/').pop();
                 const price = parseFloat(f.value?.doubleValue || f.value?.integerValue || 0).toFixed(2);
-                const promo = f.promoValue ? parseFloat(f.promoValue.doubleValue || f.promoValue.integerValue).toFixed(2) : null;
                 const img = f.images?.arrayValue?.values?.[0]?.stringValue || '';
 
                 xml += `
@@ -85,7 +101,6 @@ async function generateXml(storeId, storeName) {
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>${price} BRL</g:price>
-    ${promo ? `<g:sale_price>${promo} BRL</g:sale_price>` : ''}
     <g:brand><![CDATA[${storeName}]]></g:brand>
   </item>`;
             });
@@ -93,9 +108,9 @@ async function generateXml(storeId, storeName) {
 
         xml += `\n</channel>\n</rss>`;
         fs.writeFileSync(`./${storeId}.xml`, xml);
-        console.log(`📦 Arquivo [${storeId}.xml] criado com sucesso!`);
+        console.log(`📦 Arquivo [${storeId}.xml] atualizado.`);
     } catch (e) {
-        console.error(`❌ Erro ao gerar XML para ${storeId}:`, e);
+        console.error(`Erro no XML de ${storeId}:`, e);
     }
 }
 
