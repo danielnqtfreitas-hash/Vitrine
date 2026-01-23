@@ -3,39 +3,43 @@ const fs = require('fs');
 const PROJECT_ID = "meuestoque-1badc";
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
+// --- LISTA DE LOJAS PARA O ROBÔ VERIFICAR ---
+const LOJAS_PARA_VERIFICAR = ['dandan']; 
+
 async function run() {
-    try {
-        console.log("🔍 Iniciando busca de lojas para o Plano Profissional...");
-        const storesResponse = await fetch(`${BASE_URL}/stores?pageSize=100`);
-        const storesData = await storesResponse.json();
+    console.log("🔍 Iniciando verificação das lojas...");
 
-        if (!storesData.documents) {
-            console.log("Nenhuma loja encontrada.");
-            return;
-        }
-
-        for (const storeDoc of storesData.documents) {
-            const storeId = storeDoc.name.split('/').pop();
+    for (const storeId of LOJAS_PARA_VERIFICAR) {
+        try {
             const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
             const configData = await configResp.json();
 
-            if (!configData.fields) continue;
+            if (!configData.fields) {
+                console.log(`❌ Loja [${storeId}] não encontrada.`);
+                continue;
+            }
 
-            const planInfo = configData.fields.plan?.mapValue?.fields || configData.fields;
-            const planName = (planInfo.planName?.stringValue || planInfo.name?.stringValue || "").trim();
-            const planId = planInfo.planId?.stringValue || planInfo.id?.stringValue || "";
-            const isSubscriptionActive = configData.fields.subscriptionStatus?.stringValue !== 'suspended';
+            // --- LÓGICA DE EXTRAÇÃO DOS PLANOS (MAPEADA DO SEU PRINT) ---
+            const planFields = configData.fields.plan?.mapValue?.fields || {};
+            
+            // Pega o planId (Ex: "beta_tester" ou "Profissional ") e remove espaços
+            const planIdString = (planFields.planId?.stringValue || "").trim().toLowerCase();
+            const subscriptionStatus = (configData.fields.subscriptionStatus?.stringValue || "").toLowerCase();
 
-            if ((planName === "Profissional" || planId === "plan_xqes739tk") && isSubscriptionActive) {
-                console.log(`✅ Loja [${storeId}] é Profissional. Gerando XML...`);
+            // REGRA: Aceita se for profissional ou beta_tester e não estiver suspenso
+            const ePlanoValido = planIdString === "profissional" || planIdString === "beta_tester";
+            const estaAtivo = subscriptionStatus !== 'suspended';
+
+            if (ePlanoValido && estaAtivo) {
+                console.log(`✅ Loja [${storeId}] aprovada! Plano: ${planIdString}. Gerando XML...`);
                 const storeName = configData.fields.storeName?.stringValue || storeId;
                 await generateXml(storeId, storeName);
             } else {
-                console.log(`⏭️ Loja [${storeId}] ignorada. (Plano: ${planName || 'Free'})`);
+                console.log(`⏭️ Loja [${storeId}] ignorada. (Encontrado planId: "${planIdString}")`);
             }
+        } catch (e) {
+            console.error(`Erro ao processar loja ${storeId}:`, e);
         }
-    } catch (e) {
-        console.error("Erro crítico:", e);
     }
 }
 
@@ -82,6 +86,7 @@ async function generateXml(storeId, storeName) {
 
         xml += `\n</channel>\n</rss>`;
         fs.writeFileSync(`./${storeId}.xml`, xml);
+        console.log(`📦 Arquivo ${storeId}.xml criado com 21 produtos!`);
     } catch (e) {
         console.error(`Erro no XML de ${storeId}:`, e);
     }
