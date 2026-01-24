@@ -5,72 +5,6 @@
   <link>https://loja.vitrineonline.app.br/dandan</link>
   <description>Feed de Produtos - Dandan</description>
   <item>
-    <g:id>prod_1767181920957</g:id>
-    <g:title>Camisa Brooklyn </g:title>
-    <g:description>Camisa Brooklyn </g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767181920957</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767181920957_0.jpg?alt=media&amp;token=1c60b6c7-8331-44ce-a1ff-2afd4a06e0b0</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1767181969224</g:id>
-    <g:title>Timão lançamento </g:title>
-    <g:description>Timão lançamento </g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767181969224</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767181969224_0.jpg?alt=media&amp;token=81ab669a-bc5c-4f4b-85be-ab19a3c2e6d3</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>70.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1767182028766</g:id>
-    <g:title>Tetra Poderoso Timão </g:title>
-    <g:description>Tetra Poderoso Timão </g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767182028766</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767182028766_0.jpg?alt=media&amp;token=79c9fb38-2f0f-4ab1-8e51-1adec8244b99</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>70.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1767182124125</g:id>
-    <g:title>Camisa Polo Jesus</g:title>
-    <g:description>Camisa Polo Jesus</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767182124125</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767182124125_0.jpg?alt=media&amp;token=461e95a3-aa52-4ba4-ba7b-1b3bad99e6fa</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1767182169482</g:id>
-    <g:title>Camisa Tricolor</g:title>
-    <g:description>Camisa Tricolor</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767182169482</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767182169482_0.jpg?alt=media&amp;token=baa7067c-3b61-4bc9-bc1e-ff9ff644dea5</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>79.90 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1767182236560</g:id>
-    <g:title>Polo Slim</g:title>
-    <g:description>Polo Slim</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767182236560</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767182236560_0.jpg?alt=media&amp;token=6a4e9efd-177c-4d81-af85-a5c99911ab82</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>50.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
     <g:id>prod_1767777080583</g:id>
     <g:title>Kit banquetas </g:title>
     <g:description>Kit banquetas </g:description>
@@ -78,7 +12,7 @@
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767777080583_0.jpg?alt=media&amp;token=d12adc39-cb2f-4ccd-90a3-04cb16ead9ae</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
-    <g:price>400.00 BRL</g:price>
+    <g:price>350.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
   <item>
@@ -90,68 +24,6 @@
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>149.90 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1768302108096</g:id>
-    <g:title>Vetes chavosos</g:title>
-    <g:description>Vetes chavosos</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1768302108096</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1768302108096_main_0.jpg?alt=media&amp;token=b11dbf0c-fb01-4056-9036-9726bb8180bb</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1768471135759</g:id>
-    <g:title>Conjunto Rose</g:title>
-    <g:description>Conjunto Rose</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1768471135759</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1768471135759_main_0.jpg?alt=media&amp;token=09df88d7-2afd-4445-bf97-315cc6d4ceaf</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1768558170747</g:id>
-    <g:title>Disco de cortr</g:title>
-    <g:description>Disco de cortr</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1768558170747</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1768558170747_main_0.jpg?alt=media&amp;token=07dcd48a-6840-4942-a185-507f43f4efe4</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>30.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1768743548218</g:id>
-    <g:title>Maçã cara</g:title>
-    <g:description>Maçã cara</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1768743548218</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1768743548218_main_0.jpg?alt=media&amp;token=6cc394bc-0a6b-46f3-812f-fabf2e75341c</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>50.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769075532541</g:id>
-    <g:title>Armário de cozinha </g:title>
-    <g:description>Material: MDF
-
-Informações sobre tamanhos:
-
-Largura: 120cm
-Profundidade balcão: 45cm
-Altura balcão: 90cm
-</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769075532541</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769075532541_main_0.jpg?alt=media&amp;token=fc4dc4a4-5a2f-4f46-b4a6-0e6396207e2d</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>850.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
 </channel>
