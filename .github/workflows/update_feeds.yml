@@ -1,9 +1,9 @@
-name: Atualizar Feeds XML (MODO TESTE RÁPIDO)
+name: Atualizar Feeds XML
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Roda a cada 5 minutos para teste
-  workflow_dispatch: # Permite rodar manualmente no botão para teste imediato
+    - cron: '*/10 * * * *' # Roda a cada 10 minutos para teste e estabilidade
+  workflow_dispatch: # Permite rodar manualmente pelo botão
 
 permissions:
   contents: write
@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Checkout do código
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Garante que o histórico venha completo para evitar erros de push
 
       - name: Configurar Node.js
         uses: actions/setup-node@v3
@@ -30,11 +32,11 @@ jobs:
           
           git add *.xml
           
-          # Só faz o commit se houver mudanças reais
-          if git diff --cached --quiet; then
-            echo "Nenhuma alteração nos XMLs encontrada."
-          else
-            git commit -m "Autobot: Teste de atualização rápida [$(date +'%H:%M:%S')]"
-            git pull --rebase origin main
-            git push origin main
-          fi
+          # Tenta o commit. Se não houver nada novo, avisa e continua.
+          git commit -m "Autobot: Atualização automática [$(date +'%d/%m %H:%M')]" || echo "Nenhuma alteração detectada nos XMLs."
+          
+          # Puxa mudanças que você possa ter feito pelo celular para evitar erro de push
+          git pull --rebase origin main
+          
+          # Envia os novos XMLs
+          git push origin main
