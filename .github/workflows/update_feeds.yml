@@ -2,8 +2,14 @@ name: Atualizar Feeds XML
 
 on:
   schedule:
-    - cron: '*/10 * * * *' # Roda a cada 10 minutos para teste e estabilidade
-  workflow_dispatch: # Permite rodar manualmente pelo botão
+    - cron: '*/10 * * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'generate_feeds.js'
+      - '.github/workflows/**'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,7 +21,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # Garante que o histórico venha completo para evitar erros de push
+          fetch-depth: 0
 
       - name: Configurar Node.js
         uses: actions/setup-node@v3
@@ -25,18 +31,11 @@ jobs:
       - name: Gerar os arquivos XML
         run: node generate_feeds.js
 
-      - name: Salvar e subir arquivos para o GitHub
+      - name: Salvar e subir arquivos
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
           git add *.xml
-          
-          # Tenta o commit. Se não houver nada novo, avisa e continua.
-          git commit -m "Autobot: Atualização automática [$(date +'%d/%m %H:%M')]" || echo "Nenhuma alteração detectada nos XMLs."
-          
-          # Puxa mudanças que você possa ter feito pelo celular para evitar erro de push
+          git commit -m "Autobot: Atualização [$(date +'%H:%M')]" || echo "Sem mudanças"
           git pull --rebase origin main
-          
-          # Envia os novos XMLs
           git push origin main
