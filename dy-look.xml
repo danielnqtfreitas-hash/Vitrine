@@ -4,5 +4,16 @@
   <title>Dy Look</title>
   <link>https://loja.vitrineonline.app.br/dy-look</link>
   <description>Feed de Produtos - Dy Look</description>
+  <item>
+    <g:id>prod_1769275296645</g:id>
+    <g:title>Teste</g:title>
+    <g:description>Teste</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dy-look?id=prod_1769275296645</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdy-look%2Fproducts%2Fprod_1769275296645_main_0.jpg?alt=media&amp;token=083ec843-a341-433f-b7e7-cd8a480d7d79</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>1.00 BRL</g:price>
+    <g:brand>Dy Look</g:brand>
+  </item>
 </channel>
 </rss>

@@ -26,5 +26,38 @@
     <g:price>149.90 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769275863392</g:id>
+    <g:title>Piscinão </g:title>
+    <g:description>Piscinão </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769275863392</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769275863392_main_0.jpg?alt=media&amp;token=7c5f4bbf-e337-49c9-a7c7-3ea3bc5601c4</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50000.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769275916738</g:id>
+    <g:title>Serra copo maluco</g:title>
+    <g:description>Serra copo maluco</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769275916738</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769275916738_main_0.jpg?alt=media&amp;token=4071b642-1475-4c98-bb5c-f4c4b3a40285</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769275954812</g:id>
+    <g:title>Preto </g:title>
+    <g:description>Preto </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769275954812</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769275954812_main_0.jpg?alt=media&amp;token=92456e90-6d39-4899-9f5c-732d663d84e9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>300.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
