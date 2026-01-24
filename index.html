@@ -1242,6 +1242,35 @@ window.addEventListener('beforeunload', () => {
 window.checkoutWhatsApp = async () => { 
     if(!cart.length) return; 
 
+     // --- NOVA TRAVA DE SEGURANÇA NO CHECKOUT ---
+    showToast("Revalidando estoque...");
+    
+    for (const item of cart) {
+        const check = await validateStockBeforeAction(item.id);
+        
+        if (check.error || check.status !== 'active') {
+            showToast(`❌ ${item.name} ficou indisponível.`);
+            cart = cart.filter(x => x.id !== item.id);
+            updateCartUI();
+            return;
+        }
+
+        // Verifica estoque da variação específica no carrinho
+        let estoqueFinal = check.stock;
+        if (check.variations.length > 0) {
+            const v = check.variations.find(cv => cv.size === item.v.size && cv.color === item.v.color);
+            estoqueFinal = v ? (parseInt(v.stock) || 0) : 0;
+        }
+
+        if (item.q > estoqueFinal) {
+            showToast(`⚠️ O estoque de ${item.name} diminuiu. Ajustando...`);
+            item.q = estoqueFinal;
+            if (item.q <= 0) cart = cart.filter(x => x.uid !== item.uid);
+            updateCartUI();
+            return; // Interrompe para o usuário revisar o carrinho
+        }
+    }
+    
     // 1. Captura e Validação de Identidade
     const nome = document.getElementById('checkName').value.trim();
     const telefone = document.getElementById('checkPhone') ? document.getElementById('checkPhone').value.trim() : "";
@@ -1956,7 +1985,40 @@ window.closeCartModal = () => {
 };
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
-window.addToCart = (p, q, v) => {
+window.addToCart = async (p, q, v) => {
+    // Bloqueia o botão para evitar cliques duplos durante a validação
+    const btn = document.getElementById('detailAddBtn');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Validando...";
+
+    const validation = await validateStockBeforeAction(p.id);
+
+    if (validation.error || validation.status !== 'active') {
+        showToast("⚠️ Este produto não está mais disponível.");
+        btn.disabled = false;
+        btn.textContent = originalText;
+        window.closeModalDetails();
+        renderCatalog();
+        return;
+    }
+
+    // Validação de estoque específica (Variação ou Produto Simples)
+    let stockDisponivel = validation.stock;
+    if (validation.variations.length > 0 && (v.size || v.color)) {
+        const comb = validation.variations.find(varItem => 
+            (!p.sizes?.length || varItem.size.trim().toLowerCase() === (v.size || "").trim().toLowerCase()) &&
+            (!p.colors?.length || varItem.color.trim().toLowerCase() === (v.color || "").trim().toLowerCase())
+        );
+        stockDisponivel = comb ? (parseInt(comb.stock) || 0) : 0;
+    }
+
+    if (q > stockDisponivel) {
+        showToast(`⚠️ Estoque atualizado: Restam apenas ${stockDisponivel} unidades.`);
+        btn.disabled = false;
+        btn.textContent = originalText;
+        return;
+    }
     const matrix = p.variations || [];
     let stockDisponivel = parseInt(p.stock) || 0;
 
@@ -2030,6 +2092,8 @@ window.addToCart = (p, q, v) => {
     updateCartUI(); 
     showToast(`<b>${p.name}</b> na sacola!`); 
     window.closeModalDetails(); 
+    btn.disabled = false;
+    btn.textContent = originalText;
 };
 
 window.updateCartUI = () => {
@@ -2397,6 +2461,35 @@ function initGlobalCountdowns() {
         }
     }, 1000);
 }
+
+        async function validateStockBeforeAction(productId) {
+    try {
+        // Busca a versão "fresca" do produto direto do servidor (ignora o cache)
+        const productRef = doc(db, `stores/${STORE_ID}/products/${productId}`);
+        const snap = await getDocFromServer(productRef);
+        
+        if (!snap.exists()) return { error: "Produto não encontrado." };
+        
+        const freshData = snap.data();
+        
+        // Atualiza nosso array local allProducts para manter a vitrine sincronizada
+        const localIdx = allProducts.findIndex(p => p.id === productId);
+        if (localIdx !== -1) {
+            allProducts[localIdx] = { id: productId, ...freshData };
+        }
+
+        return { 
+            success: true, 
+            stock: parseInt(freshData.stock) || 0, 
+            variations: freshData.variations || [],
+            status: freshData.status
+        };
+    } catch (e) {
+        console.error("Erro ao validar estoque:", e);
+        return { error: "Erro de conexão ao validar estoque." };
+    }
+}
+
 
     </script>
 </body>
