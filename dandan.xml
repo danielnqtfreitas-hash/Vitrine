@@ -48,5 +48,16 @@
     <g:price>78.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769257815871</g:id>
+    <g:title>Fura metalon </g:title>
+    <g:description>Fura metalon </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769257815871</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769257815871_main_0.jpg?alt=media&amp;token=92185fd1-0a36-4719-b313-73d2ad949b32</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>650.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
