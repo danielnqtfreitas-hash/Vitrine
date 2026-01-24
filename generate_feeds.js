@@ -1,8 +1,8 @@
 const fs = require('fs');
+
 const PROJECT_ID = "meuestoque-1badc";
 const BASE_URL = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
 
-// Função para limpar links e textos (Essencial para evitar o erro EntityRef)
 function clean(text) {
     if (!text) return "";
     return text.toString()
@@ -11,28 +11,6 @@ function clean(text) {
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&apos;');
-}
-
-async function run() {
-    try {
-        const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
-        const registryData = await registryResp.json();
-        const storeIds = registryData.documents ? registryData.documents.map(d => d.name.split('/').pop()) : ['dandan'];
-
-        for (const storeId of storeIds) {
-            const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
-            const configData = await configResp.json();
-            if (!configData.fields) continue;
-
-            const fields = configData.fields;
-            const planFields = fields.plan?.mapValue?.fields || {};
-            const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
-            
-            if (storeId === 'dandan' || pId.includes("profissional") || pId.includes("beta")) {
-                await generateXml(storeId, fields.storeName?.stringValue || storeId);
-            }
-        }
-    } catch (e) { console.error("Erro na varredura:", e); }
 }
 
 async function generateXml(storeId, storeName) {
@@ -76,8 +54,41 @@ async function generateXml(storeId, storeName) {
 
         xml += `\n</channel>\n</rss>`;
         fs.writeFileSync(`./${storeId}.xml`, xml);
-        console.log(`✅ Arquivo ${storeId}.xml gerado com links limpos!`);
-    } catch (e) { console.error(`Erro ao gerar XML de ${storeId}:`, e); }
+        console.log(`✅ ${storeId}.xml atualizado.`);
+    } catch (e) {
+        console.error(`❌ Erro em ${storeId}:`, e.message);
+        // Não encerra o processo aqui para não parar a geração dos outros lojistas
+    }
+}
+
+async function run() {
+    try {
+        const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
+        if (!registryResp.ok) throw new Error("Falha ao acessar Registry");
+        
+        const registryData = await registryResp.json();
+        const storeIds = registryData.documents ? registryData.documents.map(d => d.name.split('/').pop()) : ['dandan'];
+
+        // Processa as lojas em paralelo para ser mais rápido
+        await Promise.all(storeIds.map(async (storeId) => {
+            const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
+            const configData = await configResp.json();
+            if (!configData.fields) return;
+
+            const fields = configData.fields;
+            const planFields = fields.plan?.mapValue?.fields || {};
+            const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
+            
+            if (storeId === 'dandan' || pId.includes("profissional") || pId.includes("beta")) {
+                await generateXml(storeId, fields.storeName?.stringValue || storeId);
+            }
+        }));
+
+        console.log("🚀 Processo concluído com sucesso!");
+    } catch (e) {
+        console.error("💥 Erro Fatal:", e);
+        process.exit(1); // Força o erro no GitHub Actions para você ser notificado
+    }
 }
 
 run();
