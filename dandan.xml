@@ -26,16 +26,5 @@
     <g:price>149.90 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
-  <item>
-    <g:id>prod_1769252869818</g:id>
-    <g:title>Serra copo vonder</g:title>
-    <g:description>Serra copo vonder</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769252869818</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769252869818_main_0.jpg?alt=media&amp;token=b2a46b62-51c7-4c25-bc3d-60863033ed5b</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
 </channel>
 </rss>
