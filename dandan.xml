@@ -37,16 +37,5 @@
     <g:price>60.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
-  <item>
-    <g:id>prod_1769268405804</g:id>
-    <g:title>Piscina</g:title>
-    <g:description>Piscina</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769268405804</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769268405804_main_0.jpg?alt=media&amp;token=4f641069-f2a0-4437-965c-778cc41b2e5f</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>1570.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
 </channel>
 </rss>
