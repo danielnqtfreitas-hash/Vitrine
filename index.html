@@ -1351,11 +1351,6 @@ window.checkoutWhatsApp = async () => {
 
         // ATUALIZAÇÃO: Usa a variável renomeada para não bugar a busca
         const link = `https://wa.me/${lojaZapDestino}?text=${encodeURIComponent(msg)}`;
-        
-        // 7. Limpeza e Finalização (DENTRO DO TRY DO CHECKOUTWHATSAPP)
-const CART_KEY = `cart_${STORE_ID}`;
-localStorage.removeItem(CART_KEY);
-cart = [];
 
 // Limpa os filtros e a variável de busca global
 filters.search = ""; 
@@ -1367,9 +1362,26 @@ renderCatalog(); // Recarrega o catálogo limpo
 
 if(typeof closeCartModal === 'function') closeCartModal();
         if(typeof closeCheckout === 'function') closeCheckout();
+
+          // --- ADICIONE ESTAS LINHAS ABAIXO ANTES DE ABRIR O WHATSAPP ---
         
+        // 1. Limpa o Carrinho
+        const CART_KEY = `cart_${STORE_ID}`;
+        localStorage.removeItem(CART_KEY);
+        cart = [];
+
+        // 2. FORÇA A LIMPEZA DO CACHE DE PRODUTOS
+        // Isso fará com que o initFlow() baixe os estoques novos na volta
+        const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
+        localStorage.removeItem(CACHE_KEY);
         window.open(link, '_blank');
 
+    // OPCIONAL: Recarrega a página atual em 1 segundo para que, 
+        // se o usuário voltar, a vitrine já esteja limpa/atualizada.
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000); 
+        
     } catch (error) {
         console.error("Erro no checkout:", error);
         showToast("❌ Erro ao enviar pedido.");
