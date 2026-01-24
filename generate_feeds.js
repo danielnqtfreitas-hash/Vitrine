@@ -54,40 +54,41 @@ async function generateXml(storeId, storeName) {
 
         xml += `\n</channel>\n</rss>`;
         fs.writeFileSync(`./${storeId}.xml`, xml);
-        console.log(`✅ ${storeId}.xml atualizado.`);
+        console.log(`✅ ${storeId}.xml gerado.`);
     } catch (e) {
         console.error(`❌ Erro em ${storeId}:`, e.message);
-        // Não encerra o processo aqui para não parar a geração dos outros lojistas
     }
 }
 
 async function run() {
     try {
         const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
-        if (!registryResp.ok) throw new Error("Falha ao acessar Registry");
+        if (!registryResp.ok) throw new Error("Falha ao acessar Registry do Firestore");
         
         const registryData = await registryResp.json();
         const storeIds = registryData.documents ? registryData.documents.map(d => d.name.split('/').pop()) : ['dandan'];
 
-        // Processa as lojas em paralelo para ser mais rápido
+        // Processa as lojas em paralelo
         await Promise.all(storeIds.map(async (storeId) => {
-            const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
-            const configData = await configResp.json();
-            if (!configData.fields) return;
+            try {
+                const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
+                const configData = await configResp.json();
+                if (!configData.fields) return;
 
-            const fields = configData.fields;
-            const planFields = fields.plan?.mapValue?.fields || {};
-            const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
-            
-            if (storeId === 'dandan' || pId.includes("profissional") || pId.includes("beta")) {
-                await generateXml(storeId, fields.storeName?.stringValue || storeId);
-            }
+                const fields = configData.fields;
+                const planFields = fields.plan?.mapValue?.fields || {};
+                const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
+                
+                if (storeId === 'dandan' || pId.includes("profissional") || pId.includes("beta")) {
+                    await generateXml(storeId, fields.storeName?.stringValue || storeId);
+                }
+            } catch (err) { console.error(`Erro config ${storeId}:`, err.message); }
         }));
 
-        console.log("🚀 Processo concluído com sucesso!");
+        console.log("🚀 Fim do processamento.");
     } catch (e) {
         console.error("💥 Erro Fatal:", e);
-        process.exit(1); // Força o erro no GitHub Actions para você ser notificado
+        process.exit(1);
     }
 }
 
