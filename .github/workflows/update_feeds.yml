@@ -1,9 +1,9 @@
-name: Atualizar Feeds XML
+name: Atualizar Feeds XML (MODO TESTE RÁPIDO)
 
 on:
   schedule:
-    - cron: '0 * * * *' # Roda a cada hora
-  workflow_dispatch: # Permite rodar manualmente
+    - cron: '*/5 * * * *' # Roda a cada 5 minutos para teste
+  workflow_dispatch: # Permite rodar manualmente no botão para teste imediato
 
 permissions:
   contents: write
@@ -25,8 +25,16 @@ jobs:
 
       - name: Salvar e subir arquivos para o GitHub
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
           git add *.xml
-          git commit -m "Atualização automática dos feeds XML" || echo "Sem mudanças para salvar"
-          git push
+          
+          # Só faz o commit se houver mudanças reais
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração nos XMLs encontrada."
+          else
+            git commit -m "Autobot: Teste de atualização rápida [$(date +'%H:%M:%S')]"
+            git pull --rebase origin main
+            git push origin main
+          fi
