@@ -2,7 +2,8 @@ name: Atualizar Feeds XML
 
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    # Agendado para rodar nos minutos 05, 20, 35 e 50 de cada hora
+    - cron: '5,20,35,50 * * * *'
   push:
     branches:
       - main
@@ -35,7 +36,15 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Adiciona apenas os XMLs gerados
           git add *.xml
-          git commit -m "Autobot: Atualização [$(date +'%H:%M')]" || echo "Sem mudanças"
+          
+          # Commit com carimbo de data e hora para fácil conferência
+          git commit -m "Autobot: Atualização automática [$(date +'%d/%m %H:%M')]" || echo "Nenhuma mudança detectada nos produtos."
+          
+          # Resolve conflitos se você editou algo pelo celular
           git pull --rebase origin main
+          
+          # Sobe as alterações para a raiz do repositório
           git push origin main
