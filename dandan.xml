@@ -37,5 +37,16 @@
     <g:price>60.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769254284621</g:id>
+    <g:title>Serrinha</g:title>
+    <g:description>Serrinha</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769254284621</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769254284621_main_0.jpg?alt=media&amp;token=1208b203-73d6-4bdd-bf75-02a726533ade</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>78.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
