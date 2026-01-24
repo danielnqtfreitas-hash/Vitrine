@@ -54,40 +54,48 @@ async function generateXml(storeId, storeName) {
 
         xml += `\n</channel>\n</rss>`;
         fs.writeFileSync(`./${storeId}.xml`, xml);
-        console.log(`✅ ${storeId}.xml gerado.`);
+        console.log(`✅ Arquivo ${storeId}.xml gerado com sucesso.`);
     } catch (e) {
-        console.error(`❌ Erro em ${storeId}:`, e.message);
+        console.error(`❌ Erro ao gerar XML da loja ${storeId}:`, e.message);
     }
 }
 
 async function run() {
     try {
+        console.log("🔍 Iniciando varredura de lojas...");
         const registryResp = await fetch(`${BASE_URL}/stores_registry?pageSize=500`);
-        if (!registryResp.ok) throw new Error("Falha ao acessar Registry do Firestore");
+        if (!registryResp.ok) throw new Error("Não foi possível acessar a lista de lojas.");
         
         const registryData = await registryResp.json();
         const storeIds = registryData.documents ? registryData.documents.map(d => d.name.split('/').pop()) : ['dandan'];
 
-        // Processa as lojas em paralelo
-        await Promise.all(storeIds.map(async (storeId) => {
+        for (const storeId of storeIds) {
             try {
                 const configResp = await fetch(`${BASE_URL}/stores/${storeId}/config/store`);
                 const configData = await configResp.json();
-                if (!configData.fields) return;
+                
+                if (!configData.fields) {
+                    console.log(`⚠️ Loja ${storeId} sem configuração válida. Pulando...`);
+                    continue;
+                }
 
                 const fields = configData.fields;
                 const planFields = fields.plan?.mapValue?.fields || {};
                 const pId = (planFields.planId?.stringValue || fields.planId?.stringValue || "").trim().toLowerCase();
                 
+                // Mantendo sua lógica de filtro por plano
                 if (storeId === 'dandan' || pId.includes("profissional") || pId.includes("beta")) {
                     await generateXml(storeId, fields.storeName?.stringValue || storeId);
+                } else {
+                    console.log(`ℹ️ Loja ${storeId} ignorada (Plano: ${pId || 'gratuito'}).`);
                 }
-            } catch (err) { console.error(`Erro config ${storeId}:`, err.message); }
-        }));
-
-        console.log("🚀 Fim do processamento.");
+            } catch (err) {
+                console.error(`❌ Erro ao processar config da loja ${storeId}:`, err.message);
+            }
+        }
+        console.log("🚀 Processamento finalizado!");
     } catch (e) {
-        console.error("💥 Erro Fatal:", e);
+        console.error("💥 Erro crítico no robô:", e);
         process.exit(1);
     }
 }
