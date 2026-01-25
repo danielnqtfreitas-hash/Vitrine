@@ -49,14 +49,14 @@
     <g:brand>Dandan</g:brand>
   </item>
   <item>
-    <g:id>prod_1769275954812</g:id>
-    <g:title>Preto </g:title>
-    <g:description>Preto </g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769275954812</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769275954812_main_0.jpg?alt=media&amp;token=92456e90-6d39-4899-9f5c-732d663d84e9</g:image_link>
+    <g:id>prod_1769330983727</g:id>
+    <g:title>Frô</g:title>
+    <g:description>Frô</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769330983727</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769330983727_main_0.jpg?alt=media&amp;token=d6723810-70cd-4652-90b7-7b4d0959ee88</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
-    <g:price>300.00 BRL</g:price>
+    <g:price>5.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
 </channel>
