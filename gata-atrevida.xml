@@ -1345,5 +1345,60 @@ Estojo</g:description>
     <g:price>75.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769437013677</g:id>
+    <g:title>Conjunto Iris</g:title>
+    <g:description>Conjunto Iris</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769437013677</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769437013677_main_0.jpg?alt=media&amp;token=8a4ddbfd-ede5-4da6-b15b-0cd06cb98e1e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769437595597</g:id>
+    <g:title>Conjunto thamyris</g:title>
+    <g:description>Conjunto thamyris</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769437595597</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769437595597_main_0.jpg?alt=media&amp;token=d42a2edb-0c09-43ab-b41e-2007eb8363b9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769438264033</g:id>
+    <g:title>Conjunto Janaina</g:title>
+    <g:description>Conjunto Janaina</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769438264033</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769438264033_main_0.jpg?alt=media&amp;token=e7661699-4ed2-48f3-b92d-4aa3678ae182</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769438599885</g:id>
+    <g:title>Conjunto Rafaela</g:title>
+    <g:description>Conjunto Rafaela</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769438599885</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769438599885_main_0.jpg?alt=media&amp;token=18658058-7806-4c7f-87d5-234d957484f0</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769438846832</g:id>
+    <g:title>Conjunto Karine</g:title>
+    <g:description>Conjunto Karine</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769438846832</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769438846832_main_0.jpg?alt=media&amp;token=245156e6-6a7d-4011-81ce-c1c31419cdc6</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
