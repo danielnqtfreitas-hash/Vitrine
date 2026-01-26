@@ -1238,8 +1238,8 @@ window.addEventListener('beforeunload', () => {
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
         
-                
-window.checkoutWhatsApp = async () => { 
+
+            window.checkoutWhatsApp = async () => { 
     if(!cart.length) return; 
 
     // 1. Captura e Validação de Identidade
@@ -1280,35 +1280,44 @@ window.checkoutWhatsApp = async () => {
     btn.disabled = true;
 
     try {
-        // --- NOVO: TRAVA DE SEGURANÇA (DOUBLE CHECK NO SERVIDOR) ---
+        // --- NOVO: VALIDAÇÃO DE ESTOQUE REAL (PAINEL - RESERVAS FANTASMAS) ---
         for (const item of cart) {
             const productRef = doc(db, `stores/${STORE_ID}/products/${item.id}`);
-            const snap = await getDocFromServer(productRef); // Força busca no servidor
+            const pSnap = await getDocFromServer(productRef);
             
-            if (snap.exists()) {
-                const pServer = snap.data();
-                let estoqueReal = parseInt(pServer.stock) || 0;
+            if (pSnap.exists()) {
+                const pData = pSnap.data();
+                let estoquePainel = parseInt(pData.stock) || 0;
 
-                // Se o item tem variação, checa o estoque da variação específica no servidor
+                // Ajusta estoque se for variação
                 if (item.v.size || item.v.color) {
-                    const vReal = pServer.variations?.find(v => 
-                        v.size === item.v.size && v.color === item.v.color
+                    const v = pData.variations?.find(v => 
+                        (v.size || "").trim().toLowerCase() === (item.v.size || "").trim().toLowerCase() && 
+                        (v.color || "").trim().toLowerCase() === (item.v.color || "").trim().toLowerCase()
                     );
-                    if (vReal) {
-                        estoqueReal = parseInt(vReal.stock) || 0;
-                    }
+                    if (v) estoquePainel = parseInt(v.stock) || 0;
                 }
 
-                if (estoqueReal < item.q) {
-                    showToast(`❌ O item "${item.name}" esgotou enquanto você finalizava!`);
-                    
-                    // Limpa caches para atualizar a vitrine na volta
+                // BUSCA RESERVAS PENDENTES NO BANCO (Estoque Fantasma)
+                const resRef = collection(db, `stores/${STORE_ID}/stock_reserves`);
+                const q = query(resRef, where("productId", "==", item.id), where("status", "==", "pending"));
+                const resSnap = await getDocsFromServer(q);
+
+                let totalReservado = 0;
+                resSnap.forEach(rdoc => {
+                    const r = rdoc.data();
+                    const isSameVar = (!item.v.size || r.variation?.size === item.v.size) && 
+                                      (!item.v.color || r.variation?.color === item.v.color);
+                    if (isSameVar) totalReservado += r.qty;
+                });
+
+                const estoqueDisponivelReal = estoquePainel - totalReservado;
+
+                if (estoqueDisponivelReal < item.q) {
+                    showToast(`❌ Indisponível! O item "${item.name}" já está reservado em outros pedidos aguardando confirmação.`);
                     localStorage.removeItem(`app_cache_v4_${STORE_ID}`);
-                    const CART_KEY = `cart_${STORE_ID}`;
-                    localStorage.removeItem(CART_KEY);
-                    
-                    setTimeout(() => window.location.reload(), 2500); 
-                    return; // Interrompe tudo aqui
+                    setTimeout(() => window.location.reload(), 3000);
+                    return; 
                 }
             }
         }
@@ -1359,6 +1368,22 @@ window.checkoutWhatsApp = async () => {
         const docRef = await addDoc(collection(db, `stores/${STORE_ID}/orders`), orderData);
         const shortId = docRef.id.slice(-5).toUpperCase();
 
+        // --- NOVO: CRIAÇÃO DA RESERVA FANTASMA (Shadow Stock) ---
+        const reserveBatch = writeBatch(db);
+        cart.forEach(item => {
+            const resId = `res_${shortId}_${item.id}_${(item.v.size || '').replace(/\s/g,'')}_${(item.v.color || '').replace(/\s/g,'')}`;
+            const resRef = doc(db, `stores/${STORE_ID}/stock_reserves`, resId);
+            reserveBatch.set(resRef, {
+                productId: item.id,
+                qty: item.q,
+                variation: item.v,
+                createdAt: serverTimestamp(),
+                orderId: shortId,
+                status: 'pending'
+            });
+        });
+        await reserveBatch.commit();
+
         // 6. Montagem da Mensagem para WhatsApp
         let msg = `🛍️ *PEDIDO: #${shortId}*\n`;
         msg += `---------------------------\n\n`;
@@ -1383,34 +1408,34 @@ window.checkoutWhatsApp = async () => {
 
         const link = `https://wa.me/${lojaZapDestino}?text=${encodeURIComponent(msg)}`;
 
-        // Limpa interface
+        // Limpa Filtros e Interface
         filters.search = ""; 
         if(document.getElementById('desktopSearch')) document.getElementById('desktopSearch').value = "";
         if(document.getElementById('mobileSearch')) document.getElementById('mobileSearch').value = "";
 
         updateCartUI();
-        renderCatalog(); 
+        renderCatalog();
 
         if(typeof closeCartModal === 'function') closeCartModal();
         if(typeof closeCheckout === 'function') closeCheckout();
 
-        // 7. Limpeza de Dados Locais antes de sair
+        // 7. Limpeza Final e Redirecionamento
         const CART_KEY = `cart_${STORE_ID}`;
         localStorage.removeItem(CART_KEY);
         cart = [];
 
         const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
         localStorage.removeItem(CACHE_KEY);
-
-        // 8. Abre WhatsApp e Recarrega
+        
         window.open(link, '_blank');
+
         setTimeout(() => {
             window.location.reload();
         }, 1000); 
         
     } catch (error) {
         console.error("Erro no checkout:", error);
-        showToast("❌ Erro ao validar estoque ou enviar pedido.");
+        showToast("❌ Erro ao processar pedido.");
     } finally {
         btn.innerHTML = oldBtnContent;
         btn.disabled = false;
