@@ -1400,5 +1400,71 @@ Estojo</g:description>
     <g:price>90.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769439068114</g:id>
+    <g:title>Conjunto Rayeli</g:title>
+    <g:description>Conjunto Rayeli</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769439068114</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769439068114_main_0.jpg?alt=media&amp;token=66b52040-c5fa-469c-948f-31c457aeabdf</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769439393401</g:id>
+    <g:title>Macaquinho Carol</g:title>
+    <g:description>Macaquinho Carol</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769439393401</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769439393401_main_0.jpg?alt=media&amp;token=a6e0c6fd-d8d5-4a20-a68f-28d02ff2408c</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>36.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769439547339</g:id>
+    <g:title>Macaquinho Rafaela</g:title>
+    <g:description>Macaquinho Rafaela</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769439547339</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769439547339_main_0.jpg?alt=media&amp;token=8cf86e3c-dd85-4967-bf6d-0d3a4cd43ecf</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769439751225</g:id>
+    <g:title>Macaquinho Yasmin</g:title>
+    <g:description>Macaquinho Yasmin</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769439751225</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769439751225_main_0.jpg?alt=media&amp;token=dfee52e1-e359-45f1-98a9-4f9a1e261aa0</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769439928677</g:id>
+    <g:title>Body Quesia</g:title>
+    <g:description>Body Quesia</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769439928677</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769439928677_main_0.jpg?alt=media&amp;token=bc0b76d7-7d7c-404e-ab81-564f2f0cdc57</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769440102296</g:id>
+    <g:title>Body Mirela</g:title>
+    <g:description>Body Mirela</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769440102296</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769440102296_main_0.jpg?alt=media&amp;token=8d68b901-3245-4c79-9e55-d1bd45d590c5</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
