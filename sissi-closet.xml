@@ -59,5 +59,16 @@
     <g:price>85.00 BRL</g:price>
     <g:brand>Sissi Closet</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769535155106</g:id>
+    <g:title>Conjunto liz </g:title>
+    <g:description>Conjunto liz </g:description>
+    <g:link>https://loja.vitrineonline.app.br/sissi-closet?id=prod_1769535155106</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fsissi-closet%2Fproducts%2Fprod_1769535155106_main_0.jpg?alt=media&amp;token=2bf5e95c-cfcb-447d-9a1d-bd1423d3dca8</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Sissi Closet</g:brand>
+  </item>
 </channel>
 </rss>
