@@ -1298,7 +1298,7 @@ window.addEventListener('beforeunload', () => {
                     if (v) estoquePainel = parseInt(v.stock) || 0;
                 }
 
-                // BUSCA RESERVAS PENDENTES NO BANCO (Estoque Fantasma)
+                                // BUSCA RESERVAS PENDENTES NO BANCO (Estoque Fantasma)
                 const resRef = collection(db, `stores/${STORE_ID}/stock_reserves`);
                 const q = query(resRef, where("productId", "==", item.id), where("status", "==", "pending"));
                 const resSnap = await getDocsFromServer(q);
@@ -1306,13 +1306,22 @@ window.addEventListener('beforeunload', () => {
                 let totalReservado = 0;
                 resSnap.forEach(rdoc => {
                     const r = rdoc.data();
-                    const isSameVar = (!item.v.size || r.variation?.size === item.v.size) && 
-                                      (!item.v.color || r.variation?.color === item.v.color);
-                    if (isSameVar) totalReservado += r.qty;
+                    
+                    // --- COMPARAÇÃO BLINDADA ---
+                    // Comparamos transformando tudo em string e tratando null/undefined como vazio
+                    const rSize = (r.variation?.size || "").toString().toLowerCase().trim();
+                    const rColor = (r.variation?.color || "").toString().toLowerCase().trim();
+                    
+                    const itemSize = (item.v?.size || "").toString().toLowerCase().trim();
+                    const itemColor = (item.v?.color || "").toString().toLowerCase().trim();
+
+                    // Se os tamanhos e cores batem (mesmo que ambos sejam vazios/null), somamos a reserva
+                    if (rSize === itemSize && rColor === itemColor) {
+                        totalReservado += (parseInt(r.qty) || 0);
+                    }
                 });
 
                 const estoqueDisponivelReal = estoquePainel - totalReservado;
-
                 if (estoqueDisponivelReal < item.q) {
                     showToast(`❌ Indisponível! O item "${item.name}" já está reservado em outros pedidos aguardando confirmação.`);
                     localStorage.removeItem(`app_cache_v4_${STORE_ID}`);
