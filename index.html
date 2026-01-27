@@ -2047,68 +2047,82 @@ async function getRealStockAvailable(productId, variation = null) {
 
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
-window.addToCart = async (p, q, v) => { // Transformada em async
-    const matrix = p.variations || [];
-    
-    // --- NOVO: CÁLCULO DE RESERVAS FANTASMAS ---
+window.addToCart = async (p, q, v) => {
+    // 1. FORÇA O DOWNLOAD DOS DADOS REAIS DO PRODUTO (Ignora cache de disco)
+    // Isso garante que se o lojista cancelou um pedido, o estoque apareça liberado na hora
+    let pAtualizado = p;
+    try {
+        const productRef = doc(db, `stores/${STORE_ID}/products/${p.id}`);
+        const snapAtual = await getDocFromServer(productRef); 
+        if (snapAtual.exists()) {
+            pAtualizado = snapAtual.data();
+            pAtualizado.id = p.id; // Mantém o ID original para consistência
+        }
+    } catch (e) {
+        console.warn("Falha ao buscar estoque em tempo real, usando dados locais.", e);
+    }
+
+    const matrix = pAtualizado.variations || [];
+    let stockPainel = parseInt(pAtualizado.stock) || 0;
+
+    // --- 2. BUSCA RESERVAS FANTASMAS ATUAIS (Shadow Stock) ---
     let totalReservado = 0;
     try {
         const resRef = collection(db, `stores/${STORE_ID}/stock_reserves`);
         const qRes = query(resRef, where("productId", "==", p.id), where("status", "==", "pending"));
-        const resSnap = await getDocsFromServer(qRes); // Busca rápida no servidor
+        const resSnap = await getDocsFromServer(qRes); 
 
         resSnap.forEach(rdoc => {
             const r = rdoc.data();
-            // Verifica se a reserva no banco é para a mesma variação que o cliente quer adicionar
+            // Verifica se a reserva no banco é para a mesma variação
             const isSameVar = (!v.size || (r.variation?.size || "").trim().toLowerCase() === (v.size || "").trim().toLowerCase()) && 
                               (!v.color || (r.variation?.color || "").trim().toLowerCase() === (v.color || "").trim().toLowerCase());
             if (isSameVar) totalReservado += r.qty;
         });
-    } catch (e) {
-        console.warn("Erro ao validar reservas, prosseguindo com estoque local.");
+    } catch (e) { 
+        console.warn("Erro ao buscar reservas:", e); 
     }
 
-    let stockPainel = parseInt(p.stock) || 0;
-
-    // --- LÓGICA DE PREÇO E ESTOQUE ESPECÍFICO ---
+    // --- 3. LÓGICA DE PREÇO COM DESCONTO (Original preservada) ---
     const agora = Date.now();
-    const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
-    const fatorDesconto = isPromoAtiva ? (p.promoValue / p.value) : 1;
-    let price = isPromoAtiva ? p.promoValue : p.value; 
-    let skuFinal = p.sku || 'N/A'; 
+    const isPromoAtiva = pAtualizado.promoValue && pAtualizado.promoValue < pAtualizado.value && (!pAtualizado.promoUntil || pAtualizado.promoUntil > agora);
+    const fatorDesconto = isPromoAtiva ? (pAtualizado.promoValue / pAtualizado.value) : 1;
+    let price = isPromoAtiva ? pAtualizado.promoValue : pAtualizado.value; 
+    let skuFinal = pAtualizado.sku || 'N/A'; 
 
+    // Ajuste de estoque se houver variação
+    let stockEspecifico = stockPainel;
     if(matrix.length && (v.size || v.color)) {
         const comb = matrix.find(varItem => 
-            (!p.sizes?.length || varItem.size.trim().toLowerCase() === (v.size || "").trim().toLowerCase()) &&
-            (!p.colors?.length || varItem.color.trim().toLowerCase() === (v.color || "").trim().toLowerCase())
+            (!pAtualizado.sizes?.length || (varItem.size || "").trim().toLowerCase() === (v.size || "").trim().toLowerCase()) &&
+            (!pAtualizado.colors?.length || (varItem.color || "").trim().toLowerCase() === (v.color || "").trim().toLowerCase())
         );
         if (comb) {
-            stockPainel = parseInt(comb.stock) || 0;
+            stockEspecifico = parseInt(comb.stock) || 0;
             price = isPromoAtiva ? (comb.price * fatorDesconto) : comb.price;
             skuFinal = comb.sku || skuFinal;
         }
     }
 
-    // --- CÁLCULO FINAL DO ESTOQUE REAL ---
-    const stockDisponivelReal = stockPainel - totalReservado;
-
+    // --- 4. CÁLCULO FINAL DO ESTOQUE DISPONÍVEL ---
+    const stockDisponivelReal = stockEspecifico - totalReservado;
     const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-    // Trava de Estoque Real
+    // --- 5. TRAVA DE SEGURANÇA ---
     if (totalDesejado > stockDisponivelReal) {
-        if (totalReservado > 0 && stockPainel >= totalDesejado) {
-            showToast(`❌ Ops! Este item já está reservado em outros pedidos aguardando confirmação.`);
+        if (totalReservado > 0 && stockEspecifico >= totalDesejado) {
+            showToast(`❌ Este item está reservado em outros pedidos pendentes.`);
         } else {
             showToast(`⚠️ Estoque insuficiente (${stockDisponivelReal > 0 ? stockDisponivelReal : 0} unid. disponíveis).`);
         }
         return;
     }
 
-    // --- ADIÇÃO AO CARRINHO (IGUAL AO SEU ORIGINAL) ---
+    // --- 6. ADIÇÃO À SACOLA (Original preservada) ---
     const CART_KEY = `cart_${STORE_ID}`;
-    const imagemFinal = v.image || (p.images && p.images[0]) || 'https://placehold.co/100';
+    const imagemFinal = v.image || (pAtualizado.images && pAtualizado.images[0]) || 'https://placehold.co/100';
 
     if(naSacola) {
         naSacola.q += q; 
@@ -2120,7 +2134,7 @@ window.addToCart = async (p, q, v) => { // Transformada em async
             uid, 
             id: p.id, 
             sku: skuFinal,
-            name: p.name, 
+            name: pAtualizado.name, 
             price: price, 
             q, 
             img: imagemFinal, 
@@ -2136,10 +2150,9 @@ window.addToCart = async (p, q, v) => { // Transformada em async
 
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
     updateCartUI(); 
-    showToast(`<b>${p.name}</b> na sacola!`); 
+    showToast(`<b>${pAtualizado.name}</b> na sacola!`); 
     if(window.closeModalDetails) window.closeModalDetails(); 
 };
-
 
 window.updateCartUI = () => {
     const cnt = cart.reduce((a, b) => a + b.q, 0); 
