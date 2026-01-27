@@ -2006,22 +2006,75 @@ window.closeCartModal = () => {
     setTimeout(() => document.getElementById('modalCart').classList.add('hidden'), 300); 
 };
 
-// --- LÓGICA DO CARRINHO ATUALIZADA ---
-window.addToCart = (p, q, v) => {
-    const matrix = p.variations || [];
-    let stockDisponivel = parseInt(p.stock) || 0;
+        // Função para saber quanto estoque sobra de verdade AGORA
+async function getRealStockAvailable(productId, variation = null) {
+    try {
+        const productRef = doc(db, `stores/${STORE_ID}/products/${productId}`);
+        const pSnap = await getDocFromServer(productRef); // Busca oficial
+        
+        if (!pSnap.exists()) return 0;
+        const pData = pSnap.data();
+        
+        let estoquePainel = parseInt(pData.stock) || 0;
 
-    // --- PASSO 1: LÓGICA DE PERCENTUAL DE DESCONTO ---
+        // Se for variação, pega o estoque específico dela
+        if (variation && (variation.size || variation.color)) {
+            const v = pData.variations?.find(v => 
+                (v.size || "").trim().toUpperCase() === (variation.size || "").trim().toUpperCase() && 
+                (v.color || "").trim().toLowerCase() === (variation.color || "").trim().toLowerCase()
+            );
+            estoquePainel = v ? (parseInt(v.stock) || 0) : 0;
+        }
+
+        // Busca as Reservas Fantasmas no banco
+        const resRef = collection(db, `stores/${STORE_ID}/stock_reserves`);
+        const q = query(resRef, where("productId", "==", productId), where("status", "==", "pending"));
+        const resSnap = await getDocsFromServer(q);
+
+        let totalReservado = 0;
+        resSnap.forEach(rdoc => {
+            const r = rdoc.data();
+            const isSameVar = (!variation.size || r.variation?.size === variation.size) && 
+                              (!variation.color || r.variation?.color === variation.color);
+            if (isSameVar) totalReservado += r.qty;
+        });
+
+        return estoquePainel - totalReservado;
+    } catch (e) {
+        return 0;
+    }
+}
+
+
+// --- LÓGICA DO CARRINHO ATUALIZADA ---
+window.addToCart = async (p, q, v) => { // Transformada em async
+    const matrix = p.variations || [];
+    
+    // --- NOVO: CÁLCULO DE RESERVAS FANTASMAS ---
+    let totalReservado = 0;
+    try {
+        const resRef = collection(db, `stores/${STORE_ID}/stock_reserves`);
+        const qRes = query(resRef, where("productId", "==", p.id), where("status", "==", "pending"));
+        const resSnap = await getDocsFromServer(qRes); // Busca rápida no servidor
+
+        resSnap.forEach(rdoc => {
+            const r = rdoc.data();
+            // Verifica se a reserva no banco é para a mesma variação que o cliente quer adicionar
+            const isSameVar = (!v.size || (r.variation?.size || "").trim().toLowerCase() === (v.size || "").trim().toLowerCase()) && 
+                              (!v.color || (r.variation?.color || "").trim().toLowerCase() === (v.color || "").trim().toLowerCase());
+            if (isSameVar) totalReservado += r.qty;
+        });
+    } catch (e) {
+        console.warn("Erro ao validar reservas, prosseguindo com estoque local.");
+    }
+
+    let stockPainel = parseInt(p.stock) || 0;
+
+    // --- LÓGICA DE PREÇO E ESTOQUE ESPECÍFICO ---
     const agora = Date.now();
     const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
-    
-    // Calculamos quanto o preço promocional representa do original (ex: 0.8 = 20% de desconto)
     const fatorDesconto = isPromoAtiva ? (p.promoValue / p.value) : 1;
-    
-    // Preço inicial (baseado no produto pai)
     let price = isPromoAtiva ? p.promoValue : p.value; 
-
-    // 2. Ajuste de estoque e preço específico se o cliente escolheu uma variação
     let skuFinal = p.sku || 'N/A'; 
 
     if(matrix.length && (v.size || v.color)) {
@@ -2030,26 +2083,30 @@ window.addToCart = (p, q, v) => {
             (!p.colors?.length || varItem.color.trim().toLowerCase() === (v.color || "").trim().toLowerCase())
         );
         if (comb) {
-            stockDisponivel = parseInt(comb.stock) || 0;
-            
-            // --- PASSO 2: APLICAÇÃO PROPORCIONAL NA VARIAÇÃO ---
-            // Se a promo está ativa, aplicamos o fator de desconto no preço da variação
+            stockPainel = parseInt(comb.stock) || 0;
             price = isPromoAtiva ? (comb.price * fatorDesconto) : comb.price;
-            
             skuFinal = comb.sku || skuFinal;
         }
     }
 
-    // --- DAQUI PARA BAIXO SEGUE IGUAL AO SEU ---
+    // --- CÁLCULO FINAL DO ESTOQUE REAL ---
+    const stockDisponivelReal = stockPainel - totalReservado;
+
     const uid = `${p.id}-${(v.size || '').trim()}-${(v.color || '').trim()}`;
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-    if (totalDesejado > stockDisponivel) {
-        showToast(`⚠️ Desculpe, estoque insuficiente (${stockDisponivel} unid. disponíveis).`);
+    // Trava de Estoque Real
+    if (totalDesejado > stockDisponivelReal) {
+        if (totalReservado > 0 && stockPainel >= totalDesejado) {
+            showToast(`❌ Ops! Este item já está reservado em outros pedidos aguardando confirmação.`);
+        } else {
+            showToast(`⚠️ Estoque insuficiente (${stockDisponivelReal > 0 ? stockDisponivelReal : 0} unid. disponíveis).`);
+        }
         return;
     }
 
+    // --- ADIÇÃO AO CARRINHO (IGUAL AO SEU ORIGINAL) ---
     const CART_KEY = `cart_${STORE_ID}`;
     const imagemFinal = v.image || (p.images && p.images[0]) || 'https://placehold.co/100';
 
@@ -2080,8 +2137,9 @@ window.addToCart = (p, q, v) => {
     localStorage.setItem(CART_KEY, JSON.stringify(cart));
     updateCartUI(); 
     showToast(`<b>${p.name}</b> na sacola!`); 
-    window.closeModalDetails(); 
+    if(window.closeModalDetails) window.closeModalDetails(); 
 };
+
 
 window.updateCartUI = () => {
     const cnt = cart.reduce((a, b) => a + b.q, 0); 
