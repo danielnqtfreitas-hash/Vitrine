@@ -1378,20 +1378,32 @@ window.addEventListener('beforeunload', () => {
         const shortId = docRef.id.slice(-5).toUpperCase();
 
         // --- NOVO: CRIAÇÃO DA RESERVA FANTASMA (Shadow Stock) ---
-        const reserveBatch = writeBatch(db);
-        cart.forEach(item => {
-            const resId = `res_${shortId}_${item.id}_${(item.v.size || '').replace(/\s/g,'')}_${(item.v.color || '').replace(/\s/g,'')}`;
-            const resRef = doc(db, `stores/${STORE_ID}/stock_reserves`, resId);
-            reserveBatch.set(resRef, {
-                productId: item.id,
-                qty: item.q,
-                variation: item.v,
-                createdAt: serverTimestamp(),
-                orderId: shortId,
-                status: 'pending'
-            });
-        });
-        await reserveBatch.commit();
+const reserveBatch = writeBatch(db);
+const sID = shortId.toUpperCase(); // Força o ID do pedido em maiúsculo
+
+cart.forEach(item => {
+    // 1. Tratamento blindado para bater com a limpeza do Painel
+    const s = (item.v.size && item.v.size !== "null") ? item.v.size.toString().toLowerCase().replace(/\s/g,'') : "";
+    const c = (item.v.color && item.v.color !== "null") ? item.v.color.toString().toLowerCase().replace(/\s/g,'') : "";
+    
+    // 2. Montagem do ID Único (res_ABCDE_prod123_m_azul)
+    const resId = `res_${sID}_${item.id}_${s}_${c}`;
+    const resRef = doc(db, `stores/${STORE_ID}/stock_reserves`, resId);
+
+    reserveBatch.set(resRef, {
+        productId: item.id,
+        qty: item.q,
+        variation: {
+            size: item.v.size || null,
+            color: item.v.color || null
+        },
+        createdAt: serverTimestamp(),
+        orderId: sID,
+        status: 'pending'
+    });
+});
+await reserveBatch.commit();
+
 
         // 6. Montagem da Mensagem para WhatsApp
         let msg = `🛍️ *PEDIDO: #${shortId}*\n`;
