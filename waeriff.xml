@@ -4,5 +4,38 @@
   <title>Waeriff</title>
   <link>https://loja.vitrineonline.app.br/waeriff</link>
   <description>Feed de Produtos - Waeriff</description>
+  <item>
+    <g:id>prod_1769561502805</g:id>
+    <g:title>Short Ana </g:title>
+    <g:description>Short Ana </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769561502805</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769561502805_main_0.jpg?alt=media&amp;token=5ddcc2b9-92d5-4d1f-8400-6978354065d9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>68.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769562422955</g:id>
+    <g:title>Body Maria </g:title>
+    <g:description>Body Maria </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769562422955</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769562422955_main_0.jpg?alt=media&amp;token=802c23f6-5394-4760-bf85-69fc4ef2aa3f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>55.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769562656994</g:id>
+    <g:title>Body Elisa </g:title>
+    <g:description>Tecido poliamida, leve e confortável.</g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769562656994</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769562656994_main_0.jpg?alt=media&amp;token=7f5bce05-b478-4b2b-8b51-950e905386ec</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
 </channel>
 </rss>
