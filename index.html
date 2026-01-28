@@ -1557,47 +1557,65 @@ window.closeConfirmFinal = () => {
         }   
 
         async function registerVisit() {
-    if (!STORE_ID || STORE_ID === 'admin') return;
+    console.log("📊 Tentando registrar visita para:", STORE_ID);
+
+    if (!STORE_ID || STORE_ID === 'admin' || STORE_ID === 'index.html') {
+        console.warn("⚠️ Registro abortado: STORE_ID inválido.");
+        return;
+    }
    
-    if (isBotLikely()) return;
+    // Se isBotLikely não estiver definida, o try/catch vai pegar o erro aqui
+    try {
+        if (typeof isBotLikely === 'function' && isBotLikely()) {
+            console.log("🤖 Bot detectado. Visita não registrada.");
+            return;
+        }
+    } catch(e) { console.error("Erro na checagem de bot:", e); }
 
     const sessionKey = `vst_${STORE_ID}`;
-    if (sessionStorage.getItem(sessionKey)) return;
+    if (sessionStorage.getItem(sessionKey)) {
+        console.log("🔁 Visita já registrada nesta sessão.");
+        return;
+    }
             
     try {
         const now = new Date();
         const todayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
         const hour = now.getHours();
         
-        // --- DETECÇÃO DE ORIGEM ---
         const ref = document.referrer.toLowerCase();
         let source = "Direto";
         if (ref.includes("instagram.com")) source = "Instagram";
         else if (ref.includes("facebook.com") || ref.includes("fb.me")) source = "Facebook";
         else if (ref.includes("google.com")) source = "Google";
 
-        // 1. ATUALIZA O HISTÓRICO DIÁRIO (O que alimenta o gráfico)
+        const batch = writeBatch(db);
+
+        // 1. Histórico Diário
         const historyRef = doc(db, `stores/${STORE_ID}/analytics_history`, todayId);
-        await setDoc(historyRef, {
+        batch.set(historyRef, {
             visits: increment(1),
-            date: Timestamp.fromDate(now),
+            date: serverTimestamp(),
             [`hours.${hour}`]: increment(1),
             [`sources.${source}`]: increment(1)
         }, { merge: true });
 
-        // 2. ATUALIZA O CONTADOR GLOBAL (O que alimenta o "Total de Visitas" no topo do painel)
+        // 2. Contador Global
         const globalRef = doc(db, `stores/${STORE_ID}/analytics`, "global");
-        await setDoc(globalRef, { 
+        batch.set(globalRef, { 
             totalVisits: increment(1),
-            lastUpdate: Timestamp.fromDate(now)
+            lastUpdate: serverTimestamp()
         }, { merge: true });
 
+        await batch.commit();
+
         sessionStorage.setItem(sessionKey, "1");
-        console.log("Visita registrada com sucesso!");
+        console.log("✅ Visita registrada com sucesso no Firestore!");
     } catch (err) {
-        console.error("Erro ao registrar visita:", err);
+        console.error("❌ ERRO AO SALVAR NO FIREBASE:", err.code, err.message);
+        // Se o erro for 'permission-denied', são suas regras no Firebase.
     }
-        }
+}
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
