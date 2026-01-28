@@ -1321,12 +1321,36 @@ window.addEventListener('beforeunload', () => {
                     }
                 });
 
+                
                 const estoqueDisponivelReal = estoquePainel - totalReservado;
+
                 if (estoqueDisponivelReal < item.q) {
-                    showToast(`❌ Indisponível! O item "${item.name}" já está reservado em outros pedidos aguardando confirmação.`);
-                    localStorage.removeItem(`app_cache_v4_${STORE_ID}`);
-                    setTimeout(() => window.location.reload(), 3000);
-                    return; 
+                    // Reabilita o botão para o lojista não ficar travado se quiser tentar de novo
+                    if (btn) {
+                        btn.innerHTML = oldBtnContent;
+                        btn.disabled = false;
+                    }
+                    
+                    Swal.fire({
+                        title: 'Item em Processamento',
+                        html: `Ops! O item <b>${item.name}</b> acabou de ser reservado por outro cliente.<br><br>Se a compra dele não for concluída, o produto voltará a ficar disponível.`,
+                        icon: 'info',
+                        confirmButtonText: 'ENTENDIDO, ATUALIZAR LOJA',
+                        confirmButtonColor: '#000000',
+                        allowOutsideClick: false,
+                        customClass: {
+                            container: 'z-[10000]',
+                            popup: 'rounded-[2rem]',
+                            confirmButton: 'rounded-xl px-10 py-4 font-bold text-xs uppercase tracking-widest'
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            localStorage.removeItem(`app_cache_v4_${STORE_ID}`);
+                            const urlLimpa = window.location.origin + window.location.pathname;
+                            window.location.href = urlLimpa;
+                        }
+                    });
+                    return; // Importante: Mata a execução para não enviar o Whats
                 }
             }
         }
