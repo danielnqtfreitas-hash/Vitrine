@@ -48,5 +48,16 @@
     <g:price>50.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769597916246</g:id>
+    <g:title>Teste</g:title>
+    <g:description>Teste</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769597916246</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769597916246_main_0.jpg?alt=media&amp;token=833107e2-5747-445b-bb1e-6b929b4580bd</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>58.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
