@@ -1558,45 +1558,38 @@ window.closeConfirmFinal = () => {
 
         
 async function registerVisit() {
-    console.log("📊 Processando analytics...");
+    if (!STORE_ID || ['admin', 'index.html', 'undefined'].includes(STORE_ID)) return;
 
-    // 1. Validação de ID (Impede salvar lixo no banco)
-    if (!STORE_ID || STORE_ID === 'admin' || STORE_ID === 'index.html') return;
-
-    // 2. Proteção Anti-Bot (Verifica se a função existe antes de chamar)
     try {
         if (typeof isBotLikely === 'function' && isBotLikely()) return;
-    } catch(e) { console.warn("Bot check bypass"); }
+    } catch(e) {}
 
-    // 3. Trava de Sessão (Evita contar F5)
     const sessionKey = `vst_${STORE_ID}`;
     if (sessionStorage.getItem(sessionKey)) return;
             
     try {
         const now = new Date();
-        const todayId = now.toLocaleDateString('en-CA'); // Gera AAAA-MM-DD
+        const todayId = now.toLocaleDateString('en-CA'); 
         const hour = now.getHours();
         
-        // 4. Identificação de Origem (Mantido 100%)
         const ref = document.referrer.toLowerCase();
         let source = "Direto";
         if (ref.includes("instagram.com")) source = "Instagram";
         else if (ref.includes("facebook.com") || ref.includes("fb.me")) source = "Facebook";
         else if (ref.includes("google.com")) source = "Google";
 
-        // 5. Gravação Atômica (Batch)
         const batch = writeBatch(db);
 
-        // Documento do Gráfico Diário
+        // Referência fixa para o histórico diário
         const historyRef = doc(db, `stores/${STORE_ID}/analytics_history`, todayId);
         batch.set(historyRef, {
             visits: increment(1),
-            date: serverTimestamp(), // O segredo para corrigir o erro das 5:52 AM
+            date: serverTimestamp(),
             [`hours.${hour}`]: increment(1),
             [`sources.${source}`]: increment(1)
         }, { merge: true });
 
-        // Documento do Total Global
+        // Referência fixa para o documento GLOBAL (ID deve ser sempre "global")
         const globalRef = doc(db, `stores/${STORE_ID}/analytics`, "global");
         batch.set(globalRef, { 
             totalVisits: increment(1),
@@ -1605,10 +1598,11 @@ async function registerVisit() {
 
         await batch.commit();
         sessionStorage.setItem(sessionKey, "1");
-        console.log("✅ Visita registrada com sucesso!");
+        console.log("✅ Analytics Global e Diário sincronizados.");
 
     } catch (err) {
-        console.error("❌ Erro no Firestore:", err.code, err.message);
+        console.error("❌ Erro de permissão ou estrutura:", err.code);
+        // Se aparecer 'permission-denied' aqui, publique as regras do passo 1
     }
 }
 
