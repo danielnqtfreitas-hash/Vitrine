@@ -1256,13 +1256,14 @@ window.alertaEstoquePreso = (nomeItem) => {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            // Limpa o cache para garantir que o item apareça como esgotado ao voltar
             localStorage.removeItem(`app_cache_v4_${STORE_ID}`);
-            // Recarrega a página limpa
-            window.location.href = window.location.origin + window.location.pathname;
+            // Adicionamos um "timestamp" no final da URL para forçar o navegador a baixar tudo novo
+            const urlLimpa = window.location.origin + window.location.pathname + '?t=' + Date.now();
+            window.location.href = urlLimpa;
         }
     });
 };
+
             window.checkoutWhatsApp = async () => { 
     if(!cart.length) return; 
 
@@ -2173,19 +2174,23 @@ window.addToCart = async (p, q, v) => {
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-        // --- 5. TRAVA DE SEGURANÇA UNIFICADA (PARA TODOS OS BOTÕES) ---
+            // --- 5. TRAVA DE SEGURANÇA UNIFICADA E BLINDADA ---
     if (totalDesejado > stockDisponivelReal) {
-        // Se o cliente clicou no "+" da vitrine ou no "Adicionar" do modal
-        // e não tem estoque disponível (considerando reservas), chama o Sweet!
+        // Removemos o showToast daqui para garantir que nunca mais apareça
         if (window.alertaEstoquePreso) {
             window.alertaEstoquePreso(pAtualizado.name);
         } else {
-            // Fallback caso a função não tenha carregado por algum motivo
-            alert(`O item ${pAtualizado.name} está indisponível no momento.`);
-            window.location.reload();
+            // Caso a função global falhe, usamos um fallback limpo
+            Swal.fire({
+                title: 'Indisponível',
+                text: `O item ${pAtualizado.name} está reservado ou sem estoque.`,
+                icon: 'info',
+                confirmButtonText: 'OK'
+            }).then(() => window.location.reload());
         }
         return;
     }
+
 
     // --- 6. ADIÇÃO À SACOLA (Original preservada) ---
     const CART_KEY = `cart_${STORE_ID}`;
