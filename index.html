@@ -17,6 +17,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     
     <script>
     tailwind.config = {
@@ -1237,8 +1239,30 @@ window.addEventListener('beforeunload', () => {
 
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
-        
 
+        // FUNÇÃO PARA BLOQUEIO DE ESTOQUE ESGOTADO
+window.alertaEstoquePreso = (nomeItem) => {
+    Swal.fire({
+        title: 'Item em Processamento',
+        html: `Ops! O item <b>${nomeItem}</b> acabou de ser reservado por outro cliente.<br><br>Se a compra dele não for concluída, o produto voltará a ficar disponível.`,
+        icon: 'info',
+        confirmButtonText: 'ENTENDIDO, ATUALIZAR LOJA',
+        confirmButtonColor: getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#000000',
+        allowOutsideClick: false,
+        customClass: {
+            container: 'z-[10000]',
+            popup: 'rounded-[2rem]',
+            confirmButton: 'rounded-xl px-10 py-4 font-bold text-xs uppercase tracking-widest'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Limpa o cache para garantir que o item apareça como esgotado ao voltar
+            localStorage.removeItem(`app_cache_v4_${STORE_ID}`);
+            // Recarrega a página limpa
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+    });
+};
             window.checkoutWhatsApp = async () => { 
     if(!cart.length) return; 
 
@@ -1324,34 +1348,19 @@ window.addEventListener('beforeunload', () => {
                 
                 const estoqueDisponivelReal = estoquePainel - totalReservado;
 
-                if (estoqueDisponivelReal < item.q) {
-                    // Reabilita o botão para o lojista não ficar travado se quiser tentar de novo
-                    if (btn) {
-                        btn.innerHTML = oldBtnContent;
-                        btn.disabled = false;
-                    }
-                    
-                    Swal.fire({
-                        title: 'Item em Processamento',
-                        html: `Ops! O item <b>${item.name}</b> acabou de ser reservado por outro cliente.<br><br>Se a compra dele não for concluída, o produto voltará a ficar disponível.`,
-                        icon: 'info',
-                        confirmButtonText: 'ENTENDIDO, ATUALIZAR LOJA',
-                        confirmButtonColor: '#000000',
-                        allowOutsideClick: false,
-                        customClass: {
-                            container: 'z-[10000]',
-                            popup: 'rounded-[2rem]',
-                            confirmButton: 'rounded-xl px-10 py-4 font-bold text-xs uppercase tracking-widest'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            localStorage.removeItem(`app_cache_v4_${STORE_ID}`);
-                            const urlLimpa = window.location.origin + window.location.pathname;
-                            window.location.href = urlLimpa;
-                        }
-                    });
-                    return; // Importante: Mata a execução para não enviar o Whats
-                }
+if (estoqueDisponivelReal < item.q) {
+    // 1. Volta o botão de finalizar ao estado normal (tira o loading)
+    if (btn) {
+        btn.innerHTML = oldBtnContent;
+        btn.disabled = false;
+    }
+    
+    // 2. CHAMA O ALERTA QUE VOCÊ COLOU NO PASSO 2
+    window.alertaEstoquePreso(item.name);
+    
+    // 3. PARA TUDO (não envia para o WhatsApp)
+    return; 
+}
             }
         }
 
