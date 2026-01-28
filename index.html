@@ -1556,51 +1556,47 @@ window.closeConfirmFinal = () => {
     }
         }   
 
-        async function registerVisit() {
-    console.log("📊 Tentando registrar visita para:", STORE_ID);
+        
+async function registerVisit() {
+    console.log("📊 Processando analytics...");
 
-    if (!STORE_ID || STORE_ID === 'admin' || STORE_ID === 'index.html') {
-        console.warn("⚠️ Registro abortado: STORE_ID inválido.");
-        return;
-    }
-   
-    // Se isBotLikely não estiver definida, o try/catch vai pegar o erro aqui
+    // 1. Validação de ID (Impede salvar lixo no banco)
+    if (!STORE_ID || STORE_ID === 'admin' || STORE_ID === 'index.html') return;
+
+    // 2. Proteção Anti-Bot (Verifica se a função existe antes de chamar)
     try {
-        if (typeof isBotLikely === 'function' && isBotLikely()) {
-            console.log("🤖 Bot detectado. Visita não registrada.");
-            return;
-        }
-    } catch(e) { console.error("Erro na checagem de bot:", e); }
+        if (typeof isBotLikely === 'function' && isBotLikely()) return;
+    } catch(e) { console.warn("Bot check bypass"); }
 
+    // 3. Trava de Sessão (Evita contar F5)
     const sessionKey = `vst_${STORE_ID}`;
-    if (sessionStorage.getItem(sessionKey)) {
-        console.log("🔁 Visita já registrada nesta sessão.");
-        return;
-    }
+    if (sessionStorage.getItem(sessionKey)) return;
             
     try {
         const now = new Date();
-        const todayId = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const todayId = now.toLocaleDateString('en-CA'); // Gera AAAA-MM-DD
         const hour = now.getHours();
         
+        // 4. Identificação de Origem (Mantido 100%)
         const ref = document.referrer.toLowerCase();
         let source = "Direto";
         if (ref.includes("instagram.com")) source = "Instagram";
         else if (ref.includes("facebook.com") || ref.includes("fb.me")) source = "Facebook";
         else if (ref.includes("google.com")) source = "Google";
 
+        // 5. Gravação Atômica (Batch)
         const batch = writeBatch(db);
 
-        // 1. Histórico Diário
+        // Documento do Gráfico Diário
         const historyRef = doc(db, `stores/${STORE_ID}/analytics_history`, todayId);
         batch.set(historyRef, {
             visits: increment(1),
-            date: serverTimestamp(),
+            date: serverTimestamp(), // O segredo para corrigir o erro das 5:52 AM
             [`hours.${hour}`]: increment(1),
             [`sources.${source}`]: increment(1)
         }, { merge: true });
 
-        // 2. Contador Global
+        // Documento do Total Global
         const globalRef = doc(db, `stores/${STORE_ID}/analytics`, "global");
         batch.set(globalRef, { 
             totalVisits: increment(1),
@@ -1608,12 +1604,11 @@ window.closeConfirmFinal = () => {
         }, { merge: true });
 
         await batch.commit();
-
         sessionStorage.setItem(sessionKey, "1");
-        console.log("✅ Visita registrada com sucesso no Firestore!");
+        console.log("✅ Visita registrada com sucesso!");
+
     } catch (err) {
-        console.error("❌ ERRO AO SALVAR NO FIREBASE:", err.code, err.message);
-        // Se o erro for 'permission-denied', são suas regras no Firebase.
+        console.error("❌ Erro no Firestore:", err.code, err.message);
     }
 }
 
