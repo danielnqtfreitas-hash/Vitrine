@@ -37,5 +37,38 @@
     <g:price>65.00 BRL</g:price>
     <g:brand>Waeriff</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769562760828</g:id>
+    <g:title>Short Erica </g:title>
+    <g:description>Short Erica </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769562760828</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769562760828_main_0.jpg?alt=media&amp;token=0a449581-a898-4345-a519-f46d5a8c343b</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>89.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769562823832</g:id>
+    <g:title>Short Clara </g:title>
+    <g:description>Short Clara </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769562823832</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769562823832_main_0.jpg?alt=media&amp;token=e86aaaaf-b255-4729-9162-ec7b3ab0c695</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769562905233</g:id>
+    <g:title>Short Barbie </g:title>
+    <g:description>Short Barbie </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769562905233</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769562905233_main_0.jpg?alt=media&amp;token=2524dc3b-c36e-42d4-ade4-a3134b09cc90</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>89.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
 </channel>
 </rss>
