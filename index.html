@@ -2164,15 +2164,12 @@ window.addToCart = async (p, q, v) => {
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-    // --- 5. TRAVA DE SEGURANÇA ---
-    if (totalDesejado > stockDisponivelReal) {
-        if (totalReservado > 0 && stockEspecifico >= totalDesejado) {
-            showToast(`❌ Este item está reservado em outros pedidos pendentes.`);
-        } else {
-            showToast(`⚠️ Estoque insuficiente (${stockDisponivelReal > 0 ? stockDisponivelReal : 0} unid. disponíveis).`);
-        }
-        return;
-    }
+// --- 5. TRAVA DE SEGURANÇA --- (ATUALIZADA)
+if (totalDesejado > stockDisponivelReal) {
+    // Se não há estoque nem para 1 unidade, ou se o que restava foi reservado
+    window.alertaEstoquePreso(pAtualizado.name);
+    return;
+}
 
     // --- 6. ADIÇÃO À SACOLA (Original preservada) ---
     const CART_KEY = `cart_${STORE_ID}`;
