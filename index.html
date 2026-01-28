@@ -1558,20 +1558,24 @@ window.closeConfirmFinal = () => {
 
         
 async function registerVisit() {
-    if (!STORE_ID || ['admin', 'index.html', 'undefined'].includes(STORE_ID)) return;
+    // Bloqueia registros em IDs inválidos ou técnicos
+    if (!STORE_ID || ['admin', 'index.html', 'undefined', ''].includes(STORE_ID)) return;
 
+    // Proteção básica contra Bots
     try {
         if (typeof isBotLikely === 'function' && isBotLikely()) return;
     } catch(e) {}
 
+    // Impede registro duplo na mesma sessão de navegador
     const sessionKey = `vst_${STORE_ID}`;
     if (sessionStorage.getItem(sessionKey)) return;
             
     try {
         const now = new Date();
-        const todayId = now.toLocaleDateString('en-CA'); 
+        const todayId = now.toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
         const hour = now.getHours();
         
+        // Rastreio de Origem
         const ref = document.referrer.toLowerCase();
         let source = "Direto";
         if (ref.includes("instagram.com")) source = "Instagram";
@@ -1580,7 +1584,7 @@ async function registerVisit() {
 
         const batch = writeBatch(db);
 
-        // Referência fixa para o histórico diário
+        // Referência para o Histórico Diário (Gráficos)
         const historyRef = doc(db, `stores/${STORE_ID}/analytics_history`, todayId);
         batch.set(historyRef, {
             visits: increment(1),
@@ -1589,7 +1593,7 @@ async function registerVisit() {
             [`sources.${source}`]: increment(1)
         }, { merge: true });
 
-        // Referência fixa para o documento GLOBAL (ID deve ser sempre "global")
+        // Referência para o Global (Totalizador e Pasta Global)
         const globalRef = doc(db, `stores/${STORE_ID}/analytics`, "global");
         batch.set(globalRef, { 
             totalVisits: increment(1),
@@ -1598,13 +1602,13 @@ async function registerVisit() {
 
         await batch.commit();
         sessionStorage.setItem(sessionKey, "1");
-        console.log("✅ Analytics Global e Diário sincronizados.");
+        console.log("🚀 Analytics: Visita e documento global sincronizados.");
 
     } catch (err) {
-        console.error("❌ Erro de permissão ou estrutura:", err.code);
-        // Se aparecer 'permission-denied' aqui, publique as regras do passo 1
+        console.error("❌ Erro ao registrar no Firestore:", err.code);
     }
 }
+
 
         // --- HELPER UI ---
         window.showToast = (msg) => {
