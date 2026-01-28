@@ -1754,8 +1754,17 @@ window.closeImageZoom = () => {
     setTimeout(() => m.classList.add('hidden'), 300);
 };
 
-        window.quickAdd = (id) => { const p=allProducts.find(x=>x.id===id); if(p.sizes?.length||p.colors?.length)openProductModal(id); else addToCart(p,1,{}); };
-        
+        window.quickAdd = (id) => { 
+    const p = allProducts.find(x => x.id === id); 
+    // Se tem variação, abre o modal (onde já cuidamos do estoque)
+    if(p.sizes?.length || p.colors?.length) {
+        openProductModal(id); 
+    } else {
+        // Se não tem variação, tenta adicionar direto. 
+        // Aqui ele VAI cair na addToCart que acabamos de blindar!
+        addToCart(p, 1, {}); 
+    }
+};
     
         function renderHeroCarousel(banners) {
     const container = document.getElementById('heroGridContainer');
@@ -2164,13 +2173,19 @@ window.addToCart = async (p, q, v) => {
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-    // --- 5. TRAVA DE SEGURANÇA UNIFICADA ---
+        // --- 5. TRAVA DE SEGURANÇA UNIFICADA (PARA TODOS OS BOTÕES) ---
     if (totalDesejado > stockDisponivelReal) {
-        // Se o que o cliente quer é MAIOR do que o que tem de verdade, SweetAlert neles!
-        window.alertaEstoquePreso(pAtualizado.name);
+        // Se o cliente clicou no "+" da vitrine ou no "Adicionar" do modal
+        // e não tem estoque disponível (considerando reservas), chama o Sweet!
+        if (window.alertaEstoquePreso) {
+            window.alertaEstoquePreso(pAtualizado.name);
+        } else {
+            // Fallback caso a função não tenha carregado por algum motivo
+            alert(`O item ${pAtualizado.name} está indisponível no momento.`);
+            window.location.reload();
+        }
         return;
     }
-
 
     // --- 6. ADIÇÃO À SACOLA (Original preservada) ---
     const CART_KEY = `cart_${STORE_ID}`;
