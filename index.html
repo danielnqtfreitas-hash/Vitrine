@@ -2164,12 +2164,13 @@ window.addToCart = async (p, q, v) => {
     const naSacola = cart.find(x => x.uid === uid);
     const totalDesejado = (naSacola ? naSacola.q : 0) + q;
 
-// --- 5. TRAVA DE SEGURANÇA --- (ATUALIZADA)
-if (totalDesejado > stockDisponivelReal) {
-    // Se não há estoque nem para 1 unidade, ou se o que restava foi reservado
-    window.alertaEstoquePreso(pAtualizado.name);
-    return;
-}
+    // --- 5. TRAVA DE SEGURANÇA UNIFICADA ---
+    if (totalDesejado > stockDisponivelReal) {
+        // Se o que o cliente quer é MAIOR do que o que tem de verdade, SweetAlert neles!
+        window.alertaEstoquePreso(pAtualizado.name);
+        return;
+    }
+
 
     // --- 6. ADIÇÃO À SACOLA (Original preservada) ---
     const CART_KEY = `cart_${STORE_ID}`;
