@@ -70,5 +70,60 @@
     <g:price>89.00 BRL</g:price>
     <g:brand>Waeriff</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769693004123</g:id>
+    <g:title>Vestido Lara </g:title>
+    <g:description>Vestido Lara </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769693004123</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769693004123_main_0.jpg?alt=media&amp;token=1f1f4ecd-d5b5-4283-a65f-42d3c23ca5d8</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769693161304</g:id>
+    <g:title>Macaquinho Emilly </g:title>
+    <g:description>Macaquinho Emilly </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769693161304</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769693161304_main_0.jpg?alt=media&amp;token=3655778e-8b61-4450-94cb-2bc2b7643299</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769693302320</g:id>
+    <g:title>Vestido Maria </g:title>
+    <g:description>Vestido Maria </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769693302320</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769693302320_main_0.jpg?alt=media&amp;token=2c33353f-2879-4a6f-a0aa-73a6545ae8ba</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>95.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769694653815</g:id>
+    <g:title>Vestido Aurora </g:title>
+    <g:description>Alça regulável</g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769694653815</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769694653815_main_0.jpg?alt=media&amp;token=60f2900a-0722-48eb-9165-0bcbd0161d9d</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>115.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769694742038</g:id>
+    <g:title>Vestido Mel </g:title>
+    <g:description>Vestido Mel </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769694742038</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769694742038_main_0.jpg?alt=media&amp;token=65dc2828-c577-4924-bcc1-49979124acb2</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>79.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
 </channel>
 </rss>
