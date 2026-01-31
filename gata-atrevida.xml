@@ -1701,5 +1701,62 @@ Acompanha cinto</g:description>
     <g:price>65.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769866002199</g:id>
+    <g:title>Short Ivone</g:title>
+    <g:description>Tecido alfaiataria </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769866002199</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769866002199_main_0.jpg?alt=media&amp;token=93bc1caf-8aa9-4f5a-a597-9cc4992cef8b</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769866723922</g:id>
+    <g:title>Short saia Ingrid</g:title>
+    <g:description>Short saia frente e Costa,com zíper
+</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769866723922</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769866723922_main_0.jpg?alt=media&amp;token=e75813be-a056-4696-b012-24274fc21081</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769866914441</g:id>
+    <g:title>Short saia Lane</g:title>
+    <g:description>Short saia frente e Costa
+Com ziper</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769866914441</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769866914441_main_0.jpg?alt=media&amp;token=954235d1-d147-438c-9f55-c6464bf05b54</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769867039010</g:id>
+    <g:title>Short Grasy</g:title>
+    <g:description>Com ziper</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769867039010</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769867039010_main_0.jpg?alt=media&amp;token=6ad0ef9e-fa5a-45c3-84ad-6263fd15c1fe</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769867155107</g:id>
+    <g:title>Short karine</g:title>
+    <g:description>Com ziper</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769867155107</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769867155107_main_0.jpg?alt=media&amp;token=097b48b4-971e-4dae-93c7-8a27d9850b9f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
