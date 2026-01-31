@@ -1632,5 +1632,74 @@ Tamanho Gg veste 7/8 anos</g:description>
     <g:price>50.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769863532819</g:id>
+    <g:title>Short Bianca </g:title>
+    <g:description>Tecido alfaiataria </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769863532819</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769863532819_main_0.jpg?alt=media&amp;token=fa2c9799-df9d-49ae-a146-e0ca08dfd462</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769864522279</g:id>
+    <g:title>Short carol</g:title>
+    <g:description>Tecido alfaiataria </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769864522279</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769864522279_main_0.jpg?alt=media&amp;token=1bb419ea-9454-4397-8279-b22a80d71ceb</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769864731107</g:id>
+    <g:title>Short Joice</g:title>
+    <g:description>Tecido alfaiataria 
+Veste 44/46</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769864731107</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769864731107_main_0.jpg?alt=media&amp;token=4f99388a-c2e3-444d-a6b5-b81b212673aa</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769864974380</g:id>
+    <g:title>Short valentina</g:title>
+    <g:description>Tecido alfaiataria 
+Acompanha o cinto </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769864974380</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769864974380_main_0.jpg?alt=media&amp;token=f07b3964-cf6a-4794-b758-3cb47d29877e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769865223978</g:id>
+    <g:title>Short samana</g:title>
+    <g:description>Tecido alfaiataria 
+Acompanha cinto</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769865223978</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769865223978_main_0.jpg?alt=media&amp;token=d92b1b17-9cc3-4e03-b070-cb0d3d98d787</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769865620998</g:id>
+    <g:title>Short Camila</g:title>
+    <g:description>Tecido alfaiataria </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769865620998</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769865620998_main_0.jpg?alt=media&amp;token=c9b479b6-d952-4a8c-9edd-dd6dbe885856</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
