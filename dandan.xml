@@ -5,6 +5,17 @@
   <link>https://loja.vitrineonline.app.br/dandan</link>
   <description>Feed de Produtos - Dandan</description>
   <item>
+    <g:id>prod_1767777080583</g:id>
+    <g:title>Kit banquetas </g:title>
+    <g:description>Kit banquetas </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767777080583</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767777080583_0.jpg?alt=media&amp;token=d12adc39-cb2f-4ccd-90a3-04cb16ead9ae</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>350.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
+  <item>
     <g:id>prod_1767914877425</g:id>
     <g:title>Kit mochila Dino</g:title>
     <g:description>Kit mochila Dino</g:description>
@@ -46,6 +57,17 @@
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>58.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769952983772</g:id>
+    <g:title>Placa rústica </g:title>
+    <g:description>Placa rústica </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769952983772</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769952983772_main_0.jpg?alt=media&amp;token=0b0aa91b-6bf5-4d5d-8f76-cc069edab31f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>200.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
 </channel>

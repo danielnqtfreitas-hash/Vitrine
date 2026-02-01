@@ -1884,5 +1884,60 @@ G veste 5/6 anos</g:description>
     <g:price>50.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769953696535</g:id>
+    <g:title>Conjunto Boss</g:title>
+    <g:description>Veste 2 anos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769953696535</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769953696535_main_0.jpg?alt=media&amp;token=4d637d54-cf90-458a-ad53-a6c7fd9bc80f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769953772408</g:id>
+    <g:title>Conjunto Lacoste </g:title>
+    <g:description>Veste 2 anos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769953772408</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769953772408_main_0.jpg?alt=media&amp;token=a85a0c8d-bb00-4ddc-bffa-5731c4cb657c</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769953838072</g:id>
+    <g:title>Conjunto Nike</g:title>
+    <g:description>Veste 5/6 anos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769953838072</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769953838072_main_0.jpg?alt=media&amp;token=0d5d1350-081f-40f6-b507-1abc258789f5</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769953923450</g:id>
+    <g:title>Conjunto Nike</g:title>
+    <g:description>Conjunto Nike</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769953923450</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769953923450_main_0.jpg?alt=media&amp;token=38766312-7abe-45e1-aaf6-0031e04c289e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769953970277</g:id>
+    <g:title>Conjunto boss</g:title>
+    <g:description>Conjunto boss</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769953970277</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769953970277_main_0.jpg?alt=media&amp;token=a52e5ec5-0be1-41dc-8668-0a8178f04df7</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
