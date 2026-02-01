@@ -147,5 +147,16 @@
     <g:price>65.00 BRL</g:price>
     <g:brand>Waeriff</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769980935917</g:id>
+    <g:title>Vestido Mari </g:title>
+    <g:description>Preto,marrom, rosa </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769980935917</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769980935917_main_0.jpg?alt=media&amp;token=e44b37e9-6066-4889-ae51-79eaa4d9ff40</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>88.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
 </channel>
 </rss>
