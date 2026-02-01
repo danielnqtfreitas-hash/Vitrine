@@ -224,5 +224,16 @@
     <g:price>95.00 BRL</g:price>
     <g:brand>Waeriff</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769984334173</g:id>
+    <g:title>Short Keyla </g:title>
+    <g:description>Short Keyla </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769984334173</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769984334173_main_0.jpg?alt=media&amp;token=a082faf3-be3f-472c-b1f4-de3dbf16cf34</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>95.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
 </channel>
 </rss>

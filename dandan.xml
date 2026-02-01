@@ -59,5 +59,27 @@
     <g:price>58.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769984291395</g:id>
+    <g:title>Tuctuc</g:title>
+    <g:description>Tuctuc</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769984291395</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769985601585</g:id>
+    <g:title>Camisa</g:title>
+    <g:description>Tuctuc</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769985601585</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
