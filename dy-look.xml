@@ -15,5 +15,16 @@
     <g:price>1.00 BRL</g:price>
     <g:brand>Dy Look</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769968414632</g:id>
+    <g:title>Vestido Floral</g:title>
+    <g:description>Veste 38 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dy-look?id=prod_1769968414632</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdy-look%2Fproducts%2Fprod_1769968414632_main_0.jpg?alt=media&amp;token=a164d56c-0799-4593-b14e-a69cb855b892</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Dy Look</g:brand>
+  </item>
 </channel>
 </rss>
