@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
 <channel>
-  <title>Dy Look</title>
+  <title>Dy Look Moda Praia </title>
   <link>https://loja.vitrineonline.app.br/dy-look</link>
-  <description>Feed de Produtos - Dy Look</description>
+  <description>Feed de Produtos - Dy Look Moda Praia </description>
   <item>
     <g:id>prod_1769275296645</g:id>
     <g:title>Teste</g:title>
@@ -13,7 +13,18 @@
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>1.00 BRL</g:price>
-    <g:brand>Dy Look</g:brand>
+    <g:brand>Dy Look Moda Praia </g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769968242304</g:id>
+    <g:title>Vestido Floral </g:title>
+    <g:description>Veste 38 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dy-look?id=prod_1769968242304</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdy-look%2Fproducts%2Fprod_1769968242304_main_0.jpg?alt=media&amp;token=c71a57e2-9c83-45c9-b596-7bead322309f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Dy Look Moda Praia </g:brand>
   </item>
   <item>
     <g:id>prod_1769968414632</g:id>
@@ -24,7 +35,29 @@
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>80.00 BRL</g:price>
-    <g:brand>Dy Look</g:brand>
+    <g:brand>Dy Look Moda Praia </g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769969491984</g:id>
+    <g:title>Macaquinho Floral</g:title>
+    <g:description>Veste 38 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dy-look?id=prod_1769969491984</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdy-look%2Fproducts%2Fprod_1769969491984_main_0.jpg?alt=media&amp;token=6f664070-ed8d-4e30-90a0-65ac8d88f9ca</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Dy Look Moda Praia </g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769969931095</g:id>
+    <g:title>Macaquinho Floral </g:title>
+    <g:description>Macaquinho Floral </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dy-look?id=prod_1769969931095</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdy-look%2Fproducts%2Fprod_1769969931095_main_0.jpg?alt=media&amp;token=0fddbf34-4dcb-4863-9346-c0fb11bdae53</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Dy Look Moda Praia </g:brand>
   </item>
 </channel>
 </rss>
