@@ -1939,5 +1939,60 @@ G veste 5/6 anos</g:description>
     <g:price>60.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769956491197</g:id>
+    <g:title>Vestido unicornio</g:title>
+    <g:description>Tamanho 2 anos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769956491197</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769956491197_main_0.jpg?alt=media&amp;token=a9708599-b0f5-4b8d-aa24-df3e8e6d0eaa</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>45.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769956652356</g:id>
+    <g:title>Vestido Raposa</g:title>
+    <g:description>Veste 4/5 anos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769956652356</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769956652356_main_0.jpg?alt=media&amp;token=6af0edc3-68b0-4baf-90cc-12d9194f8325</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>45.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769956811611</g:id>
+    <g:title>Vestido Castelo</g:title>
+    <g:description>Veste 3/4 anos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769956811611</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769956811611_main_0.jpg?alt=media&amp;token=7dbe5e7f-dc97-4676-809f-e7e5c55420b9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>45.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769956922517</g:id>
+    <g:title>Vestido Urso </g:title>
+    <g:description>Veste 4/5</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769956922517</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769956922517_main_0.jpg?alt=media&amp;token=0c429542-11f9-461b-83ca-73eaa3e996dc</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>45.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769957033084</g:id>
+    <g:title>Vestido Ovelha</g:title>
+    <g:description>Veste 3/4 anos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769957033084</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769957033084_main_0.jpg?alt=media&amp;token=79c4c888-645f-487d-b965-ef5c4548a1ce</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>45.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
