@@ -125,5 +125,27 @@
     <g:price>79.00 BRL</g:price>
     <g:brand>Waeriff</g:brand>
   </item>
+  <item>
+    <g:id>prod_1769980386879</g:id>
+    <g:title>Conjunto Pri </g:title>
+    <g:description>Preto e rosa disponível </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769980386879</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769980386879_main_0.jpg?alt=media&amp;token=5f8f8570-1c53-43b8-88ba-4026c2b2082b</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769980503009</g:id>
+    <g:title>Body Vera 2 peças </g:title>
+    <g:description>Rosa e azul disponíveis </g:description>
+    <g:link>https://loja.vitrineonline.app.br/waeriff?id=prod_1769980503009</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fwaeriff%2Fproducts%2Fprod_1769980503009_main_0.jpg?alt=media&amp;token=7b50704f-f672-4ac2-a05c-893f23076892</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Waeriff</g:brand>
+  </item>
 </channel>
 </rss>
