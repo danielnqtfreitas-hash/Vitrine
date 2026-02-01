@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+  <title>Moda Íntima </title>
+  <link>https://loja.vitrineonline.app.br/moda-intima</link>
+  <description>Feed de Produtos - Moda Íntima </description>
+  <item>
+    <g:id>prod_1769958087197</g:id>
+    <g:title>Placa rústica </g:title>
+    <g:description>Placa rústica </g:description>
+    <g:link>https://loja.vitrineonline.app.br/moda-intima?id=prod_1769958087197</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fmoda-intima%2Fproducts%2Fprod_1769958087197_main_0.jpg?alt=media&amp;token=4e4f1b96-e6f1-48c7-a33b-83591a4d7f8c</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>180.00 BRL</g:price>
+    <g:brand>Moda Íntima </g:brand>
+  </item>
+</channel>
+</rss>
