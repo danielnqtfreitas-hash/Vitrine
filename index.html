@@ -1282,31 +1282,31 @@ window.addEventListener('beforeunload', () => {
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
  
         window.updateCartTotals = () => { 
-    // 1. Captura o método de pagamento atual (Pix, Cartão, Dinheiro)
-    const method = document.getElementById('checkPayment')?.value || "";
+    // 1. Captura o método selecionado (Pix, Cartão ou Dinheiro)
+    const paymentMethod = document.getElementById('checkPayment')?.value || "";
     const deliveryFee = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
     
     let subtotalCalculado = 0;
 
-    // 2. Recalcula cada item individualmente
+    // 2. Percorre os itens para atualizar o valor INDIVIDUAL de cada um na tela
     cart.forEach(item => {
         const pOriginal = allProducts.find(x => x.id === item.id);
         if (pOriginal) {
-            // Usa a lógica getActivePrice (a mesma que já funciona no WhatsApp)
-            const precoCerto = getActivePrice(pOriginal, method);
-            const valorLinha = precoCerto * item.q;
-            subtotalCalculado += valorLinha;
+            // Usa a lógica que já funciona no seu WhatsApp
+            const precoCerto = getActivePrice(pOriginal, paymentMethod);
+            const valorTotalItem = precoCerto * item.q;
+            subtotalCalculado += valorTotalItem;
 
-            // 3. ATUALIZAÇÃO VISUAL IMEDIATA
-            // Procura o preço do item na tela usando o ID que definimos na updateCartUI
+            // ATUALIZAÇÃO VISUAL INDIVIDUAL
+            // Busca o ID que criamos na updateCartUI (cart-item-price-...)
             const priceEl = document.getElementById(`cart-item-price-${item.uid}`);
             if(priceEl) {
-                priceEl.textContent = `R$ ${valorLinha.toFixed(2).replace('.', ',')}`;
+                priceEl.textContent = `R$ ${valorTotalItem.toFixed(2).replace('.', ',')}`;
             }
         }
     });
 
-    // 4. Atualiza os totais globais na tela
+    // 3. Atualiza os TOTAIS GLOBAIS (Subtotal e Total Final)
     document.querySelectorAll('.subtotal-display').forEach(d => {
         d.textContent = `R$ ${subtotalCalculado.toFixed(2).replace('.', ',')}`;
     });
@@ -1316,6 +1316,7 @@ window.addEventListener('beforeunload', () => {
         totalDisplay.textContent = `R$ ${(subtotalCalculado + deliveryFee).toFixed(2).replace('.', ',')}`; 
     }
 };
+
 
         // FUNÇÃO PARA BLOQUEIO DE ESTOQUE ESGOTADO
 window.alertaEstoquePreso = (nomeItem) => {
@@ -2581,7 +2582,7 @@ document.addEventListener('change', (e) => {
         const method = e.target.value;
         const changeField = document.getElementById('changeField');
         
-        // 1. Controle do campo de troco
+        // Mostra/Esconde campo de troco
         if(method === 'Dinheiro') {
             changeField.classList.remove('hidden');
         } else {
@@ -2590,20 +2591,18 @@ document.addEventListener('change', (e) => {
             if(inputChange) inputChange.value = ''; 
         }
 
-        // 2. RECÁLCULO IMEDIATO DA VITRINE E TOTAIS
-        if (typeof window.updateCartTotals === 'function') {
-            window.updateCartTotals();
-            
-            // Sugestão: Feedback visual rápido para o usuário notar a mudança
-            const totalEl = document.getElementById('cartFinalTotal');
-            if(totalEl) {
-                totalEl.classList.add('animate-bounce-short', 'text-green-600');
-                setTimeout(() => totalEl.classList.remove('animate-bounce-short', 'text-green-600'), 500);
-            }
+        // --- A MÁGICA ACONTECE AQUI ---
+        // Força o recálculo visual de toda a sacola
+        window.updateCartTotals();
+
+        // Feedback visual (A piscada que você gostou)
+        const totalEl = document.getElementById('cartFinalTotal');
+        if(totalEl) {
+            totalEl.classList.add('animate-bounce-short', 'text-green-600');
+            setTimeout(() => totalEl.classList.remove('animate-bounce-short', 'text-green-600'), 500);
         }
     }
 });
-
 
         function renderThumbnails() {
     const thumbContainer = document.getElementById('detailThumbnails');
