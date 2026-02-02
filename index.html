@@ -1282,31 +1282,28 @@ window.addEventListener('beforeunload', () => {
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
  
         window.updateCartTotals = () => { 
-    // 1. Captura o método selecionado (Pix, Cartão ou Dinheiro)
-    const paymentMethod = document.getElementById('checkPayment')?.value || "";
+    const method = document.getElementById('checkPayment')?.value || "";
     const deliveryFee = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
     
     let subtotalCalculado = 0;
 
-    // 2. Percorre os itens para atualizar o valor INDIVIDUAL de cada um na tela
     cart.forEach(item => {
         const pOriginal = allProducts.find(x => x.id === item.id);
         if (pOriginal) {
-            // Usa a lógica que já funciona no seu WhatsApp
-            const precoCerto = getActivePrice(pOriginal, paymentMethod);
-            const valorTotalItem = precoCerto * item.q;
-            subtotalCalculado += valorTotalItem;
+            // FORÇA O RECÁLCULO COM O MÉTODO ATUAL
+            const precoCerto = getActivePrice(pOriginal, method);
+            const valorLinha = precoCerto * item.q;
+            subtotalCalculado += valorLinha;
 
-            // ATUALIZAÇÃO VISUAL INDIVIDUAL
-            // Busca o ID que criamos na updateCartUI (cart-item-price-...)
+            // ATUALIZA O VALOR DE CADA ITEM NA TELA
             const priceEl = document.getElementById(`cart-item-price-${item.uid}`);
             if(priceEl) {
-                priceEl.textContent = `R$ ${valorTotalItem.toFixed(2).replace('.', ',')}`;
+                priceEl.textContent = `R$ ${valorLinha.toFixed(2).replace('.', ',')}`;
             }
         }
     });
 
-    // 3. Atualiza os TOTAIS GLOBAIS (Subtotal e Total Final)
+    // ATUALIZA OS TOTAIS GLOBAIS
     document.querySelectorAll('.subtotal-display').forEach(d => {
         d.textContent = `R$ ${subtotalCalculado.toFixed(2).replace('.', ',')}`;
     });
@@ -1316,7 +1313,6 @@ window.addEventListener('beforeunload', () => {
         totalDisplay.textContent = `R$ ${(subtotalCalculado + deliveryFee).toFixed(2).replace('.', ',')}`; 
     }
 };
-
 
         // FUNÇÃO PARA BLOQUEIO DE ESTOQUE ESGOTADO
 window.alertaEstoquePreso = (nomeItem) => {
@@ -2338,6 +2334,9 @@ window.updateCartUI = () => {
     const l = document.getElementById('cartList');
     const empty = document.getElementById('cartEmptyMsg');
     const step1Footer = document.getElementById('footerStep1');
+    
+    // CAPTURA O MÉTODO ATUAL PARA RENDERIZAR O PREÇO CORRETO
+    const currentMethod = document.getElementById('checkPayment')?.value || "";
 
     if(!cart.length) { 
         l.innerHTML = ''; 
@@ -2347,7 +2346,12 @@ window.updateCartUI = () => {
         if(empty) empty.classList.add('hidden'); 
         if(step1Footer) step1Footer.classList.remove('hidden');
 
-        l.innerHTML = cart.map(i => `
+        l.innerHTML = cart.map(i => {
+            // BUSCA O PRODUTO ORIGINAL PARA RECALCULAR O PREÇO NA HORA DA RENDERIZAÇÃO
+            const pOriginal = allProducts.find(x => x.id === i.id);
+            const precoDinamico = getActivePrice(pOriginal, currentMethod);
+            
+            return `
             <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
                 <img src="${i.variationDetails?.image || i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
                 
@@ -2355,7 +2359,7 @@ window.updateCartUI = () => {
                     <div class="flex justify-between font-bold text-xs text-slate-800">
                         <span class="truncate pr-2">${i.name}</span>
                         <span class="shrink-0" id="cart-item-price-${i.uid}">
-                            R$ ${(i.price * i.q).toFixed(2).replace('.', ',')}
+                            R$ ${(precoDinamico * i.q).toFixed(2).replace('.', ',')}
                         </span>
                     </div>
                     <div class="text-[10px] text-slate-400 mt-1 uppercase italic">
@@ -2370,14 +2374,13 @@ window.updateCartUI = () => {
                         <button onclick="modQty('${i.uid}', -${i.q})" class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Remover</button>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            </div>`;
+        }).join('');
     }
-    
-    // Dispara o cálculo inicial
     updateCartTotals();
-    if (typeof window.toggleAddressFields === 'function') window.toggleAddressFields();
+    if(window.toggleAddressFields) window.toggleAddressFields();
 };
+
 
 window.modQty = (u, d) => {
     const item = cart.find(x => x.uid === u);
