@@ -60,22 +60,11 @@
     <g:brand>Dandan</g:brand>
   </item>
   <item>
-    <g:id>prod_1769984291395</g:id>
-    <g:title>Tuctuc</g:title>
-    <g:description>Tuctuc</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769984291395</g:link>
-    <g:image_link></g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>85.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769985601585</g:id>
-    <g:title>Camisa</g:title>
-    <g:description>Tuctuc</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769985601585</g:link>
-    <g:image_link></g:image_link>
+    <g:id>prod_1769994161256</g:id>
+    <g:title>Campeões</g:title>
+    <g:description>Campeões</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769994161256</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769994161256_main_0.jpg?alt=media&amp;token=91ebc123-10c5-430d-b10f-11d9f3f360e2</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>85.00 BRL</g:price>
