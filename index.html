@@ -2578,20 +2578,28 @@ if (config.magicCategories?.showNew) {
 // Monitora a seleção de pagamento para mostrar o campo de troco
 document.addEventListener('change', (e) => {
     if(e.target.id === 'checkPayment') {
+        const method = e.target.value;
         const changeField = document.getElementById('changeField');
         
-        // Lógica de Troco (Já existente)
-        if(e.target.value === 'Dinheiro') {
+        // 1. Controle do campo de troco
+        if(method === 'Dinheiro') {
             changeField.classList.remove('hidden');
         } else {
             changeField.classList.add('hidden');
-            document.getElementById('checkChange').value = ''; 
+            const inputChange = document.getElementById('checkChange');
+            if(inputChange) inputChange.value = ''; 
         }
 
-        // --- ADIÇÃO CIRÚRGICA ---
-        // Aciona o recálculo de toda a sacola baseado no novo método selecionado
+        // 2. RECÁLCULO IMEDIATO DA VITRINE E TOTAIS
         if (typeof window.updateCartTotals === 'function') {
             window.updateCartTotals();
+            
+            // Sugestão: Feedback visual rápido para o usuário notar a mudança
+            const totalEl = document.getElementById('cartFinalTotal');
+            if(totalEl) {
+                totalEl.classList.add('animate-bounce-short', 'text-green-600');
+                setTimeout(() => totalEl.classList.remove('animate-bounce-short', 'text-green-600'), 500);
+            }
         }
     }
 });
