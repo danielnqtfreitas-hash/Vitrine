@@ -2424,19 +2424,6 @@ window.modQty = (u, d) => {
     updateCartUI();
 };
 
-window.updateCartTotals = () => { 
-    const sub = cart.reduce((a, b) => a + (b.price * b.q), 0);
-    const df = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
-    
-    // Atualiza o subtotal da etapa 1
-    const subDisplays = document.querySelectorAll('.subtotal-display');
-    subDisplays.forEach(d => d.textContent = `R$ ${sub.toFixed(2).replace('.', ',')}`);
-    
-    // Atualiza o total final da etapa 2
-    const totalDisplay = document.getElementById('cartFinalTotal');
-    if(totalDisplay) totalDisplay.textContent = `R$ ${(sub + df).toFixed(2).replace('.', ',')}`; 
-};
-
    window.toggleAddressFields = () => {
     const deliverySelect = document.getElementById('cartDeliverySelect');
     const addressFields = document.getElementById('addressFields');
