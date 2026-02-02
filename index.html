@@ -1280,39 +1280,6 @@ window.addEventListener('beforeunload', () => {
         
 
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
- 
-        window.updateCartTotals = () => { 
-    const method = document.getElementById('checkPayment')?.value || "";
-    const deliveryFee = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
-    
-    let subtotalCalculado = 0;
-
-    cart.forEach(item => {
-        const pOriginal = allProducts.find(x => x.id === item.id);
-        if (pOriginal) {
-            // FORÇA O RECÁLCULO COM O MÉTODO ATUAL
-            const precoCerto = getActivePrice(pOriginal, method);
-            const valorLinha = precoCerto * item.q;
-            subtotalCalculado += valorLinha;
-
-            // ATUALIZA O VALOR DE CADA ITEM NA TELA
-            const priceEl = document.getElementById(`cart-item-price-${item.uid}`);
-            if(priceEl) {
-                priceEl.textContent = `R$ ${valorLinha.toFixed(2).replace('.', ',')}`;
-            }
-        }
-    });
-
-    // ATUALIZA OS TOTAIS GLOBAIS
-    document.querySelectorAll('.subtotal-display').forEach(d => {
-        d.textContent = `R$ ${subtotalCalculado.toFixed(2).replace('.', ',')}`;
-    });
-    
-    const totalDisplay = document.getElementById('cartFinalTotal');
-    if(totalDisplay) {
-        totalDisplay.textContent = `R$ ${(subtotalCalculado + deliveryFee).toFixed(2).replace('.', ',')}`; 
-    }
-};
 
         // FUNÇÃO PARA BLOQUEIO DE ESTOQUE ESGOTADO
 window.alertaEstoquePreso = (nomeItem) => {
@@ -2323,6 +2290,42 @@ window.addToCart = async (p, q, v) => {
     if(window.closeModalDetails) window.closeModalDetails(); 
 };
 
+// 1. FUNÇÃO DE CÁLCULO UNIFICADA
+window.updateCartTotals = () => { 
+    const method = document.getElementById('checkPayment')?.value || "";
+    const deliveryFee = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
+    
+    let subtotalCalculado = 0;
+
+    cart.forEach(item => {
+        const pOriginal = allProducts.find(x => x.id === item.id);
+        if (pOriginal) {
+            // Recalcula o preço em tempo real com base no pagamento
+            const precoCerto = getActivePrice(pOriginal, method);
+            const valorLinha = precoCerto * item.q;
+            subtotalCalculado += valorLinha;
+
+            // Atualiza o preço individual na linha do carrinho
+            const priceEl = document.getElementById(`cart-item-price-${item.uid}`);
+            if(priceEl) {
+                priceEl.textContent = `R$ ${valorLinha.toFixed(2).replace('.', ',')}`;
+            }
+        }
+    });
+
+    // Atualiza os displays de Subtotal (aqueles que têm a classe .subtotal-display)
+    document.querySelectorAll('.subtotal-display').forEach(d => {
+        d.textContent = `R$ ${subtotalCalculado.toFixed(2).replace('.', ',')}`;
+    });
+    
+    // Atualiza o Total Final (Subtotal + Entrega)
+    const totalDisplay = document.getElementById('cartFinalTotal');
+    if(totalDisplay) {
+        totalDisplay.textContent = `R$ ${(subtotalCalculado + deliveryFee).toFixed(2).replace('.', ',')}`; 
+    }
+};
+
+// 2. FUNÇÃO DE RENDERIZAÇÃO DA SACOLA
 window.updateCartUI = () => {
     const cnt = cart.reduce((a, b) => a + b.q, 0); 
     const b = document.getElementById('cartBadge'); 
@@ -2334,12 +2337,10 @@ window.updateCartUI = () => {
     const l = document.getElementById('cartList');
     const empty = document.getElementById('cartEmptyMsg');
     const step1Footer = document.getElementById('footerStep1');
-    
-    // CAPTURA O MÉTODO ATUAL PARA RENDERIZAR O PREÇO CORRETO
     const currentMethod = document.getElementById('checkPayment')?.value || "";
 
     if(!cart.length) { 
-        l.innerHTML = ''; 
+        if(l) l.innerHTML = ''; 
         if(empty) empty.classList.remove('hidden'); 
         if(step1Footer) step1Footer.classList.add('hidden');
     } else {
@@ -2347,14 +2348,12 @@ window.updateCartUI = () => {
         if(step1Footer) step1Footer.classList.remove('hidden');
 
         l.innerHTML = cart.map(i => {
-            // BUSCA O PRODUTO ORIGINAL PARA RECALCULAR O PREÇO NA HORA DA RENDERIZAÇÃO
             const pOriginal = allProducts.find(x => x.id === i.id);
             const precoDinamico = getActivePrice(pOriginal, currentMethod);
             
             return `
             <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
-                <img src="${i.variationDetails?.image || i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
-                
+                <img src="${i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
                 <div class="flex-1">
                     <div class="flex justify-between font-bold text-xs text-slate-800">
                         <span class="truncate pr-2">${i.name}</span>
@@ -2367,18 +2366,16 @@ window.updateCartUI = () => {
                     </div>
                     <div class="flex items-center gap-4 mt-2">
                         <div class="flex items-center bg-slate-100 rounded h-7 border border-slate-200">
-                            <button onclick="modQty('${i.uid}', -1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">-</button>
+                            <button onclick="modQty('${i.uid}', -1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold">-</button>
                             <span class="w-8 text-center text-xs font-black text-slate-700">${i.q}</span>
-                            <button onclick="modQty('${i.uid}', 1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">+</button>
+                            <button onclick="modQty('${i.uid}', 1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold">+</button>
                         </div>
-                        <button onclick="modQty('${i.uid}', -${i.q})" class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Remover</button>
                     </div>
                 </div>
             </div>`;
         }).join('');
     }
-    updateCartTotals();
-    if(window.toggleAddressFields) window.toggleAddressFields();
+    window.updateCartTotals(); // Chama o cálculo logo após desenhar a tela
 };
 
 
