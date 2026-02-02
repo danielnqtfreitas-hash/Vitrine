@@ -844,22 +844,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Função cirúrgica para determinar o preço atual baseado no método de pagamento
 function getActivePrice(p, method) {
     if (!p) return 0;
+    // Se for Cartão, usa o preço de cartão ou o valor principal como fallback
+    if (method === 'Cartão') return p.priceCard || p.value;
+
     const agora = Date.now();
     const isPromoValid = p.promoValue && p.promoValue < p.value && (p.promoUntil ? p.promoUntil > agora : true);
     
-    // CALCULA O VALOR ABATIDO (Diferença em Reais)
-    // Se o preço é 100 e a promo é 50, o abatimento é 50.
-    const valorAbatido = isPromoValid ? (p.value - p.promoValue) : 0;
-
-    if (method === 'Cartão') {
-        const precoCardOriginal = p.priceCard || p.value;
-        // Aplica o abatimento no valor de cartão, mas garante que não fique negativo
-        return Math.max(0, precoCardOriginal - valorAbatido);
-    }
-
-    // Para Pix/Dinheiro
-    const precoPixOriginal = p.priceCash || p.value;
-    return Math.max(0, precoPixOriginal - valorAbatido);
+    // Se tiver promoção ativa, ela é a prioridade para PIX/Dinheiro
+    if (isPromoValid) return p.promoValue; 
+    // Senão, usa o preço de PIX específico ou o valor principal
+    return p.priceCash || p.value;         
 }
 
         function mkProductCard(p) {
@@ -1005,16 +999,14 @@ Object.keys(metaUpdates).forEach(prop => {
      const updatePrices = () => {
     const agora = Date.now();
     const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
+    const fatorDesconto = isPromoAtiva ? (p.promoValue / p.value) : 1;
     
-    // 1. CALCULA O VALOR ABATIDO
-    const valorAbatido = isPromoAtiva ? (p.value - p.promoValue) : 0;
-    
-    let basePrice = p.value; 
+    let basePrice = p.value; // Preço base (Cartão) vindo do produto principal
     let skuDinamico = p.sku || 'N/A'; 
     let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
     let outOfStockVariation = false;
 
-    // Busca valor da variação (Ex: se a variação custa 120 e o Pix base era 100)
+    // 1. Lógica de Variação (Tamanho/Cor)
     if(isComplete && matrix.length) {
         const comb = matrix.find(v => 
             (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
@@ -1023,27 +1015,30 @@ Object.keys(metaUpdates).forEach(prop => {
 
         if(comb && comb.active) { 
             const vStock = parseInt(comb.stock) || 0;
-            if(vStock <= 0) { outOfStockVariation = true; isComplete = false; }
-            basePrice = comb.price; // Ex: 120
+            if(vStock <= 0) {
+                outOfStockVariation = true;
+                isComplete = false; 
+            }
+            basePrice = comb.price; // Preço base vindo da variação
             skuDinamico = comb.sku || skuDinamico;
+            currentDetailSelection.image = comb.image || p.images[0]; 
+
             if (comb.image) {
                 const imgIdx = currentDetailImages.indexOf(comb.image);
                 if (imgIdx !== -1) setDetailImage(imgIdx);
             }
-        } else if(hasS || hasC) { isComplete = false; }
+        } else if(hasS || hasC) {
+            isComplete = false;
+        }
     }
 
-    // 2. APLICAÇÃO DO DESCONTO ABATIDO
-    // finalPricePix: Valor da variação (120) - abatimento (50) = 70
-    const finalPricePix = Math.max(0, basePrice - valorAbatido);
-    
-    // finalPriceCard: Valor do cartão (110) - abatimento (50) = 60
-    const precoCardBase = p.priceCard || p.value;
-    const finalPriceCard = Math.max(0, precoCardBase - valorAbatido);
-    
+    // 2. Cálculo da Hierarquia de Preços (PIX vs Cartão)
+    // Se tiver promo, ela vale para ambos. Se não, busca os campos específicos.
+    const finalPricePix = isPromoAtiva ? (basePrice * fatorDesconto) : (p.priceCash || basePrice);
+    const finalPriceCard = isPromoAtiva ? (basePrice * fatorDesconto) : (p.priceCard || basePrice);
     const oldP = isPromoAtiva ? basePrice : null;
 
-    // 3. ATUALIZAÇÃO VISUAL
+    // 3. Atualização Visual do Preço no Modal
     const priceDisplay = document.getElementById('detailPrice');
     priceDisplay.innerHTML = `
         <div class="flex flex-col gap-0">
@@ -1051,25 +1046,31 @@ Object.keys(metaUpdates).forEach(prop => {
                 ${isPromoAtiva ? 'Oferta Especial' : 'À vista no Pix'}
             </span>
             <span class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight">
-                R$ ${finalPricePix.toFixed(2).replace('.', settings.decimalSeparator || ',')}
+                R$ ${finalPricePix.toFixed(2).replace('.',',')}
             </span>
             ${(finalPriceCard > finalPricePix) ? 
-                `<span class="text-[10px] font-bold text-blue-600">Ou R$ ${finalPriceCard.toFixed(2).replace('.', settings.decimalSeparator || ',')} no cartão</span>` : ''}
+                `<span class="text-[10px] font-bold text-blue-600">Ou R$ ${finalPriceCard.toFixed(2).replace('.',',')} no cartão</span>` : ''}
         </div>
     `;
 
-    document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',settings.decimalSeparator || ',')}` : '';
+    // 4. Atualiza SKU e Preço Antigo
+    document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
     document.getElementById('detailSku').textContent = skuDinamico; 
     
+    // 5. Controle do Botão de Adicionar
     const btnAdd = document.getElementById('detailAddBtn');
     if (outOfStockVariation) {
-        btnAdd.textContent = "Esgotado"; btnAdd.disabled = true;
-        btnAdd.className = "bg-slate-400 text-white font-bold px-4 md:px-8 h-12 rounded-xl opacity-50 cursor-not-allowed text-sm";
+        btnAdd.textContent = "Esgotado";
+        btnAdd.disabled = true;
+        btnAdd.className = "bg-slate-400 text-white font-bold px-4 md:px-8 h-12 rounded-xl opacity-50 cursor-not-allowed text-sm md:text-base";
     } else {
-        btnAdd.textContent = "Adicionar"; btnAdd.disabled = !isComplete;
-        btnAdd.className = `bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-8 h-12 rounded-xl active-scale shadow-lg text-sm ${!isComplete ? 'opacity-40' : ''}`;
+        btnAdd.textContent = "Adicionar";
+        btnAdd.disabled = !isComplete;
+        // Aplica opacidade apenas se a seleção estiver incompleta
+        btnAdd.className = `bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-8 h-12 rounded-xl active-scale shadow-lg transition-all text-sm md:text-base ${!isComplete ? 'opacity-40' : ''}`;
     }
     
+    // 6. Salva o estado atual para o carrinho
     p.currentFinalPrice = finalPricePix; 
     p.currentSKU = skuDinamico; 
 };
