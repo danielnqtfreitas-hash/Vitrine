@@ -5,14 +5,14 @@
   <link>https://loja.vitrineonline.app.br/dandan</link>
   <description>Feed de Produtos - Dandan</description>
   <item>
-    <g:id>prod_1769999114582</g:id>
-    <g:title>Pia mármore </g:title>
-    <g:description>Pia mármore </g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769999114582</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769999114582_main_0.jpg?alt=media&amp;token=db11f783-2fdc-4957-bd68-3ea78824019b</g:image_link>
+    <g:id>prod_1770046995636</g:id>
+    <g:title>Cantinho do café </g:title>
+    <g:description>Cantinho do café </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1770046995636</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1770046995636_main_0.jpg?alt=media&amp;token=03e2bb07-ef82-4a69-bd55-ab3989b5a022</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
-    <g:price>500.00 BRL</g:price>
+    <g:price>250.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
 </channel>
