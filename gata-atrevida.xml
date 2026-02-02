@@ -2044,5 +2044,16 @@ g veste 4/5 anos</g:description>
     <g:price>45.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1770039090765</g:id>
+    <g:title>Short jeans Ingrid</g:title>
+    <g:description>Short jeans Ingrid</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1770039090765</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1770039090765_main_0.jpg?alt=media&amp;token=37b22111-f2be-4d8b-967f-1d5b6497ec63</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
