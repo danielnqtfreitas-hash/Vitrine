@@ -844,20 +844,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Função cirúrgica para determinar o preço atual baseado no método de pagamento
 function getActivePrice(p, method) {
     if (!p) return 0;
-    const agora = Date.now();
-    const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
     
-    // 1. Prioridade Máxima: Promoção (Independente do método)
-    if (isPromoAtiva) return p.promoValue;
-    
-    // 2. Prioridade 2: Desconto Pix/Dinheiro
-    if (method === 'Pix' || method === 'Dinheiro') {
-        return p.priceCash || p.value;
+    // 1. Se o cliente selecionou Cartão, retorna o preço cheio (value) sem choro
+    if (method === 'Cartão') {
+        return p.value;
     }
+
+    // 2. Se for Pix ou Dinheiro, aí sim buscamos o desconto (Promo ou Preço Pix)
+    const agora = Date.now();
+    const isPromoValid = p.promoValue && p.promoValue < p.value && (p.promoUntil ? p.promoUntil > agora : true);
     
-    // 3. Padrão: Valor de Cartão (value)
-    return p.value;
+    if (isPromoValid) return p.promoValue; // Promoção ganha do Pix comum
+    return p.priceCash || p.value;         // Se não tem promo, usa o preço Pix (priceCash)
 }
+
 
         function mkProductCard(p) {
     const agora = Date.now();
@@ -1281,28 +1281,35 @@ window.addEventListener('beforeunload', () => {
 
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
         window.updateCartTotals = () => { 
-    const method = document.getElementById('checkPayment')?.value || "";
-    const df = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
+    // Pegamos o valor do seletor de pagamento
+    const paymentMethod = document.getElementById('checkPayment')?.value || "";
+    const deliveryFee = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
     
-    let subtotalDinamico = 0;
+    let subtotalCalculado = 0;
 
     cart.forEach(item => {
-        // Busca o produto original para saber os preços reais (Promo, Pix e Card)
         const pOriginal = allProducts.find(x => x.id === item.id);
-        const precoCerto = getActivePrice(pOriginal, method);
-        
-        subtotalDinamico += (precoCerto * item.q);
+        if (pOriginal) {
+            // Recalcula o preço do item baseado no método (Pix vs Cartão)
+            const precoAtual = getActivePrice(pOriginal, paymentMethod);
+            
+            subtotalCalculado += (precoAtual * item.q);
 
-        // Atualiza o preço visual de cada item na lista da sacola
-        const itemPriceEl = document.getElementById(`cart-item-price-${item.uid}`);
-        if(itemPriceEl) itemPriceEl.textContent = `R$ ${(precoCerto * item.q).toFixed(2).replace('.', ',')}`;
+            // Atualiza o preço visual do item na listinha da sacola
+            const el = document.getElementById(`cart-item-price-${item.uid}`);
+            if(el) el.textContent = `R$ ${(precoAtual * item.q).toFixed(2).replace('.', ',')}`;
+        }
     });
 
-    const subDisplays = document.querySelectorAll('.subtotal-display');
-    subDisplays.forEach(d => d.textContent = `R$ ${subtotalDinamico.toFixed(2).replace('.', ',')}`);
+    // Atualiza os campos de Subtotal e Total Final na tela
+    document.querySelectorAll('.subtotal-display').forEach(d => {
+        d.textContent = `R$ ${subtotalCalculado.toFixed(2).replace('.', ',')}`;
+    });
     
     const totalDisplay = document.getElementById('cartFinalTotal');
-    if(totalDisplay) totalDisplay.textContent = `R$ ${(subtotalDinamico + df).toFixed(2).replace('.', ',')}`; 
+    if(totalDisplay) {
+        totalDisplay.textContent = `R$ ${(subtotalCalculado + deliveryFee).toFixed(2).replace('.', ',')}`; 
+    }
 };
 
         // FUNÇÃO PARA BLOQUEIO DE ESTOQUE ESGOTADO
