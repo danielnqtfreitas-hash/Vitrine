@@ -1280,28 +1280,33 @@ window.addEventListener('beforeunload', () => {
         
 
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
+ 
         window.updateCartTotals = () => { 
-    // Pegamos o valor do seletor de pagamento
-    const paymentMethod = document.getElementById('checkPayment')?.value || "";
+    // 1. Captura o método de pagamento atual (Pix, Cartão, Dinheiro)
+    const method = document.getElementById('checkPayment')?.value || "";
     const deliveryFee = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
     
     let subtotalCalculado = 0;
 
+    // 2. Recalcula cada item individualmente
     cart.forEach(item => {
         const pOriginal = allProducts.find(x => x.id === item.id);
         if (pOriginal) {
-            // Recalcula o preço do item baseado no método (Pix vs Cartão)
-            const precoAtual = getActivePrice(pOriginal, paymentMethod);
-            
-            subtotalCalculado += (precoAtual * item.q);
+            // Usa a lógica getActivePrice (a mesma que já funciona no WhatsApp)
+            const precoCerto = getActivePrice(pOriginal, method);
+            const valorLinha = precoCerto * item.q;
+            subtotalCalculado += valorLinha;
 
-            // Atualiza o preço visual do item na listinha da sacola
-            const el = document.getElementById(`cart-item-price-${item.uid}`);
-            if(el) el.textContent = `R$ ${(precoAtual * item.q).toFixed(2).replace('.', ',')}`;
+            // 3. ATUALIZAÇÃO VISUAL IMEDIATA
+            // Procura o preço do item na tela usando o ID que definimos na updateCartUI
+            const priceEl = document.getElementById(`cart-item-price-${item.uid}`);
+            if(priceEl) {
+                priceEl.textContent = `R$ ${valorLinha.toFixed(2).replace('.', ',')}`;
+            }
         }
     });
 
-    // Atualiza os campos de Subtotal e Total Final na tela
+    // 4. Atualiza os totais globais na tela
     document.querySelectorAll('.subtotal-display').forEach(d => {
         d.textContent = `R$ ${subtotalCalculado.toFixed(2).replace('.', ',')}`;
     });
@@ -2340,33 +2345,38 @@ window.updateCartUI = () => {
     } else {
         if(empty) empty.classList.add('hidden'); 
         if(step1Footer) step1Footer.classList.remove('hidden');
-        // ... dentro da sua Window.updateCartUI ...
-l.innerHTML = cart.map(i => `
-    <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
-        <img src="${i.variationDetails?.image || i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
-        
-        <div class="flex-1">
-            <div class="flex justify-between font-bold text-xs text-slate-800">
-                <span class="truncate pr-2">${i.name}</span>
-                <span class="shrink-0" id="cart-item-price-${i.uid}">R$ ${(i.price * i.q).toFixed(2).replace('.', ',')}</span>
-            </div>
-            <div class="text-[10px] text-slate-400 mt-1 uppercase italic">${[i.v.size, i.v.color].filter(Boolean).join(' / ')}</div>
-            <div class="flex items-center gap-4 mt-2">
-                <div class="flex items-center bg-slate-100 rounded h-7 border border-slate-200">
-                    <button onclick="modQty('${i.uid}', -1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">-</button>
-                    <span class="w-8 text-center text-xs font-black text-slate-700">${i.q}</span>
-                    <button onclick="modQty('${i.uid}', 1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">+</button>
-                </div>
-                <button onclick="modQty('${i.uid}', -${i.q})" class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Remover</button>
-            </div>
-        </div>
-    </div>
-`).join('');
-    }
-    updateCartTotals();
-    window.toggleAddressFields();
-};
 
+        l.innerHTML = cart.map(i => `
+            <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
+                <img src="${i.variationDetails?.image || i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
+                
+                <div class="flex-1">
+                    <div class="flex justify-between font-bold text-xs text-slate-800">
+                        <span class="truncate pr-2">${i.name}</span>
+                        <span class="shrink-0" id="cart-item-price-${i.uid}">
+                            R$ ${(i.price * i.q).toFixed(2).replace('.', ',')}
+                        </span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mt-1 uppercase italic">
+                        ${[i.v.size, i.v.color].filter(Boolean).join(' / ')}
+                    </div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div class="flex items-center bg-slate-100 rounded h-7 border border-slate-200">
+                            <button onclick="modQty('${i.uid}', -1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">-</button>
+                            <span class="w-8 text-center text-xs font-black text-slate-700">${i.q}</span>
+                            <button onclick="modQty('${i.uid}', 1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">+</button>
+                        </div>
+                        <button onclick="modQty('${i.uid}', -${i.q})" class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Remover</button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // Dispara o cálculo inicial
+    updateCartTotals();
+    if (typeof window.toggleAddressFields === 'function') window.toggleAddressFields();
+};
 
 window.modQty = (u, d) => {
     const item = cart.find(x => x.uid === u);
