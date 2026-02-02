@@ -841,33 +841,19 @@ document.addEventListener('DOMContentLoaded', async () => {
              initGlobalCountdowns();              
 }; 
 
-        // Função cirúrgica para determinar o preço atual baseado no método de pagamento
-function getActivePrice(p, method) {
-    const agora = Date.now();
-    const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
-    
-    // 1. Promoção tem prioridade absoluta
-    if (isPromoAtiva) return p.promoValue;
-    
-    // 2. Se for Pix/Dinheiro, usa o preço à vista (se houver)
-    if (method === 'Pix' || method === 'Dinheiro') return p.priceCash || p.value;
-    
-    // 3. Se for Cartão ou sem método, usa o valor normal
-    return p.value;
-}
-
 
         function mkProductCard(p) {
     const isPromoValid = p.promoUntil ? (p.promoUntil > Date.now()) : true;
     const hasPromo = p.promoValue && p.promoValue < p.value && isPromoValid;
-    
-    // Mostra o melhor preço disponível (Promo ou À Vista) no catálogo
-    const bestPrice = hasPromo ? p.promoValue : (p.priceCash || p.value);
+    const price = hasPromo ? p.promoValue : p.value;
     const img = p.images?.[0] || 'https://placehold.co/600?text=Sem+Imagem';
     const isFav = favorites.includes(p.id);
+    
+    // NOVA LÓGICA DE ESTOQUE ZERADO
     const outOfStock = (parseInt(p.stock) || 0) <= 0;
     
     const disc = hasPromo && !outOfStock ? `<span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-black px-2 py-1 rounded-bl-lg z-10">-${Math.round(((p.value - p.promoValue) / p.value) * 100)}%</span>` : '';
+    
     const stockBadge = outOfStock ? `<span class="absolute inset-0 bg-white/60 flex items-center justify-center text-red-600 font-black text-xs uppercase z-20">Esgotado</span>` : '';
 
     return `<div onclick="${outOfStock ? '' : `openProductModal('${p.id}')`}" class="product-card cursor-pointer group flex flex-col h-full relative ${outOfStock ? 'opacity-70 grayscale' : ''}">
@@ -880,27 +866,24 @@ function getActivePrice(p, method) {
             </button>
         </div>
         <div class="p-3 md:p-4 flex flex-col flex-grow bg-white">
-            <div class="product-timer hidden mb-2 py-1 px-2 rounded-lg flex items-center gap-1.5 timer-accent animate-pulse" data-pid="${p.id}">
-                <i data-lucide="clock" class="w-3 h-3"></i>
-                <span class="text-[9px] font-black uppercase tracking-tighter countdown-text">Carregando...</span>
-            </div>
+        <div class="product-timer hidden mb-2 py-1 px-2 rounded-lg flex items-center gap-1.5 timer-accent animate-pulse" data-pid="${p.id}">
+    <i data-lucide="clock" class="w-3 h-3"></i>
+    <span class="text-[9px] font-black uppercase tracking-tighter countdown-text">Carregando...</span>
+</div>
             <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
             <div class="mt-auto pt-1">
-                <div class="flex flex-col">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">${hasPromo ? 'Oferta Especial' : 'À vista no Pix'}</span>
-                    <div class="flex items-center justify-between">
-                        <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">R$ ${bestPrice.toFixed(2).replace('.',',')}</span>
-                        ${outOfStock ? '' : `
-                        <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
-                            <i data-lucide="plus" class="w-5 h-5"></i>
-                        </button>`}
-                    </div>
-                    ${(!hasPromo && p.priceCash && p.priceCash < p.value) ? `<span class="text-[9px] font-bold text-blue-600 mt-0.5">Ou R$ ${p.value.toFixed(2).replace('.',',')} no cartão</span>` : ''}
+                <div class="flex items-center justify-between">
+                    <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">R$ ${price.toFixed(2).replace('.',',')}</span>
+                    ${outOfStock ? '' : `
+                    <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>`}
                 </div>
             </div>
         </div>
     </div>`;
-        }
+}
+
 
         // --- LOGICA DE DETALHES DO PRODUTO (VERSÃO COMPLETA E CORRIGIDA) ---
 window.openProductModal = (id) => { 
@@ -986,17 +969,20 @@ Object.keys(metaUpdates).forEach(prop => {
         const matrix = p.variations || [];
         const hasS = p.sizes?.length > 0, hasC = p.colors?.length > 0;
   
-     const updatePrices = () => {
+         const updatePrices = () => {
     const agora = Date.now();
     const isPromoAtiva = p.promoValue && p.promoValue < p.value && (!p.promoUntil || p.promoUntil > agora);
     const fatorDesconto = isPromoAtiva ? (p.promoValue / p.value) : 1;
     
-    let basePrice = p.value; // Preço base (Cartão)
+    let price = isPromoAtiva ? p.promoValue : p.value;
+    let oldP = isPromoAtiva ? p.value : null;
+    
     let skuDinamico = p.sku || 'N/A'; 
     let isComplete = (!hasS || currentDetailSelection.size) && (!hasC || currentDetailSelection.color);
+    
+    // --- CORREÇÃO AQUI: Criamos a variável começando como 'falso' ---
     let outOfStockVariation = false;
 
-    // Lógica de Variação (Mantida)
     if(isComplete && matrix.length) {
         const comb = matrix.find(v => 
             (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
@@ -1004,12 +990,16 @@ Object.keys(metaUpdates).forEach(prop => {
         );
 
         if(comb && comb.active) { 
+            // Verificamos se a variação específica está sem estoque
             const vStock = parseInt(comb.stock) || 0;
             if(vStock <= 0) {
                 outOfStockVariation = true;
                 isComplete = false; 
             }
-            basePrice = comb.price; // Preço base vindo da variação
+
+            price = isPromoAtiva ? (comb.price * fatorDesconto) : comb.price;
+            oldP = isPromoAtiva ? comb.price : null; 
+            
             skuDinamico = comb.sku || skuDinamico;
             currentDetailSelection.image = comb.image || p.images[0]; 
 
@@ -1021,32 +1011,13 @@ Object.keys(metaUpdates).forEach(prop => {
             isComplete = false;
         }
     }
-
-    // --- CÁLCULO DA HIERARQUIA ---
-    const finalPricePix = isPromoAtiva ? (basePrice * fatorDesconto) : (p.priceCash || basePrice);
-    const finalPriceCard = isPromoAtiva ? (basePrice * fatorDesconto) : basePrice;
-    const oldP = isPromoAtiva ? basePrice : null;
-
-    // --- ATUALIZAÇÃO VISUAL DO PREÇO NO MODAL ---
-    const priceDisplay = document.getElementById('detailPrice');
-    priceDisplay.innerHTML = `
-        <div class="flex flex-col gap-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-                ${isPromoAtiva ? 'Oferta Especial' : 'À vista no Pix'}
-            </span>
-            <span class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight">
-                R$ ${finalPricePix.toFixed(2).replace('.',',')}
-            </span>
-            ${(!isPromoAtiva && p.priceCash && p.priceCash < basePrice) ? 
-                `<span class="text-[10px] font-bold text-blue-600">Ou R$ ${finalPriceCard.toFixed(2).replace('.',',')} no cartão</span>` : ''}
-        </div>
-    `;
-
+    
+    const btnAdd = document.getElementById('detailAddBtn');
+    document.getElementById('detailPrice').textContent = `R$ ${price.toFixed(2).replace('.',',')}`;
     document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
     document.getElementById('detailSku').textContent = skuDinamico; 
     
-    // Controle do Botão (Mantido)
-    const btnAdd = document.getElementById('detailAddBtn');
+    // Agora o código sabe o que é 'outOfStockVariation' e não vai travar!
     if (outOfStockVariation) {
         btnAdd.textContent = "Esgotado";
         btnAdd.disabled = true;
@@ -1059,8 +1030,7 @@ Object.keys(metaUpdates).forEach(prop => {
         btnAdd.classList.add('bg-primary');
     }
     
-    // Guarda o preço final para o carrinho (sempre o Pix como base inicial)
-    p.currentFinalPrice = finalPricePix; 
+    p.currentFinalPrice = price; 
     p.currentSKU = skuDinamico; 
 };
 
@@ -1268,30 +1238,7 @@ window.addEventListener('beforeunload', () => {
         
 
         window.modQty=(u,d)=>{const i=cart.find(x=>x.uid===u);if(i){i.q+=d;if(i.q<=0)cart=cart.filter(x=>x.uid!==u);updateCartUI();}};
-        window.updateCartTotals = () => { 
-    const method = document.getElementById('checkPayment')?.value || "";
-    const df = parseFloat(document.getElementById('cartDeliverySelect')?.value) || 0; 
-    
-    let subtotalDinamico = 0;
-
-    cart.forEach(item => {
-        // Busca o produto original para saber os preços reais (Promo, Pix e Card)
-        const pOriginal = allProducts.find(x => x.id === item.id);
-        const precoCerto = getActivePrice(pOriginal, method);
-        
-        subtotalDinamico += (precoCerto * item.q);
-
-        // Atualiza o preço visual de cada item na lista da sacola
-        const itemPriceEl = document.getElementById(`cart-item-price-${item.uid}`);
-        if(itemPriceEl) itemPriceEl.textContent = `R$ ${(precoCerto * item.q).toFixed(2).replace('.', ',')}`;
-    });
-
-    const subDisplays = document.querySelectorAll('.subtotal-display');
-    subDisplays.forEach(d => d.textContent = `R$ ${subtotalDinamico.toFixed(2).replace('.', ',')}`);
-    
-    const totalDisplay = document.getElementById('cartFinalTotal');
-    if(totalDisplay) totalDisplay.textContent = `R$ ${(subtotalDinamico + df).toFixed(2).replace('.', ',')}`; 
-};
+        window.updateCartTotals = () => { const df=parseFloat(document.getElementById('cartDeliverySelect').value)||0; let sub=cart.reduce((a,b)=>a+(b.price*b.q),0); document.getElementById('cartFinalTotal').textContent=`R$ ${(sub+df).toFixed(2).replace('.',',')}`; };
 
         // FUNÇÃO PARA BLOQUEIO DE ESTOQUE ESGOTADO
 window.alertaEstoquePreso = (nomeItem) => {
@@ -1418,17 +1365,18 @@ if (estoqueDisponivelReal < item.q) {
             }
         }
 
-        // 4. Cálculos Financeiros (Recalculados pelo pagamento escolhido)
-const subtotal = cart.reduce((total, item) => {
-    const pOriginal = allProducts.find(x => x.id === item.id);
-    // Recalcula o preço unitário correto para este pagamento
-    const precoDinâmico = getActivePrice(pOriginal, pagamento);
-    return total + (precoDinâmico * item.q);
-}, 0);
+        // 4. Cálculos Financeiros
+        const subtotal = cart.reduce((a, b) => a + (b.price * b.q), 0);
+        const taxaEntrega = isRetirada ? 0 : parseFloat(deliverySelect.value);
+        const totalFinal = subtotal + taxaEntrega;
 
-const taxaEntrega = isRetirada ? 0 : parseFloat(deliverySelect.value);
-const totalFinal = subtotal + taxaEntrega;
-
+        let infoPagamento = pagamento;
+        if(pagamento === 'Dinheiro' && trocoPara) {
+            const valorTrocoDigitado = parseFloat(trocoPara);
+            if(valorTrocoDigitado > totalFinal) {
+                infoPagamento += ` (Troco para R$ ${valorTrocoDigitado.toFixed(2).replace('.',',')})`;
+            }
+        }
 
         // 5. REGISTRO DO PEDIDO (Firebase)
         const orderData = {
@@ -1438,28 +1386,22 @@ const totalFinal = subtotal + taxaEntrega;
                 addressString: enderecoCompleto,
                 addressDetails: isRetirada ? null : dadosEndereco
             },
-            items: cart.map(item => {
-                // ADIÇÃO CIRÚRGICA: Busca o preço real baseado na hierarquia e no pagamento
-                const pOriginal = allProducts.find(x => x.id === item.id);
-                const precoCerto = getActivePrice(pOriginal, pagamento);
-
-                return {
-                    id: item.id,
-                    name: item.name,
-                    sku: item.sku || "N/A", 
-                    qty: item.q,
-                    price: precoCerto, // Salva o preço correto (Pix vs Cartão vs Promo)
-                    variationDetails: {
-                        color: item.v.color || null,
-                        size: item.v.size || null,
-                        image: item.img,
-                        sku: item.sku || "N/A"
-                    }
-                };
-            }),
+            items: cart.map(item => ({
+                id: item.id,
+                name: item.name,
+                sku: item.sku || "N/A", 
+                qty: item.q,
+                price: item.price,
+                variationDetails: {
+                    color: item.v.color || null,
+                    size: item.v.size || null,
+                    image: item.img,
+                    sku: item.sku || "N/A"
+                }
+            })),
             paymentMethod: infoPagamento,
             deliveryFee: taxaEntrega,
-            total: totalFinal, // totalFinal já deve ter sido calculado com o subtotal dinâmico no passo 4
+            total: totalFinal,
             status: 'pending_whatsapp', 
             createdAt: serverTimestamp(),
             platform: 'web_catalog',
@@ -1470,45 +1412,44 @@ const totalFinal = subtotal + taxaEntrega;
         const shortId = docRef.id.slice(-5).toUpperCase();
 
         // --- NOVO: CRIAÇÃO DA RESERVA FANTASMA (Shadow Stock) ---
-        const reserveBatch = writeBatch(db);
-        const sID = shortId.toUpperCase(); 
+const reserveBatch = writeBatch(db);
+const sID = shortId.toUpperCase(); // Força o ID do pedido em maiúsculo
 
-        cart.forEach(item => {
-            const s = (item.v.size && item.v.size !== "null") ? item.v.size.toString().toLowerCase().replace(/\s/g,'') : "";
-            const c = (item.v.color && item.v.color !== "null") ? item.v.color.toString().toLowerCase().replace(/\s/g,'') : "";
-            
-            const resId = `res_${sID}_${item.id}_${s}_${c}`;
-            const resRef = doc(db, `stores/${STORE_ID}/stock_reserves`, resId);
+cart.forEach(item => {
+    // 1. Tratamento blindado para bater com a limpeza do Painel
+    const s = (item.v.size && item.v.size !== "null") ? item.v.size.toString().toLowerCase().replace(/\s/g,'') : "";
+    const c = (item.v.color && item.v.color !== "null") ? item.v.color.toString().toLowerCase().replace(/\s/g,'') : "";
+    
+    // 2. Montagem do ID Único (res_ABCDE_prod123_m_azul)
+    const resId = `res_${sID}_${item.id}_${s}_${c}`;
+    const resRef = doc(db, `stores/${STORE_ID}/stock_reserves`, resId);
 
-            reserveBatch.set(resRef, {
-                productId: item.id,
-                qty: item.q,
-                variation: {
-                    size: item.v.size || null,
-                    color: item.v.color || null
-                },
-                createdAt: serverTimestamp(),
-                orderId: sID,
-                status: 'pending'
-            });
-        });
-        await reserveBatch.commit();
+    reserveBatch.set(resRef, {
+        productId: item.id,
+        qty: item.q,
+        variation: {
+            size: item.v.size || null,
+            color: item.v.color || null
+        },
+        createdAt: serverTimestamp(),
+        orderId: sID,
+        status: 'pending'
+    });
+});
+await reserveBatch.commit();
+
 
         // 6. Montagem da Mensagem para WhatsApp
-let msg = `🛍️ *PEDIDO: #${shortId}*\n`;
-msg += `---------------------------\n\n`;
-msg += `👤 *Cliente:* ${nome}\n`;
-
-msg += `📦 *ITENS DO PEDIDO:*\n`;
-cart.forEach(item => {
-    const pOriginal = allProducts.find(x => x.id === item.id);
-    const precoDinâmico = getActivePrice(pOriginal, pagamento);
-    const vars = [item.v.size, item.v.color].filter(Boolean).join('/');
-    
-    msg += `• ${item.q}x ${item.name} ${vars ? '('+vars+')' : ''}\n`;
-    msg += `  Unit: R$ ${precoDinâmico.toFixed(2).replace('.',',')} | Sub: R$ ${(precoDinâmico * item.q).toFixed(2).replace('.',',')}\n`;
-    msg += `  _Ref: ${item.sku}_\n`;
-});
+        let msg = `🛍️ *PEDIDO: #${shortId}*\n`;
+        msg += `---------------------------\n\n`;
+        msg += `👤 *Cliente:* ${nome}\n`;
+        
+        msg += `📦 *ITENS DO PEDIDO:*\n`;
+        cart.forEach(item => {
+            const vars = [item.v.size, item.v.color].filter(Boolean).join('/');
+            msg += `• ${item.q}x ${item.name} ${vars ? '('+vars+')' : ''}\n`;
+            msg += `  _Ref: ${item.sku}_\n`;
+        });
 
         msg += `\n💰 *VALORES:*\n`;
         msg += `Subtotal: R$ ${subtotal.toFixed(2).replace('.',',')}\n`;
@@ -2315,28 +2256,27 @@ window.updateCartUI = () => {
     } else {
         if(empty) empty.classList.add('hidden'); 
         if(step1Footer) step1Footer.classList.remove('hidden');
-        // ... dentro da sua Window.updateCartUI ...
-l.innerHTML = cart.map(i => `
-    <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
-        <img src="${i.variationDetails?.image || i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
-        
-        <div class="flex-1">
-            <div class="flex justify-between font-bold text-xs text-slate-800">
-                <span class="truncate pr-2">${i.name}</span>
-                <span class="shrink-0" id="cart-item-price-${i.uid}">R$ ${(i.price * i.q).toFixed(2).replace('.', ',')}</span>
-            </div>
-            <div class="text-[10px] text-slate-400 mt-1 uppercase italic">${[i.v.size, i.v.color].filter(Boolean).join(' / ')}</div>
-            <div class="flex items-center gap-4 mt-2">
-                <div class="flex items-center bg-slate-100 rounded h-7 border border-slate-200">
-                    <button onclick="modQty('${i.uid}', -1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">-</button>
-                    <span class="w-8 text-center text-xs font-black text-slate-700">${i.q}</span>
-                    <button onclick="modQty('${i.uid}', 1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">+</button>
+        l.innerHTML = cart.map(i => `
+            <div class="flex gap-3 bg-white p-3 rounded-xl border border-slate-200">
+                <img src="${i.variationDetails?.image || i.img}" class="w-16 h-16 rounded-lg object-cover bg-slate-50">
+                
+                <div class="flex-1">
+                    <div class="flex justify-between font-bold text-xs text-slate-800">
+                        <span class="truncate pr-2">${i.name}</span>
+                        <span class="shrink-0">R$ ${(i.price * i.q).toFixed(2).replace('.', ',')}</span>
+                    </div>
+                    <div class="text-[10px] text-slate-400 mt-1 uppercase italic">${[i.v.size, i.v.color].filter(Boolean).join(' / ')}</div>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div class="flex items-center bg-slate-100 rounded h-7 border border-slate-200">
+                            <button onclick="modQty('${i.uid}', -1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">-</button>
+                            <span class="w-8 text-center text-xs font-black text-slate-700">${i.q}</span>
+                            <button onclick="modQty('${i.uid}', 1)" class="w-7 h-full flex items-center justify-center text-slate-500 font-bold hover:bg-slate-200 transition-colors">+</button>
+                        </div>
+                        <button onclick="modQty('${i.uid}', -${i.q})" class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Remover</button>
+                    </div>
                 </div>
-                <button onclick="modQty('${i.uid}', -${i.q})" class="text-[10px] text-red-500 font-bold uppercase tracking-tighter">Remover</button>
             </div>
-        </div>
-    </div>
-`).join('');
+        `).join('');
     }
     updateCartTotals();
     window.toggleAddressFields();
@@ -2544,23 +2484,14 @@ if (config.magicCategories?.showNew) {
 document.addEventListener('change', (e) => {
     if(e.target.id === 'checkPayment') {
         const changeField = document.getElementById('changeField');
-        
-        // Lógica de Troco (Já existente)
         if(e.target.value === 'Dinheiro') {
             changeField.classList.remove('hidden');
         } else {
             changeField.classList.add('hidden');
-            document.getElementById('checkChange').value = ''; 
-        }
-
-        // --- ADIÇÃO CIRÚRGICA ---
-        // Aciona o recálculo de toda a sacola baseado no novo método selecionado
-        if (typeof window.updateCartTotals === 'function') {
-            window.updateCartTotals();
+            document.getElementById('checkChange').value = ''; // Limpa se mudar de ideia
         }
     }
 });
-
 
         function renderThumbnails() {
     const thumbContainer = document.getElementById('detailThumbnails');
