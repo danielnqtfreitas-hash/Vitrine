@@ -5,69 +5,14 @@
   <link>https://loja.vitrineonline.app.br/dandan</link>
   <description>Feed de Produtos - Dandan</description>
   <item>
-    <g:id>prod_1767777080583</g:id>
-    <g:title>Kit banquetas </g:title>
-    <g:description>Kit banquetas </g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767777080583</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767777080583_0.jpg?alt=media&amp;token=d12adc39-cb2f-4ccd-90a3-04cb16ead9ae</g:image_link>
+    <g:id>prod_1769999114582</g:id>
+    <g:title>Pia mármore </g:title>
+    <g:description>Pia mármore </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769999114582</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769999114582_main_0.jpg?alt=media&amp;token=db11f783-2fdc-4957-bd68-3ea78824019b</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
-    <g:price>350.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1767914877425</g:id>
-    <g:title>Kit mochila Dino</g:title>
-    <g:description>Kit mochila Dino</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1767914877425</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1767914877425_0.jpg?alt=media&amp;token=57406265-8960-4c19-92e4-e84d6cd5ba5e</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>149.90 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769275863392</g:id>
-    <g:title>Piscinão </g:title>
-    <g:description>Piscinão </g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769275863392</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769275863392_main_0.jpg?alt=media&amp;token=7c5f4bbf-e337-49c9-a7c7-3ea3bc5601c4</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>50000.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769330983727</g:id>
-    <g:title>Frô</g:title>
-    <g:description>Frô</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769330983727</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769330983727_main_0.jpg?alt=media&amp;token=d6723810-70cd-4652-90b7-7b4d0959ee88</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>5.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769597916246</g:id>
-    <g:title>Teste</g:title>
-    <g:description>Teste</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769597916246</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769597916246_main_0.jpg?alt=media&amp;token=833107e2-5747-445b-bb1e-6b929b4580bd</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>58.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769994161256</g:id>
-    <g:title>Campeões</g:title>
-    <g:description>Campeões</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1769994161256</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1769994161256_main_0.jpg?alt=media&amp;token=91ebc123-10c5-430d-b10f-11d9f3f360e2</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>85.00 BRL</g:price>
+    <g:price>320.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
 </channel>
