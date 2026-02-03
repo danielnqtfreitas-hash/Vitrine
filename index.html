@@ -475,7 +475,7 @@
                         </div>
                     </div>
 
-                    <div id="addressFields" class="space-y-3 animate-fade-in">
+                    <div id="addressFields" class="space-y-3 animate-fade-in hidden">
                         <input type="text" id="checkStreet" placeholder="Nome da Rua / Avenida" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-primary/20">
                         
                         <div class="flex gap-2">
@@ -2113,6 +2113,7 @@ window.goToStep2 = () => {
     document.getElementById('step2').classList.remove('hidden');
     document.getElementById('btnBackStep').classList.remove('hidden');
     document.getElementById('cartTitle').textContent = "Dados de Entrega";
+    toggleAddressFields(); 
     lucide.createIcons();
 };
 
