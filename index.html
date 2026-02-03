@@ -2081,16 +2081,12 @@ window.closeImageZoom = () => {
         window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
 
 // --- CONTROLE DE ETAPAS DO CARRINHO (FINAL) ---
+// --- CONTROLE DE ETAPAS DO CARRINHO ---
 window.goToStep1 = () => {
-    const s1 = document.getElementById('step1');
-    const s2 = document.getElementById('step2');
-    const btn = document.getElementById('btnBackStep');
-    const title = document.getElementById('cartTitle');
-    
-    if(s1) s1.classList.remove('hidden');
-    if(s2) s2.classList.add('hidden');
-    if(btn) btn.classList.add('hidden');
-    if(title) title.textContent = "Minha Sacola";
+    document.getElementById('step1')?.classList.remove('hidden');
+    document.getElementById('step2')?.classList.add('hidden');
+    document.getElementById('btnBackStep')?.classList.add('hidden');
+    document.getElementById('cartTitle').textContent = "Minha Sacola";
 };
 
 window.goToStep2 = () => {
@@ -2098,14 +2094,16 @@ window.goToStep2 = () => {
         showToast("Sua sacola está vazia!");
         return;
     }
+    
     document.getElementById('step1').classList.add('hidden');
     document.getElementById('step2').classList.remove('hidden');
     document.getElementById('btnBackStep').classList.remove('hidden');
     document.getElementById('cartTitle').textContent = "Dados de Entrega";
     
-    // O segredo está aqui: um leve atraso para o seletor "acordar"
+    // FORÇA A VERIFICAÇÃO IMEDIATA
+    // Usamos um pequeno delay (50ms) para garantir que o DOM terminou de carregar
     setTimeout(() => {
-        window.toggleAddressFields(); 
+        window.toggleAddressFields();
     }, 50);
 
     if(window.lucide) lucide.createIcons();
@@ -2418,15 +2416,19 @@ window.modQty = (u, d) => {
     const deliverySelect = document.getElementById('cartDeliverySelect');
     const addressFields = document.getElementById('addressFields');
     
+    if (!deliverySelect || !addressFields) return;
+
     // "0" é o valor padrão da opção "Retirar na Loja"
-    if (deliverySelect.value === "0") {
+    if (deliverySelect.value === "0" || deliverySelect.value === "") {
         addressFields.classList.add('hidden');
     } else {
         addressFields.classList.remove('hidden');
     }
     
     // Atualiza os preços (taxa de entrega)
-    updateCartTotals();
+    if (typeof updateCartTotals === "function") {
+        updateCartTotals();
+    }
 };
 
         // Função para gerar o HTML de cada seção mágica
