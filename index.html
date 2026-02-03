@@ -2080,17 +2080,6 @@ window.closeImageZoom = () => {
 
         window.openDeliveryModal = () => document.getElementById('modalDelivery').classList.remove('hidden');
 
-        window.goToStep2 = () => {
-    if (cart.length === 0) {
-        showToast("Sua sacola está vazia!");
-        return;
-    }
-    document.getElementById('step1').classList.add('hidden');
-    document.getElementById('step2').classList.remove('hidden');
-    document.getElementById('btnBackStep').classList.remove('hidden');
-    document.getElementById('cartTitle').textContent = "Dados de Entrega";
-    lucide.createIcons(); // Recarrega o ícone da seta
-};
 // --- CONTROLE DE ETAPAS DO CARRINHO (FINAL) ---
 window.goToStep1 = () => {
     const s1 = document.getElementById('step1');
