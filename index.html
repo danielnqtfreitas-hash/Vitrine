@@ -153,10 +153,7 @@ footer,
     color: #334155 !important;
 }
 
-/* ESTILO MERCADO LIVRE - TOPO SÓLIDO */
-/* --- COPIE A PARTIR DAQUI --- */
-
-/* ESTILO MERCADO LIVRE - TOPO SÓLIDO (Para todos os usuários) */
+/* 1. O TOPO (Barra colorida sólida) */
 header.glass-header {
     background-color: var(--color-primary) !important;
     background-image: none !important;
@@ -166,45 +163,65 @@ header.glass-header {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* Deixa textos e ícones brancos no topo para contrastar com a cor da loja */
+/* 2. TEXTOS DO TOPO (Nome da loja e buscas) */
 header.glass-header h1, 
-header.glass-header span, 
-header.glass-header i,
-header.glass-header #headerHeartIcon,
-header.glass-header button i {
+header.glass-header span,
+header.glass-header #mobileSearch,
+header.glass-header #desktopSearch {
     color: #FFFFFF !important;
 }
 
-/* Deixa a barra de busca branca e os contadores (bolinhas com números) destacados */
+/* 3. BOTÕES CIRCULARES (Favoritos e Carrinho - O que você pediu) */
+#headerFavBtn, 
+header button[onclick="openCartModal()"] {
+    background-color: #FFFFFF !important; /* Fundo branco */
+    border: none !important;
+    width: 42px;  /* Tamanho fixo para ser um círculo perfeito */
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px !important; /* Deixa redondo */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+}
+
+/* 4. ÍCONES DENTRO DOS BOTÕES (Na cor da loja) */
+#headerFavBtn i, 
+header button[onclick="openCartModal()"] i {
+    color: var(--color-primary) !important; /* Ícone na cor da loja */
+    width: 20px;
+    height: 20px;
+}
+
+/* 5. BOLINHAS DE NÚMEROS (Badges) */
+#cartBadge, #favBadgeDesktop {
+    background-color: #334155 !important; /* Cor escura para destacar no branco */
+    color: #FFFFFF !important;
+    border: 2px solid #FFFFFF !important;
+}
+
+/* 6. BARRA DE BUSCA (Estilo ML: Branca com ícone cinza) */
 header.glass-header .bg-slate-100 {
     background-color: #FFFFFF !important;
+    border-radius: 12px !important;
+}
+header.glass-header .bg-slate-100 i {
+    color: #94a3b8 !important; /* Ícone da lupa cinza */
+}
+header.glass-header input {
+    color: #334155 !important; /* Texto que digita fica escuro */
 }
 
-#cartBadge, #favBadgeDesktop, #filterBadgeDesktop, #filterBadgeMobile {
-    background-color: #FFFFFF !important;
-    color: var(--color-primary) !important;
-    border: 1px solid rgba(0,0,0,0.05) !important;
-}
-
-/* BLINDAGEM MODO ESCURO (Para o celular não estragar as cores) */
+/* 7. BLINDAGEM MODO ESCURO (Para não estragar nada) */
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #F3F4F6 !important;
-        color: #334155 !important;
-    }
-
+    body { background-color: #F3F4F6 !important; color: #334155 !important; }
     .product-card, footer, #modalDetails .bg-white, #modalCart .bg-white, #filterDrawer, #modalDelivery .bg-white {
         background-color: #FFFFFF !important;
         color: #334155 !important;
     }
-
-    header.glass-header {
-        background-color: var(--color-primary) !important;
-    }
-    
+    header.glass-header { background-color: var(--color-primary) !important; }
     img { filter: none !important; }
 }
-
     /* Garante que os inputs não fiquem com fundo preto e texto branco */
     input, select, textarea {
         background-color: #FFFFFF !important;
