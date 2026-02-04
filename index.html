@@ -1075,34 +1075,32 @@ Object.keys(metaUpdates).forEach(prop => {
 
     const oldP = isPromoAtiva ? basePrice : null;
     // 3. Atualização Visual do Preço no Modal (Versão Otimizada para Barra Inferior)
+// 3. Atualização Visual do Preço no Modal (Versão Limpa e Compacta)
 const priceDisplay = document.getElementById('detailPrice');
 priceDisplay.innerHTML = `
     <div class="flex flex-col min-w-0">
-        <div class="flex items-center gap-1 mb-0.5">
-            <span class="text-[9px] font-black text-primary uppercase tracking-tighter">
-                ${isPromoAtiva ? '🔥 Oferta' : 'Pix'}
-            </span>
-            ${oldP ? `<span class="text-[10px] text-slate-400 line-through">R$ ${oldP.toFixed(2).replace('.',',')}</span>` : ''}
-        </div>
+        <span class="text-[9px] font-black text-primary uppercase tracking-tighter mb-0.5">
+            ${isPromoAtiva ? 'Oferta Especial' : 'À vista no Pix'}
+        </span>
         
-        <div class="flex items-baseline gap-1">
-            <span class="text-xl md:text-2xl font-display font-black text-slate-900 leading-none tracking-tight">
-                R$ ${finalPricePix.toFixed(2).replace('.',',')}
-            </span>
-        </div>
+        <span class="text-xl md:text-2xl font-display font-black text-slate-900 leading-none tracking-tight">
+            R$ ${finalPricePix.toFixed(2).replace('.',',')}
+        </span>
 
-        <div class="flex flex-col mt-0.5 leading-none">
+        <div class="flex flex-col mt-1 leading-none">
             <span class="text-[10px] font-bold text-blue-600 whitespace-nowrap">
-                Cartão: R$ ${finalPriceCard.toFixed(2).replace('.',',')}
+                Ou R$ ${finalPriceCard.toFixed(2).replace('.',',')} no cartão
             </span>
             ${(p.maxInstallments > 1) ? `
-                <span class="text-[9px] text-slate-500 font-medium">
+                <span class="text-[9px] text-slate-500 font-medium mt-0.5">
                     até ${p.maxInstallments}x de R$ ${(finalPriceCard / p.maxInstallments).toFixed(2).replace('.', ',')}
                 </span>
             ` : ''}
         </div>
     </div>
 `;
+
+// O detailOldPrice (que está fora desta div no HTML) cuidará do valor riscado sozinho
 
 // Reinicia os ícones se necessário
 if(typeof lucide !== 'undefined') lucide.createIcons();
