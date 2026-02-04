@@ -766,60 +766,79 @@ document.addEventListener('DOMContentLoaded', async () => {
                    }     
         
         
-        // --- RENDERERS ---
-                       window.renderCatalog = async () => {
-            // Chamamos a renderização mágica usando a global segura
-           await renderMagicCategories(allProducts, storeConfigGlobal);
+   window.renderCatalog = async () => {
+    // Chamamos a renderização mágica usando a global segura
+    await renderMagicCategories(allProducts, storeConfigGlobal);
 
-            const container = document.getElementById('catalogContainer'), 
-                  empty = document.getElementById('emptyState');
-            
-            if (!container) return; // Proteção extra
-            
-            empty.classList.add('hidden');
-            container.innerHTML = '';
+    const container = document.getElementById('catalogContainer'), 
+          empty = document.getElementById('emptyState');
+    
+    if (!container) return; 
+    
+    empty.classList.add('hidden');
+    container.innerHTML = '';
 
     let filtered = allProducts.filter(p => {
         if(isFavoritesView) return favorites.includes(p.id);
+        
+        // 1. Filtro de Busca
         if(filters.search) {
             const searchLower = filters.search.toLowerCase();
             const nameMatch = p.name.toLowerCase().includes(searchLower);
             const skuMatch = p.sku && p.sku.toLowerCase().includes(searchLower);
             if (!nameMatch && !skuMatch) return false;
         }
+
+        // 2. Filtro de Categoria/Ofertas
         if(filters.category === 'offers') { 
             if(!(p.promoValue && p.promoValue < p.value)) return false; 
         } else if(filters.category && p.category !== filters.category) return false;
+
+        // 3. Filtro de Preço
         const price = (p.promoValue && p.promoValue < p.value) ? p.promoValue : p.value;
         if(filters.maxPrice && price > filters.maxPrice) return false;
+
+        // 4. FILTRO DE TAMANHOS E CORES (CORREÇÃO AQUI)
         if(filters.sizes.length > 0 || filters.colors.length > 0) {
+            // Normalizamos os filtros para minúsculo para comparação segura
+            const selectedSizesLower = filters.sizes.map(s => s.toLowerCase());
+            const selectedColorsLower = filters.colors.map(c => c.toLowerCase());
+
             if (p.variations && p.variations.length > 0) {
                 const hasMatch = p.variations.some(v => {
                     if (!v.active) return false;
-                    const sizeMatch = filters.sizes.length === 0 || filters.sizes.includes(v.size);
-                    const colorMatch = filters.colors.length === 0 || filters.colors.includes(v.color);
+                    
+                    // Comparação Case-Insensitive
+                    const sizeMatch = filters.sizes.length === 0 || 
+                                     selectedSizesLower.includes(v.size.toLowerCase());
+                    const colorMatch = filters.colors.length === 0 || 
+                                      selectedColorsLower.includes(v.color.toLowerCase());
+                    
                     return sizeMatch && colorMatch;
                 });
                 if (!hasMatch) return false;
             } else {
-                const sizeMatchBase = filters.sizes.length === 0 || p.sizes?.some(s => filters.sizes.includes(s));
-                const colorMatchBase = filters.colors.length === 0 || p.colors?.some(c => filters.colors.includes(c));
+                // Caso o produto não tenha variações, checa nos arrays base (p.sizes / p.colors)
+                const sizeMatchBase = filters.sizes.length === 0 || 
+                                     p.sizes?.some(s => selectedSizesLower.includes(s.toLowerCase()));
+                const colorMatchBase = filters.colors.length === 0 || 
+                                      p.colors?.some(c => selectedColorsLower.includes(c.toLowerCase()));
+                
                 if (!sizeMatchBase || !colorMatchBase) return false;
             }
         }
         return true;
     });
 
+    // --- RENDERIZAÇÃO DOS RESULTADOS ---
     if (filtered.length === 0) {
         empty.classList.remove('hidden');
-        if (filters.search) {
-            trackFailedSearch(filters.search);
-        }
+        if (filters.search) trackFailedSearch(filters.search);
         return;
     }
 
     const groups = {};
-    if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice) {
+    if(isFavoritesView || filters.search || (filters.category && filters.category !== 'offers') || filters.maxPrice || filters.sizes.length > 0 || filters.colors.length > 0) {
         groups['Resultados Encontrados'] = filtered;
     } else {
         filtered.forEach(p => { 
@@ -841,9 +860,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     
     lucide.createIcons();
-
-             initGlobalCountdowns();              
-}; 
+    initGlobalCountdowns(); 
+};
 
         // Função cirúrgica para determinar o preço atual baseado no método de pagamento
 function getActivePrice(p, method) {
@@ -1969,42 +1987,40 @@ window.closeImageZoom = () => {
     const ss = new Set(), cc = new Set();
 
     allProducts.forEach(p => {
-        // Normaliza e conta tamanhos
+        // Processa Tamanhos
         if (p.sizes) {
             p.sizes.forEach(s => {
-                // Remove espaços e padroniza: " azul " -> "Azul"
-                const val = s.trim().toLowerCase();
-                const formatted = val.charAt(0).toUpperCase() + val.slice(1);
-                
+                const val = s.trim(); // Mantém o valor como está no banco
                 if (val) {
-                    ss.add(formatted);
-                    sizeCounts[formatted] = (sizeCounts[formatted] || 0) + 1;
+                    ss.add(val);
+                    sizeCounts[val] = (sizeCounts[val] || 0) + 1;
                 }
             });
         }
-        // Normaliza e conta cores
+        // Processa Cores
         if (p.colors) {
             p.colors.forEach(c => {
-                const val = c.trim().toLowerCase();
-                const formatted = val.charAt(0).toUpperCase() + val.slice(1);
-                
+                const val = c.trim();
                 if (val) {
-                    cc.add(formatted);
-                    colorCounts[formatted] = (colorCounts[formatted] || 0) + 1;
+                    cc.add(val);
+                    colorCounts[val] = (colorCounts[val] || 0) + 1;
                 }
             });
         }
     });
 
     const renderChips = (set, container, type, counts) => {
+        if (!container) return;
         container.innerHTML = '';
-        // Ordena alfabeticamente
+        
         Array.from(set).sort().forEach(val => {
             const isSelected = filters[type].includes(val);
             const count = counts[val] || 0;
             const d = document.createElement('div');
             
-            // Estilo visual do botão com contador
+            // Formata apenas para exibição (ex: azul -> Azul)
+            const label = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+
             d.className = `px-3 py-2 border rounded-lg text-[11px] chip-common flex items-center justify-between gap-3 transition-all ${
                 isSelected 
                 ? 'border-primary bg-primary text-white font-bold shadow-md' 
@@ -2012,7 +2028,7 @@ window.closeImageZoom = () => {
             }`;
 
             d.innerHTML = `
-                <span>${val}</span>
+                <span>${label}</span>
                 <span class="${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'} px-1.5 py-0.5 rounded text-[9px]">
                     ${count}
                 </span>
