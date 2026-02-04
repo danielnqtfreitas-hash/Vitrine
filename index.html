@@ -344,62 +344,65 @@
                 </div>
                 <div id="detailThumbnails" class="flex gap-3 px-6 py-2 overflow-x-auto items-center hide-scroll snap-x scroll-smooth outline-none min-h-[60px]"></div>
             </div>
-<div class="px-6 pb-32"> 
-                <div class="flex justify-between items-start mb-2">
-                    <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
-                    <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
-                        <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
-                    </button>
-                </div>
 
-                <div id="modalTimer" class="hidden timer-accent p-2 rounded-lg mb-4 flex items-center gap-2">
-                    <i data-lucide="clock" class="w-4 h-4"></i>
-                    <span id="modalTimerText" class="text-xs font-bold"></span>
-                </div>
+            <div class="px-6 pb-32"> <div class="flex justify-between items-start mb-2">
+        <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
+        <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
+            <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
+        </button>
+    </div>
 
-                <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
+    <div id="modalTimer" class="hidden timer-accent p-2 rounded-lg mb-4 flex items-center gap-2">
+        <i data-lucide="clock" class="w-4 h-4"></i>
+        <span id="modalTimerText" class="text-xs font-bold"></span>
+    </div>
 
-                <div class="flex flex-col space-y-6 mt-4"> 
-                    <div>
-                        <div id="detailSkuContainer" class="mb-3">
-                            <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
-                        </div>
-                        <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed"></p>
-                    </div>
+    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
 
-                    <div id="sizesWrapper" class="hidden border-t border-slate-50 pt-6">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha o Tamanho</label>
-                        <div id="detailSizesContainer" class="flex flex-wrap gap-2"></div>
-                    </div>
-
-                    <div id="colorsWrapper" class="hidden border-t border-slate-50 pt-6">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha a Cor</label>
-                        <div id="detailColorsContainer" class="flex flex-wrap gap-2"></div>
-                    </div>
-
-                    <div id="relatedProductsSection" class="border-t border-slate-50 pt-8 hidden">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Quem viu também viu</label>
-                        <div id="relatedGrid" class="flex overflow-x-auto gap-3 pb-4 hide-scroll -mx-2 px-2"></div>
-                    </div>
-                </div>
+    <div class="flex flex-col space-y-6 mt-4"> 
+        
+        <div>
+            <div id="detailSkuContainer" class="mb-3">
+                <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
             </div>
+            <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed"></p>
+        </div>
 
-            <div class="p-4 border-t flex items-center justify-between bg-white/95 backdrop-blur-md z-20 absolute bottom-0 w-full shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.08)]">
-                <div class="flex flex-col min-w-0 flex-1">
-                    <span id="detailOldPrice" class="text-xs text-slate-400 line-through"></span>
-                    <div id="detailPrice" class="leading-tight"></div> 
-                </div>
-                <div class="flex items-center gap-2 ml-2">
-                    <div class="flex items-center bg-slate-100 rounded-xl px-1 h-12">
-                        <button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button>
-                        <span id="detailQtyDisplay" class="font-bold w-6 text-center text-sm">1</span>
-                        <button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button>
-                    </div>
-                    <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-6 h-12 rounded-xl active-scale shadow-lg disabled:opacity-40 transition-all text-sm whitespace-nowrap">
-                        Adicionar
-                    </button>
-                </div>
+        <div id="detailPrice"></div>
+
+        <div id="sizesWrapper" class="hidden border-t border-slate-50 pt-6">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha o Tamanho</label>
+            <div id="detailSizesContainer" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div id="colorsWrapper" class="hidden border-t border-slate-50 pt-6">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha a Cor</label>
+            <div id="detailColorsContainer" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div id="relatedProductsSection" class="border-t border-slate-50 pt-8 hidden">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Quem viu também viu</label>
+            <div id="relatedGrid" class="flex overflow-x-auto gap-3 pb-4 hide-scroll -mx-2 px-2"></div>
+        </div>
+    </div>
+</div>
+
+        <div class="p-4 border-t flex items-center justify-between bg-white/95 backdrop-blur-md z-20 absolute bottom-0 w-full shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.08)]">
+            <div class="flex flex-col">
+                <span id="detailOldPrice" class="text-xs text-slate-400 line-through"></span>
+                <span id="detailPrice" class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight"></span>
             </div>
+            <div class="flex gap-2">
+                <div class="flex items-center bg-slate-100 rounded-xl px-1 h-12">
+                    <button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button>
+                    <span id="detailQtyDisplay" class="font-bold w-6 text-center text-sm">1</span>
+                    <button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button>
+                </div>
+                <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-8 h-12 rounded-xl active-scale shadow-lg disabled:opacity-40 transition-all text-sm md:text-base">
+                    Adicionar
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -411,7 +414,7 @@
     </div>
 
     <!-- MODAL: CARRINHO -->
-        <div id="modalCart" class="fixed inset-0 z-[80] hidden">
+        <div id="modalCart" class="fixed inset-0 z-[60] hidden">
     <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeCartModal()"></div>
     
     <div id="cartDrawer" class="absolute inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300">
@@ -1068,49 +1071,49 @@ Object.keys(metaUpdates).forEach(prop => {
     // 2. Define o preço final do Pix (com ou sem promoção)
     const finalPricePix = isPromoAtiva ? (basePrice * fatorDesconto) : precoPixBase;
 
-// 1. CÁLCULO DA LÓGICA (Permanece como você postou)
-const finalPriceCard = isPromoAtiva ? (finalPricePix + diferencaCartao) : precoCardBase;
-const oldP = isPromoAtiva ? basePrice : null;
+    // 3. Define o preço final do Cartão
+    // Se estiver em promo: Valor da Promo + Diferença do Cartão
+    // Se não estiver: Preço de Cartão cadastrado
+    const finalPriceCard = isPromoAtiva ? (finalPricePix + diferencaCartao) : precoCardBase;
 
-// 2. ATUALIZAÇÃO VISUAL (Foco em quem tem dificuldade visual)
-const priceDisplay = document.getElementById('detailPrice');
-if (priceDisplay) {
+    const oldP = isPromoAtiva ? basePrice : null;
+    // 3. Atualização Visual do Preço no Modal com melhor espaçamento
+    const priceDisplay = document.getElementById('detailPrice');
     priceDisplay.innerHTML = `
-        <div class="flex flex-col min-w-0 py-1">
-            <div class="mb-1">
-                <span class="text-[11px] font-black ${isPromoAtiva ? 'text-primary' : 'text-slate-500'} uppercase tracking-tighter">
-                    ${isPromoAtiva ? 'Preço de Oferta' : 'À vista'}
+        <div class="flex flex-col w-full mb-6"> <div class="flex items-center gap-2 mb-1">
+                <span class="bg-primary/10 text-primary text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+                    ${isPromoAtiva ? 'Oferta Especial' : 'À vista no Pix'}
                 </span>
             </div>
             
-            <div class="flex items-baseline mb-1">
-                <span class="text-3xl md:text-4xl font-display font-black text-slate-900 leading-[0.9] tracking-tight">
+            <div class="flex items-baseline gap-3">
+                <span class="text-3xl md:text-4xl font-display font-black text-slate-900 tracking-tight">
                     R$ ${finalPricePix.toFixed(2).replace('.',',')}
                 </span>
+                ${oldP ? `<span class="text-sm text-slate-400 line-through decoration-red-500/50">R$ ${oldP.toFixed(2).replace('.',',')}</span>` : ''}
             </div>
 
-            <div class="flex flex-col mt-1 space-y-0.5">
-                <span class="text-[13px] font-black text-blue-800 leading-none">
-                    Cartão: R$ ${finalPriceCard.toFixed(2).replace('.',',')}
-                </span>
-                ${(p.maxInstallments > 1) ? `
-                    <span class="text-[11px] text-slate-700 font-bold leading-none">
-                        Até ${p.maxInstallments}x de R$ ${(finalPriceCard / p.maxInstallments).toFixed(2).replace('.', ',')}
+            <div class="mt-3 p-3 bg-blue-50/50 rounded-2xl border border-blue-100/50">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="credit-card" class="w-3 h-3 text-blue-600"></i>
+                    <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wide">Opção no Cartão</span>
+                </div>
+                <div class="flex flex-col mt-1">
+                    <span class="text-sm font-black text-slate-800">
+                        R$ ${finalPriceCard.toFixed(2).replace('.',',')} total
                     </span>
-                ` : ''}
+                    ${(p.maxInstallments > 1) ? `
+                        <span class="text-[11px] text-blue-700/70 font-medium">
+                            ou até <b class="text-blue-700">${p.maxInstallments}x</b> de <b class="text-blue-700">R$ ${(finalPriceCard / p.maxInstallments).toFixed(2).replace('.', ',')}</b>
+                        </span>
+                    ` : ''}
+                </div>
             </div>
         </div>
     `;
-}
+    // Reinicia os ícones para o Lucide Card aparecer
+    if(typeof lucide !== 'undefined') lucide.createIcons();
 
-// 3. ATUALIZAÇÃO DO PREÇO RISCADO (Fora da div principal)
-const oldPriceEl = document.getElementById('detailOldPrice');
-if (oldPriceEl) {
-    oldPriceEl.textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
-}
-
-if(typeof lucide !== 'undefined') lucide.createIcons();
-   
     // 4. Atualiza SKU e Preço Antigo
     document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
     document.getElementById('detailSku').textContent = skuDinamico; 
@@ -1743,6 +1746,8 @@ async function registerVisit() {
     window.history.pushState({}, '', window.location.pathname);
 };
 
+        window.openCartModal = () => { document.getElementById('modalCart').classList.remove('hidden'); setTimeout(()=>document.getElementById('cartDrawer').classList.remove('translate-x-full'),10); };
+        window.closeCartModal = () => { document.getElementById('cartDrawer').classList.add('translate-x-full'); setTimeout(()=>document.getElementById('modalCart').classList.add('hidden'),300); };
        // --- FUNÇÕES DE MODAL (CORRIGIDAS E GLOBAIS) ---
 
 window.openFilterDrawer = () => {
@@ -2173,43 +2178,17 @@ window.closeModalDetails = () => {
     document.getElementById('modalDetails').classList.add('hidden');
 };
 
-// --- FUNÇÕES DE MODAL DO CARRINHO (VERSÃO ÚNICA E CORRIGIDA) ---
 window.openCartModal = () => {
-    // 1. Força o carrinho a voltar para a lista de itens (Step 1)
-    window.goToStep1(); 
-    
-    const modal = document.getElementById('modalCart');
-    const drawer = document.getElementById('cartDrawer');
-    
-    if (modal && drawer) {
-        // Exibe o fundo escuro
-        modal.classList.remove('hidden'); 
-        // Pequeno delay para a animação de deslizar (CSS transition) funcionar
-        setTimeout(() => {
-            drawer.classList.remove('translate-x-full');
-        }, 10);
-    }
+    window.goToStep1(); // Garante que sempre abre na lista de produtos
+    document.getElementById('modalCart').classList.remove('hidden'); 
+    setTimeout(() => document.getElementById('cartDrawer').classList.remove('translate-x-full'), 10); 
 };
 
 window.closeCartModal = () => { 
-    const modal = document.getElementById('modalCart');
-    const drawer = document.getElementById('cartDrawer');
-    
-    if (drawer) {
-        // Primeiro desliza para fora
-        drawer.classList.add('translate-x-full'); 
-    }
-    
-    if (modal) {
-        // Depois de 300ms (tempo da animação), esconde o fundo
-        setTimeout(() => {
-            modal.classList.add('hidden');
-        }, 300);
-    }
+    document.getElementById('cartDrawer').classList.add('translate-x-full'); 
+    setTimeout(() => document.getElementById('modalCart').classList.add('hidden'), 300); 
 };
 
-// Vincula a função de fechamento caso o HTML use o nome antigo
-window.closeCart = window.closeCartModal;
         // Função para saber quanto estoque sobra de verdade AGORA
 async function getRealStockAvailable(productId, variation = null) {
     try {
