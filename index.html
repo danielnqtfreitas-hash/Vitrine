@@ -5,6 +5,7 @@
     <meta name="facebook-domain-verification" content="iwnyy7sgy9l6coj4nnqge630wn2wis" />
     <meta name="color-scheme" content="light">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" id="theme-color-meta" content="#EA1D2C">
     <title id="pageTitle">Carregando Loja...</title>
     
     <!-- SEO & Compartilhamento -->
@@ -142,16 +143,44 @@
     }
 
     /* Força os elementos brancos a continuarem brancos */
-    .glass-header, 
-    .product-card, 
-    footer, 
-    #modalDetails .bg-white,
-    #modalCart .bg-white,
-    #filterDrawer,
-    #modalDelivery .bg-white {
-        background-color: #FFFFFF !important;
-        color: #334155 !important;
-    }
+.product-card, 
+footer, 
+#modalDetails .bg-white,
+#modalCart .bg-white,
+#filterDrawer,
+#modalDelivery .bg-white {
+    background-color: #FFFFFF !important;
+    color: #334155 !important;
+}
+
+/* ESTILO MERCADO LIVRE - TOPO SÓLIDO */
+header.glass-header {
+    background-color: var(--color-primary) !important;
+    background-image: none !important;
+    border-bottom: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Força tudo dentro do topo a ser branco (ícones e textos) */
+header.glass-header h1, 
+header.glass-header span, 
+header.glass-header i,
+header.glass-header #headerHeartIcon,
+header.glass-header button i {
+    color: #FFFFFF !important;
+}
+
+/* Mantém a barra de pesquisa branca com texto escuro (contraste perfeito) */
+header.glass-header .bg-slate-100 {
+    background-color: #FFFFFF !important;
+}
+header.glass-header input {
+    color: #334155 !important;
+}
+header.glass-header input::placeholder {
+    color: #94a3b8 !important;
+}
 
     /* Impede que o navegador mude as cores das imagens/logos */
     img {
@@ -1599,28 +1628,35 @@ window.closeConfirmFinal = () => {
     const todayId = new Date().toLocaleDateString('en-CA');
     setDoc(doc(db, "stores", STORE_ID, "analytics_history", todayId), { checkoutClicks: increment(1) }, { merge: true });
 };
-                                               
-        function applyStoreConfig(d) {
+            
+            function applyStoreConfig(d) {
     // 1. Número do WhatsApp para destino
     lojaZapDestino = (d.whatsappNumber || "").replace(/\D/g, "");
     
-    // --- NOVO: Vincula o número ao botão do rodapé ---
     const footerLink = document.getElementById('footerWaLink');
     if (footerLink && lojaZapDestino) {
         footerLink.href = `https://wa.me/${lojaZapDestino}`;
     }
 
-    // 2. Cor Primária do Tema
+    // 2. Cor Primária do Tema (Estilo Mercado Livre)
     if(d.primaryColor) { 
-        document.documentElement.style.setProperty('--color-primary', d.primaryColor); 
-        document.documentElement.style.setProperty('--color-primary-dark', d.primaryColor); 
+        const corPrincipal = d.primaryColor;
+        document.documentElement.style.setProperty('--color-primary', corPrincipal); 
+        document.documentElement.style.setProperty('--color-primary-dark', corPrincipal); 
+
+        // ATUALIZA A BARRA DO NAVEGADOR (Passo 1 que você fez no HTML)
+        const metaTheme = document.getElementById('theme-color-meta');
+        if(metaTheme) metaTheme.setAttribute('content', corPrincipal);
+        
+        // Remove qualquer degradê residual do body para manter a cor sólida no topo
+        document.body.style.backgroundImage = 'none';
+        document.body.style.backgroundColor = '#F3F4F6';
     }
     
-    // 3. Identidade Visual (Aqui já aplicamos o ajuste do nome da Gata Attrevida)
+    // 3. Identidade Visual
     const storeNameElement = document.getElementById('storeNameDisplay');
     if (storeNameElement) {
         storeNameElement.textContent = d.storeName;
-        // Ajuste de largura para nomes grandes
         storeNameElement.classList.replace('max-w-[140px]', 'max-w-[220px]');
     }
 
@@ -1649,7 +1685,7 @@ window.closeConfirmFinal = () => {
         deliverySelect.innerHTML = '<option value="0">Retirar na Loja</option>' + 
             deliveryAreas.map(a => `<option value="${a.fee}">${a.name} (R$ ${parseFloat(a.fee).toFixed(2).replace('.',',')})</option>`).join('');
     }
-        }   
+}
 
         
 async function registerVisit() {
