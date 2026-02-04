@@ -2173,17 +2173,43 @@ window.closeModalDetails = () => {
     document.getElementById('modalDetails').classList.add('hidden');
 };
 
+// --- FUNÇÕES DE MODAL DO CARRINHO (VERSÃO ÚNICA E CORRIGIDA) ---
 window.openCartModal = () => {
-    window.goToStep1(); // Garante que sempre abre na lista de produtos
-    document.getElementById('modalCart').classList.remove('hidden'); 
-    setTimeout(() => document.getElementById('cartDrawer').classList.remove('translate-x-full'), 10); 
+    // 1. Força o carrinho a voltar para a lista de itens (Step 1)
+    window.goToStep1(); 
+    
+    const modal = document.getElementById('modalCart');
+    const drawer = document.getElementById('cartDrawer');
+    
+    if (modal && drawer) {
+        // Exibe o fundo escuro
+        modal.classList.remove('hidden'); 
+        // Pequeno delay para a animação de deslizar (CSS transition) funcionar
+        setTimeout(() => {
+            drawer.classList.remove('translate-x-full');
+        }, 10);
+    }
 };
 
 window.closeCartModal = () => { 
-    document.getElementById('cartDrawer').classList.add('translate-x-full'); 
-    setTimeout(() => document.getElementById('modalCart').classList.add('hidden'), 300); 
+    const modal = document.getElementById('modalCart');
+    const drawer = document.getElementById('cartDrawer');
+    
+    if (drawer) {
+        // Primeiro desliza para fora
+        drawer.classList.add('translate-x-full'); 
+    }
+    
+    if (modal) {
+        // Depois de 300ms (tempo da animação), esconde o fundo
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
 };
 
+// Vincula a função de fechamento caso o HTML use o nome antigo
+window.closeCart = window.closeCartModal;
         // Função para saber quanto estoque sobra de verdade AGORA
 async function getRealStockAvailable(productId, variation = null) {
     try {
