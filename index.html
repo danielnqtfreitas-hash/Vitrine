@@ -902,10 +902,17 @@ function getActivePrice(p, method) {
         </button>`}
     </div>
     
-    ${( (p.priceCard || p.value) > bestPrice) ? `
-        <span class="text-[9px] font-bold text-blue-600 mt-0.5">
+   ${( (p.priceCard || p.value) > bestPrice) ? `
+    <div class="flex flex-col mt-0.5">
+        <span class="text-[9px] font-bold text-blue-600">
             Ou R$ ${(p.priceCard || p.value).toFixed(2).replace('.',',')} no cartão
-        </span>` : ''}
+        </span>
+        ${(p.maxInstallments > 1) ? `
+            <span class="text-[9px] text-slate-400 font-medium">
+                Em até ${p.maxInstallments}x de R$ ${((p.priceCard || p.value) / p.maxInstallments).toFixed(2).replace('.', ',')}
+            </span>
+        ` : ''}
+    </div>` : ''}
 </div>
             </div>
         </div>
@@ -1041,17 +1048,24 @@ Object.keys(metaUpdates).forEach(prop => {
     // 3. Atualização Visual do Preço no Modal
     const priceDisplay = document.getElementById('detailPrice');
     priceDisplay.innerHTML = `
-        <div class="flex flex-col gap-0">
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-                ${isPromoAtiva ? 'Oferta Especial' : 'À vista no Pix'}
-            </span>
-            <span class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight">
-                R$ ${finalPricePix.toFixed(2).replace('.',',')}
-            </span>
-            ${(finalPriceCard > finalPricePix) ? 
-                `<span class="text-[10px] font-bold text-blue-600">Ou R$ ${finalPriceCard.toFixed(2).replace('.',',')} no cartão</span>` : ''}
-        </div>
-    `;
+    <div class="flex flex-col gap-0">
+        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+            ${isPromoAtiva ? 'Oferta Especial' : 'À vista no Pix'}
+        </span>
+        <span class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight">
+            R$ ${finalPricePix.toFixed(2).replace('.',',')}
+        </span>
+        ${(finalPriceCard > finalPricePix) ? `
+            <div class="flex flex-col">
+                <span class="text-[10px] font-bold text-blue-600">Ou R$ ${finalPriceCard.toFixed(2).replace('.',',')} no cartão</span>
+                ${(p.maxInstallments > 1) ? `
+                    <span class="text-[10px] text-slate-400 font-medium italic">
+                        em até ${p.maxInstallments}x de R$ ${(finalPriceCard / p.maxInstallments).toFixed(2).replace('.', ',')}
+                    </span>
+                ` : ''}
+            </div>` : ''}
+    </div>
+`;
 
     // 4. Atualiza SKU e Preço Antigo
     document.getElementById('detailOldPrice').textContent = oldP ? `R$ ${oldP.toFixed(2).replace('.',',')}` : '';
@@ -1499,6 +1513,9 @@ cart.forEach(item => {
     
     msg += `• ${item.q}x ${item.name} ${vars ? '('+vars+')' : ''}\n`;
     msg += `  Unit: R$ ${precoDinâmico.toFixed(2).replace('.',',')} | Sub: R$ ${(precoDinâmico * item.q).toFixed(2).replace('.',',')}\n`;
+    if(pagamento === 'Cartão' && pOriginal.maxInstallments > 1) {
+    msg += `  (Disponível em até ${pOriginal.maxInstallments}x)\n`;
+}
     msg += `  _Ref: ${item.sku}_\n`;
 });
 
