@@ -1038,22 +1038,12 @@ Object.keys(metaUpdates).forEach(prop => {
             (!hasS || v.size.trim().toLowerCase() === (currentDetailSelection.size||"").trim().toLowerCase()) && 
             (!hasC || v.color.trim().toLowerCase() === (currentDetailSelection.color||"").trim().toLowerCase())
         );
-
         if(comb && comb.active) { 
             const vStock = parseInt(comb.stock) || 0;
-            if(vStock <= 0) {
-                outOfStockVariation = true;
-                isComplete = false; 
-            }
+            if(vStock <= 0) { outOfStockVariation = true; isComplete = false; }
             basePrice = comb.price; 
             skuDinamico = comb.sku || skuDinamico;
-            if (comb.image) {
-                const imgIdx = currentDetailImages.indexOf(comb.image);
-                if (imgIdx !== -1) setDetailImage(imgIdx);
-            }
-        } else if(hasS || hasC) {
-            isComplete = false;
-        }
+        } else if(hasS || hasC) { isComplete = false; }
     }
 
     const precoPixBase = p.priceCash || basePrice;
@@ -1064,40 +1054,35 @@ Object.keys(metaUpdates).forEach(prop => {
     const finalPriceCard = isPromoAtiva ? (finalPricePix + diferencaCartao) : precoCardBase;
     const oldP = isPromoAtiva ? basePrice : null;
 
-    // RENDERIZAÇÃO MAIS AREJADA
+    // RENDERIZAÇÃO ULTRA-COMPACTA
     const priceDisplay = document.getElementById('detailPrice');
     priceDisplay.innerHTML = `
-    <div class="flex flex-col gap-2 w-full py-1">
-        <div class="flex items-center gap-2">
-            ${oldP ? `<span class="text-sm text-slate-400 line-through">R$ ${oldP.toFixed(2).replace('.',',')}</span>` : ''}
-            ${isPromoAtiva ? `<span class="bg-red-100 text-red-600 text-[9px] font-black px-1.5 py-0.5 rounded uppercase">Oferta</span>` : ''}
-        </div>
+    <div class="flex flex-col leading-tight">
+        ${oldP ? `
+        <div class="flex items-center gap-1.5 mb-0.5">
+            <span class="text-[10px] text-slate-400 line-through">R$ ${oldP.toFixed(2).replace('.',',')}</span>
+            <span class="text-[9px] font-black text-red-500 uppercase tracking-tighter">Oferta</span>
+        </div>` : ''}
         
-        <div class="flex flex-col -mt-1">
-            <span class="text-3xl md:text-4xl font-display font-black text-slate-900 leading-none">
+        <div class="flex items-center gap-1.5">
+            <span class="text-2xl font-black text-slate-900 tracking-tighter">
                 R$ ${finalPricePix.toFixed(2).replace('.',',')}
             </span>
-            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mt-1">
-                À vista no Pix ou Dinheiro
-            </span>
+            <span class="text-[9px] font-bold text-slate-400 uppercase">Pix</span>
         </div>
 
-        <div class="flex flex-col border-t border-slate-100 pt-2 mt-1">
-            <div class="flex items-center gap-1.5">
-                <span class="text-xs font-bold text-slate-600">
-                    ou R$ ${finalPriceCard.toFixed(2).replace('.',',')} no cartão
-                </span>
-            </div>
+        <div class="flex items-center gap-1 mt-0.5">
+            <span class="text-[10px] font-bold text-slate-600">
+                Cartão: R$ ${finalPriceCard.toFixed(2).replace('.',',')}
+            </span>
             ${(p.maxInstallments > 1) ? `
-                <span class="text-[10px] text-slate-400 font-medium italic">
-                    até ${p.maxInstallments}x de R$ ${(finalPriceCard / p.maxInstallments).toFixed(2).replace('.', ',')}
+                <span class="text-[10px] text-slate-400">
+                    | ${p.maxInstallments}x de R$ ${(finalPriceCard / p.maxInstallments).toFixed(2).replace('.', ',')}
                 </span>
             ` : ''}
         </div>
     </div>
     `;
-
-    if(window.lucide) lucide.createIcons();
 
     document.getElementById('detailOldPrice').textContent = ''; 
     document.getElementById('detailSku').textContent = skuDinamico; 
@@ -1106,15 +1091,12 @@ Object.keys(metaUpdates).forEach(prop => {
     if (outOfStockVariation) {
         btnAdd.textContent = "Esgotado";
         btnAdd.disabled = true;
-        btnAdd.className = "bg-slate-400 text-white font-bold px-6 h-12 rounded-xl opacity-50";
+        btnAdd.className = "bg-slate-400 text-white font-bold px-6 h-11 rounded-xl opacity-50 text-sm";
     } else {
         btnAdd.textContent = "Adicionar";
         btnAdd.disabled = !isComplete;
-        btnAdd.className = `bg-primary hover:bg-primaryDark text-white font-bold px-6 h-12 rounded-xl active-scale shadow-lg transition-all ${!isComplete ? 'opacity-40' : ''}`;
+        btnAdd.className = `bg-primary hover:bg-primaryDark text-white font-bold px-6 h-11 rounded-xl active-scale shadow-lg transition-all text-sm ${!isComplete ? 'opacity-40' : ''}`;
     }
-    
-    p.currentFinalPrice = finalPricePix; 
-    p.currentSKU = skuDinamico; 
 };
 
         const renderChips = (list, type, container, wrapper) => {
