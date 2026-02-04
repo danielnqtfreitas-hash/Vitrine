@@ -153,7 +153,12 @@ footer,
     color: #334155 !important;
 }
 
-/* 1. O TOPO (Barra colorida sólida) */
+/* ESTILO MERCADO LIVRE - TOPO SÓLIDO */
+/* ============================================================
+   ESTILO MASTER: MERCADO LIVRE + BOTÕES APP PREMIUM
+   ============================================================ */
+
+/* 1. O TOPO (Barra colorida sólida igual ao App) */
 header.glass-header {
     background-color: var(--color-primary) !important;
     background-image: none !important;
@@ -163,64 +168,101 @@ header.glass-header {
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* 2. TEXTOS DO TOPO (Nome da loja e buscas) */
+/* 2. TEXTOS E NOME DA LOJA (Sempre Brancos) */
 header.glass-header h1, 
 header.glass-header span,
-header.glass-header #mobileSearch,
-header.glass-header #desktopSearch {
+header.glass-header #storeNameDisplay {
     color: #FFFFFF !important;
 }
 
-/* 3. BOTÕES CIRCULARES (Favoritos e Carrinho - O que você pediu) */
+/* 3. BOTÕES CIRCULARES (Favoritos e Carrinho - Brancos e Redondos) */
 #headerFavBtn, 
 header button[onclick="openCartModal()"] {
-    background-color: #FFFFFF !important; /* Fundo branco */
+    background-color: #FFFFFF !important; /* Fundo Branco Sólido */
     border: none !important;
-    width: 42px;  /* Tamanho fixo para ser um círculo perfeito */
-    height: 42px;
-    display: flex;
+    width: 44px !important; 
+    height: 44px !important;
+    display: flex !important;
     align-items: center;
     justify-content: center;
-    border-radius: 9999px !important; /* Deixa redondo */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15) !important;
+    border-radius: 50% !important; /* Círculo perfeito */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    padding: 0 !important;
+    position: relative;
+    transition: transform 0.2s ease;
 }
 
-/* 4. ÍCONES DENTRO DOS BOTÕES (Na cor da loja) */
+#headerFavBtn:active, 
+header button[onclick="openCartModal()"]:active {
+    transform: scale(0.9); /* Efeito de clique */
+}
+
+/* 4. ÍCONES COLORIDOS (Correção para o Carrinho e Favoritos) */
 #headerFavBtn i, 
-header button[onclick="openCartModal()"] i {
+header button[onclick="openCartModal()"] i,
+header button[onclick="openCartModal()"] svg {
     color: var(--color-primary) !important; /* Ícone na cor da loja */
-    width: 20px;
-    height: 20px;
+    stroke: var(--color-primary) !important; /* Garante visibilidade do SVG */
+    width: 20px !important;
+    height: 20px !important;
 }
 
-/* 5. BOLINHAS DE NÚMEROS (Badges) */
+/* 5. BOLINHAS DE NÚMEROS (Badges sobre os botões) */
 #cartBadge, #favBadgeDesktop {
-    background-color: #334155 !important; /* Cor escura para destacar no branco */
+    background-color: #334155 !important; /* Cor escura para destacar */
     color: #FFFFFF !important;
     border: 2px solid #FFFFFF !important;
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    height: 18px !important;
+    width: 18px !important;
+    top: -2px !important;
+    right: -2px !important;
 }
 
-/* 6. BARRA DE BUSCA (Estilo ML: Branca com ícone cinza) */
+/* 6. BARRA DE BUSCA (Branca com Lupa Cinza) */
 header.glass-header .bg-slate-100 {
     background-color: #FFFFFF !important;
     border-radius: 12px !important;
 }
+
 header.glass-header .bg-slate-100 i {
-    color: #94a3b8 !important; /* Ícone da lupa cinza */
-}
-header.glass-header input {
-    color: #334155 !important; /* Texto que digita fica escuro */
+    color: #94a3b8 !important; /* Lupa cinza */
 }
 
-/* 7. BLINDAGEM MODO ESCURO (Para não estragar nada) */
+header.glass-header input {
+    color: #334155 !important; /* Texto digitado escuro */
+}
+
+/* 7. BLINDAGEM CONTRA MODO ESCURO (Impede que o sistema estrague o visual) */
 @media (prefers-color-scheme: dark) {
-    body { background-color: #F3F4F6 !important; color: #334155 !important; }
-    .product-card, footer, #modalDetails .bg-white, #modalCart .bg-white, #filterDrawer, #modalDelivery .bg-white {
+    body { 
+        background-color: #F3F4F6 !important; 
+        color: #334155 !important; 
+    }
+
+    /* Mantém os cards e modais brancos */
+    .product-card, 
+    footer, 
+    #modalDetails .bg-white, 
+    #modalCart .bg-white, 
+    #filterDrawer, 
+    #modalDelivery .bg-white {
         background-color: #FFFFFF !important;
         color: #334155 !important;
     }
-    header.glass-header { background-color: var(--color-primary) !important; }
+
+    /* Mantém o topo com a cor da loja */
+    header.glass-header {
+        background-color: var(--color-primary) !important;
+    }
+
+    /* Impede inversão de cores em imagens e inputs */
     img { filter: none !important; }
+    input, select, textarea {
+        background-color: #FFFFFF !important;
+        color: #334155 !important;
+    }
 }
     /* Garante que os inputs não fiquem com fundo preto e texto branco */
     input, select, textarea {
