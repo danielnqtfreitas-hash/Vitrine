@@ -387,25 +387,30 @@
     </div>
 </div>
 
-        <div class="p-4 border-t flex items-center justify-between bg-white/95 backdrop-blur-md z-20 absolute bottom-0 w-full shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.08)]">
-            <div class="flex flex-col">
-                <span id="detailOldPrice" class="text-xs text-slate-400 line-through"></span>
-                <span id="detailPrice" class="text-2xl md:text-3xl font-display font-black text-slate-900 tracking-tight"></span>
-            </div>
-            <div class="flex gap-2">
-                <div class="flex items-center bg-slate-100 rounded-xl px-1 h-12">
-                    <button onclick="adjustDetailQty(-1)" class="w-8 h-full font-bold text-lg text-slate-500">-</button>
-                    <span id="detailQtyDisplay" class="font-bold w-6 text-center text-sm">1</span>
-                    <button onclick="adjustDetailQty(1)" class="w-8 h-full font-bold text-lg text-slate-500">+</button>
-                </div>
-                <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-8 h-12 rounded-xl active-scale shadow-lg disabled:opacity-40 transition-all text-sm md:text-base">
-                    Adicionar
-                </button>
-            </div>
+       <div class="p-4 border-t flex items-center justify-between bg-white/95 backdrop-blur-md z-20 absolute bottom-0 w-full shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.08)]">
+    
+    <div class="flex flex-col flex-1 min-w-0">
+        <div class="flex items-center gap-1.5">
+            <span id="detailPrice" class="text-xl md:text-2xl font-display font-black text-slate-900 tracking-tight truncate"></span>
+            <span id="detailOldPrice" class="text-[10px] text-slate-400 line-through decoration-red-500/30"></span>
         </div>
+        <span class="text-[9px] font-bold text-blue-600 uppercase tracking-tighter opacity-80">
+            Ou no cartão/parcelado
+        </span>
+    </div>
+
+    <div class="flex items-center gap-2 shrink-0">
+        <div class="flex items-center bg-slate-100 rounded-xl px-1 h-10 border border-slate-200">
+            <button onclick="adjustDetailQty(-1)" class="w-7 h-full font-bold text-slate-500 hover:text-primary transition-colors">-</button>
+            <span id="detailQtyDisplay" class="font-bold w-5 text-center text-xs text-slate-700">1</span>
+            <button onclick="adjustDetailQty(1)" class="w-7 h-full font-bold text-slate-500 hover:text-primary transition-colors">+</button>
+        </div>
+
+        <button id="detailAddBtn" class="bg-primary hover:bg-primaryDark text-white font-bold px-4 md:px-6 h-10 rounded-xl active-scale shadow-md disabled:opacity-40 transition-all text-xs md:text-sm uppercase tracking-wider">
+            Adicionar
+        </button>
     </div>
 </div>
-
 
     <!-- MODAL: ZOOM -->
     <div id="modalImageZoom" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/95 backdrop-blur-md opacity-0 transition-opacity duration-300 cursor-zoom-out" onclick="closeImageZoom()">
