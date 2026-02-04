@@ -37,5 +37,16 @@
     <g:price>70.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1770217432441</g:id>
+    <g:title>Chavosos</g:title>
+    <g:description>Chavosos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1770217432441</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1770217432441_main_0.jpg?alt=media&amp;token=794bf097-8c09-48b3-b12a-ef67b4d72720</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>70.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
