@@ -466,6 +466,11 @@
                         </div>
 
                         <div id="changeField" class="hidden animate-fade-in bg-amber-50 p-3 rounded-xl border border-amber-100">
+                           <div id="cardInstallmentsField" class="hidden animate-fade-in bg-blue-50 p-3 rounded-xl border border-blue-100 mt-2">
+    <label class="text-[9px] font-black text-blue-600 uppercase tracking-widest ml-1">Parcelamento</label>
+    <select id="checkInstallments" class="w-full bg-white border border-blue-200 rounded-lg p-2 text-sm outline-none mt-1">
+        </select>
+</div>
                             <label class="text-[9px] font-black text-amber-600 uppercase tracking-widest ml-1">Troco para quanto?</label>
                             <div class="relative mt-1">
                                 <span class="absolute left-3 top-2.5 text-amber-600 text-sm font-bold">R$</span>
@@ -889,35 +894,34 @@ function getActivePrice(p, method) {
             <h4 class="text-sm font-semibold text-slate-700 leading-snug line-clamp-2 mb-2">${p.name}</h4>
             <div class="mt-auto pt-1">
                 <div class="flex flex-col">
-    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
-        ${hasPromo ? 'Oferta Especial' : 'À vista no Pix'}
-    </span>
-    <div class="flex items-center justify-between">
-        <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">
-            R$ ${bestPrice.toFixed(2).replace('.',',')}
-        </span>
-        ${outOfStock ? '' : `
-        <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
-            <i data-lucide="plus" class="w-5 h-5"></i>
-        </button>`}
-    </div>
-    
-   ${( (p.priceCard || p.value) > bestPrice) ? `
-    <div class="flex flex-col mt-0.5">
-        <span class="text-[9px] font-bold text-blue-600">
-            Ou R$ ${(p.priceCard || p.value).toFixed(2).replace('.',',')} no cartão
-        </span>
-        ${(p.maxInstallments > 1) ? `
-            <span class="text-[9px] text-slate-400 font-medium">
-                Em até ${p.maxInstallments}x de R$ ${((p.priceCard || p.value) / p.maxInstallments).toFixed(2).replace('.', ',')}
-            </span>
-        ` : ''}
-    </div>` : ''}
-</div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                        ${hasPromo ? 'Oferta Especial' : 'À vista no Pix'}
+                    </span>
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg md:text-xl font-display font-black text-slate-900 tracking-tight">
+                            R$ ${bestPrice.toFixed(2).replace('.',',')}
+                        </span>
+                        ${outOfStock ? '' : `
+                        <button onclick="event.stopPropagation(); quickAdd('${p.id}')" class="w-8 h-8 rounded-full bg-primary/10 hover:bg-primary text-primary hover:text-white flex items-center justify-center transition-colors active-scale">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>`}
+                    </div>
+                    
+                    <div class="flex flex-col mt-1 pt-1 border-t border-slate-50">
+                        <span class="text-[9px] font-bold text-blue-600">
+                            Ou R$ ${(p.priceCard || p.value).toFixed(2).replace('.',',')} no cartão
+                        </span>
+                        ${(p.maxInstallments > 1) ? `
+                            <span class="text-[9px] text-slate-400 font-medium">
+                                Em até ${p.maxInstallments}x de R$ ${((p.priceCard || p.value) / p.maxInstallments).toFixed(2).replace('.', ',')}
+                            </span>
+                        ` : ''}
+                    </div>
+                </div>
             </div>
         </div>
     </div>`;
-        }
+}
 
         // --- LOGICA DE DETALHES DO PRODUTO (VERSÃO COMPLETA E CORRIGIDA) ---
 window.openProductModal = (id) => { 
@@ -2580,8 +2584,10 @@ document.addEventListener('change', (e) => {
     if(e.target.id === 'checkPayment') {
         const method = e.target.value;
         const changeField = document.getElementById('changeField');
+        const installmentsField = document.getElementById('cardInstallmentsField'); // A div azul
+        const installmentsSelect = document.getElementById('checkInstallments');   // O select dentro dela
         
-        // Mostra/Esconde campo de troco
+        // 1. Lógica para DINHEIRO (Troco)
         if(method === 'Dinheiro') {
             changeField.classList.remove('hidden');
         } else {
@@ -2590,11 +2596,32 @@ document.addEventListener('change', (e) => {
             if(inputChange) inputChange.value = ''; 
         }
 
+        // 2. Lógica para CARTÃO (Parcelas Dinâmicas)
+        if(method === 'Cartão') {
+            installmentsField.classList.remove('hidden');
+            
+            // Descobre o maior parcelamento permitido entre os produtos que estão no carrinho
+            const maxAllowed = cart.reduce((max, item) => {
+                const pOrig = allProducts.find(x => x.id === item.id);
+                // Usa o maxInstallments salvo no produto ou padrão 1
+                return Math.max(max, (pOrig?.maxInstallments || 1));
+            }, 1);
+
+            // Preenche o select de 1x até o limite permitido (máximo 6x)
+            let options = '';
+            for(let i = 1; i <= maxAllowed; i++) {
+                options += `<option value="${i}">${i}x no Cartão</option>`;
+            }
+            installmentsSelect.innerHTML = options;
+        } else {
+            // Se não for cartão, esconde o campo
+            if(installmentsField) installmentsField.classList.add('hidden');
+        }
+
         // --- A MÁGICA ACONTECE AQUI ---
-        // Força o recálculo visual de toda a sacola
         window.updateCartTotals();
 
-        // Feedback visual (A piscada que você gostou)
+        // Feedback visual
         const totalEl = document.getElementById('cartFinalTotal');
         if(totalEl) {
             totalEl.classList.add('animate-bounce-short', 'text-green-600');
