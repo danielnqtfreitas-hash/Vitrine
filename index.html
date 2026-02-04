@@ -345,45 +345,47 @@
                 <div id="detailThumbnails" class="flex gap-3 px-6 py-2 overflow-x-auto items-center hide-scroll snap-x scroll-smooth outline-none min-h-[60px]"></div>
             </div>
 
-            <div class="px-6 pb-32"> 
-                <div class="flex justify-between items-start mb-2">
-                     <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
-                     <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
-                        <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
-                     </button>
-                </div>
-
-                <div id="modalTimer" class="hidden timer-accent p-2 rounded-lg mb-4 flex items-center gap-2">
-                    <i data-lucide="clock" class="w-4 h-4"></i>
-                    <span id="modalTimerText" class="text-xs font-bold"></span>
-                </div>
-                
-                <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
-                
-                <div id="detailSkuContainer" class="mb-4">
-                    <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
-                </div>
-                
-                <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed mb-8"></p>
-                
-                <div class="flex flex-col p-6 space-y-6"> <div id="detailPrice"></div>
-
-    <div id="sizesWrapper" class="hidden border-t border-slate-50 pt-6">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha o Tamanho</label>
-        <div id="detailSizesContainer" class="flex flex-wrap gap-2"></div>
+            <div class="px-6 pb-32"> <div class="flex justify-between items-start mb-2">
+        <span id="detailCat" class="text-[10px] font-extrabold text-primary uppercase tracking-widest pt-1"></span>
+        <button id="modalHeartBtn" onclick="toggleFavoriteCurrentDetail()" class="p-2 -mr-2 -mt-2 rounded-full hover:bg-slate-50 active-scale">
+            <i data-lucide="heart" class="w-6 h-6 text-slate-300"></i>
+        </button>
     </div>
 
-    <div id="colorsWrapper" class="hidden border-t border-slate-50 pt-6">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha a Cor</label>
-        <div id="detailColorsContainer" class="flex flex-wrap gap-2"></div>
+    <div id="modalTimer" class="hidden timer-accent p-2 rounded-lg mb-4 flex items-center gap-2">
+        <i data-lucide="clock" class="w-4 h-4"></i>
+        <span id="modalTimerText" class="text-xs font-bold"></span>
     </div>
 
-    <div class="border-t border-slate-50 pt-6">
-        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block text-center">Sugestões para você</label>
-        <div id="suggestionsContainer" class="grid grid-cols-2 gap-4"></div>
+    <h2 id="detailName" class="font-display text-2xl md:text-3xl font-bold text-slate-900 mb-1"></h2>
+
+    <div class="flex flex-col space-y-6 mt-4"> 
+        
+        <div>
+            <div id="detailSkuContainer" class="mb-3">
+                <span class="text-[10px] font-mono bg-slate-100 text-slate-500 px-2 py-0.5 rounded uppercase tracking-wider">SKU: <span id="detailSku"></span></span>
+            </div>
+            <p id="detailDesc" class="text-slate-500 text-sm leading-relaxed"></p>
+        </div>
+
+        <div id="detailPrice"></div>
+
+        <div id="sizesWrapper" class="hidden border-t border-slate-50 pt-6">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha o Tamanho</label>
+            <div id="detailSizesContainer" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div id="colorsWrapper" class="hidden border-t border-slate-50 pt-6">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Escolha a Cor</label>
+            <div id="detailColorsContainer" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div id="relatedProductsSection" class="border-t border-slate-50 pt-8 hidden">
+            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Quem viu também viu</label>
+            <div id="relatedGrid" class="flex overflow-x-auto gap-3 pb-4 hide-scroll -mx-2 px-2"></div>
+        </div>
     </div>
 </div>
-        </div>
 
         <div class="p-4 border-t flex items-center justify-between bg-white/95 backdrop-blur-md z-20 absolute bottom-0 w-full shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.08)]">
             <div class="flex flex-col">
