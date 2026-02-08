@@ -1091,17 +1091,6 @@ Estojo</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1769172560018</g:id>
-    <g:title>Short Corda</g:title>
-    <g:description>Short Corda</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769172560018</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769172560018_main_0.jpg?alt=media&amp;token=3455d826-a21c-4d8c-abf8-f113a3596cfb</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1769172984600</g:id>
     <g:title>Short jeans Gabriela</g:title>
     <g:description>Short jeans Gabriela</g:description>
@@ -1278,20 +1267,6 @@ Tamanho G veste 5/6 anos
 Tamanho Gg veste 7/8 anos</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769775421319</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769775421319_main_0.jpg?alt=media&amp;token=22cef808-d2b8-4a2e-8d96-ec371084bfbf</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769775538699</g:id>
-    <g:title>Conjunto Boss</g:title>
-    <g:description>Tamanho P veste 2 anos
-Tamanho M veste 3/4 anos
-Tamanho G veste 5/6 anos
-Tamanho Gg veste 7/8 anos</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769775538699</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769775538699_main_0.jpg?alt=media&amp;token=f476f93a-3efc-4cd2-947b-c2c87d00c72e</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>60.00 BRL</g:price>
