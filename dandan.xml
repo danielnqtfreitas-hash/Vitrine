@@ -37,5 +37,16 @@
     <g:price>70.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1770912036042</g:id>
+    <g:title>açaí</g:title>
+    <g:description>açaí</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1770912036042</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>15.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
