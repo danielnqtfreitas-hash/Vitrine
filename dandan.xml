@@ -48,5 +48,27 @@
     <g:price>15.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1770941122541</g:id>
+    <g:title>Bolo de Banana</g:title>
+    <g:description>Bolo de Banana</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1770941122541</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1770941122541_main_0.jpg?alt=media&amp;token=4b797664-a1cf-432c-9248-8a5bff73f272</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>30.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1770945622290</g:id>
+    <g:title>Chavosos (Cópia)</g:title>
+    <g:description>Chavosos (Cópia)</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1770945622290</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1770217432441_main_0.jpg?alt=media&amp;token=794bf097-8c09-48b3-b12a-ef67b4d72720</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>70.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
