@@ -685,17 +685,6 @@ Veste 34/36</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1769015729378</g:id>
-    <g:title>Short  jeans Romenia</g:title>
-    <g:description>Short  jeans Romenia</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769015729378</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769015729378_main_0.jpg?alt=media&amp;token=1e62a3bd-0cae-44ff-957d-178dc2188ab3</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1769015878311</g:id>
     <g:title>Saia jeans 2 cintos</g:title>
     <g:description>Saia jeans 2 cintos</g:description>
@@ -1095,6 +1084,28 @@ Estojo</g:description>
     <g:description>Short Gessica</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769172078351</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769172078351_main_0.jpg?alt=media&amp;token=28935d40-dbb8-439f-8793-0be7632147d4</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769172415577</g:id>
+    <g:title>Short  jeans Milena</g:title>
+    <g:description>Short  jeans Milena</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769172415577</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769172415577_main_0.jpg?alt=media&amp;token=2042fb43-86dd-4a39-b723-0bb5fc02d161</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1769172984600</g:id>
+    <g:title>Short jeans Gabriela</g:title>
+    <g:description>Short jeans Gabriela</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769172984600</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769172984600_main_0.jpg?alt=media&amp;token=d22f9fa6-e003-4b70-bd3b-b515499668a0</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>75.00 BRL</g:price>
