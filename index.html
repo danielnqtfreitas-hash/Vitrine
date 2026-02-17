@@ -708,7 +708,7 @@ header.glass-header input {
         let currentDetailImages = [], currentDetailImageIndex = 0;
         let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
         let isFavoritesView = false;
-        let lojaAbertaCliente = true;
+       let lojaAberta = true; // Variável global de controle
 
 
 
@@ -2889,17 +2889,43 @@ function initGlobalCountdowns() {
     }, 1000);
 }
 
-// 1. Escuta o status em tempo real
-function monitorarStatusNaVitrine() {
+function monitorarStatusLoja() {
+    // Certifique-se de que a variável STORE_ID existe na sua vitrine
+    if (typeof STORE_ID === 'undefined') return;
+
     const storeRef = doc(db, "stores", STORE_ID, "config", "store");
+
+    // Escuta mudanças em tempo real
     onSnapshot(storeRef, (docSnap) => {
         if (docSnap.exists()) {
-            lojaAbertaCliente = (docSnap.data().status === 'active');
+            const data = docSnap.data();
+            lojaAberta = (data.status === 'active');
+            
+            // 1. Controla o Banner visual
             const banner = document.getElementById('status-loja-banner');
-            lojaAbertaCliente ? banner.classList.add('hidden') : banner.classList.remove('hidden');
+            if (banner) {
+                lojaAberta ? banner.classList.add('hidden') : banner.classList.remove('hidden');
+            }
+
+            // 2. Opcional: Desabilita visualmente os botões da página
+            atualizarInterfaceLojaFechada();
         }
     });
 }
+
+function atualizarInterfaceLojaFechada() {
+    const botoes = document.querySelectorAll('.btn-add-cart'); // Ajuste para a classe dos seus botões
+    botoes.forEach(btn => {
+        if (!lojaAberta) {
+            btn.classList.add('opacity-50', 'grayscale', 'cursor-not-allowed');
+        } else {
+            btn.classList.remove('opacity-50', 'grayscale', 'cursor-not-allowed');
+        }
+    });
+}
+
+// Inicializa a escuta
+monitorarStatusLoja();
     </script>
 </body>
         </html>
