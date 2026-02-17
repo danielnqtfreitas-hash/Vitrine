@@ -157,12 +157,7 @@ footer,
 /* ============================================================
    ESTILO MASTER: MERCADO LIVRE + BOTÕES APP PREMIUM
    ============================================================ */
-<style>
-    .loja-fechada .btn-add-cart {
-        filter: grayscale(1);
-        pointer-events: none; /* Garante que não haverá cliques */
-    }
-</style>
+
 /* 1. O TOPO (Barra colorida sólida igual ao App) */
 header.glass-header {
     background-color: var(--color-primary) !important;
@@ -298,12 +293,7 @@ header.glass-header input {
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative bg-[#F3F4F6] text-[#334155]">
-<div id="status-loja-banner" class="hidden bg-amber-100 border-b border-amber-200 px-4 py-3 text-amber-800 text-center text-sm font-medium sticky top-0 z-[100] shadow-sm">
-    <div class="flex items-center justify-center gap-2">
-        <i data-lucide="clock" class="w-4 h-4"></i>
-        <span>No momento estamos fechados. Você pode ver o catálogo, mas os pedidos estão pausados.</span>
-    </div>
-</div>
+
     <!-- ERROR SCREEN -->
     <div id="errorScreen" class="fixed inset-0 z-[10000] bg-slate-900 hidden flex flex-col items-center justify-center p-6 text-center">
         <div class="bg-slate-800 p-6 rounded-full mb-6 shadow-2xl">
@@ -723,48 +713,6 @@ const BOT_CONFIG = {
     searchCooldown: 2500, // 2.5 segundos entre registros
     forbiddenChars: /[<>{}\[\]\\/|]/g, // Caracteres usados em ataques/bots
 };
-
-let lojaAberta = true; // Estado global para controle das funções
-
-function monitorarStatusLoja() {
-    if (typeof STORE_ID === 'undefined') return;
-
-    // Referência ao documento de configuração da loja no Firestore
-    const storeRef = doc(db, "stores", STORE_ID, "config", "store");
-
-    onSnapshot(storeRef, (docSnap) => {
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            lojaAberta = (data.status === 'active');
-            
-            const banner = document.getElementById('status-loja-banner');
-            
-            if (lojaAberta) {
-                banner?.classList.add('hidden');
-            } else {
-                banner?.classList.remove('hidden');
-            }
-
-            // Atualiza visualmente os botões de compra que já estão na tela
-            atualizarBotoesCompraUI();
-        }
-    });
-}
-
-function atualizarBotoesCompraUI() {
-    // Procura todos os botões que adicionam ao carrinho
-    const botoes = document.querySelectorAll('button[onclick*="addToCart"]');
-    
-    botoes.forEach(btn => {
-        if (!lojaAberta) {
-            btn.classList.add('grayscale', 'opacity-60', 'cursor-not-allowed');
-            // Opcional: mudar o texto do botão
-            // btn.innerText = "Loja Fechada";
-        } else {
-            btn.classList.remove('grayscale', 'opacity-60', 'cursor-not-allowed');
-        }
-    });
-}
 
 // Variável para controle de tempo local
 let lastSearchRecordedAt = 0;
@@ -2374,17 +2322,6 @@ async function getRealStockAvailable(productId, variation = null) {
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
 window.addToCart = async (p, q, v) => {
-    // --- NOVO: TRAVA DE LOJA FECHADA ---
-    // Verifica a variável global 'lojaAberta' que criamos anteriormente
-    if (typeof lojaAberta !== 'undefined' && !lojaAberta) {
-        Swal.fire({
-            title: 'Loja Fechada',
-            text: 'No momento estamos apenas para visualização. Não estamos aceitando novos pedidos agora.',
-            icon: 'info',
-            confirmButtonColor: '#EA1D2C'
-        });
-        return; // Interrompe toda a execução aqui
-    }
     // 1. FORÇA O DOWNLOAD DOS DADOS REAIS DO PRODUTO (Ignora cache de disco)
     // Isso garante que se o lojista cancelou um pedido, o estoque apareça liberado na hora
     let pAtualizado = p;
