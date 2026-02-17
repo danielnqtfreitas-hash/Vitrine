@@ -64,12 +64,6 @@
     }
     </script>
     <style>
-    .loja-fechada .btn-add-cart {
-        filter: grayscale(1);
-        pointer-events: none; /* Garante que não haverá cliques */
-    }
-</style>
-    <style>
 
         .countdown-text {
     font-variant-numeric: tabular-nums; /* Mantém os números com a mesma largura */
@@ -163,7 +157,12 @@ footer,
 /* ============================================================
    ESTILO MASTER: MERCADO LIVRE + BOTÕES APP PREMIUM
    ============================================================ */
-
+<style>
+    .loja-fechada .btn-add-cart {
+        filter: grayscale(1);
+        pointer-events: none; /* Garante que não haverá cliques */
+    }
+</style>
 /* 1. O TOPO (Barra colorida sólida igual ao App) */
 header.glass-header {
     background-color: var(--color-primary) !important;
@@ -725,47 +724,44 @@ const BOT_CONFIG = {
     forbiddenChars: /[<>{}\[\]\\/|]/g, // Caracteres usados em ataques/bots
 };
 
-let lojaAberta = true; // Variável global para controlar o estado
+let lojaAberta = true; // Estado global para controle das funções
 
 function monitorarStatusLoja() {
-    // Certifique-se de que o currentStoreId está definido
-    if (!currentStoreId) return;
+    if (typeof STORE_ID === 'undefined') return;
 
-    const storeRef = db.collection("stores").doc(currentStoreId).collection("config").doc("store");
+    // Referência ao documento de configuração da loja no Firestore
+    const storeRef = doc(db, "stores", STORE_ID, "config", "store");
 
-    storeRef.onSnapshot((doc) => {
-        if (doc.exists) {
-            const data = doc.data();
+    onSnapshot(storeRef, (docSnap) => {
+        if (docSnap.exists()) {
+            const data = docSnap.data();
             lojaAberta = (data.status === 'active');
             
             const banner = document.getElementById('status-loja-banner');
             
             if (lojaAberta) {
-                banner.classList.add('hidden');
-                document.body.classList.remove('loja-fechada');
+                banner?.classList.add('hidden');
             } else {
-                banner.classList.remove('hidden');
-                document.body.classList.add('loja-fechada');
+                banner?.classList.remove('hidden');
             }
-            
-            // Atualiza os botões de compra que já estão na tela
-            renderizarBotoesStatus();
+
+            // Atualiza visualmente os botões de compra que já estão na tela
+            atualizarBotoesCompraUI();
         }
     });
 }
 
-function renderizarBotoesStatus() {
-    const botoesCompra = document.querySelectorAll('.btn-add-cart'); // Use a classe que você usa nos botões de compra
+function atualizarBotoesCompraUI() {
+    // Procura todos os botões que adicionam ao carrinho
+    const botoes = document.querySelectorAll('button[onclick*="addToCart"]');
     
-    botoesCompra.forEach(btn => {
+    botoes.forEach(btn => {
         if (!lojaAberta) {
-            btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
-            btn.innerText = "Loja Fechada";
-            btn.disabled = true;
+            btn.classList.add('grayscale', 'opacity-60', 'cursor-not-allowed');
+            // Opcional: mudar o texto do botão
+            // btn.innerText = "Loja Fechada";
         } else {
-            btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
-            btn.innerText = "Adicionar ao Carrinho";
-            btn.disabled = false;
+            btn.classList.remove('grayscale', 'opacity-60', 'cursor-not-allowed');
         }
     });
 }
