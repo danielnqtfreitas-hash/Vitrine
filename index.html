@@ -293,6 +293,9 @@ header.glass-header input {
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative bg-[#F3F4F6] text-[#334155]">
+  <div id="status-loja-banner" class="hidden w-full bg-amber-50 border-b border-amber-200 px-4 py-3 text-amber-800 text-center text-xs font-bold uppercase tracking-widest sticky top-[60px] z-40 animate-pulse">
+    <span>Estamos fechados no momento. Pedidos pausados.</span>
+</div>
 
     <!-- ERROR SCREEN -->
     <div id="errorScreen" class="fixed inset-0 z-[10000] bg-slate-900 hidden flex flex-col items-center justify-center p-6 text-center">
@@ -705,6 +708,9 @@ header.glass-header input {
         let currentDetailImages = [], currentDetailImageIndex = 0;
         let filters = { search: "", category: null, maxPrice: null, sizes: [], colors: [] };
         let isFavoritesView = false;
+        let lojaAbertaCliente = true;
+
+
 
 // --- CONFIGURAÇÃO ANTIBOT ---
 const BOT_CONFIG = {
@@ -2883,6 +2889,17 @@ function initGlobalCountdowns() {
     }, 1000);
 }
 
+// 1. Escuta o status em tempo real
+function monitorarStatusNaVitrine() {
+    const storeRef = doc(db, "stores", STORE_ID, "config", "store");
+    onSnapshot(storeRef, (docSnap) => {
+        if (docSnap.exists()) {
+            lojaAbertaCliente = (docSnap.data().status === 'active');
+            const banner = document.getElementById('status-loja-banner');
+            lojaAbertaCliente ? banner.classList.add('hidden') : banner.classList.remove('hidden');
+        }
+    });
+}
     </script>
 </body>
         </html>
