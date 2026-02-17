@@ -64,6 +64,12 @@
     }
     </script>
     <style>
+    .loja-fechada .btn-add-cart {
+        filter: grayscale(1);
+        pointer-events: none; /* Garante que não haverá cliques */
+    }
+</style>
+    <style>
 
         .countdown-text {
     font-variant-numeric: tabular-nums; /* Mantém os números com a mesma largura */
@@ -157,12 +163,7 @@ footer,
 /* ============================================================
    ESTILO MASTER: MERCADO LIVRE + BOTÕES APP PREMIUM
    ============================================================ */
-<style>
-    .loja-fechada .btn-add-cart {
-        filter: grayscale(1);
-        pointer-events: none; /* Garante que não haverá cliques */
-    }
-</style>
+
 /* 1. O TOPO (Barra colorida sólida igual ao App) */
 header.glass-header {
     background-color: var(--color-primary) !important;
