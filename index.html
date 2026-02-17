@@ -2890,42 +2890,42 @@ function initGlobalCountdowns() {
 }
 
 function monitorarStatusLoja() {
-    // Certifique-se de que a variável STORE_ID existe na sua vitrine
-    if (typeof STORE_ID === 'undefined') return;
+    // CORREÇÃO: Verifica se o ID da loja existe. 
+    // Se for null ou undefined, o Firebase estoura o erro 'indexOf'
+    if (!window.STORE_ID) {
+        console.warn("Aguardando ID da loja para monitorar status...");
+        // Tenta novamente em 500ms caso o carregamento seja lento
+        setTimeout(monitorarStatusLoja, 500);
+        return;
+    }
 
-    const storeRef = doc(db, "stores", STORE_ID, "config", "store");
+    try {
+        // reference.ts:571:5 falha aqui se STORE_ID for null
+        const storeRef = doc(db, "stores", window.STORE_ID, "config", "store");
 
-    // Escuta mudanças em tempo real
-    onSnapshot(storeRef, (docSnap) => {
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            lojaAberta = (data.status === 'active');
-            
-            // 1. Controla o Banner visual
-            const banner = document.getElementById('status-loja-banner');
-            if (banner) {
-                lojaAberta ? banner.classList.add('hidden') : banner.classList.remove('hidden');
+        onSnapshot(storeRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                lojaAberta = (data.status === 'active');
+                
+                // Atualiza o banner visual
+                const banner = document.getElementById('status-loja-banner');
+                if (banner) {
+                    lojaAberta ? banner.classList.add('hidden') : banner.classList.remove('hidden');
+                }
+                
+                // Dispara a atualização dos botões de compra
+                if (typeof atualizarBotoesCompraUI === 'function') {
+                    atualizarBotoesCompraUI();
+                }
             }
-
-            // 2. Opcional: Desabilita visualmente os botões da página
-            atualizarInterfaceLojaFechada();
-        }
-    });
+        }, (error) => {
+            console.error("Erro no Snapshot do status:", error);
+        });
+    } catch (err) {
+        console.error("Erro ao configurar referência do Firestore:", err);
+    }
 }
-
-function atualizarInterfaceLojaFechada() {
-    const botoes = document.querySelectorAll('.btn-add-cart'); // Ajuste para a classe dos seus botões
-    botoes.forEach(btn => {
-        if (!lojaAberta) {
-            btn.classList.add('opacity-50', 'grayscale', 'cursor-not-allowed');
-        } else {
-            btn.classList.remove('opacity-50', 'grayscale', 'cursor-not-allowed');
-        }
-    });
-}
-
-// Inicializa a escuta
-monitorarStatusLoja();
     </script>
 </body>
         </html>
