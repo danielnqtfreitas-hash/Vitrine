@@ -157,7 +157,12 @@ footer,
 /* ============================================================
    ESTILO MASTER: MERCADO LIVRE + BOTÕES APP PREMIUM
    ============================================================ */
-
+<style>
+    .loja-fechada .btn-add-cart {
+        filter: grayscale(1);
+        pointer-events: none; /* Garante que não haverá cliques */
+    }
+</style>
 /* 1. O TOPO (Barra colorida sólida igual ao App) */
 header.glass-header {
     background-color: var(--color-primary) !important;
@@ -293,7 +298,12 @@ header.glass-header input {
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative bg-[#F3F4F6] text-[#334155]">
-
+<div id="status-loja-banner" class="hidden bg-amber-100 border-b border-amber-200 px-4 py-3 text-amber-800 text-center text-sm font-medium sticky top-0 z-[100] shadow-sm">
+    <div class="flex items-center justify-center gap-2">
+        <i data-lucide="clock" class="w-4 h-4"></i>
+        <span>No momento estamos fechados. Você pode ver o catálogo, mas os pedidos estão pausados.</span>
+    </div>
+</div>
     <!-- ERROR SCREEN -->
     <div id="errorScreen" class="fixed inset-0 z-[10000] bg-slate-900 hidden flex flex-col items-center justify-center p-6 text-center">
         <div class="bg-slate-800 p-6 rounded-full mb-6 shadow-2xl">
@@ -713,6 +723,51 @@ const BOT_CONFIG = {
     searchCooldown: 2500, // 2.5 segundos entre registros
     forbiddenChars: /[<>{}\[\]\\/|]/g, // Caracteres usados em ataques/bots
 };
+
+let lojaAberta = true; // Variável global para controlar o estado
+
+function monitorarStatusLoja() {
+    // Certifique-se de que o currentStoreId está definido
+    if (!currentStoreId) return;
+
+    const storeRef = db.collection("stores").doc(currentStoreId).collection("config").doc("store");
+
+    storeRef.onSnapshot((doc) => {
+        if (doc.exists) {
+            const data = doc.data();
+            lojaAberta = (data.status === 'active');
+            
+            const banner = document.getElementById('status-loja-banner');
+            
+            if (lojaAberta) {
+                banner.classList.add('hidden');
+                document.body.classList.remove('loja-fechada');
+            } else {
+                banner.classList.remove('hidden');
+                document.body.classList.add('loja-fechada');
+            }
+            
+            // Atualiza os botões de compra que já estão na tela
+            renderizarBotoesStatus();
+        }
+    });
+}
+
+function renderizarBotoesStatus() {
+    const botoesCompra = document.querySelectorAll('.btn-add-cart'); // Use a classe que você usa nos botões de compra
+    
+    botoesCompra.forEach(btn => {
+        if (!lojaAberta) {
+            btn.classList.add('opacity-50', 'cursor-not-allowed', 'grayscale');
+            btn.innerText = "Loja Fechada";
+            btn.disabled = true;
+        } else {
+            btn.classList.remove('opacity-50', 'cursor-not-allowed', 'grayscale');
+            btn.innerText = "Adicionar ao Carrinho";
+            btn.disabled = false;
+        }
+    });
+}
 
 // Variável para controle de tempo local
 let lastSearchRecordedAt = 0;
@@ -2322,6 +2377,17 @@ async function getRealStockAvailable(productId, variation = null) {
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
 window.addToCart = async (p, q, v) => {
+    // --- NOVO: TRAVA DE LOJA FECHADA ---
+    // Verifica a variável global 'lojaAberta' que criamos anteriormente
+    if (typeof lojaAberta !== 'undefined' && !lojaAberta) {
+        Swal.fire({
+            title: 'Loja Fechada',
+            text: 'No momento estamos apenas para visualização. Não estamos aceitando novos pedidos agora.',
+            icon: 'info',
+            confirmButtonColor: '#EA1D2C'
+        });
+        return; // Interrompe toda a execução aqui
+    }
     // 1. FORÇA O DOWNLOAD DOS DADOS REAIS DO PRODUTO (Ignora cache de disco)
     // Isso garante que se o lojista cancelou um pedido, o estoque apareça liberado na hora
     let pAtualizado = p;
