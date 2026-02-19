@@ -825,7 +825,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         storeConfigGlobal = config;
         applyStoreConfig(config);
-        monitorarStatusLoja();
+        monitorarStatusLoja(STORE_ID);
 
         // 2. GERENCIAMENTO DE CACHE
         const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
@@ -2901,30 +2901,24 @@ function initGlobalCountdowns() {
     }, 1000);
 }
 
-function monitorarStatusLoja() {
-    // Mudamos de window.STORE_ID para apenas STORE_ID (que você definiu no topo do script)
-    if (!STORE_ID) {
-        console.warn("Aguardando ID da loja para monitorar status...");
-        setTimeout(monitorarStatusLoja, 500);
-        return;
-    }
+function monitorarStatusLoja(idConfirmado) {
+    // Se não recebeu o ID, não tenta prosseguir
+    if (!idConfirmado) return;
 
     try {
-        // reference.ts:571:5 falha aqui se STORE_ID for null
-        const storeRef = doc(db, "stores", window.STORE_ID, "config", "store");
+        // Usamos o idConfirmado que veio diretamente do initFlow
+        const storeRef = doc(db, "stores", idConfirmado, "config", "store");
 
         onSnapshot(storeRef, (docSnap) => {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 lojaAberta = (data.status === 'active');
                 
-                // Atualiza o banner visual
                 const banner = document.getElementById('status-loja-banner');
                 if (banner) {
                     lojaAberta ? banner.classList.add('hidden') : banner.classList.remove('hidden');
                 }
                 
-                // Dispara a atualização dos botões de compra
                 if (typeof atualizarBotoesCompraUI === 'function') {
                     atualizarBotoesCompraUI();
                 }
