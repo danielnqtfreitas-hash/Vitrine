@@ -293,7 +293,7 @@ header.glass-header input {
     </style>
 </head>
 <body class="flex flex-col min-h-screen relative bg-[#F3F4F6] text-[#334155]">
-  <div id="status-loja-banner" class="hidden w-full bg-amber-50 border-b border-amber-200 px-4 py-3 text-amber-800 text-center text-xs font-bold uppercase tracking-widest sticky top-[60px] z-40 animate-pulse">
+  <div id="status-loja-banner" class="hidden w-full bg-amber-50 border-b border-amber-200 px-4 py-3 text-amber-800 text-center text-xs font-bold uppercase tracking-widest sticky top-[80px] md:top-[96px] z-40 animate-pulse">
     <span>Estamos fechados no momento. Pedidos pausados.</span>
 </div>
 
@@ -2328,6 +2328,17 @@ async function getRealStockAvailable(productId, variation = null) {
 
 // --- LÓGICA DO CARRINHO ATUALIZADA ---
 window.addToCart = async (p, q, v) => {
+
+  // --- TRAVA DE SEGURANÇA: LOJA FECHADA ---
+    if (!lojaAberta) {
+        Swal.fire({
+            title: 'Loja Fechada',
+            text: 'Desculpe, não estamos aceitando pedidos no momento. Você pode continuar navegando pelo nosso catálogo!',
+            icon: 'info',
+            confirmButtonColor: 'var(--color-primary)'
+        });
+        return; // Interrompe a execução
+    }
     // 1. FORÇA O DOWNLOAD DOS DADOS REAIS DO PRODUTO (Ignora cache de disco)
     // Isso garante que se o lojista cancelou um pedido, o estoque apareça liberado na hora
     let pAtualizado = p;
@@ -2926,6 +2937,22 @@ function monitorarStatusLoja() {
         console.error("Erro ao configurar referência do Firestore:", err);
     }
 }
+
+// AGORA SIM, NÓS LIGAMOS O MONITOR:
+monitorarStatusLoja(); 
+
+// E CRIAMOS A REGRA DE PINTAR OS BOTÕES:
+window.atualizarBotoesCompraUI = () => {
+    const botoes = document.querySelectorAll('button[id*="Add"], button[id*="quickAdd"], .product-card button');
+    botoes.forEach(btn => {
+        if (!lojaAberta) {
+            btn.classList.add('grayscale', 'opacity-50', 'cursor-not-allowed');
+        } else {
+            btn.classList.remove('grayscale', 'opacity-50', 'cursor-not-allowed');
+        }
+    });
+};
+
     </script>
 </body>
         </html>
