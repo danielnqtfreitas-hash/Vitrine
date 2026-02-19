@@ -825,6 +825,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         storeConfigGlobal = config;
         applyStoreConfig(config);
+        monitorarStatusLoja();
 
         // 2. GERENCIAMENTO DE CACHE
         const CACHE_KEY = `app_cache_v4_${STORE_ID}`;
@@ -2901,11 +2902,9 @@ function initGlobalCountdowns() {
 }
 
 function monitorarStatusLoja() {
-    // CORREÇÃO: Verifica se o ID da loja existe. 
-    // Se for null ou undefined, o Firebase estoura o erro 'indexOf'
-    if (!window.STORE_ID) {
+    // Mudamos de window.STORE_ID para apenas STORE_ID (que você definiu no topo do script)
+    if (!STORE_ID) {
         console.warn("Aguardando ID da loja para monitorar status...");
-        // Tenta novamente em 500ms caso o carregamento seja lento
         setTimeout(monitorarStatusLoja, 500);
         return;
     }
@@ -2937,9 +2936,6 @@ function monitorarStatusLoja() {
         console.error("Erro ao configurar referência do Firestore:", err);
     }
 }
-
-// AGORA SIM, NÓS LIGAMOS O MONITOR:
-monitorarStatusLoja(); 
 
 // E CRIAMOS A REGRA DE PINTAR OS BOTÕES:
 window.atualizarBotoesCompraUI = () => {
