@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+  <title>admin</title>
+  <link>https://loja.vitrineonline.app.br/admin </link>
+  <description>Feed de Produtos - admin</description>
+  <item>
+    <g:id>prod_1771462906544</g:id>
+    <g:title>Admin</g:title>
+    <g:description>Admin</g:description>
+    <g:link>https://loja.vitrineonline.app.br/admin ?id=prod_1771462906544</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>70.00 BRL</g:price>
+    <g:brand>admin</g:brand>
+  </item>
+</channel>
+</rss>
