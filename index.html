@@ -2906,11 +2906,9 @@ function initGlobalCountdowns() {
 }
 
 function monitorarStatusLoja(idConfirmado) {
-    // Se não recebeu o ID, não tenta prosseguir
     if (!idConfirmado) return;
 
     try {
-        // Usamos o idConfirmado que veio diretamente do initFlow
         const storeRef = doc(db, "stores", idConfirmado, "config", "store");
 
         onSnapshot(storeRef, (docSnap) => {
@@ -2919,8 +2917,33 @@ function monitorarStatusLoja(idConfirmado) {
                 lojaAberta = (data.status === 'active');
                 
                 const banner = document.getElementById('status-loja-banner');
+                const header = document.querySelector('header'); // Seleciona seu cabeçalho
+
                 if (banner) {
-                    lojaAberta ? banner.classList.add('hidden') : banner.classList.remove('hidden');
+                    if (lojaAberta) {
+                        banner.classList.add('hidden');
+                        document.body.style.paddingTop = "0px";
+                        if (header) header.style.top = "0px";
+                    } else {
+                        banner.classList.remove('hidden');
+                        
+                        // Garante que o banner seja fixo no topo absoluto
+                        banner.style.position = 'fixed';
+                        banner.style.top = '0';
+                        banner.style.left = '0';
+                        banner.style.zIndex = '9999';
+
+                        // Calcula a altura do banner para empurrar o resto do site
+                        const bannerHeight = banner.offsetHeight || 40;
+                        
+                        // 1. Empurra o corpo do site para baixo
+                        document.body.style.paddingTop = bannerHeight + "px";
+                        
+                        // 2. Se o seu header for fixo/sticky, empurra ele para baixo do banner também
+                        if (header) {
+                            header.style.top = bannerHeight + "px";
+                        }
+                    }
                 }
                 
                 if (typeof atualizarBotoesCompraUI === 'function') {
@@ -2934,7 +2957,6 @@ function monitorarStatusLoja(idConfirmado) {
         console.error("Erro ao configurar referência do Firestore:", err);
     }
 }
-
 // E CRIAMOS A REGRA DE PINTAR OS BOTÕES:
 window.atualizarBotoesCompraUI = () => {
     const botoes = document.querySelectorAll('button[id*="Add"], button[id*="quickAdd"], .product-card button');
