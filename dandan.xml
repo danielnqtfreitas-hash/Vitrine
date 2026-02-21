@@ -49,14 +49,14 @@
     <g:brand>Dandan</g:brand>
   </item>
   <item>
-    <g:id>prod_1770941122541</g:id>
-    <g:title>Bolo de Banana</g:title>
-    <g:description>Bolo de Banana</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1770941122541</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1770941122541_main_0.jpg?alt=media&amp;token=4b797664-a1cf-432c-9248-8a5bff73f272</g:image_link>
+    <g:id>prod_1771703076578</g:id>
+    <g:title>Banco Industrial </g:title>
+    <g:description>Feito em metalon e Mdf. </g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1771703076578</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1771703076578_main_0.jpg?alt=media&amp;token=01d8970d-c69c-43ed-8527-b5a2c733edef</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
-    <g:price>30.00 BRL</g:price>
+    <g:price>200.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
 </channel>

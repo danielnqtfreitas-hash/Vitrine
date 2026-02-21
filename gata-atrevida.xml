@@ -1806,17 +1806,6 @@ g veste 4/5 anos</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1770221576026</g:id>
-    <g:title>Short Thays</g:title>
-    <g:description>Short Thays</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1770221576026</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1770221576026_main_0.jpg?alt=media&amp;token=3a5e5e83-d68e-4053-bc6d-73a4487906ed</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1770643689757</g:id>
     <g:title>Sandália julia</g:title>
     <g:description>Sandália julia</g:description>
@@ -1880,6 +1869,17 @@ g veste 4/5 anos</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1771703442980</g:id>
+    <g:title>Short priscila</g:title>
+    <g:description>Short priscila</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1771703442980</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1771703442980_main_0.jpg?alt=media&amp;token=b391666a-23a5-45c4-9122-397a07069587</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
