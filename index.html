@@ -2917,31 +2917,38 @@ function monitorarStatusLoja(idConfirmado) {
                 lojaAberta = (data.status === 'active');
                 
                 const banner = document.getElementById('status-loja-banner');
-                const header = document.querySelector('header'); // Seleciona seu cabeçalho
+                const header = document.querySelector('header');
+                const abasCategorias = document.querySelector('.tabs-container') || document.getElementById('categoryTabs'); // Ajuste para o ID/Classe real das suas abas
 
                 if (banner) {
                     if (lojaAberta) {
                         banner.classList.add('hidden');
                         document.body.style.paddingTop = "0px";
                         if (header) header.style.top = "0px";
+                        if (abasCategorias) abasCategorias.style.top = "80px"; // Valor padrão do seu cabeçalho
                     } else {
                         banner.classList.remove('hidden');
                         
-                        // Garante que o banner seja fixo no topo absoluto
+                        // Garante o banner no topo absoluto
                         banner.style.position = 'fixed';
                         banner.style.top = '0';
-                        banner.style.left = '0';
                         banner.style.zIndex = '9999';
 
-                        // Calcula a altura do banner para empurrar o resto do site
                         const bannerHeight = banner.offsetHeight || 40;
-                        
-                        // 1. Empurra o corpo do site para baixo
+                        const headerHeight = header ? header.offsetHeight : 80;
+
+                        // 1. Empurra o corpo do site
                         document.body.style.paddingTop = bannerHeight + "px";
                         
-                        // 2. Se o seu header for fixo/sticky, empurra ele para baixo do banner também
+                        // 2. Ajusta o Header para ficar abaixo do banner
                         if (header) {
                             header.style.top = bannerHeight + "px";
+                        }
+
+                        // 3. AJUSTE DAS ABAS: Elas devem travar abaixo do Banner + Header
+                        if (abasCategorias) {
+                            const novoTopAbas = bannerHeight + headerHeight;
+                            abasCategorias.style.top = novoTopAbas + "px";
                         }
                     }
                 }
