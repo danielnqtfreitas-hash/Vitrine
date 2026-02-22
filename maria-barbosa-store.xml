@@ -26,5 +26,16 @@
     <g:price>65.00 BRL</g:price>
     <g:brand>Maria Barbosa Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1771777112429</g:id>
+    <g:title>Vestido em poá</g:title>
+    <g:description>Vestido com elástico na costa </g:description>
+    <g:link>https://loja.vitrineonline.app.br/maria-barbosa-store?id=prod_1771777112429</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fmaria-barbosa-store%2Fproducts%2Fprod_1771777112429_main_0.jpg?alt=media&amp;token=bbb52bc9-fe2c-4f65-9e50-5e592229a4fb</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>120.00 BRL</g:price>
+    <g:brand>Maria Barbosa Store</g:brand>
+  </item>
 </channel>
 </rss>
