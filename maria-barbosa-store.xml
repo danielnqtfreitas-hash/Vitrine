@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:g="http://base.google.com/ns/1.0">
+<channel>
+  <title>Maria Barbosa Store</title>
+  <link>https://loja.vitrineonline.app.br/maria-barbosa-store</link>
+  <description>Feed de Produtos - Maria Barbosa Store</description>
+  <item>
+    <g:id>prod_1771771385388</g:id>
+    <g:title>Eudora kissme </g:title>
+    <g:description>Eudora kissme </g:description>
+    <g:link>https://loja.vitrineonline.app.br/maria-barbosa-store?id=prod_1771771385388</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fmaria-barbosa-store%2Fproducts%2Fprod_1771771385388_main_0.jpg?alt=media&amp;token=c9427393-e4cf-4edd-8999-a062481e1a0e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Maria Barbosa Store</g:brand>
+  </item>
+</channel>
+</rss>
