@@ -1972,5 +1972,16 @@ G veste 42</g:description>
     <g:price>70.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1772050052363</g:id>
+    <g:title>Short Thamara </g:title>
+    <g:description>Short Thamara </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772050052363</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772050052363_main_0.jpg?alt=media&amp;token=b343d2eb-3959-4340-8bbb-79b27d2a0727</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>70.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
