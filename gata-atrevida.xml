@@ -596,17 +596,6 @@ Veste 34 ao 38</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1769015000094</g:id>
-    <g:title>Macaquinho vitoria</g:title>
-    <g:description>Macaquinho vitoria</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769015000094</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769015000094_main_0.jpg?alt=media&amp;token=5ae27383-8710-41a6-9ca9-ae82ec98cd42</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1769015312753</g:id>
     <g:title>Saia Emilly</g:title>
     <g:description>Saia 
@@ -1167,20 +1156,6 @@ Tamanho G veste 5/6 anos
 Tamanho Gg veste 7/8 anos</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769775421319</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769775421319_main_0.jpg?alt=media&amp;token=22cef808-d2b8-4a2e-8d96-ec371084bfbf</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769775802011</g:id>
-    <g:title>Conjunto Boss</g:title>
-    <g:description>Tamanho P veste 2 anos
-Tamanho M veste 3/4 anos
-Tamanho G veste 5/6 anos
-Tamanho Gg veste 7/8 anos</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769775802011</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769775802011_main_0.jpg?alt=media&amp;token=9afc2bfb-6b35-47fa-a4ff-602a958661f4</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>60.00 BRL</g:price>
