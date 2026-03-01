@@ -1859,5 +1859,64 @@ G veste 42</g:description>
     <g:price>70.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1772370200344</g:id>
+    <g:title>Body karine</g:title>
+    <g:description>Veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772370200344</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772370200344_main_0.jpg?alt=media&amp;token=9bf5fecf-662b-4b3b-9cd9-de3dd792c139</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772370568409</g:id>
+    <g:title>Body Gessica</g:title>
+    <g:description>Tecido poliamida 
+Veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772370568409</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772370568409_main_0.jpg?alt=media&amp;token=87a32352-5c94-4358-aba5-740a0813efec</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772370787365</g:id>
+    <g:title>Body Cecilia</g:title>
+    <g:description>Tecido poliamida
+Veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772370787365</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772370787365_main_0.jpg?alt=media&amp;token=839463fb-82c3-42d8-a228-23482fb032d1</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772371178857</g:id>
+    <g:title>Body Ana luh</g:title>
+    <g:description>Tecido poliamida
+Veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772371178857</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772371330204</g:id>
+    <g:title>Body Bianca </g:title>
+    <g:description>Veste 34 ao 38
+</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772371330204</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772371330204_main_0.jpg?alt=media&amp;token=21a7fd3f-69a5-47ad-96ca-151da0360bfe</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
