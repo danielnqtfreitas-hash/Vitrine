@@ -2021,5 +2021,60 @@ Tecido poliamida </g:description>
     <g:price>45.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1772375281013</g:id>
+    <g:title>Cropped Brasil Alça</g:title>
+    <g:description>Veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772375281013</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772375281013_main_0.jpg?alt=media&amp;token=ad73bfc5-b46c-4867-81a1-006fbf114e2d</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>45.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772376097179</g:id>
+    <g:title>Short jeans Sabrina</g:title>
+    <g:description>Short jeans Sabrina</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772376097179</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772376097179_main_0.jpg?alt=media&amp;token=c05017e6-0c01-407f-a77e-4d14cd6a0692</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772376288032</g:id>
+    <g:title>Short jeans Sandra</g:title>
+    <g:description>Short jeans Sandra</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772376288032</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772376288032_main_0.jpg?alt=media&amp;token=c2b6b5e9-a254-4e7f-bfa1-3942c9b89099</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772376520840</g:id>
+    <g:title>Short Jeans Priscila </g:title>
+    <g:description>Short Jeans Priscila </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772376520840</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772376520840_main_0.jpg?alt=media&amp;token=bdc2e47d-e450-4cf3-8048-76af5f6bce66</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1772376734700</g:id>
+    <g:title>Short Jeans Roberta </g:title>
+    <g:description>Short Jeans Roberta </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772376734700</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772376734700_main_0.jpg?alt=media&amp;token=b25bb688-7140-496c-89b7-41b18e1d7b3b</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
