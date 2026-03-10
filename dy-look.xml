@@ -16,17 +16,6 @@
     <g:brand>Dy Look Moda Praia </g:brand>
   </item>
   <item>
-    <g:id>prod_1769968414632</g:id>
-    <g:title>Vestido Floral</g:title>
-    <g:description>Veste 38 ao 42</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dy-look?id=prod_1769968414632</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdy-look%2Fproducts%2Fprod_1769968414632_main_0.jpg?alt=media&amp;token=a164d56c-0799-4593-b14e-a69cb855b892</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>80.00 BRL</g:price>
-    <g:brand>Dy Look Moda Praia </g:brand>
-  </item>
-  <item>
     <g:id>prod_1769969491984</g:id>
     <g:title>Macaquinho Floral</g:title>
     <g:description>Veste 38 ao 42</g:description>
@@ -46,6 +35,18 @@
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>90.00 BRL</g:price>
+    <g:brand>Dy Look Moda Praia </g:brand>
+  </item>
+  <item>
+    <g:id>prod_1773155724953</g:id>
+    <g:title>Maiô Sol</g:title>
+    <g:description>Maiô tecido Beach Gloss 
+Com bojo removível e alças reforçadas</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dy-look?id=prod_1773155724953</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdy-look%2Fproducts%2Fprod_1773155724953_main_0.jpg?alt=media&amp;token=8e51a0cf-29e5-4f65-b142-a10b12b029fb</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>100.00 BRL</g:price>
     <g:brand>Dy Look Moda Praia </g:brand>
   </item>
 </channel>
