@@ -115,17 +115,6 @@
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1768683212492</g:id>
-    <g:title>Conjunto Bruna</g:title>
-    <g:description>Conjunto saia</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768683212492</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768683212492_main_0.jpg?alt=media&amp;token=fd6c2cda-b03b-49f5-aafb-6b1f85c60718</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1768683330843</g:id>
     <g:title>Conjunto Catarina </g:title>
     <g:description>Veste 38/40</g:description>
@@ -345,17 +334,6 @@ Tamanho 42</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>90.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1768835682271</g:id>
-    <g:title>Conjunto indiano </g:title>
-    <g:description>Conjunto indiano </g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768835682271</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768835682271_main_0.jpg?alt=media&amp;token=3e66cba2-4448-46db-88e9-411fad91a2a1</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
