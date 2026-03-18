@@ -1387,17 +1387,6 @@ Com ziper</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1769867039010</g:id>
-    <g:title>Short Grasy</g:title>
-    <g:description>Com ziper</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769867039010</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769867039010_main_0.jpg?alt=media&amp;token=6ad0ef9e-fa5a-45c3-84ad-6263fd15c1fe</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1769867155107</g:id>
     <g:title>Short karine</g:title>
     <g:description>Com ziper</g:description>
@@ -2038,6 +2027,17 @@ Tecido poliamida </g:description>
     <g:description>Short Jeans Roberta </g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1772376734700</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1772376734700_main_0.jpg?alt=media&amp;token=b25bb688-7140-496c-89b7-41b18e1d7b3b</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1773862396022</g:id>
+    <g:title>Jean</g:title>
+    <g:description>Jean</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1773862396022</g:link>
+    <g:image_link></g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>75.00 BRL</g:price>
