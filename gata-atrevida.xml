@@ -2010,16 +2010,5 @@ Tecido poliamida </g:description>
     <g:price>75.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
-  <item>
-    <g:id>prod_1773862396022</g:id>
-    <g:title>Jean</g:title>
-    <g:description>Jean</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1773862396022</g:link>
-    <g:image_link></g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
 </channel>
 </rss>
