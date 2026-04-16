@@ -37,5 +37,16 @@
     <g:price>200.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1776298399036</g:id>
+    <g:title>Acaí</g:title>
+    <g:description>Acaí</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1776298399036</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1776298399036_main_0.jpg?alt=media&amp;token=2ef5190f-6dd1-4d07-af9a-0e246e9a057e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>10.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
