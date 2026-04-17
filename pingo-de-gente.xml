@@ -26,5 +26,60 @@
     <g:price>6.00 BRL</g:price>
     <g:brand>Pingo de Gente</g:brand>
   </item>
+  <item>
+    <g:id>prod_1776457912048</g:id>
+    <g:title>Saia cargo </g:title>
+    <g:description>Saia cargo </g:description>
+    <g:link>https://loja.vitrineonline.app.br/pingo-de-gente?id=prod_1776457912048</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fpingo-de-gente%2Fproducts%2Fprod_1776457912048_main_0.jpg?alt=media&amp;token=8662d72b-eefa-44bb-9b7e-ff9fa8be29df</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>30.00 BRL</g:price>
+    <g:brand>Pingo de Gente</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1776458371004</g:id>
+    <g:title>Conjunto alfaiataria </g:title>
+    <g:description>Conjunto alfaiataria </g:description>
+    <g:link>https://loja.vitrineonline.app.br/pingo-de-gente?id=prod_1776458371004</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fpingo-de-gente%2Fproducts%2Fprod_1776458371004_main_0.jpg?alt=media&amp;token=29f1e480-9f79-4392-88e4-3818d8029adb</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Pingo de Gente</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1776459334202</g:id>
+    <g:title>Conjunto kimono Emilly Vick </g:title>
+    <g:description>Conjunto kimono Emilly Vick </g:description>
+    <g:link>https://loja.vitrineonline.app.br/pingo-de-gente?id=prod_1776459334202</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fpingo-de-gente%2Fproducts%2Fprod_1776459334202_main_0.jpg?alt=media&amp;token=ecc8bb43-b1f9-48b2-9500-579ebd06f7ce</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Pingo de Gente</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1776460215314</g:id>
+    <g:title>Bory</g:title>
+    <g:description>Bory</g:description>
+    <g:link>https://loja.vitrineonline.app.br/pingo-de-gente?id=prod_1776460215314</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fpingo-de-gente%2Fproducts%2Fprod_1776460215314_main_0.jpg?alt=media&amp;token=0830072e-b7a6-4ace-8440-6f03c6042cbf</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>35.00 BRL</g:price>
+    <g:brand>Pingo de Gente</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1776460510494</g:id>
+    <g:title>Conjunto Emilly Vick tiara</g:title>
+    <g:description>Conjunto Emilly Vick tiara</g:description>
+    <g:link>https://loja.vitrineonline.app.br/pingo-de-gente?id=prod_1776460510494</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fpingo-de-gente%2Fproducts%2Fprod_1776460510494_main_0.jpg?alt=media&amp;token=86a06701-e065-4198-95de-9e8f45815610</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Pingo de Gente</g:brand>
+  </item>
 </channel>
 </rss>
