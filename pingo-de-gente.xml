@@ -4,5 +4,27 @@
   <title>Pingo de Gente</title>
   <link>https://loja.vitrineonline.app.br/pingo-de-gente</link>
   <description>Feed de Produtos - Pingo de Gente</description>
+  <item>
+    <g:id>prod_1776434783061</g:id>
+    <g:title>Calcinha </g:title>
+    <g:description>Calcinha </g:description>
+    <g:link>https://loja.vitrineonline.app.br/pingo-de-gente?id=prod_1776434783061</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fpingo-de-gente%2Fproducts%2Fprod_1776434783061_main_0.jpg?alt=media&amp;token=08b96c97-8550-4231-9ad2-532d61f52e3d</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>5.00 BRL</g:price>
+    <g:brand>Pingo de Gente</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1776435337250</g:id>
+    <g:title>Calcinha box</g:title>
+    <g:description>Calcinha box</g:description>
+    <g:link>https://loja.vitrineonline.app.br/pingo-de-gente?id=prod_1776435337250</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fpingo-de-gente%2Fproducts%2Fprod_1776435337250_main_0.jpg?alt=media&amp;token=1511059e-135b-49fa-93a9-ba0291badf8a</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>6.00 BRL</g:price>
+    <g:brand>Pingo de Gente</g:brand>
+  </item>
 </channel>
 </rss>
