@@ -282,12 +282,35 @@ Tamanho 42</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
+    <g:id>prod_1768837290759</g:id>
+    <g:title>Vestido Costa nua </g:title>
+    <g:description>Tecido poliamida,veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768837290759</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768837290759_main_0.jpg?alt=media&amp;token=237bcc93-e00a-4049-8e31-d40443efaa48</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
     <g:id>prod_1768838508392</g:id>
     <g:title>Vestido Isabel</g:title>
     <g:description>Veste 34 ao 40
 Tecido poliamida </g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768838508392</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768838508392_main_0.jpg?alt=media&amp;token=5417c530-0bfe-4c64-b332-71b328f6fdd8</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1768840915470</g:id>
+    <g:title>Vestido karol</g:title>
+    <g:description>Tecido poliamida
+Veste 34 ao 40</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768840915470</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768840915470_main_0.jpg?alt=media&amp;token=1b3c39d8-8d37-437d-af6e-6253740ceb28</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>80.00 BRL</g:price>
