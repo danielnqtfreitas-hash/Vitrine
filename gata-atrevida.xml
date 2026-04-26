@@ -86,7 +86,7 @@
     <g:title>Conjunto Brena</g:title>
     <g:description>Short saia frente e costas com zíper </g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768683058176</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768683058176_main_0.jpg?alt=media&amp;token=b48923f6-0d85-48dd-b965-4d6d8968b336</g:image_link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768683058176_main_1.jpg?alt=media&amp;token=7918b83a-9b46-43bd-97e1-f7269c718a83</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>90.00 BRL</g:price>
@@ -230,18 +230,6 @@
     <g:description>Short saia frente e costas </g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768834752520</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768834752520_main_0.jpg?alt=media&amp;token=49a5632c-2ac5-430c-b54e-05ecdebec307</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>90.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1768834911317</g:id>
-    <g:title>Conjunto Sofia</g:title>
-    <g:description>Short saia frente e Costa
-36/38</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768834911317</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768834911317_main_0.jpg?alt=media&amp;token=b5beaa14-52da-41e5-8e0c-7e03577c339d</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>90.00 BRL</g:price>
@@ -808,17 +796,6 @@ Estojo</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769437595597</g:id>
-    <g:title>Conjunto thamyris</g:title>
-    <g:description>Conjunto thamyris</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769437595597</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769437595597_main_0.jpg?alt=media&amp;token=d42a2edb-0c09-43ab-b41e-2007eb8363b9</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>90.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
@@ -2108,6 +2085,17 @@ Body tecido poliamida
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>110.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777219173634</g:id>
+    <g:title>Conjunto Joice </g:title>
+    <g:description>Conjunto Joice </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777219173634</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777219173634_main_0.jpg?alt=media&amp;token=026c7bb9-c1c7-47fc-8ab6-50af3dccba51</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
