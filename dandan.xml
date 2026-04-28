@@ -191,5 +191,16 @@
     <g:price>35.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1777380027186</g:id>
+    <g:title>Tubo</g:title>
+    <g:description>Tubo</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1777380027186</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1777380027186_main_0.jpg?alt=media&amp;token=a60b2271-a491-4407-87ee-f1d34f02e4b2</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>25.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
