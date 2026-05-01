@@ -115,17 +115,6 @@
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1768684419317</g:id>
-    <g:title>Conjunto corselet</g:title>
-    <g:description>Short saia frente e costas </g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768684419317</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768684419317_main_0.jpg?alt=media&amp;token=7394a38c-5b07-41fc-a8d3-ff1ce5e1f907</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>100.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1768684680221</g:id>
     <g:title>Conjunto emanueli</g:title>
     <g:description>Veste 34/36</g:description>
@@ -1916,7 +1905,7 @@ Tecido poliamida </g:description>
   <item>
     <g:id>prod_1777208733273</g:id>
     <g:title>Conjunto val</g:title>
-    <g:description>TAM 42</g:description>
+    <g:description>Conjunto val</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777208733273</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777208733273_main_0.jpg?alt=media&amp;token=98b58c39-89e5-454a-a572-f12a05c7a5ba</g:image_link>
     <g:condition>new</g:condition>
@@ -2217,6 +2206,28 @@ Com zíper ,tecido malha scuba </g:description>
     <g:description>Short saia frete e costa</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777645842943</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777645842943_main_0.jpg?alt=media&amp;token=4d3c6dbc-11d9-41ff-810c-60ce4a916562</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777646453737</g:id>
+    <g:title>Conjunto evelin</g:title>
+    <g:description>Short saia frente e costa</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777646453737</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777646453737_main_0.jpg?alt=media&amp;token=f5551e64-9a3e-40da-9291-ca73d087e51f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777647846343</g:id>
+    <g:title>Conjunto grasy</g:title>
+    <g:description>Conjunto grasy</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777647846343</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777647846343_main_0.jpg?alt=media&amp;token=ca0d2baf-1305-4f2a-b0a6-14ffb9d22033</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>90.00 BRL</g:price>
