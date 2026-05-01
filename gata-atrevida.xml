@@ -2153,5 +2153,74 @@ Com bojo</g:description>
     <g:price>90.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1777643155527</g:id>
+    <g:title>Conjunto Paloma</g:title>
+    <g:description>Conjunto Paloma</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777643155527</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777643155527_main_0.jpg?alt=media&amp;token=1b78283d-5801-4c87-ad51-36e6e8f153d9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>95.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777643680483</g:id>
+    <g:title>Conjunto Crys</g:title>
+    <g:description>Conjunto Crys</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777643680483</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777643680483_main_0.jpg?alt=media&amp;token=1ee69065-bb40-4d6f-9980-95c816d1ef36</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>100.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777644058462</g:id>
+    <g:title>Conjunto Jessica </g:title>
+    <g:description>Short saia frente e Costa 
+Tecido malha scuba</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777644058462</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777644058462_main_0.jpg?alt=media&amp;token=7ded8b78-c7be-40d1-98b0-d8ddfcb079dd</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>100.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777644478352</g:id>
+    <g:title>Conjunto Isis</g:title>
+    <g:description>Short saia frente e Costa 
+Tecido malha scuba</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777644478352</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777644478352_main_0.jpg?alt=media&amp;token=b1a6e95b-7142-4d10-8462-d5c97defe5f9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777645030880</g:id>
+    <g:title>Conjunto karol</g:title>
+    <g:description>Short saia frente e Costa 
+Com zíper ,tecido malha scuba </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777645030880</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777645030880_main_0.jpg?alt=media&amp;token=f990cbff-1e26-477b-8aca-ffb8a7cfcfdb</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777645842943</g:id>
+    <g:title>Conjunto Valentina </g:title>
+    <g:description>Short saia frete e costa</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777645842943</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777645842943_main_0.jpg?alt=media&amp;token=4d3c6dbc-11d9-41ff-810c-60ce4a916562</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
