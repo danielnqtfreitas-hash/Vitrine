@@ -1660,17 +1660,6 @@ Tecido poliamida </g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1775305135947</g:id>
-    <g:title>Conjunto Iara</g:title>
-    <g:description>Tecido malha,com ziper</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1775305135947</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1775305135947_main_0.jpg?alt=media&amp;token=7c15676c-3aa1-40c6-96e0-aa46877f56b1</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>90.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1775307098153</g:id>
     <g:title>Conjunto katia</g:title>
     <g:description>Conjunto katia</g:description>
@@ -2231,6 +2220,28 @@ Com zíper ,tecido malha scuba </g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777651765560</g:id>
+    <g:title>Macaquinho Isis</g:title>
+    <g:description>Macaquinho frente e Costa veste 40 ao 44</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777651765560</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777651765560_main_0.jpg?alt=media&amp;token=7badd809-1f8d-4196-b8c2-42f3bda9a3e5</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777651859029</g:id>
+    <g:title>Vestido Ágata </g:title>
+    <g:description>Veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777651859029</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777651859029_main_0.jpg?alt=media&amp;token=21239fca-2d46-4675-947a-8c95746bf7d7</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
