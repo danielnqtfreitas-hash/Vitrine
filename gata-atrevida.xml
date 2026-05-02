@@ -1244,17 +1244,6 @@ g veste 4/5 anos</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1770221101890</g:id>
-    <g:title>Short saia Juliana</g:title>
-    <g:description>Short saia Juliana</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1770221101890</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1770221101890_main_0.jpg?alt=media&amp;token=ca00c521-ad4f-4455-9dca-d887edd61b71</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1770643689757</g:id>
     <g:title>Sandália julia</g:title>
     <g:description>Sandália julia</g:description>
@@ -2255,6 +2244,200 @@ Veste 34 ao 38</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777723219405</g:id>
+    <g:title>Cropped Ágata </g:title>
+    <g:description>Tecido duplo
+Zero transparência 
+Malha scuba
+Veste 36 ao 44</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777723219405</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777723219405_main_0.jpg?alt=media&amp;token=af315c3b-2f04-4c78-ba8c-8c6eb8a8eec6</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777723466660</g:id>
+    <g:title>Cropped joana</g:title>
+    <g:description>Tecido malha scuba
+Zero transparência 
+Tecido duplo 
+Veste 36 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777723466660</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777723466660_main_0.jpg?alt=media&amp;token=5d16e51b-bf83-4930-8578-c33d58937fb8</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777724107640</g:id>
+    <g:title>Conjunto Avila</g:title>
+    <g:description>Acompanha o cinto
+Veste 44</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777724107640</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777724107640_main_0.jpg?alt=media&amp;token=18e6db6e-cd6b-413d-a28c-c1c4dc95e294</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>105.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777724959829</g:id>
+    <g:title>Conjunto katia</g:title>
+    <g:description>A referência de cor do Conjunto é o short,veste 36/38</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777724959829</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777724959829_main_0.jpg?alt=media&amp;token=785ee5ec-f460-41a7-b579-8de11f5c2745</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>115.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777725184528</g:id>
+    <g:title>Conjunto valentina</g:title>
+    <g:description>Veste 38</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777725184528</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777725184528_main_0.jpg?alt=media&amp;token=175fb10a-02d5-4209-b57b-83175a940eae</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>100.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777725406419</g:id>
+    <g:title>Conjunto gessica </g:title>
+    <g:description>Body tecido poliamida premium
+Short tecido alfaiataria 
+Tamanho 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777725406419</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777725406419_main_0.jpg?alt=media&amp;token=a15dada5-4cee-4bc7-9b52-b035157c308e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>130.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777725828380</g:id>
+    <g:title>Conjunto val</g:title>
+    <g:description>Blusa tecido poliamida
+Short acompanha o cinto </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777725828380</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777725828380_main_0.jpg?alt=media&amp;token=d9278b2c-6f3e-482e-b061-c47fc9135e2a</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>105.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777726180346</g:id>
+    <g:title>Conjunto Paty</g:title>
+    <g:description>Cropped forrado
+Tecido malha scuba duplo
+</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777726180346</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777726180346_main_0.jpg?alt=media&amp;token=45ae5ebb-02b1-450a-b94d-50af5325f418</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>120.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777726381884</g:id>
+    <g:title>Conjunto joana</g:title>
+    <g:description>Veste 34/36
+Short saia frente e Costa
+Com zíper </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777726381884</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777726381884_main_0.jpg?alt=media&amp;token=66f98e85-196c-4ccc-9a97-075ca01d2977</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>110.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777726492186</g:id>
+    <g:title>Conjunto lane</g:title>
+    <g:description>Body tecido poliamida premium 
+Short acompanha o cinto
+Veste 44</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777726492186</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777726492186_main_0.jpg?alt=media&amp;token=3fcf0282-f63e-4be1-a15b-556be65c7cd0</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>130.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777726615515</g:id>
+    <g:title>Conjunto thays</g:title>
+    <g:description>Body tecido poliamida premium
+Short tecido linho
+Tamanho 44</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777726615515</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777726615515_main_0.jpg?alt=media&amp;token=ed1ec98c-6ccd-47a1-a6ae-bc5d1505ae4f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>135.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777727016579</g:id>
+    <g:title>T shirt alana</g:title>
+    <g:description>T shirt alana</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777727016579</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777727016579_main_0.jpg?alt=media&amp;token=96724ebf-167e-49fd-9dae-4f8a24767bf4</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>35.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777727221091</g:id>
+    <g:title>T shirt Bruna </g:title>
+    <g:description>T shirt Bruna </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777727221091</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777727221091_main_0.jpg?alt=media&amp;token=50de499e-6b30-4466-a7ad-48f8c9832aaf</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>35.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777727383090</g:id>
+    <g:title>T shirt clara</g:title>
+    <g:description>T shirt clara</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777727383090</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777727383090_main_0.jpg?alt=media&amp;token=cc7f9c73-78ae-4da6-b729-2a25af1633c2</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>35.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777727681621</g:id>
+    <g:title>Short evelin</g:title>
+    <g:description>Acompanha o cinto</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777727681621</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777727681621_main_0.jpg?alt=media&amp;token=64e7e8d8-1f29-4e96-b1be-25bc49f45ebe</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1777727949864</g:id>
+    <g:title>Short kelle</g:title>
+    <g:description>Short kelle</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777727949864</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777727949864_main_0.jpg?alt=media&amp;token=c8a04338-95b2-4dda-9506-03ceeb9f6857</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
