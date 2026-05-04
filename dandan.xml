@@ -224,5 +224,16 @@
     <g:price>99.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1777898911472</g:id>
+    <g:title>Solvente</g:title>
+    <g:description>Solvente</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1777898911472</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1777898911472_main_0.jpg?alt=media&amp;token=e20a4afd-abee-4333-95da-32a764598519</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>25.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
