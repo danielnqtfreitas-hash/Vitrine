@@ -191,16 +191,5 @@
     <g:price>25.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
-  <item>
-    <g:id>prod_1777427634257</g:id>
-    <g:title>po</g:title>
-    <g:description>po</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1777427634257</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1777427634257_main_0.jpg?alt=media&amp;token=774337d6-eb8c-4deb-b7ef-68bdfbf53c93</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>9.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
 </channel>
 </rss>
