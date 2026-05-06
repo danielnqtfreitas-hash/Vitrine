@@ -4,5 +4,49 @@
   <title>Lara Dolce</title>
   <link>https://loja.vitrineonline.app.br/laradolce</link>
   <description>Feed de Produtos - Lara Dolce</description>
+  <item>
+    <g:id>prod_1778090306952</g:id>
+    <g:title>Pudim zero lactose </g:title>
+    <g:description>Pudim tradicional com calda caramelizada artesanal, textura aveludada e zero lactose </g:description>
+    <g:link>https://loja.vitrineonline.app.br/laradolce?id=prod_1778090306952</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>15.00 BRL</g:price>
+    <g:brand>Lara Dolce</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1778090347265</g:id>
+    <g:title>Pudim café </g:title>
+    <g:description>Creme sofisticado com notas marcantes de café e final equilibrado </g:description>
+    <g:link>https://loja.vitrineonline.app.br/laradolce?id=prod_1778090347265</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>12.00 BRL</g:price>
+    <g:brand>Lara Dolce</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1778090376379</g:id>
+    <g:title>Pudim tradicional </g:title>
+    <g:description>Pudim tradicional com calda caramelizada artesanal e textura aveludada </g:description>
+    <g:link>https://loja.vitrineonline.app.br/laradolce?id=prod_1778090376379</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>12.00 BRL</g:price>
+    <g:brand>Lara Dolce</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1778090456473</g:id>
+    <g:title>Copo gourmet suflair</g:title>
+    <g:description>Creme sofisticado com chocolate aerado estilo Suflair textura leve e sabor marcante </g:description>
+    <g:link>https://loja.vitrineonline.app.br/laradolce?id=prod_1778090456473</g:link>
+    <g:image_link></g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>12.00 BRL</g:price>
+    <g:brand>Lara Dolce</g:brand>
+  </item>
 </channel>
 </rss>
