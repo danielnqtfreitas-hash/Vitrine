@@ -5,25 +5,36 @@
   <link>https://loja.vitrineonline.app.br/dandan</link>
   <description>Feed de Produtos - Dandan</description>
   <item>
-    <g:id>prod_1777979508828</g:id>
-    <g:title>Banco print</g:title>
-    <g:description>Banco print</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1777979508828</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1777979508828_main_0.jpg?alt=media&amp;token=3bff75a9-7428-4127-b1c1-13ae9e0427b0</g:image_link>
+    <g:id>prod_1778031453057</g:id>
+    <g:title>wr</g:title>
+    <g:description>wr</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1778031453057</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1778031453057_main_0.jpg?alt=media&amp;token=e758a005-875d-42b7-a579-cee6ae953fda</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
-    <g:price>50.00 BRL</g:price>
+    <g:price>22.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
   <item>
-    <g:id>prod_1777997529502</g:id>
-    <g:title>Gaveta para dinheiro</g:title>
-    <g:description>Gaveta para dinheiro</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1777997529502</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1777997529502_main_0.jpg?alt=media&amp;token=bbdeab9f-353d-486f-8b20-13ac2422cfed</g:image_link>
+    <g:id>prod_1778035844239</g:id>
+    <g:title>real</g:title>
+    <g:description>real</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1778035844239</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1778035844239_main_0.jpg?alt=media&amp;token=2a1aea03-37ff-4884-b227-9419ff9d3a1b</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
-    <g:price>100.00 BRL</g:price>
+    <g:price>22.98 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1778038964797</g:id>
+    <g:title>Teste sim</g:title>
+    <g:description>Teste sim</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1778038964797</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1778038964797_main_0.jpg?alt=media&amp;token=c62dff85-18b7-4a5b-86d5-ca4634ed05dd</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
 </channel>
