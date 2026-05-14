@@ -20,7 +20,7 @@
     <g:title>Cropped Quesia</g:title>
     <g:description>Veste 34 ao 38</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1768680499057</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768680499057_main_0.jpg?alt=media&amp;token=ee10f0e3-0cfc-49e1-84d8-95503e82d1ab</g:image_link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1768680499057_main_0.jpg?alt=media&amp;token=ab0207aa-90e4-4f04-a0e0-3dc72688e249</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>50.00 BRL</g:price>
@@ -2161,7 +2161,7 @@ Com zíper ,tecido malha scuba </g:description>
 Malha scuba
 Veste 34 ao 38</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777722930374</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777722930374_main_0.jpg?alt=media&amp;token=5e49a31b-85bc-40f8-a709-52de5f6792f3</g:image_link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777722930374_main_0.jpg?alt=media&amp;token=1d1d1a4b-4bf8-4d50-8140-835e5fb2fae2</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>50.00 BRL</g:price>
@@ -2381,6 +2381,40 @@ Tamanho 44</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1778763293050</g:id>
+    <g:title>Conjunto Isa</g:title>
+    <g:description>Veste 38 ao 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1778763293050</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1778763293050_main_0.jpg?alt=media&amp;token=ed8081f7-8be1-48a6-9b33-5368afe20f73</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1778763473156</g:id>
+    <g:title>Vestido karen</g:title>
+    <g:description>Veste 36 ao 40</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1778763473156</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1778763473156_main_0.jpg?alt=media&amp;token=f691e6ef-c0a5-47be-a13a-f2431c94ff44</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1778766446198</g:id>
+    <g:title>Body yasmin</g:title>
+    <g:description>Tecido poliamida 
+Veste 34 qo 40</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1778766446198</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1778766446198_main_0.jpg?alt=media&amp;token=2292fc79-914a-47d8-9a55-eb2072b14f89</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
