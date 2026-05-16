@@ -2417,5 +2417,16 @@ Veste 34 qo 40</g:description>
     <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1778931473599</g:id>
+    <g:title>Short saia Brena</g:title>
+    <g:description>Short saia Brena</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1778931473599</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1778931473599_main_0.jpg?alt=media&amp;token=889e5d56-14c0-464a-8e4c-ed1f429049b4</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
