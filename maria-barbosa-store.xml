@@ -27,6 +27,17 @@
     <g:brand>Maria Barbosa Store</g:brand>
   </item>
   <item>
+    <g:id>prod_1771773841548</g:id>
+    <g:title>Diva tradicional </g:title>
+    <g:description>Diva tradicional </g:description>
+    <g:link>https://loja.vitrineonline.app.br/maria-barbosa-store?id=prod_1771773841548</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fmaria-barbosa-store%2Fproducts%2Fprod_1771773841548_main_0.jpg?alt=media&amp;token=204bc805-1f4b-40c4-8f70-166524c757f0</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>129.00 BRL</g:price>
+    <g:brand>Maria Barbosa Store</g:brand>
+  </item>
+  <item>
     <g:id>prod_1771777112429</g:id>
     <g:title>Vestido em poá</g:title>
     <g:description>Vestido com elástico na costa </g:description>
