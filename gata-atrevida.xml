@@ -2380,5 +2380,16 @@ Tecido duplo</g:description>
     <g:price>110.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1779792460459</g:id>
+    <g:title>Short Isis </g:title>
+    <g:description>Short Isis </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1779792460459</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1779792460459_main_0.jpg?alt=media&amp;token=e6577e21-a83c-4b1e-afa1-447748046f65</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
