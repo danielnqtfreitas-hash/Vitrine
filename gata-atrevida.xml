@@ -2237,28 +2237,6 @@ Veste 34 qo 40</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1778931473599</g:id>
-    <g:title>Short saia Brena</g:title>
-    <g:description>Short saia Brena</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1778931473599</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1778931473599_main_0.jpg?alt=media&amp;token=889e5d56-14c0-464a-8e4c-ed1f429049b4</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>80.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1778949667760</g:id>
-    <g:title>Short carol</g:title>
-    <g:description>Acompanha o cinto</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1778949667760</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1778949667760_main_0.jpg?alt=media&amp;token=9195e213-2fcb-4cfa-bae2-58b671e9f821</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>70.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1779278347478</g:id>
     <g:title>Cropped Maysa </g:title>
     <g:description>Tecido duplo , malha scuba </g:description>
@@ -2370,17 +2348,6 @@ Tecido duplo</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1779792460459</g:id>
-    <g:title>Short Isis </g:title>
-    <g:description>Short Isis </g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1779792460459</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1779792460459_main_0.jpg?alt=media&amp;token=e6577e21-a83c-4b1e-afa1-447748046f65</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>80.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1779814209943</g:id>
     <g:title>T-shirt HOWDY BOTAS</g:title>
     <g:description>T-shirt HOWDY BOTAS</g:description>
@@ -2477,6 +2444,17 @@ Tecido duplo</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>45.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1779974545689</g:id>
+    <g:title>Conjunto Ester</g:title>
+    <g:description>Veste 42</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1779974545689</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1779974545689_main_0.jpg?alt=media&amp;token=2a17b208-9955-4b0e-8441-36f7439e1db3</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>125.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
