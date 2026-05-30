@@ -2025,17 +2025,6 @@ Veste 44</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1777724959829</g:id>
-    <g:title>Conjunto katia</g:title>
-    <g:description>A referência de cor do Conjunto é o short,veste 36/38</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777724959829</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777724959829_main_0.jpg?alt=media&amp;token=785ee5ec-f460-41a7-b579-8de11f5c2745</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>115.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1777725184528</g:id>
     <g:title>Conjunto valentina</g:title>
     <g:description>Veste 38</g:description>
@@ -2057,19 +2046,6 @@ Tamanho 42</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>130.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1777726180346</g:id>
-    <g:title>Conjunto Paty</g:title>
-    <g:description>Cropped forrado
-Tecido malha scuba duplo
-</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1777726180346</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1777726180346_main_0.jpg?alt=media&amp;token=45ae5ebb-02b1-450a-b94d-50af5325f418</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>120.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
@@ -2297,17 +2273,6 @@ Tecido duplo</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1779546619473</g:id>
-    <g:title>Conjunto Frida </g:title>
-    <g:description>Conjunto Frida </g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1779546619473</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1779546619473_main_0.jpg?alt=media&amp;token=c6384649-90a6-450b-9861-511a52b224f1</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>130.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1779546793852</g:id>
     <g:title>Conjunto Amanda</g:title>
     <g:description>Veste 38</g:description>
@@ -2426,6 +2391,29 @@ Tecido duplo</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>125.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780149871793</g:id>
+    <g:title>Conjunto Alana</g:title>
+    <g:description>Short saia frente costa</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780149871793</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780149871793_main_0.jpg?alt=media&amp;token=25b411ef-4c5c-4dde-8a36-25c75d64bc33</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>110.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780149955741</g:id>
+    <g:title>Conjunto Alícia </g:title>
+    <g:description>Short saia só frente
+Veste 38/40</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780149955741</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780149955741_main_0.jpg?alt=media&amp;token=b05e63f7-8b98-4b15-887f-13ae0fc7024d</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>100.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
