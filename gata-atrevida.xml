@@ -2416,5 +2416,27 @@ Veste 38/40</g:description>
     <g:price>100.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1780150154390</g:id>
+    <g:title>Conjunto Anastasia </g:title>
+    <g:description>Veste 36/38</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780150154390</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780150154390_main_0.jpg?alt=media&amp;token=bfd08199-1ccf-4680-9686-4305654d628f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>115.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780150356592</g:id>
+    <g:title>Conjunto Antonela</g:title>
+    <g:description>Veste 34/36</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780150356592</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780150356592_main_0.jpg?alt=media&amp;token=5a72705b-13f0-498b-bfb2-ee949f7e6c40</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>140.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
