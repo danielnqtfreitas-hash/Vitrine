@@ -2350,5 +2350,60 @@ Veste 38/40</g:description>
     <g:price>90.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1780425543061</g:id>
+    <g:title>Corselet Vandeli</g:title>
+    <g:description>Corselet Vandeli</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780425543061</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780425543061_main_0.jpg?alt=media&amp;token=708f46d3-3d2a-4039-896e-8a7ffe25774a</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780425632980</g:id>
+    <g:title>Corselet Richely</g:title>
+    <g:description>Corselet Richely</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780425632980</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780425632980_main_0.jpg?alt=media&amp;token=5740ac26-ac1b-41e7-9d24-ac86347fc5b9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780425746193</g:id>
+    <g:title>Corselet Caline</g:title>
+    <g:description>Corselet Caline</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780425746193</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780425746193_main_0.jpg?alt=media&amp;token=39194138-c5db-43b4-8c08-6ae63885cee2</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>70.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780425841569</g:id>
+    <g:title>Corselet isis</g:title>
+    <g:description>Corselet isis</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780425841569</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780425841569_main_0.jpg?alt=media&amp;token=9a7de554-f1b3-4202-9944-64cd5d5d960d</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780425997661</g:id>
+    <g:title>Corset Samia</g:title>
+    <g:description>Corset Samia</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780425997661</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780425997661_main_0.jpg?alt=media&amp;token=2ae3eb9c-f90d-4ef1-ab39-f01fac90e4cb</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
