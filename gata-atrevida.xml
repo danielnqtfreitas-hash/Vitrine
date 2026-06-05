@@ -2348,5 +2348,60 @@ Veste 38/40</g:description>
     <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1780690244744</g:id>
+    <g:title>Short Carol </g:title>
+    <g:description>Short Carol </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780690244744</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780690244744_main_0.jpg?alt=media&amp;token=85cc4315-b32b-4844-9b7a-c26f782391b6</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780690443097</g:id>
+    <g:title>Short Camila </g:title>
+    <g:description>Short Camila </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780690443097</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780690443097_main_0.jpg?alt=media&amp;token=2a181253-cbdc-4d79-8f19-93e1f10abd08</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780690600350</g:id>
+    <g:title>Short katia</g:title>
+    <g:description>Short katia</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780690600350</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780690600350_main_0.jpg?alt=media&amp;token=a63c1005-e697-4fcc-b81f-62a877553d3b</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780690807150</g:id>
+    <g:title>Short paty</g:title>
+    <g:description>Short paty</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780690807150</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780690807150_main_0.jpg?alt=media&amp;token=4f7aa4d1-1d46-4922-b87d-eaabe15361cd</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1780690994407</g:id>
+    <g:title>Short agatha</g:title>
+    <g:description>Short agatha</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780690994407</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780690994407_main_0.jpg?alt=media&amp;token=893f64d9-7060-4dc7-b512-0c7c2da7d61e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
