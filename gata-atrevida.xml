@@ -2405,17 +2405,6 @@ Veste 38/40</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1780836551590</g:id>
-    <g:title>Conjunto Cris</g:title>
-    <g:description>Conjunto Cris</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780836551590</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780836551590_main_0.jpg?alt=media&amp;token=39ac70fd-52a2-44e7-bf10-0bd37200af31</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>155.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1780836751716</g:id>
     <g:title>Conjunto Daniele </g:title>
     <g:description>Conjunto Daniele </g:description>
@@ -2471,44 +2460,11 @@ Veste 38/40</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1780925019593</g:id>
-    <g:title>Conjunto viviane</g:title>
-    <g:description>Conjunto viviane</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780925019593</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780925019593_main_0.jpg?alt=media&amp;token=d339ca39-58aa-4e69-bdf0-4f35c5cd89e4</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>120.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1780925307161</g:id>
     <g:title>Conjunto Cris </g:title>
     <g:description>Conjunto Cris </g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780925307161</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780925307161_main_0.jpg?alt=media&amp;token=0778ebfc-3e40-4fe4-80ed-e587afb169be</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>135.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1780925453488</g:id>
-    <g:title>Conjunto ariana</g:title>
-    <g:description>Conjunto ariana</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780925453488</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780925453488_main_0.jpg?alt=media&amp;token=084bd882-67f6-49d6-9d5a-eccc4dc8ee95</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>125.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1780925773466</g:id>
-    <g:title>Conjunto Celina </g:title>
-    <g:description>Conjunto Celina </g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780925773466</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780925773466_main_0.jpg?alt=media&amp;token=bcb1b1e6-a83d-4ae6-ac68-01a54d06cff1</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>135.00 BRL</g:price>
@@ -2534,6 +2490,72 @@ Veste 38/40</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>115.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781356237733</g:id>
+    <g:title>Body amanda</g:title>
+    <g:description>Body amanda</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781356237733</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781356237733_main_0.jpg?alt=media&amp;token=86788e68-2700-458c-a5e2-2f7c9b3d4a7e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781356466376</g:id>
+    <g:title>Body gola</g:title>
+    <g:description>Body gola</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781356466376</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781356466376_main_0.jpg?alt=media&amp;token=e7cd6abb-9a96-4604-ba50-592ed6ca146f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781356807918</g:id>
+    <g:title>Short agatha</g:title>
+    <g:description>Short agatha</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781356807918</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781356807918_main_0.jpg?alt=media&amp;token=614227d8-1f49-4365-abda-92ac21a9f182</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781358373442</g:id>
+    <g:title>Short jeans amanda</g:title>
+    <g:description>Short jeans amanda</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781358373442</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781358373442_main_0.jpg?alt=media&amp;token=949e7752-4354-4818-8d83-5224200df76f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781358459391</g:id>
+    <g:title>Short aurora </g:title>
+    <g:description>Short aurora </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781358459391</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781358459391_main_0.jpg?alt=media&amp;token=7946281c-9c6c-424f-9fef-8c0c94e09359</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781358537414</g:id>
+    <g:title>Short jeans Bruna </g:title>
+    <g:description>Short jeans Bruna </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781358537414</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781358537414_main_0.jpg?alt=media&amp;token=8cd99c63-5f8f-4528-bb26-a96548ee82af</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
