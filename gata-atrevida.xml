@@ -2522,5 +2522,38 @@ Veste 38/40</g:description>
     <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1781379725540</g:id>
+    <g:title>Short jeans Daniele</g:title>
+    <g:description>Short jeans Daniele</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781379725540</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781379725540_main_0.jpg?alt=media&amp;token=82ba34b6-5477-4119-a3e2-7b56bcac424a</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781379803228</g:id>
+    <g:title>Short jeans fabiana</g:title>
+    <g:description>Short jeans fabiana</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781379803228</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781379803228_main_0.jpg?alt=media&amp;token=bd38d0da-6b4f-4ef1-b678-141ea4e015d3</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781379882071</g:id>
+    <g:title>Short jeans jamili</g:title>
+    <g:description>Short jeans jamili</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781379882071</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781379882071_main_0.jpg?alt=media&amp;token=fea4ad01-fa77-40b3-8acb-971f0822827e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
