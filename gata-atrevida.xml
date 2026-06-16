@@ -2643,5 +2643,27 @@ Veste 38/40</g:description>
     <g:price>60.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1781612256162</g:id>
+    <g:title>Conjunto anny</g:title>
+    <g:description>Conjunto anny</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781612256162</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781612256162_main_0.jpg?alt=media&amp;token=fe3c0701-3887-4573-b19e-b77cc4bdf6d7</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>125.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781612988359</g:id>
+    <g:title>Conjunto valeria</g:title>
+    <g:description>Conjunto valeria</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781612988359</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781612988359_main_0.jpg?alt=media&amp;token=4dd32e11-d963-4660-b180-0320a1b56fbb</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>130.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
