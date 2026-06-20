@@ -2626,5 +2626,27 @@ Veste 38/40</g:description>
     <g:price>130.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1781959508198</g:id>
+    <g:title>Short Estela </g:title>
+    <g:description>Short Estela </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781959508198</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781959508198_main_0.jpg?alt=media&amp;token=bf8d9fb9-20af-4e4a-bf70-a894299a87da</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781960425283</g:id>
+    <g:title>Short saia Iara</g:title>
+    <g:description>Short saia Iara</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781960425283</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781960425283_main_0.jpg?alt=media&amp;token=a94bfc65-6b32-435e-a463-df535334ad32</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
