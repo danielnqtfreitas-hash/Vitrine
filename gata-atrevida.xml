@@ -2659,5 +2659,38 @@ Veste 38/40</g:description>
     <g:price>90.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1782394889159</g:id>
+    <g:title>Conjunto Barbara</g:title>
+    <g:description>Conjunto Barbara</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1782394889159</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1782394889159_main_0.jpg?alt=media&amp;token=9d622cbd-5518-4488-8631-911ba946efa0</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>95.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1782396556056</g:id>
+    <g:title>Conjunto Beatriz</g:title>
+    <g:description>Short saia frente e costas </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1782396556056</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1782396556056_main_0.jpg?alt=media&amp;token=37784b28-bf77-4154-aa63-c695f3441527</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1782398526994</g:id>
+    <g:title>Conjunto Bruna</g:title>
+    <g:description>Short saia frente e costas </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1782398526994</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1782398526994_main_0.jpg?alt=media&amp;token=06352d49-ce4c-491d-ae2a-3976d195b8f9</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
