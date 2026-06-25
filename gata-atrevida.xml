@@ -2637,5 +2637,27 @@ Veste 38/40</g:description>
     <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1782391220950</g:id>
+    <g:title>Conjunto Lara</g:title>
+    <g:description>Short saia frente e Costa </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1782391220950</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1782391220950_main_0.jpg?alt=media&amp;token=4da8a728-9ebc-4723-afb4-837b09c6cf08</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1782393403328</g:id>
+    <g:title>Conjunto Alice</g:title>
+    <g:description>Conjunto Alice</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1782393403328</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1782393403328_main_0.jpg?alt=media&amp;token=305d1781-47d5-4659-bca7-c3cc54b2bb49</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>90.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
