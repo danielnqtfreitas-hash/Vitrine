@@ -2692,5 +2692,16 @@ Veste 38/40</g:description>
     <g:price>90.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1782414331614</g:id>
+    <g:title>Conjunto Catarina</g:title>
+    <g:description>Conjunto Catarina</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1782414331614</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1782414331614_main_0.jpg?alt=media&amp;token=619fc51d-2b22-493e-a7c9-aadddda62f03</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
