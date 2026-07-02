@@ -5,17 +5,6 @@
   <link>https://loja.vitrineonline.app.br/dandan</link>
   <description>Feed de Produtos - Dandan</description>
   <item>
-    <g:id>prod_1778031453057</g:id>
-    <g:title>wr</g:title>
-    <g:description>WR Chico doido</g:description>
-    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1778031453057</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1778031453057_main_0.jpg?alt=media&amp;token=e758a005-875d-42b7-a579-cee6ae953fda</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>22.00 BRL</g:price>
-    <g:brand>Dandan</g:brand>
-  </item>
-  <item>
     <g:id>prod_1778035844239</g:id>
     <g:title>real</g:title>
     <g:description>real</g:description>
