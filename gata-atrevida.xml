@@ -2948,5 +2948,16 @@ Corselet com bojo</g:description>
     <g:price>135.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1783168295621</g:id>
+    <g:title>Short clara </g:title>
+    <g:description>Short clara </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1783168295621</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1783168295621_main_0.jpg?alt=media&amp;token=1b045d34-4827-41e7-a4b2-3f682185a9fd</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
