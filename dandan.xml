@@ -15,5 +15,16 @@
     <g:price>24.00 BRL</g:price>
     <g:brand>Dandan</g:brand>
   </item>
+  <item>
+    <g:id>prod_1783904118645</g:id>
+    <g:title>Shampoo</g:title>
+    <g:description>Shampoo</g:description>
+    <g:link>https://loja.vitrineonline.app.br/dandan?id=prod_1783904118645</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fdandan%2Fproducts%2Fprod_1783904118645_main_0.jpg?alt=media&amp;token=46c5de2e-e286-4482-b594-3d4da2cb5672</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Dandan</g:brand>
+  </item>
 </channel>
 </rss>
