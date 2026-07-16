@@ -2893,5 +2893,49 @@ Corselet com bojo</g:description>
     <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1784220554055</g:id>
+    <g:title>Short jeans yasmim</g:title>
+    <g:description>Short jeans yasmim</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784220554055</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784220554055_main_0.jpg?alt=media&amp;token=153591a8-4f4b-4804-94fb-94fb90c2dbe4</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784220942552</g:id>
+    <g:title>Short jeans Bianca</g:title>
+    <g:description>Short jeans Bianca</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784220942552</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784220942552_main_0.jpg?alt=media&amp;token=165a3deb-f412-4459-9e95-8515d95a02d6</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784221209883</g:id>
+    <g:title>Short jeans Gabriela</g:title>
+    <g:description>Acompanha o cinto</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784221209883</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784221209883_main_0.jpg?alt=media&amp;token=a92f79a8-3d05-4ae8-9392-c0c235548d24</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784221489885</g:id>
+    <g:title>Short jeans carolina</g:title>
+    <g:description>Short jeans carolina</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784221489885</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784221489885_main_0.jpg?alt=media&amp;token=4f024450-ddfe-4813-9a61-b78ce973c4db</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
