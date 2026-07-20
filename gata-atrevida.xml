@@ -2859,5 +2859,16 @@ Corselet com bojo</g:description>
     <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1784559766387</g:id>
+    <g:title>Corselet zafira</g:title>
+    <g:description>Corselet zafira</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784559766387</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784559766387_main_0.jpg?alt=media&amp;token=37ea6c7a-dc71-405e-ae6e-7a6e4f73a608</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
