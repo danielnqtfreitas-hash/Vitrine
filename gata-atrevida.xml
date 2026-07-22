@@ -2648,5 +2648,38 @@ Corselet com bojo</g:description>
     <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1784732637402</g:id>
+    <g:title>Short Mariana </g:title>
+    <g:description>Short Mariana </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784732637402</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784732637402_main_0.jpg?alt=media&amp;token=1e6aa0b9-c384-430f-962e-23d533c111ec</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784733093945</g:id>
+    <g:title>Short Crys</g:title>
+    <g:description>Short Crys</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784733093945</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784733093945_main_0.jpg?alt=media&amp;token=6b4dd698-e012-44b5-8505-7a680a777c76</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784733536628</g:id>
+    <g:title>Short Iara</g:title>
+    <g:description>Short Iara</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784733536628</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784733536628_main_0.jpg?alt=media&amp;token=503042ac-9375-4d32-91f7-3077e9a14a60</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>65.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
