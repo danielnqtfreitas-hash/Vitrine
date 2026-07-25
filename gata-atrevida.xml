@@ -2758,16 +2758,5 @@ Corselet com bojo</g:description>
     <g:price>85.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
-  <item>
-    <g:id>prod_1784999448999</g:id>
-    <g:title>Conjunto Paloma </g:title>
-    <g:description>Short saia</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784999448999</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784999448999_main_0.jpg?alt=media&amp;token=3d68a629-1f4e-4098-8622-400dc1945e7f</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>85.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
 </channel>
 </rss>
