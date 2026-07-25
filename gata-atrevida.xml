@@ -2616,6 +2616,17 @@ Corselet com bojo</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
+    <g:id>prod_1784835402361</g:id>
+    <g:title>Conjunto Val </g:title>
+    <g:description>Short saia</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784835402361</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784835402361_main_0.jpg?alt=media&amp;token=54096e4b-2a33-4e2f-91f1-e93f04c13b47</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
     <g:id>prod_1784835762322</g:id>
     <g:title>Conjunto Violeta</g:title>
     <g:description>Short saia </g:description>
@@ -2723,6 +2734,50 @@ Corselet com bojo</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>160.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784998674401</g:id>
+    <g:title>Conjunto gabriela</g:title>
+    <g:description>Short saia </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784998674401</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784998674401_main_0.jpg?alt=media&amp;token=2d52b9b9-ea50-4756-8b56-ca59df0ad148</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784999120554</g:id>
+    <g:title>Conjunto Erica</g:title>
+    <g:description>Short saia</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784999120554</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784999120554_main_0.jpg?alt=media&amp;token=1152512d-335f-47f9-a5c9-fbc6b422f9de</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784999258843</g:id>
+    <g:title>Conjunto Grasy</g:title>
+    <g:description>Short saia </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784999258843</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784999258843_main_0.jpg?alt=media&amp;token=d89989f2-3ca0-4e75-99a6-96aab9050cf2</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1784999448999</g:id>
+    <g:title>Conjunto Paloma </g:title>
+    <g:description>Short saia</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784999448999</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784999448999_main_0.jpg?alt=media&amp;token=3d68a629-1f4e-4098-8622-400dc1945e7f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>85.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
