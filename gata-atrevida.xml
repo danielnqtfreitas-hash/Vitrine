@@ -183,17 +183,6 @@ Veste 34 ao 38</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1769012415939</g:id>
-    <g:title>Body Ingrid</g:title>
-    <g:description>Body Ingrid</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769012415939</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769012415939_main_0.jpg?alt=media&amp;token=139211df-7774-492b-b945-5409c92f5378</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>55.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1769012490130</g:id>
     <g:title>Body kelly</g:title>
     <g:description>Body kelly</g:description>
@@ -235,18 +224,6 @@ Veste 34 ao 38</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>55.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1769015312753</g:id>
-    <g:title>Saia Emilly</g:title>
-    <g:description>Saia 
-Veste 34/36</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1769015312753</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1769015312753_main_0.jpg?alt=media&amp;token=b582a4da-3033-4e7b-905f-6cb6295ebe49</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
@@ -2450,17 +2427,6 @@ Zero transparencia</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1784559766387</g:id>
-    <g:title>Corselet zafira</g:title>
-    <g:description>Corselet zafira</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784559766387</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784559766387_main_0.jpg?alt=media&amp;token=37ea6c7a-dc71-405e-ae6e-7a6e4f73a608</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>80.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1784732637402</g:id>
     <g:title>Short Mariana </g:title>
     <g:description>Short Mariana </g:description>
@@ -2752,6 +2718,17 @@ Zero transparencia</g:description>
     <g:description>Short Milena</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1785159529101</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1785159529101_main_0.jpg?alt=media&amp;token=f6745fe5-1158-42c4-bbd8-2feb4bcecb64</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1785159965755</g:id>
+    <g:title>Short Agatha</g:title>
+    <g:description>Short Agatha</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1785159965755</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1785159965755_main_0.jpg?alt=media&amp;token=458f6cb9-b5bc-46eb-88a2-269075835dd6</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>75.00 BRL</g:price>
