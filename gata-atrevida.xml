@@ -2004,11 +2004,11 @@ Com zíper </g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1781556352159</g:id>
-    <g:title>Body Emanuela</g:title>
-    <g:description>Body Emanuela</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781556352159</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781556352159_main_0.jpg?alt=media&amp;token=74f17af3-9616-4ac3-a175-739094a8ecbb</g:image_link>
+    <g:id>prod_1781553992493</g:id>
+    <g:title>Body fatima</g:title>
+    <g:description>Body fatima</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781553992493</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781553992493_main_0.jpg?alt=media&amp;token=82bf7bef-de41-446f-acab-9641e86f2fab</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>60.00 BRL</g:price>
@@ -2466,17 +2466,6 @@ Com zíper </g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1784998674401</g:id>
-    <g:title>Conjunto gabriela</g:title>
-    <g:description>Short saia </g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1784998674401</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1784998674401_main_0.jpg?alt=media&amp;token=2d52b9b9-ea50-4756-8b56-ca59df0ad148</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>85.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1784999258843</g:id>
     <g:title>Conjunto Grasy</g:title>
     <g:description>Short saia </g:description>
@@ -2661,6 +2650,28 @@ Com zíper </g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1785852317752</g:id>
+    <g:title>Body Catarina</g:title>
+    <g:description>Poliamida premium</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1785852317752</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1785852317752_main_0.jpg?alt=media&amp;token=b173ed50-6ada-4e4f-95e0-4a0535357d40</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1785852821906</g:id>
+    <g:title>Body Ingrid </g:title>
+    <g:description>Poliamida</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1785852821906</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1785852821906_main_0.jpg?alt=media&amp;token=97b45611-4b94-491a-8c40-e37e6962b65e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
