@@ -2029,7 +2029,7 @@ Tecido malha scuba</g:description>
   <item>
     <g:id>prod_1781960425283</g:id>
     <g:title>Short saia Iara</g:title>
-    <g:description>Short saia Iara</g:description>
+    <g:description>Short saia</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781960425283</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781960425283_main_0.jpg?alt=media&amp;token=a94bfc65-6b32-435e-a463-df535334ad32</g:image_link>
     <g:condition>new</g:condition>
@@ -2046,6 +2046,17 @@ Tecido malha scuba</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>135.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1781986614558</g:id>
+    <g:title>Saia 3 cintos</g:title>
+    <g:description>Saia 3 cintos</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1781986614558</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1781986614558_main_0.jpg?alt=media&amp;token=df3ab6f6-e161-436c-8b66-3b92e07918f0</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
@@ -2197,17 +2208,6 @@ Tecido malha scuba</g:description>
     <g:description>Short caroline</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1783174704731</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1783174704731_main_0.jpg?alt=media&amp;token=d9bdbb67-4b1a-420a-a536-37c2cc5d43c6</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>80.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1783179044190</g:id>
-    <g:title>Short saia ivana</g:title>
-    <g:description>Short saia ivana</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1783179044190</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1783179044190_main_0.jpg?alt=media&amp;token=6d59b6ab-f17e-444b-9c5f-953bbead29f2</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>80.00 BRL</g:price>
