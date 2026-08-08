@@ -1156,17 +1156,6 @@ Malha scuba </g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1775309993361</g:id>
-    <g:title>Cropped Jessica </g:title>
-    <g:description>Cropped Jessica </g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1775309993361</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1775309993361_main_0.jpg?alt=media&amp;token=ee031e34-41ce-4640-a502-18c1b25ca5a9</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>50.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1775310546404</g:id>
     <g:title>Cropped Yasmin</g:title>
     <g:description>Cropped Yasmin</g:description>
@@ -2739,6 +2728,105 @@ Tecido malha scuba</g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786192382468</g:id>
+    <g:title>Short Catarina </g:title>
+    <g:description>Short Catarina </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786192382468</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786192382468_main_0.jpg?alt=media&amp;token=b825b2e8-71a9-484c-b444-46822903e19d</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786192610311</g:id>
+    <g:title>Short Bianca </g:title>
+    <g:description>Short Bianca </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786192610311</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786192610311_main_0.jpg?alt=media&amp;token=b6e6200a-72c5-44cd-9dad-45186636e105</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786192828692</g:id>
+    <g:title>Short Renata </g:title>
+    <g:description>Short Renata </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786192828692</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786192828692_main_0.jpg?alt=media&amp;token=6f064317-c0fd-4720-af42-d4a94a8c0f4e</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>75.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786192897196</g:id>
+    <g:title>Short Cris</g:title>
+    <g:description>Short Cris</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786192897196</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786192897196_main_0.jpg?alt=media&amp;token=b8ba578e-e39c-481d-9d0c-3e592258fb2f</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>80.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786193374303</g:id>
+    <g:title>Cropped lara</g:title>
+    <g:description>Cropped lara</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786193374303</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786193374303_main_0.jpg?alt=media&amp;token=19787530-48ca-4f03-8569-36e7a4d871e3</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786193434473</g:id>
+    <g:title>Cropped liandra</g:title>
+    <g:description>Cropped liandra</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786193434473</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786193434473_main_0.jpg?alt=media&amp;token=9aa6e660-c420-4b3c-9626-c7ddef59112b</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786193520878</g:id>
+    <g:title>Cropped gessica </g:title>
+    <g:description>Cropped gessica </g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786193520878</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786193520878_main_0.jpg?alt=media&amp;token=fc3b5bab-d505-4105-99d8-63d9beb87e66</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786193612983</g:id>
+    <g:title>Cropped agatha</g:title>
+    <g:description>Cropped agatha</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786193612983</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786193612983_main_0.jpg?alt=media&amp;token=e24d7ee5-7dd8-4ead-97a1-dfcb9a1e8279</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1786193696052</g:id>
+    <g:title>Cropped yasmim</g:title>
+    <g:description>Cropped yasmim</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786193696052</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786193696052_main_0.jpg?alt=media&amp;token=7067bd32-646c-4088-b902-102691f214d4</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>50.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
 </channel>
