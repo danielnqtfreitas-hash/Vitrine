@@ -901,17 +901,6 @@ g veste 4/5 anos</g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1771850983453</g:id>
-    <g:title>Conjunto Boss</g:title>
-    <g:description>Conjunto Boss</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1771850983453</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1771850983453_main_0.jpg?alt=media&amp;token=cda37c5e-d59d-4088-a4eb-5f19d20dbcc9</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>60.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1771851173475</g:id>
     <g:title>Conjunto Boss</g:title>
     <g:description>Conjunto Boss</g:description>
@@ -2696,8 +2685,8 @@ Tecido malha scuba</g:description>
   </item>
   <item>
     <g:id>prod_1786193434473</g:id>
-    <g:title>Cropped liandra</g:title>
-    <g:description>Cropped liandra</g:description>
+    <g:title>Cropped Liandra</g:title>
+    <g:description>Cropped Liandra</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786193434473</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786193434473_main_0.jpg?alt=media&amp;token=9aa6e660-c420-4b3c-9626-c7ddef59112b</g:image_link>
     <g:condition>new</g:condition>
@@ -2718,8 +2707,8 @@ Tecido malha scuba</g:description>
   </item>
   <item>
     <g:id>prod_1786193612983</g:id>
-    <g:title>Cropped agatha</g:title>
-    <g:description>Cropped agatha</g:description>
+    <g:title>Cropped Agatha</g:title>
+    <g:description>Cropped Agatha</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1786193612983</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1786193612983_main_0.jpg?alt=media&amp;token=e24d7ee5-7dd8-4ead-97a1-dfcb9a1e8279</g:image_link>
     <g:condition>new</g:condition>
