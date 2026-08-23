@@ -1682,17 +1682,6 @@ Com zíper </g:description>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
-    <g:id>prod_1780749969298</g:id>
-    <g:title>Conjunto Gabriela</g:title>
-    <g:description>Conjunto Gabriela</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780749969298</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780749969298_main_0.jpg?alt=media&amp;token=8e01de06-05f0-4df9-a459-b81ad6f9284b</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
     <g:id>prod_1780750039639</g:id>
     <g:title>Conjunto Gabriela</g:title>
     <g:description>Conjunto Gabriela</g:description>
@@ -1701,50 +1690,6 @@ Com zíper </g:description>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1780750103975</g:id>
-    <g:title>Conjunto Gabriela</g:title>
-    <g:description>Conjunto Gabriela</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780750103975</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780750103975_main_0.jpg?alt=media&amp;token=f14c025e-16f8-40df-a4e0-57420d375265</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1780750190535</g:id>
-    <g:title>Conjunto Gabriela</g:title>
-    <g:description>Conjunto Gabriela</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780750190535</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780750190535_main_0.jpg?alt=media&amp;token=8838b853-c81f-4c39-bcfe-5c2e9895bd21</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>75.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1780750260612</g:id>
-    <g:title>Conjunto isis</g:title>
-    <g:description>Conjunto isis</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780750260612</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780750260612_main_0.jpg?alt=media&amp;token=8805e24c-541f-4762-b15f-a51a5be935d3</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>70.00 BRL</g:price>
-    <g:brand>Gata Attrevida Store</g:brand>
-  </item>
-  <item>
-    <g:id>prod_1780750326601</g:id>
-    <g:title>Conjunto vick</g:title>
-    <g:description>Conjunto vick</g:description>
-    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1780750326601</g:link>
-    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1780750326601_main_0.jpg?alt=media&amp;token=d36f4417-563a-465f-a4f1-230489a96905</g:image_link>
-    <g:condition>new</g:condition>
-    <g:availability>in stock</g:availability>
-    <g:price>70.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
   <item>
@@ -3117,6 +3062,17 @@ Veste 34 ao 40</g:description>
     <g:description>Conjunto Boss</g:description>
     <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1787491793776</g:link>
     <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1787491793776_main_0.jpg?alt=media&amp;token=9c3e9534-26cc-4f42-85f7-8b260452c1d8</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>40.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1787491841580</g:id>
+    <g:title>Conjunto boss</g:title>
+    <g:description>Conjunto boss</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1787491841580</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1787491841580_main_0.jpg?alt=media&amp;token=9ea37a77-fd45-40e8-a630-a05064c41f53</g:image_link>
     <g:condition>new</g:condition>
     <g:availability>in stock</g:availability>
     <g:price>40.00 BRL</g:price>
