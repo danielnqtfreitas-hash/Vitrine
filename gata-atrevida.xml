@@ -3021,5 +3021,38 @@ Veste 34 ao 40</g:description>
     <g:price>50.00 BRL</g:price>
     <g:brand>Gata Attrevida Store</g:brand>
   </item>
+  <item>
+    <g:id>prod_1788030806441</g:id>
+    <g:title>Conjunto Boss</g:title>
+    <g:description>Conjunto Boss</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1788030806441</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1788030806441_main_0.jpg?alt=media&amp;token=acb64682-f64e-4151-ba24-74ace2eb73bc</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1788030899977</g:id>
+    <g:title>Conjunto nike</g:title>
+    <g:description>Conjunto nike</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1788030899977</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1788030899977_main_0.jpg?alt=media&amp;token=66c4dc53-438c-4467-8e13-8645c7a29476</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
+  <item>
+    <g:id>prod_1788031337519</g:id>
+    <g:title>Conjunto Boss</g:title>
+    <g:description>Conjunto Boss</g:description>
+    <g:link>https://loja.vitrineonline.app.br/gata-atrevida?id=prod_1788031337519</g:link>
+    <g:image_link>https://firebasestorage.googleapis.com/v0/b/meuestoque-1badc.firebasestorage.app/o/stores%2Fgata-atrevida%2Fproducts%2Fprod_1788031337519_main_0.jpg?alt=media&amp;token=112cd3f5-c430-432a-b473-8a44e51a0815</g:image_link>
+    <g:condition>new</g:condition>
+    <g:availability>in stock</g:availability>
+    <g:price>60.00 BRL</g:price>
+    <g:brand>Gata Attrevida Store</g:brand>
+  </item>
 </channel>
 </rss>
